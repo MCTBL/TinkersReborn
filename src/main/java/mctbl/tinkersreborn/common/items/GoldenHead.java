@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.util.McTextFormatter;
+import mctbl.tinkersreborn.util.ColorUtil;
 
 public class GoldenHead extends ItemFood {
 
@@ -77,10 +77,10 @@ public class GoldenHead extends ItemFood {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
         list.add(
-            McTextFormatter.addDarkPurple(
-                McTextFormatter.addItalic(StatCollector.translateToLocal("tinkersreborn.goldenhead1.tooltip"))));
+            ColorUtil.addDarkPurple(
+                ColorUtil.addItalic(StatCollector.translateToLocal("tinkersreborn.goldenhead1.tooltip"))));
         list.add(
-            McTextFormatter.addDarkPurple(
-                McTextFormatter.addItalic(StatCollector.translateToLocal("tinkersreborn.goldenhead2.tooltip"))));
+            ColorUtil.addDarkPurple(
+                ColorUtil.addItalic(StatCollector.translateToLocal("tinkersreborn.goldenhead2.tooltip"))));
     }
 }

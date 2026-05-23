@@ -53,7 +53,7 @@ public class TinkersReborn {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         TinkersRebornConfig.setupConfig(event.getModConfigurationDirectory());
-        TinkersRebornRegistry.instance.initCreativeTab();
+        TinkersRebornRegistry.instance.preInit();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 

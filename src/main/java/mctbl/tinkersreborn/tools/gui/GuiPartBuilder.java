@@ -9,7 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.tools.entity.TinkersRebornPartBuilderLogic;
 import mctbl.tinkersreborn.tools.inventory.TinkersRebornPartBuilderContainer;
-import mctbl.tinkersreborn.util.McTextFormatter;
+import mctbl.tinkersreborn.util.ColorUtil;
 
 @SideOnly(Side.CLIENT)
 public class GuiPartBuilder extends GuiContainer {
@@ -27,7 +27,7 @@ public class GuiPartBuilder extends GuiContainer {
 
         // this.drawChestPart = inventorySlots instanceof PartCrafterChestContainer;
 
-        this.title = McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.partcrafter1"));
+        this.title = ColorUtil.addUnderLine(StatCollector.translateToLocal("gui.partcrafter1"));
     }
 
     @Override

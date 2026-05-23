@@ -13,6 +13,10 @@ public class TinkersRebornRegistry {
     public static TinkersRebornCreativeTab tools;
     public static TinkersRebornCreativeTab weapons;
     public static TinkersRebornCreativeTab parts;
+    
+    public void preInit() {
+    	this.initCreativeTab();
+    }
 
     public void initCreativeTab() {
         block = new TinkersRebornCreativeTab("TinkersRebornBlocks").init(new ItemStack(Items.cookie));

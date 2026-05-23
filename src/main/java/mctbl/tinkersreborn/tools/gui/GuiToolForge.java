@@ -14,7 +14,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.tools.entity.TinkersRebornToolForgeLogic;
 import mctbl.tinkersreborn.tools.inventory.TinkersRebornToolForgeContainer;
-import mctbl.tinkersreborn.util.McTextFormatter;
+import mctbl.tinkersreborn.util.ColorUtil;
 
 @SideOnly(Side.CLIENT)
 public class GuiToolForge extends GuiToolStation {
@@ -34,7 +34,7 @@ public class GuiToolForge extends GuiToolStation {
         selectedButton = 0;
         setSlotType(0);
         setIconUVs();
-        title = McTextFormatter.addUnderLine(StatCollector.translateToLocal("gui.toolforge1"));
+        title = ColorUtil.addUnderLine(StatCollector.translateToLocal("gui.toolforge1"));
         body = StatCollector.translateToLocal("gui.toolforge2");
         Keyboard.enableRepeatEvents(true);
     }

@@ -18,6 +18,8 @@ public class CraftingItem extends Item {
     public String[] unlocalizedNames;
     public String folder;
     public IIcon[] icons;
+    
+    private boolean hidden = false;
 
     public CraftingItem(String[] names, String[] tex, String folder, CreativeTabs tab) {
         super();
@@ -40,6 +42,11 @@ public class CraftingItem extends Item {
         this.setHasSubtypes(true);
         this.unlocalizedNames = names;
         this.folder = folder;
+    }
+    
+    public CraftingItem setHiddenInCreativeTabs(boolean isHidden) {
+    	this.hidden = isHidden;
+    	return this;
     }
 
     // public void updateData(String[] names, String[] tex, String folder, String modTexturePrefix) {
@@ -73,8 +80,10 @@ public class CraftingItem extends Item {
     }
 
     public void getSubItems(Item b, CreativeTabs tab, List<ItemStack> list) {
-        for (int i = 0; i < unlocalizedNames.length; i++)
-            if (!(textureNames[i].equals(""))) list.add(new ItemStack(b, 1, i));
+    	if(!this.hidden) {
+    		for (int i = 0; i < unlocalizedNames.length; i++)
+    			if (!(textureNames[i].equals(""))) list.add(new ItemStack(b, 1, i));    		
+    	}
     }
 
 }
