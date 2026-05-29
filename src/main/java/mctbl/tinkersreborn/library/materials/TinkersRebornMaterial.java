@@ -98,9 +98,9 @@ public class TinkersRebornMaterial {
         this.localizationIdentifier = String.format(LOC_Name, identifier);
 
         // if invisible, make it fully opaque.
-        if (((color >> 24) & 0xFF) == 0) {
-            color |= 0xFF << 24;
-        }
+        // if (((color >> 24) & 0xFF) == 0) {
+        // color |= 0xFF << 24;
+        // }
 
         this.materialTextColor = color;
         this.statsMap = new HashMap<>();

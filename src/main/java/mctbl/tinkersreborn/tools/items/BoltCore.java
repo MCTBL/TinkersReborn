@@ -8,13 +8,15 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import mctbl.tinkersreborn.library.materials.MaterialStatusType;
+
 public class BoltCore extends TinkersRebornToolPart {
 
     public IIcon[] defaultIcon;
     public IIcon[][] icons;
 
     public BoltCore() {
-        super("bolt", "BoltCore", "bolt");
+        super("bolt", "BoltCore", MaterialStatusType.HANDLE);
     }
 
     @Override

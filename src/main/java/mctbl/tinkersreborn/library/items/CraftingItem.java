@@ -49,7 +49,8 @@ public class CraftingItem extends Item {
         return this;
     }
 
-    // public void updateData(String[] names, String[] tex, String folder, String modTexturePrefix) {
+    // public void updateData(String[] names, String[] tex, String folder, String
+    // modTexturePrefix) {
     // this.modTexPrefix = modTexturePrefix;
     // this.textureNames = tex;
     // this.unlocalizedNames = names;
@@ -59,9 +60,13 @@ public class CraftingItem extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int meta) {
-        int arr = MathHelper.clamp_int(meta, 0, unlocalizedNames.length);
-        if (arr >= icons.length) return icons[0];
-        return icons[arr];
+        if (unlocalizedNames != null) {
+            int arr = MathHelper.clamp_int(meta, 0, unlocalizedNames.length);
+            if (arr >= icons.length) return icons[0];
+            return icons[arr];
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -77,8 +82,12 @@ public class CraftingItem extends Item {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        int arr = MathHelper.clamp_int(stack.getItemDamage(), 0, unlocalizedNames.length - 1);
-        return getUnlocalizedName() + "." + unlocalizedNames[arr];
+        if (unlocalizedNames != null) {
+            int arr = MathHelper.clamp_int(stack.getItemDamage(), 0, unlocalizedNames.length - 1);
+            return super.getUnlocalizedName() + "." + unlocalizedNames[arr];
+        } else {
+            return super.getUnlocalizedName();
+        }
     }
 
     @Override

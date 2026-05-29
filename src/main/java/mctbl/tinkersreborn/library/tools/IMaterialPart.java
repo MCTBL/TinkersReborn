@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.library.tools;
 
+import net.minecraft.item.ItemStack;
+
 /**
  * If a part has material info need implement this interface
  * Author MCTBL
@@ -7,6 +9,6 @@ package mctbl.tinkersreborn.library.tools;
  */
 public interface IMaterialPart {
 
-    public int getMaterialId();
+    public int getMaterialId(ItemStack stack);
 
 }
