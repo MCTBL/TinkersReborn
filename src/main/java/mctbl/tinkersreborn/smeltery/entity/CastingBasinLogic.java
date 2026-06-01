@@ -3,7 +3,7 @@ package mctbl.tinkersreborn.smeltery.entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.CastingRecipe;
 import mctbl.tinkersreborn.library.event.SmelteryCastEvent;
 import mctbl.tinkersreborn.library.event.SmelteryCastedEvent;
@@ -11,7 +11,7 @@ import mctbl.tinkersreborn.library.event.SmelteryCastedEvent;
 public class CastingBasinLogic extends CastingBlockLogic {
 
     public CastingBasinLogic() {
-        super(TinkersReborn.basinCasting);
+        super(TinkersRebornRegistry.basinCasting);
     }
 
     @Override

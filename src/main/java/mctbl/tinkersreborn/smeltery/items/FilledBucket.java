@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -30,6 +32,7 @@ public class FilledBucket extends ItemBucket {
         this.setContainerItem(Items.bucket);
         this.setHasSubtypes(true);
         this.icons = new HashMap<>();
+        this.setCreativeTab(TinkersRebornRegistry.miscTab);
     }
 
     @Override
@@ -83,6 +86,14 @@ public class FilledBucket extends ItemBucket {
         }
         bucket = register.registerIcon("tinkersreborn:bucket/bucket");
         content = register.registerIcon("tinkersreborn:bucket/bucket_content");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list) {
+        TinkersRebornRegistry.allMaterialsList.stream()
+            .filter(m -> m.isCastable())
+            .forEach(m -> list.add(new ItemStack(item, 1, m.materialId)));
     }
 
     @Override

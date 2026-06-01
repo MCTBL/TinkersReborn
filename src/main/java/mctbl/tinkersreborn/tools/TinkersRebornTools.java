@@ -29,6 +29,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -42,6 +43,8 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
+import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.tools.blocks.CastChestBlock;
 import mctbl.tinkersreborn.tools.blocks.CraftingStationBlock;
 import mctbl.tinkersreborn.tools.blocks.PartBuilderBlock;
@@ -69,6 +72,7 @@ import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class TinkersRebornTools implements ITinkersRebornModule {
 
@@ -87,6 +91,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     // public static Block heldItemBlock;
     // public static Block battlesignBlock;
+
+    public static Item tinkersBucket;
 
     // Tool parts
     public static TinkersRebornToolPart arrowhead;
@@ -171,8 +177,39 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static Item aluBrassDust;
     public static Item reinforcement;
 
-    public static Item woodPattern;
+    public static Item patternAndCast;
     public static Item creativeModifier; // TODO
+
+    public static Fluid ironFluid;
+    public static Fluid obsidianFluid;
+    public static Fluid cobaltFluid;
+    public static Fluid arditeFluid;
+    public static Fluid manyullynFluid;
+    public static Fluid copperFluid;
+    public static Fluid bronzeFluid;
+    public static Fluid alumiteFluid;
+    public static Fluid steelFluid;
+    public static Fluid pigIronFluid;
+
+    public static TinkersRebornMaterial woodMaterial;
+    public static TinkersRebornMaterial stoneMaterial;
+    public static TinkersRebornMaterial ironMaterial;
+    public static TinkersRebornMaterial flintMaterial;
+    public static TinkersRebornMaterial cactusMaterial;
+    public static TinkersRebornMaterial boneMaterial;
+    public static TinkersRebornMaterial obsidianMaterial;
+    public static TinkersRebornMaterial netherrackMaterial;
+    public static TinkersRebornMaterial slimeMaterial;
+    public static TinkersRebornMaterial paperMaterial;
+    public static TinkersRebornMaterial cobaltMaterial;
+    public static TinkersRebornMaterial arditeMaterial;
+    public static TinkersRebornMaterial manyullynMaterial;
+    public static TinkersRebornMaterial copperMaterial;
+    public static TinkersRebornMaterial bronzeMaterial;
+    public static TinkersRebornMaterial alumiteMaterial;
+    public static TinkersRebornMaterial steelMaterial;
+    public static TinkersRebornMaterial blueSlimeMaterial;
+    public static TinkersRebornMaterial pigIronMaterial;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -181,6 +218,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         FMLCommonHandler.instance()
             .bus()
             .register(tre);
+
+        tinkersBucket = new FilledBucket(Block.getBlockFromItem(tinkersBucket));
+        GameRegistry.registerItem(tinkersBucket, tinkersBucket.getUnlocalizedName());
 
         toolStation = new ToolStationBlock();
         GameRegistry
@@ -366,8 +406,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(aluBrassDust, aluBrassDust.getUnlocalizedName());
         GameRegistry.registerItem(reinforcement, reinforcement.getUnlocalizedName());
 
-        woodPattern = new Pattern();
-        GameRegistry.registerItem(woodPattern, woodPattern.getUnlocalizedName());
+        patternAndCast = new Pattern();
+        GameRegistry.registerItem(patternAndCast, patternAndCast.getUnlocalizedName());
 
         this.registerMaterials();
         this.oreRegistry();
@@ -389,141 +429,153 @@ public class TinkersRebornTools implements ITinkersRebornModule {
      * register all base material in here
      */
     private void registerMaterials() {
+
+        woodMaterial = new TinkersRebornMaterial(Wood, "Wood", 0x755821).setCraftable(true);
+        stoneMaterial = new TinkersRebornMaterial(Stone, "Stone", 0x7F7F7F).setCraftable(true);
+        ironMaterial = new TinkersRebornMaterial(Iron, "Iron", 0xDADADA);
+        flintMaterial = new TinkersRebornMaterial(Flint, "Flint", 0x484848).setCraftable(true);
+        cactusMaterial = new TinkersRebornMaterial(Cactus, "Cactus", 0x12690b).setCraftable(true);
+        boneMaterial = new TinkersRebornMaterial(Bone, "Bone", 0xEDEBCA).setCraftable(true);
+        obsidianMaterial = new TinkersRebornMaterial(Obsidian, "Obsidian", 0xaa7ff5).setCraftable(true);
+        netherrackMaterial = new TinkersRebornMaterial(Netherrack, "Netherrack", 0x833238).setCraftable(true);
+        slimeMaterial = new TinkersRebornMaterial(Slime, "Slime", 0x6EB065).setCraftable(true);
+        paperMaterial = new TinkersRebornMaterial(Paper, "Paper", 0xFFFFFF).setCraftable(true);
+        cobaltMaterial = new TinkersRebornMaterial(Cobalt, "Cobalt", 0x2376DD);
+        arditeMaterial = new TinkersRebornMaterial(Ardite, "Ardite", 0xA53000);
+        manyullynMaterial = new TinkersRebornMaterial(Manyullyn, "Manyullyn", 0x7338A5);
+        copperMaterial = new TinkersRebornMaterial(Copper, "Copper", 0xCC6410);
+        bronzeMaterial = new TinkersRebornMaterial(Bronze, "Bronze", 0xCA9956);
+        alumiteMaterial = new TinkersRebornMaterial(Alumite, "Alumite", 0xffa7e9);
+        steelMaterial = new TinkersRebornMaterial(Steel, "Steel", 0xA0A0A0);
+        blueSlimeMaterial = new TinkersRebornMaterial(BlueSlime, "BlueSlime", 0x66AEB0).setCraftable(true);
+        pigIronMaterial = new TinkersRebornMaterial(PigIron, "PigIron", 0xF0A8A4);
+
         List<TinkersRebornMaterial> materialList = new ArrayList<>();
 
-        materialList.add(new TinkersRebornMaterial(Wood, "Wood", 0x755821).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(Stone, "Stone", 0x7F7F7F).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(Iron, "Iron", 0xDADADA).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(Flint, "Flint", 0x484848).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(Cactus, "Cactus", 0x12690b).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(Bone, "Bone", 0xEDEBCA).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(Obsidian, "Obsidian", 0xaa7ff5).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(Netherrack, "Netherrack", 0x833238).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(Slime, "Slime", 0x6EB065).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(Paper, "Paper", 0xFFFFFF).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(Cobalt, "Cobalt", 0x2376DD).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(Ardite, "Ardite", 0xA53000).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(Manyullyn, "Manyullyn", 0x7338A5).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(Copper, "Copper", 0xCC6410).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(Bronze, "Bronze", 0xCA9956).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(Alumite, "Alumite", 0xffa7e9).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(Steel, "Steel", 0xA0A0A0).setCastable(true));
-        materialList.add(new TinkersRebornMaterial(BlueSlime, "BlueSlime", 0x66AEB0).setCraftable(true));
-        materialList.add(new TinkersRebornMaterial(PigIron, "PigIron", 0xF0A8A4).setCastable(true));
+        materialList.add(woodMaterial);
+        materialList.add(stoneMaterial);
+        materialList.add(ironMaterial);
+        materialList.add(flintMaterial);
+        materialList.add(cactusMaterial);
+        materialList.add(boneMaterial);
+        materialList.add(obsidianMaterial);
+        materialList.add(netherrackMaterial);
+        materialList.add(slimeMaterial);
+        materialList.add(paperMaterial);
+        materialList.add(cobaltMaterial);
+        materialList.add(arditeMaterial);
+        materialList.add(manyullynMaterial);
+        materialList.add(copperMaterial);
+        materialList.add(bronzeMaterial);
+        materialList.add(alumiteMaterial);
+        materialList.add(steelMaterial);
+        materialList.add(blueSlimeMaterial);
+        materialList.add(pigIronMaterial);
 
         TinkersRebornRegistry.addMaterialToMap(materialList);
 
         this.registerBaseMaterialsStats();
+        this.registerMaterialsFluid();
     }
 
     private void registerBaseMaterialsStats() {
-        TinkersRebornRegistry.getMaterialById(Wood)
-            .addStats(
-                new HeadMaterialStats(97, 1, 0, 3.5F),
-                new HandleMaterialStats(1.0F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Stone)
-            .addStats(
-                new HeadMaterialStats(131, 1, 1, 4.0F),
-                new HandleMaterialStats(0.5F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Iron)
-            .addStats(
-                new HeadMaterialStats(250, 2, 2, 6.0F),
-                new HandleMaterialStats(1.3F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Flint)
-            .addStats(
-                new HeadMaterialStats(171, 1, 2, 5.25F),
-                new HandleMaterialStats(0.7F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Cactus)
-            .addStats(
-                new HeadMaterialStats(150, 1, 2, 5.0F),
-                new HandleMaterialStats(1.0F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Bone)
-            .addStats(
-                new HeadMaterialStats(200, 1, 1, 4.0F),
-                new HandleMaterialStats(1.0F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Obsidian)
-            .addStats(
-                new HeadMaterialStats(89, 3, 2, 7.0F),
-                new HandleMaterialStats(0.8F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Netherrack)
-            .addStats(
-                new HeadMaterialStats(131, 2, 1, 4.0F),
-                new HandleMaterialStats(1.2F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Slime)
-            .addStats(
-                new HeadMaterialStats(500, 0, 0, 1.5F),
-                new HandleMaterialStats(1.5F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Paper)
-            .addStats(
-                new HeadMaterialStats(30, 0, 0, 2.0F),
-                new HandleMaterialStats(0.3F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Cobalt)
-            .addStats(
-                new HeadMaterialStats(800, 4, 3, 14.0F),
-                new HandleMaterialStats(1.75F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Ardite)
-            .addStats(
-                new HeadMaterialStats(500, 4, 3, 8.0F),
-                new HandleMaterialStats(2.0F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Manyullyn)
-            .addStats(
-                new HeadMaterialStats(1200, 5, 4, 9.0F),
-                new HandleMaterialStats(2.5F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Copper)
-            .addStats(
-                new HeadMaterialStats(180, 1, 2, 5.0F),
-                new HandleMaterialStats(1.15F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Bronze)
-            .addStats(
-                new HeadMaterialStats(550, 2, 2, 8.0F),
-                new HandleMaterialStats(1.3F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Alumite)
-            .addStats(
-                new HeadMaterialStats(700, 4, 3, 8.0F),
-                new HandleMaterialStats(1.3F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(Steel)
-            .addStats(
-                new HeadMaterialStats(750, 4, 4, 10.0F),
-                new HandleMaterialStats(1.3F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(BlueSlime)
-            .addStats(
-                new HeadMaterialStats(1200, 0, 0, 1.5F),
-                new HandleMaterialStats(2.0F, 0),
-                new ExtraMaterialStats(0));
-        TinkersRebornRegistry.getMaterialById(PigIron)
-            .addStats(
-                new HeadMaterialStats(250, 3, 2, 6.0F),
-                new HandleMaterialStats(1.3F, 0),
-                new ExtraMaterialStats(0));
+        woodMaterial.addStats(
+            new HeadMaterialStats(97, 1, 0, 3.5F),
+            new HandleMaterialStats(1.0F, 0),
+            new ExtraMaterialStats(0));
+        stoneMaterial.addStats(
+            new HeadMaterialStats(131, 1, 1, 4.0F),
+            new HandleMaterialStats(0.5F, 0),
+            new ExtraMaterialStats(0));
+        ironMaterial.addStats(
+            new HeadMaterialStats(250, 2, 2, 6.0F),
+            new HandleMaterialStats(1.3F, 0),
+            new ExtraMaterialStats(0));
+        flintMaterial.addStats(
+            new HeadMaterialStats(171, 1, 2, 5.25F),
+            new HandleMaterialStats(0.7F, 0),
+            new ExtraMaterialStats(0));
+        cactusMaterial.addStats(
+            new HeadMaterialStats(150, 1, 2, 5.0F),
+            new HandleMaterialStats(1.0F, 0),
+            new ExtraMaterialStats(0));
+        boneMaterial.addStats(
+            new HeadMaterialStats(200, 1, 1, 4.0F),
+            new HandleMaterialStats(1.0F, 0),
+            new ExtraMaterialStats(0));
+        obsidianMaterial.addStats(
+            new HeadMaterialStats(89, 3, 2, 7.0F),
+            new HandleMaterialStats(0.8F, 0),
+            new ExtraMaterialStats(0));
+        netherrackMaterial.addStats(
+            new HeadMaterialStats(131, 2, 1, 4.0F),
+            new HandleMaterialStats(1.2F, 0),
+            new ExtraMaterialStats(0));
+        slimeMaterial.addStats(
+            new HeadMaterialStats(500, 0, 0, 1.5F),
+            new HandleMaterialStats(1.5F, 0),
+            new ExtraMaterialStats(0));
+        paperMaterial.addStats(
+            new HeadMaterialStats(30, 0, 0, 2.0F),
+            new HandleMaterialStats(0.3F, 0),
+            new ExtraMaterialStats(0));
+        cobaltMaterial.addStats(
+            new HeadMaterialStats(800, 4, 3, 14.0F),
+            new HandleMaterialStats(1.75F, 0),
+            new ExtraMaterialStats(0));
+        arditeMaterial.addStats(
+            new HeadMaterialStats(500, 4, 3, 8.0F),
+            new HandleMaterialStats(2.0F, 0),
+            new ExtraMaterialStats(0));
+        manyullynMaterial.addStats(
+            new HeadMaterialStats(1200, 5, 4, 9.0F),
+            new HandleMaterialStats(2.5F, 0),
+            new ExtraMaterialStats(0));
+        copperMaterial.addStats(
+            new HeadMaterialStats(180, 1, 2, 5.0F),
+            new HandleMaterialStats(1.15F, 0),
+            new ExtraMaterialStats(0));
+        bronzeMaterial.addStats(
+            new HeadMaterialStats(550, 2, 2, 8.0F),
+            new HandleMaterialStats(1.3F, 0),
+            new ExtraMaterialStats(0));
+        alumiteMaterial.addStats(
+            new HeadMaterialStats(700, 4, 3, 8.0F),
+            new HandleMaterialStats(1.3F, 0),
+            new ExtraMaterialStats(0));
+        steelMaterial.addStats(
+            new HeadMaterialStats(750, 4, 4, 10.0F),
+            new HandleMaterialStats(1.3F, 0),
+            new ExtraMaterialStats(0));
+        blueSlimeMaterial.addStats(
+            new HeadMaterialStats(1200, 0, 0, 1.5F),
+            new HandleMaterialStats(2.0F, 0),
+            new ExtraMaterialStats(0));
+        pigIronMaterial.addStats(
+            new HeadMaterialStats(250, 3, 2, 6.0F),
+            new HandleMaterialStats(1.3F, 0),
+            new ExtraMaterialStats(0));
     }
 
-    private void ensureOreIsRegistered(String oreDict, ItemStack stack) {
-        if (OreDictionary.getOreIDs(stack).length == 0) OreDictionary.registerOre(oreDict, stack);
+    private void registerMaterialsFluid() {
+        ironFluid = new TinkersRebornFluid(ironMaterial, true);
+        obsidianFluid = new TinkersRebornFluid(obsidianMaterial, true);
+        cobaltFluid = new TinkersRebornFluid(cobaltMaterial, true);
+        arditeFluid = new TinkersRebornFluid(arditeMaterial, true);
+        manyullynFluid = new TinkersRebornFluid(manyullynMaterial, true);
+        copperFluid = new TinkersRebornFluid(copperMaterial, true);
+        bronzeFluid = new TinkersRebornFluid(bronzeMaterial, true);
+        alumiteFluid = new TinkersRebornFluid(alumiteMaterial, true);
+        steelFluid = new TinkersRebornFluid(steelMaterial, true);
+        pigIronFluid = new TinkersRebornFluid(pigIronMaterial, true);
     }
 
     private void oreRegistry() {
-        this.ensureOreIsRegistered("ingotIron", new ItemStack(Items.iron_ingot));
-        this.ensureOreIsRegistered("ingotGold", new ItemStack(Items.gold_ingot));
-        this.ensureOreIsRegistered("blockIron", new ItemStack(Blocks.iron_block));
-        this.ensureOreIsRegistered("blockGold", new ItemStack(Blocks.gold_block));
-        this.ensureOreIsRegistered("nuggetGold", new ItemStack(Items.gold_nugget));
+        TinkersRebornUtils.ensureOreIsRegistered("ingotIron", new ItemStack(Items.iron_ingot));
+        TinkersRebornUtils.ensureOreIsRegistered("ingotGold", new ItemStack(Items.gold_ingot));
+        TinkersRebornUtils.ensureOreIsRegistered("blockIron", new ItemStack(Blocks.iron_block));
+        TinkersRebornUtils.ensureOreIsRegistered("blockGold", new ItemStack(Blocks.gold_block));
+        TinkersRebornUtils.ensureOreIsRegistered("nuggetGold", new ItemStack(Items.gold_nugget));
 
         OreDictionary.registerOre("ingotCobalt", new ItemStack(cobaltIngot));
         OreDictionary.registerOre("ingotArdite", new ItemStack(arditeIngot));

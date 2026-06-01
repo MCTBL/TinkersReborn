@@ -9,6 +9,7 @@ import java.util.Map;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
+import mctbl.tinkersreborn.library.crafting.LiquidCasting;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 
@@ -30,9 +31,15 @@ public class TinkersRebornRegistry {
     public static Map<String, TinkersRebornMaterial> materialIdentifierMaps;
     public static Map<Integer, TinkersRebornMaterial> materialIdMaps;
 
+    public static LiquidCasting tableCasting;
+    public static LiquidCasting basinCasting;
+
     public void preInit() {
         this.initCreativeTab();
         this.init();
+
+        tableCasting = new LiquidCasting();
+        basinCasting = new LiquidCasting();
     }
 
     private void initCreativeTab() {

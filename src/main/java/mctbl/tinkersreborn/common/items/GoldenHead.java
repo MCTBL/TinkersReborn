@@ -75,7 +75,7 @@ public class GoldenHead extends ItemFood {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
         list.add(
             ColorUtil.addDarkPurple(
                 ColorUtil.addItalic(StatCollector.translateToLocal("tinkersreborn.goldenhead1.tooltip"))));

@@ -25,7 +25,7 @@ public class MaterialItem extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {}
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {}
 
     @Override
     public void registerIcons(IIconRegister register) {

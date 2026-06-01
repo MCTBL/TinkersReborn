@@ -8,7 +8,7 @@ import net.minecraftforge.fluids.Fluid;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.CastingRecipe;
 import mctbl.tinkersreborn.library.utils.BlockSkinRenderHelper;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
@@ -128,7 +128,7 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
 
                         ItemStack it = logic.getStackInSlot(0);
                         if (it != null) {
-                            CastingRecipe rec = TinkersReborn.tableCasting.getCastingRecipe(logic.liquid, it);
+                            CastingRecipe rec = TinkersRebornRegistry.tableCasting.getCastingRecipe(logic.liquid, it);
                             if (rec != null && rec.fluidRenderProperties != null) {
                                 minHeight = rec.fluidRenderProperties.minHeight;
                                 maxHeight = rec.fluidRenderProperties.maxHeight;
@@ -341,7 +341,7 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
 
                         ItemStack it = logic.getStackInSlot(0);
                         if (it != null) {
-                            CastingRecipe rec = TinkersReborn.basinCasting.getCastingRecipe(logic.liquid, it);
+                            CastingRecipe rec = TinkersRebornRegistry.basinCasting.getCastingRecipe(logic.liquid, it);
                             if (rec != null && rec.fluidRenderProperties != null) {
                                 minHeight = rec.fluidRenderProperties.minHeight;
                                 maxHeight = rec.fluidRenderProperties.maxHeight;

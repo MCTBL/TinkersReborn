@@ -34,10 +34,8 @@
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
-    api("com.github.GTNewHorizons:GTNHLib:0.9.47:dev")
     compileOnly('com.github.GTNewHorizons:Angelica:2.1.15:api')
-    implementation("com.github.GTNewHorizons:NotEnoughItems:2.8.84-GTNH:dev")
-    compileOnly("com.github.GTNewHorizons:waila:1.19.22:api")
+	compileOnly("com.github.GTNewHorizons:waila:1.19.22:api")
     compileOnly("com.github.GTNewHorizons:Mobs-Info:0.5.10-GTNH:dev")
     compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.2')
     

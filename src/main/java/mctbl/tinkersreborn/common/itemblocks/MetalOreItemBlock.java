@@ -19,7 +19,7 @@ public class MetalOreItemBlock extends TinkersRebornItemBlock {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
         if (stack.hasTagCompound()) {
             NBTTagCompound liquidTag = stack.getTagCompound()
                 .getCompoundTag("Liquid");

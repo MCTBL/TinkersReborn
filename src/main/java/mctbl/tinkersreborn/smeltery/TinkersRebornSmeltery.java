@@ -3,7 +3,6 @@ package mctbl.tinkersreborn.smeltery;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.SidedProxy;
@@ -26,7 +25,6 @@ import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryItemBlock;
-import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 
 public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
@@ -42,10 +40,6 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     public static Block glassPane;
     public static Block stainedGlassClearPane;
 
-    // InfiBlocks
-    public static Block speedBlock;
-    public static Fluid bloodFluid;
-    public static Block blood;
     // TODO
     // private static FluidType metalPatternFluidType;
 
@@ -56,8 +50,6 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
-        buckets = new FilledBucket(Block.getBlockFromItem(buckets));
-        GameRegistry.registerItem(buckets, buckets.getUnlocalizedName());
 
         glueBlock = new GlueBlock();
         GameRegistry.registerBlock(glueBlock, glueBlock.getUnlocalizedName());
@@ -79,6 +71,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.registerTileEntity(CastingTableLogic.class, "tinkersreborn.CastingTable");
         GameRegistry.registerTileEntity(FaucetLogic.class, "tinkersreborn.Faucet");
         GameRegistry.registerTileEntity(CastingBasinLogic.class, "tinkersreborn.CastingBasin");
+
     }
 
     @Override
