@@ -391,25 +391,25 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     private void registerMaterials() {
         List<TinkersRebornMaterial> materialList = new ArrayList<>();
 
-        materialList.add(new TinkersRebornMaterial(Wood, "Wood", 0x755821));
-        materialList.add(new TinkersRebornMaterial(Stone, "Stone", 0x7F7F7F));
-        materialList.add(new TinkersRebornMaterial(Iron, "Iron", 0xDADADA));
-        materialList.add(new TinkersRebornMaterial(Flint, "Flint", 0x484848));
-        materialList.add(new TinkersRebornMaterial(Cactus, "Cactus", 0x12690b));
-        materialList.add(new TinkersRebornMaterial(Bone, "Bone", 0xEDEBCA));
-        materialList.add(new TinkersRebornMaterial(Obsidian, "Obsidian", 0xaa7ff5));
-        materialList.add(new TinkersRebornMaterial(Netherrack, "Netherrack", 0x833238));
-        materialList.add(new TinkersRebornMaterial(Slime, "Slime", 0x6EB065));
-        materialList.add(new TinkersRebornMaterial(Paper, "Paper", 0xFFFFFF));
-        materialList.add(new TinkersRebornMaterial(Cobalt, "Cobalt", 0x2376DD));
-        materialList.add(new TinkersRebornMaterial(Ardite, "Ardite", 0xA53000));
-        materialList.add(new TinkersRebornMaterial(Manyullyn, "Manyullyn", 0x7338A5));
-        materialList.add(new TinkersRebornMaterial(Copper, "Copper", 0xCC6410));
-        materialList.add(new TinkersRebornMaterial(Bronze, "Bronze", 0xCA9956));
-        materialList.add(new TinkersRebornMaterial(Alumite, "Alumite", 0xffa7e9));
-        materialList.add(new TinkersRebornMaterial(Steel, "Steel", 0xA0A0A0));
-        materialList.add(new TinkersRebornMaterial(BlueSlime, "BlueSlime", 0x66AEB0));
-        materialList.add(new TinkersRebornMaterial(PigIron, "PigIron", 0xF0A8A4));
+        materialList.add(new TinkersRebornMaterial(Wood, "Wood", 0x755821).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(Stone, "Stone", 0x7F7F7F).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(Iron, "Iron", 0xDADADA).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(Flint, "Flint", 0x484848).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(Cactus, "Cactus", 0x12690b).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(Bone, "Bone", 0xEDEBCA).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(Obsidian, "Obsidian", 0xaa7ff5).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(Netherrack, "Netherrack", 0x833238).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(Slime, "Slime", 0x6EB065).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(Paper, "Paper", 0xFFFFFF).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(Cobalt, "Cobalt", 0x2376DD).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(Ardite, "Ardite", 0xA53000).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(Manyullyn, "Manyullyn", 0x7338A5).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(Copper, "Copper", 0xCC6410).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(Bronze, "Bronze", 0xCA9956).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(Alumite, "Alumite", 0xffa7e9).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(Steel, "Steel", 0xA0A0A0).setCastable(true));
+        materialList.add(new TinkersRebornMaterial(BlueSlime, "BlueSlime", 0x66AEB0).setCraftable(true));
+        materialList.add(new TinkersRebornMaterial(PigIron, "PigIron", 0xF0A8A4).setCastable(true));
 
         TinkersRebornRegistry.addMaterialToMap(materialList);
 

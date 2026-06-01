@@ -34,6 +34,7 @@ public class TinkersRebornMaterial {
     public static final int VALUE_SearedBlock = VALUE_Ingot * 2;
     public static final int VALUE_SearedMaterial = VALUE_Ingot / 2;
     public static final int VALUE_Glass = 1000;
+    public static final int VALUE_Bucket = 1000;
 
     public static final int VALUE_BrickBlock = VALUE_Ingot * 4;
 
@@ -98,9 +99,9 @@ public class TinkersRebornMaterial {
         this.localizationIdentifier = String.format(LOC_Name, identifier);
 
         // if invisible, make it fully opaque.
-        // if (((color >> 24) & 0xFF) == 0) {
-        // color |= 0xFF << 24;
-        // }
+        if (((color >> 24) & 0xFF) == 0) {
+            color |= 0xFF << 24;
+        }
 
         this.materialTextColor = color;
         this.statsMap = new HashMap<>();

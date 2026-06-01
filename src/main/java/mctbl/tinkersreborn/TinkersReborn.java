@@ -17,6 +17,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
 @Mod(
@@ -48,6 +49,7 @@ public class TinkersReborn {
     public TinkersReborn() {
         l.add(new TinkersRebornGeneral());
         l.add(new TinkersRebornTools());
+        l.add(new TinkersRebornSmeltery());
     }
 
     @Mod.EventHandler

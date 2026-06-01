@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.TinkersReborn;
@@ -118,9 +119,7 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack stack) {
         TileEntity logic = world.getTileEntity(x, y, z);
 
-        if (logic instanceof ITinkersRebornIFacingLogic) {
-            ITinkersRebornIFacingLogic direction = (ITinkersRebornIFacingLogic) logic;
-            // TODO: Convert all setDirection calls to modern invokation, when that's ready.
+        if (logic instanceof ITinkersRebornIFacingLogic direction) {
             if (side != -1) {
                 direction.setRenderDirection(side);
                 side = -1;
@@ -132,8 +131,7 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
             }
         }
 
-        if (logic instanceof TinkersRebornInventoryLogic) {
-            TinkersRebornInventoryLogic inv = (TinkersRebornInventoryLogic) logic;
+        if (logic instanceof TinkersRebornInventoryLogic inv) {
             inv.placeBlock(entityliving, stack);
             if (stack.hasDisplayName()) {
                 inv.setInvName(stack.getDisplayName());
@@ -156,6 +154,14 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
         for (int i = 0; i < this.icons.length; ++i) {
             this.icons[i] = iconRegister.registerIcon(getTextureDomain(i) + ":" + TEXTURENAMES[i]);
         }
+    }
+
+    public static boolean isActive(IBlockAccess world, int x, int y, int z) {
+        TileEntity logic = world.getTileEntity(x, y, z);
+        if (logic instanceof IActiveLogic) {
+            return ((IActiveLogic) logic).getActive();
+        }
+        return false;
     }
 
 }
