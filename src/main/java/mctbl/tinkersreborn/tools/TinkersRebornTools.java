@@ -41,7 +41,6 @@ import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
-import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.tools.blocks.CastChestBlock;
 import mctbl.tinkersreborn.tools.blocks.CraftingStationBlock;
 import mctbl.tinkersreborn.tools.blocks.PartBuilderBlock;
@@ -88,8 +87,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     // public static Block heldItemBlock;
     // public static Block battlesignBlock;
-
-    public static Item tinkersBucket;
 
     // Tool parts
     public static TinkersRebornToolPart arrowhead;
@@ -166,7 +163,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static Item pigIronIngot;
     public static Item pigIronNugget;
     public static Item glueBall;
-    public static Item searedBrickNether;
     public static Item arditeDust;
     public static Item cobaltDust;
     public static Item aluminumDust;
@@ -215,9 +211,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         FMLCommonHandler.instance()
             .bus()
             .register(tre);
-
-        tinkersBucket = new FilledBucket(Block.getBlockFromItem(tinkersBucket));
-        GameRegistry.registerItem(tinkersBucket, tinkersBucket.getUnlocalizedName());
 
         toolStation = new ToolStationBlock();
         GameRegistry
@@ -351,7 +344,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         pigIronIngot = new MaterialItem("PigIronIngot", "pigironingot");
         pigIronNugget = new MaterialItem("PigIronNugget", "nugget_pigiron");
         glueBall = new MaterialItem("GlueBall", "glueball");
-        searedBrickNether = new MaterialItem("SearedBrickNether", "searedbrick_nether");
         arditeDust = new MaterialItem("ArditeDust", "ardite_dust");
         cobaltDust = new MaterialItem("CobaltDust", "cobalt_dust");
         aluminumDust = new MaterialItem("AluminumDust", "aluminum_dust");
@@ -395,7 +387,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(pigIronIngot, pigIronIngot.getUnlocalizedName());
         GameRegistry.registerItem(pigIronNugget, pigIronNugget.getUnlocalizedName());
         GameRegistry.registerItem(glueBall, glueBall.getUnlocalizedName());
-        GameRegistry.registerItem(searedBrickNether, searedBrickNether.getUnlocalizedName());
         GameRegistry.registerItem(arditeDust, arditeDust.getUnlocalizedName());
         GameRegistry.registerItem(cobaltDust, cobaltDust.getUnlocalizedName());
         GameRegistry.registerItem(aluminumDust, aluminumDust.getUnlocalizedName());
@@ -407,7 +398,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(patternAndCast, patternAndCast.getUnlocalizedName());
 
         this.registerMaterials();
-        this.oreRegistry();
+        this.oreDictRegistry();
     }
 
     @Override
@@ -563,7 +554,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         pigIronFluid = new TinkersRebornFluid(pigIronMaterial, true);
     }
 
-    private void oreRegistry() {
+    private void oreDictRegistry() {
         TinkersRebornUtils.ensureOreIsRegistered("ingotIron", new ItemStack(Items.iron_ingot));
         TinkersRebornUtils.ensureOreIsRegistered("ingotGold", new ItemStack(Items.gold_ingot));
         TinkersRebornUtils.ensureOreIsRegistered("blockIron", new ItemStack(Blocks.iron_block));

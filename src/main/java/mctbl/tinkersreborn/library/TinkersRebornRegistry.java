@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import mctbl.tinkersreborn.library.crafting.LiquidCasting;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 
 public class TinkersRebornRegistry {
 
@@ -30,6 +33,9 @@ public class TinkersRebornRegistry {
     public static List<TinkersRebornMaterial> allMaterialsList;
     public static Map<String, TinkersRebornMaterial> materialIdentifierMaps;
     public static Map<Integer, TinkersRebornMaterial> materialIdMaps;
+
+    // contains all fluid that tinkers reborn registered
+    public static List<TinkersRebornFluid> allTinkersFluid;
 
     public static LiquidCasting tableCasting;
     public static LiquidCasting basinCasting;
@@ -56,6 +62,7 @@ public class TinkersRebornRegistry {
         allMaterialsList = new ArrayList<>();
         materialIdentifierMaps = new HashMap<>();
         materialIdMaps = new HashMap<>();
+        allTinkersFluid = new ArrayList<>();
     }
 
     public static void addMaterialToMap(TinkersRebornMaterial m) {
@@ -78,5 +85,14 @@ public class TinkersRebornRegistry {
 
     public static TinkersRebornMaterial getMaterialById(int id) {
         return materialIdMaps.get(id);
+    }
+
+    @Nullable
+    public static TinkersRebornFluid getFluidByIndex(int idx) {
+        if (idx < allTinkersFluid.size()) {
+            return allTinkersFluid.get(idx);
+        } else {
+            return null;
+        }
     }
 }

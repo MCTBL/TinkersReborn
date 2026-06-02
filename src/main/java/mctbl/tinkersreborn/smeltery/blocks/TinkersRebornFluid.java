@@ -11,17 +11,38 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
-import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
 public class TinkersRebornFluid extends Fluid {
 
-    private int materialId;
+    private Integer materialId;
+    private Integer color;
+    public String identifier;
 
-    public TinkersRebornFluid(String fluidName, int materialId) {
+    public TinkersRebornFluid(String fluidName, int color) {
+        this(fluidName, color, false);
+    }
+
+    public TinkersRebornFluid(String fluidName, int color, boolean initFluid) {
         super(fluidName);
-        this.materialId = materialId;
+        this.identifier = fluidName;
+        this.color = color;
+        if (initFluid) {
+            FluidRegistry.registerFluid(this);
+
+            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.water);
+            fluidBlock.setBlockName("fluid." + fluidName);
+            GameRegistry.registerBlock(fluidBlock, fluidBlock.getUnlocalizedName());
+
+            FluidContainerRegistry.registerFluidContainer(
+                new FluidContainerData(
+                    new FluidStack(this, 1000),
+                    new ItemStack(TinkersRebornGeneral.tinkersBucket, 1, TinkersRebornRegistry.allTinkersFluid.size()),
+                    new ItemStack(Items.bucket)));
+            TinkersRebornRegistry.allTinkersFluid.add(this);
+        }
     }
 
     /**
@@ -47,9 +68,11 @@ public class TinkersRebornFluid extends Fluid {
             FluidContainerRegistry.registerFluidContainer(
                 new FluidContainerData(
                     new FluidStack(this, 1000),
-                    new ItemStack(TinkersRebornTools.tinkersBucket, 1, m.materialId),
+                    new ItemStack(TinkersRebornGeneral.tinkersBucket, 1, TinkersRebornRegistry.allTinkersFluid.size()),
                     new ItemStack(Items.bucket)));
+            TinkersRebornRegistry.allTinkersFluid.add(this);
         }
+
     }
 
     public TinkersRebornFluid(TinkersRebornMaterial m) {
@@ -58,12 +81,15 @@ public class TinkersRebornFluid extends Fluid {
 
     @Override
     public int getColor() {
-        TinkersRebornMaterial m;
-        if ((m = TinkersRebornRegistry.getMaterialById(materialId)) != null) {
-            return m.materialTextColor;
-        } else {
-            return TinkersRebornMaterial.UNKNOWN.materialTextColor;
+        if (this.color != null) {
+            return this.color;
         }
+        TinkersRebornMaterial m = TinkersRebornRegistry.getMaterialById(materialId);
+        if (materialId != null && m != null) {
+            return m.materialTextColor;
+        }
+        return TinkersRebornMaterial.UNKNOWN.materialTextColor;
+
     }
 
     public int getMaterialId() {

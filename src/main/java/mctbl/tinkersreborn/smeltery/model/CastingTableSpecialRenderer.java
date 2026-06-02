@@ -12,7 +12,6 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.itemblocks.ItemBlocklike;
-import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
 
@@ -77,12 +76,6 @@ public class CastingTableSpecialRenderer extends TileEntitySpecialRenderer {
             GL11.glRotatef(-90F, 0F, 0F, 1F);
             GL11.glRotatef(90F, -1F, 0F, 0F);
             GL11.glTranslatef(-0.2275F, -0.1F, 0F);
-        }
-
-        if (stack.isItemEqual(new ItemStack(TinkersRebornSmeltery.glassPane))) {
-            GL11.glRotatef(90F, 1F, 0F, 0F);
-            GL11.glTranslatef(0F, -0.194F, -0.1F);
-            GL11.glScalef(0.85F, 0.85F, 0.85F);
         }
 
         RenderItem.renderInFrame = true;

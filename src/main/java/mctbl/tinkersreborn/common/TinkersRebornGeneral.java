@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -41,6 +40,8 @@ import mctbl.tinkersreborn.common.itemblocks.SlimeTallGrassItem;
 import mctbl.tinkersreborn.common.itemblocks.TinkersRebornMetalItemBlock;
 import mctbl.tinkersreborn.common.items.GoldenHead;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
+import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
+import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.util.RecipeRemover;
 
 public class TinkersRebornGeneral implements ITinkersRebornModule {
@@ -50,7 +51,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         serverSide = "mctbl.tinkersreborn.common.TinkersRebornGeneralProxyCommon")
     public static TinkersRebornGeneralProxyCommon proxy;
 
-    public static Item strangeFood;
+    public static Item tinkersBucket;
     public static Block stoneTorch;
     public static Item goldHead;
     public static Block metalBlock;
@@ -78,6 +79,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         stoneTorch = new StoneTorch();
         GameRegistry.registerBlock(stoneTorch, stoneTorch.getUnlocalizedName());
 
+        tinkersBucket = new FilledBucket(Block.getBlockFromItem(tinkersBucket));
+        GameRegistry.registerItem(tinkersBucket, tinkersBucket.getUnlocalizedName());
+
         goldHead = new GoldenHead(4, 1.2F, false);
         GameRegistry.registerItem(goldHead, goldHead.getUnlocalizedName());
 
@@ -85,9 +89,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(metalBlock, TinkersRebornMetalItemBlock.class, metalBlock.getUnlocalizedName());
 
         slimeStep = new StepSoundSlime("mob.slime", 1.0f, 1.0f);
-        blueSlimeFluid = new Fluid("tinkersreborn.slime.blue");
-        if (!FluidRegistry.registerFluid(blueSlimeFluid))
-            blueSlimeFluid = FluidRegistry.getFluid("tinkersreborn.slime.blue");
+        blueSlimeFluid = new TinkersRebornFluid("slime_blue", 0X42E9F4, true);
 
         slimePool = new SlimeFluid(blueSlimeFluid, Material.water);
         blueSlimeFluid.setBlock(slimePool);
@@ -631,6 +633,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
      */
 
     private void oreRegistry() {
+        ItemStack craftingTable = new ItemStack(Blocks.crafting_table, 1);
+
         OreDictionary.registerOre("oreCobalt", new ItemStack(oreSlag, 1, 1));
         OreDictionary.registerOre("oreArdite", new ItemStack(oreSlag, 1, 2));
         OreDictionary.registerOre("oreCopper", new ItemStack(oreSlag, 1, 3));
@@ -660,8 +664,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         OreDictionary.registerOre("blockSteel", new ItemStack(metalBlock, 1, 9));
         OreDictionary.registerOre("blockEnder", new ItemStack(metalBlock, 1, 10));
 
-        OreDictionary.registerOre("crafterWood", new ItemStack(Blocks.crafting_table, 1));
-        OreDictionary.registerOre("craftingTableWood", new ItemStack(Blocks.crafting_table, 1));
+        OreDictionary.registerOre("crafterWood", craftingTable);
+        OreDictionary.registerOre("craftingTableWood", craftingTable);
 
         OreDictionary.registerOre("torchStone", new ItemStack(stoneTorch));
 

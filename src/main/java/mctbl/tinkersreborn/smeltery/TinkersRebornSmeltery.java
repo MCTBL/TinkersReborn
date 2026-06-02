@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -25,6 +26,7 @@ import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryItemBlock;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
 public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
@@ -34,14 +36,14 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     public static Block lavaTank;
     public static Block searedBlock;
     public static Block castingChannel;
+
     public static Block glueBlock;
-    public static Block clearGlass;
-    public static Block stainedGlassClear;
-    public static Block glassPane;
-    public static Block stainedGlassClearPane;
 
     // TODO
-    // private static FluidType metalPatternFluidType;
+    // public static Block clearGlass;
+    // public static Block stainedGlassClear;
+    // public static Block glassPane;
+    // public static Block stainedGlassClearPane;
 
     @SidedProxy(
         clientSide = "mctbl.tinkersreborn.smeltery.TinkersRebornSmelteryProxyClient",
@@ -76,11 +78,53 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
     @Override
     public void init(FMLInitializationEvent e) {
+
         proxy.initialize();
+        this.craftingTableRecipes();
     }
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
 
+    }
+
+    private void craftingTableRecipes() {
+
+        // Define
+        String[] patSurround = { "###", "#m#", "###" };
+        ItemStack searedBrick = new ItemStack(TinkersRebornTools.searedBrick, 1);
+
+        // Register
+        GameRegistry.addRecipe(new ItemStack(smeltery, 1, 1), "bb", "bb", 'b', searedBrick); // Bricks Block
+        GameRegistry.addRecipe(new ItemStack(smeltery, 1, 2), "bbb", "b b", "bbb", 'b', searedBrick); // Controller
+        GameRegistry.addRecipe(new ItemStack(smeltery, 1, 3), " b ", "b b", "bbb", 'b', searedBrick); // Furnace
+        GameRegistry.addRecipe(new ItemStack(smeltery, 1, 4), "b b", "b b", "b b", 'b', searedBrick); // Drain
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(new ItemStack(lavaTank, 1, 0), patSurround, '#', searedBrick, 'm', "blockGlass")); // Tank
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                new ItemStack(lavaTank, 1, 1),
+                "bgb",
+                "ggg",
+                "bgb",
+                'b',
+                searedBrick,
+                'g',
+                "blockGlass")); // Glass
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                new ItemStack(lavaTank, 1, 2),
+                "bgb",
+                "bgb",
+                "bgb",
+                'b',
+                searedBrick,
+                'g',
+                "blockGlass")); // Window
+
+        GameRegistry.addRecipe(new ItemStack(searedBlock, 1, 0), "bbb", "b b", "b b", 'b', searedBrick); // Table
+        GameRegistry.addRecipe(new ItemStack(searedBlock, 1, 1), "b b", " b ", 'b', searedBrick); // Faucet
+        GameRegistry.addRecipe(new ItemStack(searedBlock, 1, 2), "b b", "b b", "bbb", 'b', searedBrick); // Basin
+        GameRegistry.addRecipe(new ItemStack(castingChannel, 4, 0), "b b", "bbb", 'b', searedBrick); // Channel
     }
 }

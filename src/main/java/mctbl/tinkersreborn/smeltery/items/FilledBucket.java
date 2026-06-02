@@ -3,7 +3,6 @@ package mctbl.tinkersreborn.smeltery.items;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -20,7 +19,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.util.TextureHelper;
 
 public class FilledBucket extends ItemBucket {
@@ -52,7 +51,8 @@ public class FilledBucket extends ItemBucket {
     public int getColorFromItemStack(ItemStack stack, int renderpass) {
         int itemDamage = stack.getItemDamage();
         if (!icons.containsKey(itemDamage) && renderpass == 1) {
-            return TinkersRebornRegistry.getMaterialById(itemDamage).materialTextColor;
+            return TinkersRebornRegistry.allTinkersFluid.get(itemDamage)
+                .getColor();
         }
         return super.getColorFromItemStack(stack, renderpass);
     }
@@ -77,14 +77,11 @@ public class FilledBucket extends ItemBucket {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        List<TinkersRebornMaterial> castingMaterial = TinkersRebornRegistry.allMaterialsList.stream()
-            .filter(m -> m.isCastable())
-            .collect(Collectors.toList());
-        for (TinkersRebornMaterial m : castingMaterial) {
-            // tinkersreborn:bucket/bucket_copper
-            String path = "tinkersreborn:bucket/bucket_" + m.identifier;
+        for (int idx = 0; idx < TinkersRebornRegistry.allTinkersFluid.size(); idx++) {
+            TinkersRebornFluid f = TinkersRebornRegistry.allTinkersFluid.get(idx);
+            String path = "tinkersreborn:bucket/bucket_" + f.identifier;
             if (TextureHelper.itemTextureExists(path)) {
-                icons.put(m.materialId, register.registerIcon(path));
+                icons.put(idx, register.registerIcon(path));
             }
         }
         bucket = register.registerIcon("tinkersreborn:bucket/bucket");
@@ -94,15 +91,15 @@ public class FilledBucket extends ItemBucket {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list) {
-        TinkersRebornRegistry.allMaterialsList.stream()
-            .filter(m -> m.isCastable())
-            .forEach(m -> list.add(new ItemStack(item, 1, m.materialId)));
+        for (int idx = 0; idx < TinkersRebornRegistry.allTinkersFluid.size(); idx++) {
+            list.add(new ItemStack(item, 1, idx));
+        }
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         return super.getUnlocalizedName() + "."
-            + TinkersRebornRegistry.getMaterialById(stack.getItemDamage()).identifier;
+            + TinkersRebornRegistry.allTinkersFluid.get(stack.getItemDamage()).identifier;
     }
 
     @Override
@@ -166,8 +163,7 @@ public class FilledBucket extends ItemBucket {
                 clickX,
                 clickY,
                 clickZ,
-                TinkersRebornRegistry.getMaterialById(damage)
-                    .getFluid()
+                TinkersRebornRegistry.allTinkersFluid.get(damage)
                     .getBlock(),
                 0,
                 3);
