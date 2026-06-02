@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -8,6 +10,7 @@ import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
@@ -28,10 +31,19 @@ public class TinkersRebornFluid extends Fluid {
      */
     public TinkersRebornFluid(TinkersRebornMaterial m, boolean initFluid) {
         super("molten." + m.identifier);
+        this.setDensity(3000)
+            .setViscosity(6000)
+            .setTemperature(1300)
+            .setLuminosity(12);
         this.materialId = m.materialId;
         if (initFluid) {
             FluidRegistry.registerFluid(this);
             m.setFluidAndCastable(this);
+
+            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.lava);
+            fluidBlock.setBlockName("fluid.molten." + m.identifier);
+            GameRegistry.registerBlock(fluidBlock, fluidBlock.getUnlocalizedName());
+
             FluidContainerRegistry.registerFluidContainer(
                 new FluidContainerData(
                     new FluidStack(this, 1000),

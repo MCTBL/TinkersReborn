@@ -21,6 +21,8 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.IServantLogic;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
@@ -52,6 +54,7 @@ public class LavaTankBlock extends BlockContainer {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         int startIdx = meta * 3 + 1;
         ForgeDirection f = ForgeDirection.getOrientation(side);
@@ -228,6 +231,9 @@ public class LavaTankBlock extends BlockContainer {
             world.spawnEntityInWorld(entityitem);
         }
     }
+
+    @Override
+    public void harvestBlock(World par1World, EntityPlayer par2EntityPlayer, int par3, int par4, int par5, int par6) {}
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase living, ItemStack stack) {

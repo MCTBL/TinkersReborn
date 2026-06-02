@@ -8,11 +8,14 @@ import java.util.stream.Collectors;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -101,4 +104,75 @@ public class FilledBucket extends ItemBucket {
         return super.getUnlocalizedName() + "."
             + TinkersRebornRegistry.getMaterialById(stack.getItemDamage()).identifier;
     }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        boolean wannabeFull = false;
+        MovingObjectPosition position = this.getMovingObjectPositionFromPlayer(world, player, wannabeFull);
+        if (position != null) {
+            if (position.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                int clickX = position.blockX;
+                int clickY = position.blockY;
+                int clickZ = position.blockZ;
+
+                if (!world.canMineBlock(player, clickX, clickY, clickZ)) {
+                    return stack;
+                }
+
+                if (position.sideHit == 0) {
+                    --clickY;
+                }
+
+                if (position.sideHit == 1) {
+                    ++clickY;
+                }
+
+                if (position.sideHit == 2) {
+                    --clickZ;
+                }
+
+                if (position.sideHit == 3) {
+                    ++clickZ;
+                }
+
+                if (position.sideHit == 4) {
+                    --clickX;
+                }
+
+                if (position.sideHit == 5) {
+                    ++clickX;
+                }
+
+                if (!player.canPlayerEdit(clickX, clickY, clickZ, position.sideHit, stack)) {
+                    return stack;
+                }
+
+                if (this.tryPlaceContainedLiquid(world, clickX, clickY, clickZ, stack.getItemDamage())
+                    && !player.capabilities.isCreativeMode) {
+                    return new ItemStack(Items.bucket);
+                }
+            }
+        }
+        return stack;
+    }
+
+    public boolean tryPlaceContainedLiquid(World world, int clickX, int clickY, int clickZ, int damage) {
+        if (!world.isAirBlock(clickX, clickY, clickZ) && world.getBlock(clickX, clickY, clickZ)
+            .getMaterial()
+            .isSolid()) {
+            return false;
+        } else {
+            world.setBlock(
+                clickX,
+                clickY,
+                clickZ,
+                TinkersRebornRegistry.getMaterialById(damage)
+                    .getFluid()
+                    .getBlock(),
+                0,
+                3);
+            return true;
+        }
+    }
+
 }

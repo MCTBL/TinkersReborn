@@ -20,9 +20,6 @@ import static mctbl.tinkersreborn.library.MaterialID.Steel;
 import static mctbl.tinkersreborn.library.MaterialID.Stone;
 import static mctbl.tinkersreborn.library.MaterialID.Wood;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -434,45 +431,41 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         stoneMaterial = new TinkersRebornMaterial(Stone, "Stone", 0x7F7F7F).setCraftable(true);
         ironMaterial = new TinkersRebornMaterial(Iron, "Iron", 0xDADADA);
         flintMaterial = new TinkersRebornMaterial(Flint, "Flint", 0x484848).setCraftable(true);
-        cactusMaterial = new TinkersRebornMaterial(Cactus, "Cactus", 0x12690b).setCraftable(true);
+        cactusMaterial = new TinkersRebornMaterial(Cactus, "Cactus", 0x12690B).setCraftable(true);
         boneMaterial = new TinkersRebornMaterial(Bone, "Bone", 0xEDEBCA).setCraftable(true);
-        obsidianMaterial = new TinkersRebornMaterial(Obsidian, "Obsidian", 0xaa7ff5).setCraftable(true);
+        obsidianMaterial = new TinkersRebornMaterial(Obsidian, "Obsidian", 0xAA7FF5).setCraftable(true);
         netherrackMaterial = new TinkersRebornMaterial(Netherrack, "Netherrack", 0x833238).setCraftable(true);
         slimeMaterial = new TinkersRebornMaterial(Slime, "Slime", 0x6EB065).setCraftable(true);
         paperMaterial = new TinkersRebornMaterial(Paper, "Paper", 0xFFFFFF).setCraftable(true);
         cobaltMaterial = new TinkersRebornMaterial(Cobalt, "Cobalt", 0x2376DD);
-        arditeMaterial = new TinkersRebornMaterial(Ardite, "Ardite", 0xA53000);
+        arditeMaterial = new TinkersRebornMaterial(Ardite, "Ardite", 0xF18D2A);
         manyullynMaterial = new TinkersRebornMaterial(Manyullyn, "Manyullyn", 0x7338A5);
         copperMaterial = new TinkersRebornMaterial(Copper, "Copper", 0xCC6410);
         bronzeMaterial = new TinkersRebornMaterial(Bronze, "Bronze", 0xCA9956);
-        alumiteMaterial = new TinkersRebornMaterial(Alumite, "Alumite", 0xffa7e9);
+        alumiteMaterial = new TinkersRebornMaterial(Alumite, "Alumite", 0xFFA7E9);
         steelMaterial = new TinkersRebornMaterial(Steel, "Steel", 0xA0A0A0);
         blueSlimeMaterial = new TinkersRebornMaterial(BlueSlime, "BlueSlime", 0x66AEB0).setCraftable(true);
         pigIronMaterial = new TinkersRebornMaterial(PigIron, "PigIron", 0xF0A8A4);
 
-        List<TinkersRebornMaterial> materialList = new ArrayList<>();
-
-        materialList.add(woodMaterial);
-        materialList.add(stoneMaterial);
-        materialList.add(ironMaterial);
-        materialList.add(flintMaterial);
-        materialList.add(cactusMaterial);
-        materialList.add(boneMaterial);
-        materialList.add(obsidianMaterial);
-        materialList.add(netherrackMaterial);
-        materialList.add(slimeMaterial);
-        materialList.add(paperMaterial);
-        materialList.add(cobaltMaterial);
-        materialList.add(arditeMaterial);
-        materialList.add(manyullynMaterial);
-        materialList.add(copperMaterial);
-        materialList.add(bronzeMaterial);
-        materialList.add(alumiteMaterial);
-        materialList.add(steelMaterial);
-        materialList.add(blueSlimeMaterial);
-        materialList.add(pigIronMaterial);
-
-        TinkersRebornRegistry.addMaterialToMap(materialList);
+        TinkersRebornRegistry.addMaterialToMap(woodMaterial);
+        TinkersRebornRegistry.addMaterialToMap(stoneMaterial);
+        TinkersRebornRegistry.addMaterialToMap(ironMaterial);
+        TinkersRebornRegistry.addMaterialToMap(flintMaterial);
+        TinkersRebornRegistry.addMaterialToMap(cactusMaterial);
+        TinkersRebornRegistry.addMaterialToMap(boneMaterial);
+        TinkersRebornRegistry.addMaterialToMap(obsidianMaterial);
+        TinkersRebornRegistry.addMaterialToMap(netherrackMaterial);
+        TinkersRebornRegistry.addMaterialToMap(slimeMaterial);
+        TinkersRebornRegistry.addMaterialToMap(paperMaterial);
+        TinkersRebornRegistry.addMaterialToMap(cobaltMaterial);
+        TinkersRebornRegistry.addMaterialToMap(arditeMaterial);
+        TinkersRebornRegistry.addMaterialToMap(manyullynMaterial);
+        TinkersRebornRegistry.addMaterialToMap(copperMaterial);
+        TinkersRebornRegistry.addMaterialToMap(bronzeMaterial);
+        TinkersRebornRegistry.addMaterialToMap(alumiteMaterial);
+        TinkersRebornRegistry.addMaterialToMap(steelMaterial);
+        TinkersRebornRegistry.addMaterialToMap(blueSlimeMaterial);
+        TinkersRebornRegistry.addMaterialToMap(pigIronMaterial);
 
         this.registerBaseMaterialsStats();
         this.registerMaterialsFluid();

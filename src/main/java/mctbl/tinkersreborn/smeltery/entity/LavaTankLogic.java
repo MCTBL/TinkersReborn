@@ -112,12 +112,7 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
     @Override
     public void readCustomNBT(NBTTagCompound tags) {
         if (tags.getBoolean("hasFluid")) {
-            // TODO: Removed in future Versions, backward compat.
-            if (tags.getInteger("itemID") != 0) {
-                tank.setFluid(new FluidStack(tags.getInteger("itemID"), tags.getInteger("amount")));
-            } else {
-                tank.setFluid(FluidRegistry.getFluidStack(tags.getString("fluidName"), tags.getInteger("amount")));
-            }
+            tank.setFluid(FluidRegistry.getFluidStack(tags.getString("fluidName"), tags.getInteger("amount")));
         } else tank.setFluid(null);
 
         if (tags.hasKey("renderOffset")) renderOffset = tags.getInteger("renderOffset");

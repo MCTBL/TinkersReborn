@@ -46,14 +46,14 @@ public class TankRender implements ISimpleBlockRenderingHandler {
                     Fluid fluid = liquid.getFluid();
                     BlockSkinRenderHelper.renderLiquidBlock(
                         fluid.getStillIcon(),
-                        fluid.getStillIcon(),
+                        fluid.getFlowingIcon(),
                         x,
                         y,
                         z,
                         renderer,
                         world,
                         false,
-                        fluid.getColor(liquid));
+                        fluid.getColor());
 
                     return true;
                 }
