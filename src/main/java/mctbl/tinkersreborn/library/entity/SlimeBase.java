@@ -1,9 +1,5 @@
 package mctbl.tinkersreborn.library.entity;
 
-import java.util.ArrayList;
-
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.monster.EntitySlime;
@@ -17,13 +13,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-import com.kuba6000.mobsinfo.api.IMobInfoProvider;
-import com.kuba6000.mobsinfo.api.MobDrop;
-
-import cpw.mods.fml.common.Optional;
-
-@Optional.Interface(iface = "com.kuba6000.mobsinfo.api.IMobInfoProvider", modid = "mobsinfo")
-public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoProvider {
+public abstract class SlimeBase extends EntitySlime implements IMob {
 
     /**
      * the time between each jump of the slime, used for counting
@@ -192,18 +182,6 @@ public abstract class SlimeBase extends EntitySlime implements IMob, IMobInfoPro
             for (int l = 0; l < k; ++l) {
                 this.entityDropItem(new ItemStack(j), 1);
             }
-        }
-    }
-
-    @Optional.Method(modid = "mobsinfo")
-    @Override
-    public void provideDropsInformation(@Nonnull ArrayList<MobDrop> drops) {
-        Item j = this.getDropItem();
-        if (j != null) {
-            drops.add(
-                MobDrop.create(j)
-                    .withChance(MobDrop.getChanceBasedOnFromTo(0, 9) * 0.5d)
-                    .withLooting());
         }
     }
 
