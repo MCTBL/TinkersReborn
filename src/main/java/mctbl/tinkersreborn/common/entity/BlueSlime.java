@@ -1,7 +1,8 @@
 package mctbl.tinkersreborn.common.entity;
 
-import mctbl.tinkersreborn.library.entity.SlimeBase;
 import net.minecraft.world.World;
+
+import mctbl.tinkersreborn.library.entity.SlimeBase;
 
 public class BlueSlime extends SlimeBase {
 

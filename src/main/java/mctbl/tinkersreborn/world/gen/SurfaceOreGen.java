@@ -10,7 +10,6 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 
 public class SurfaceOreGen extends WorldGenerator {
 
-
     /** The block of the ore to be placed using this generator. */
     private final Block minableBlock;
 
@@ -24,17 +23,17 @@ public class SurfaceOreGen extends WorldGenerator {
 
     public SurfaceOreGen(Block b, int meta, int number, boolean changeSize) {
         this(
-                b,
-                meta,
-                number,
-                changeSize,
-                Blocks.stone,
-                Blocks.grass,
-                Blocks.dirt,
-                Blocks.water,
-                Blocks.sand,
-                Blocks.gravel,
-                Blocks.snow);
+            b,
+            meta,
+            number,
+            changeSize,
+            Blocks.stone,
+            Blocks.grass,
+            Blocks.dirt,
+            Blocks.water,
+            Blocks.sand,
+            Blocks.gravel,
+            Blocks.snow);
     }
 
     public SurfaceOreGen(Block b, int meta, int number, boolean changeSize, Block... target) {
@@ -48,7 +47,8 @@ public class SurfaceOreGen extends WorldGenerator {
     int findGround(World world, int x, int y, int z) {
         int returnHeight = -1;
         Block block = world.getBlock(x, y - 1, z);
-        if (!world.getBlock(x, y, z).isOpaqueCube() && (block == Blocks.dirt || block == Blocks.grass)) {
+        if (!world.getBlock(x, y, z)
+            .isOpaqueCube() && (block == Blocks.dirt || block == Blocks.grass)) {
             return y;
         }
         int height = 128;
@@ -58,7 +58,8 @@ public class SurfaceOreGen extends WorldGenerator {
             }
             Block b = world.getBlock(x, height, z);
             if (b == Blocks.dirt || b == Blocks.grass) {
-                if (!world.getBlock(x, height + 1, z).isOpaqueCube()) {
+                if (!world.getBlock(x, height + 1, z)
+                    .isOpaqueCube()) {
                     returnHeight = height + 1;
                 }
                 break;
@@ -91,9 +92,9 @@ public class SurfaceOreGen extends WorldGenerator {
             double d8 = d2 + (d3 - d2) * (double) l / (double) blockNumber;
             double d9 = random.nextDouble() * (double) blockNumber / 16.0D;
             double d10 = (double) (MathHelper.sin((float) l * (float) Math.PI / (float) blockNumber) + 1.0F) * d9
-                    + 1.0D;
+                + 1.0D;
             double d11 = (double) (MathHelper.sin((float) l * (float) Math.PI / (float) blockNumber) + 1.0F) * d9
-                    + 1.0D;
+                + 1.0D;
             int i1 = MathHelper.floor_double(d6 - d10 / 2.0D);
             int j1 = MathHelper.floor_double(d7 - d11 / 2.0D);
             int k1 = MathHelper.floor_double(d8 - d10 / 2.0D);
@@ -114,12 +115,13 @@ public class SurfaceOreGen extends WorldGenerator {
 
                                 Block block = world.getBlock(k2, l2, i3);
                                 if (d12 * d12 + d13 * d13 + d14 * d14 < 1.0D) {
-                                    if (block == null || !world.getBlock(k2, l2, i3).isOpaqueCube())
+                                    if (block == null || !world.getBlock(k2, l2, i3)
+                                        .isOpaqueCube())
                                         world.setBlock(k2, l2, i3, this.minableBlock, minableBlockMeta, 2);
                                     else {
                                         for (Block replaceBlock : replaceBlocks) {
                                             if (world.getBlock(k2, l2, i3)
-                                                    .isReplaceableOreGen(world, k2, l2, i3, replaceBlock)) {
+                                                .isReplaceableOreGen(world, k2, l2, i3, replaceBlock)) {
                                                 world.setBlock(k2, l2, i3, this.minableBlock, minableBlockMeta, 2);
                                                 break;
                                             }

@@ -6,15 +6,16 @@ import static net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate.Ev
 
 import java.util.Random;
 
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate;
+
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.event.terraingen.DecorateBiomeEvent.Decorate;
 
 public class TinkersRebornSurfaceOreGen {
 
@@ -25,7 +26,7 @@ public class TinkersRebornSurfaceOreGen {
     private final SurfaceOreGen aluminumSurface = new SurfaceOreGen(TinkersRebornGeneral.oreGravel, 4, 12, true);
 
     private static final ImmutableCollection<BiomeGenBase> EXTRA_ORE_BIOMES = ImmutableList
-            .of(extremeHills, extremeHillsEdge);
+        .of(extremeHills, extremeHillsEdge);
 
     @SubscribeEvent
     public void onDecorateEvent(Decorate e) {
@@ -33,7 +34,8 @@ public class TinkersRebornSurfaceOreGen {
         // generation.
         if (e.type != SAND) return;
 
-        BiomeGenBase biome = e.world.getWorldChunkManager().getBiomeGenAt(e.chunkX, e.chunkZ);
+        BiomeGenBase biome = e.world.getWorldChunkManager()
+            .getBiomeGenAt(e.chunkX, e.chunkZ);
         int iterations = EXTRA_ORE_BIOMES.contains(biome) ? 2 : 1;
         for (int i = 0; i < iterations; i++) {
             generateSurfaceOres(e.rand, e.chunkX, e.chunkZ, e.world);

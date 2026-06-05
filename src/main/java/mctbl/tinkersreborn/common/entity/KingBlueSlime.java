@@ -1,10 +1,10 @@
 package mctbl.tinkersreborn.common.entity;
 
-import mctbl.tinkersreborn.library.entity.SlimeBase;
-import mctbl.tinkersreborn.library.tools.ToolCore;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.library.entity.SlimeBase;
+import mctbl.tinkersreborn.library.tools.ToolCore;
 
 public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
 
@@ -15,7 +15,6 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
         // persistance required. this is used by named entities to not despawn, for example.
         this.func_110163_bv();
     }
-	
 
     @Override
     protected String getSlimeParticle() {
@@ -56,11 +55,11 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
                 double x = Math.cos(r);
                 double z = Math.sin(r);
                 entityslime.setLocationAndAngles(
-                        this.posX - 1d + x,
-                        this.posY + 0.5D,
-                        this.posZ - 1d + z,
-                        this.rand.nextFloat() * 360.0F,
-                        0.0F);
+                    this.posX - 1d + x,
+                    this.posY + 0.5D,
+                    this.posZ - 1d + z,
+                    this.rand.nextFloat() * 360.0F,
+                    0.0F);
                 entityslime.motionX = x;
                 entityslime.motionY = -0.5d - rand.nextDouble();
                 entityslime.motionZ = z;
@@ -77,7 +76,7 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
     }
 
     ToolCore getValidTool() {
-    		return null;
+        return null;
     }
 
     @Override

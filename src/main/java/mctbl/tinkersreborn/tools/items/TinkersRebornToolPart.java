@@ -108,13 +108,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
         } else {
             return TinkersRebornRegistry.getMaterialById(matId).materialTextColor;
         }
-        // return super.getColorFromItemStack(stack, renderpass);
     }
 
     @Override
     public int getMaterialId(ItemStack stack) {
         return stack.getItemDamage();
-        // return -1;
     }
 
 }

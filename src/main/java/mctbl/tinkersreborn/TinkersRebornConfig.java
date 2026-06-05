@@ -12,9 +12,9 @@ public class TinkersRebornConfig {
 
     public static boolean disableAllRecipes;
     public static String[] miningLevels;
-    
+
     public static int naturalSlimeSpawn;
-    
+
     public static boolean generateCopper;
     public static boolean generateTin;
     public static boolean generateAluminum;
@@ -25,7 +25,7 @@ public class TinkersRebornConfig {
     public static boolean generateCopperSurface;
     public static boolean generateTinSurface;
     public static boolean generateAluminumSurface;
-    
+
     public static int copperDensity;
     public static int tinDensity;
     public static int aluminumDensity;
@@ -36,6 +36,8 @@ public class TinkersRebornConfig {
     public static int coppersRarity;
     public static int tinsRarity;
     public static int aluminumsRarity;
+
+    public static int defaultModifiers;
 
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
@@ -63,31 +65,54 @@ public class TinkersRebornConfig {
                     "§9Cobalt", "§5Manyullyn" },
                 "How many mining levels have")
             .getStringList();
-        
-        naturalSlimeSpawn =  config.get("Mobs", "Blue Slime spawn chance", 1, "Set to 0 to disable").getInt();
 
-        generateCopper = config.get("Worldgen", "Generate Copper", true).getBoolean();
-        generateTin = config.get("Worldgen", "Generate Tin", true).getBoolean();
-        generateAluminum = config.get("Worldgen", "Generate Aluminum", true).getBoolean();
-        generateCobalt = config.get("Worldgen", "Generate Cobalt", true).getBoolean();
-        generateArdite = config.get("Worldgen", "Generate Ardite", true).getBoolean();
-        generateIronSurface = config.get("Worldgen", "Generate Surface Iron", true).getBoolean();
-        generateGoldSurface = config.get("Worldgen", "Generate Surface Gold", true).getBoolean();
-        generateCopperSurface = config.get("Worldgen", "Generate Surface Copper", true).getBoolean();
-        generateTinSurface = config.get("Worldgen", "Generate Surface Tin", true).getBoolean();
-        generateAluminumSurface = config.get("Worldgen", "Generate Surface Aluminum", true).getBoolean();
-        
-        copperDensity = config.get("Worldgen", "Copper Underground Density", 2, "Density: Chances per chunk").getInt();
-        tinDensity = config.get("Worldgen", "Tin Underground Density", 2).getInt();
-        aluminumDensity = config.get("Worldgen", "Aluminum Underground Density", 3).getInt();
-        cobaltDensity = config.get("worldgen", "Cobalt Ore Density", 8).getInt();
-        arditeDensity = config.get("worldgen", "Ardite Ore Density", 8).getInt();
-        ironsRarity = config.get("Worldgen", "Iron Surface Rarity", 400, "Rarity: 1/num to generate in chunk").getInt();
-        goldsRarity = config.get("Worldgen", "Gold Surface Rarity", 900).getInt();
+        naturalSlimeSpawn = config.get("Mobs", "Blue Slime spawn chance", 1, "Set to 0 to disable")
+            .getInt();
+
+        generateCopper = config.get("Worldgen", "Generate Copper", true)
+            .getBoolean();
+        generateTin = config.get("Worldgen", "Generate Tin", true)
+            .getBoolean();
+        generateAluminum = config.get("Worldgen", "Generate Aluminum", true)
+            .getBoolean();
+        generateCobalt = config.get("Worldgen", "Generate Cobalt", true)
+            .getBoolean();
+        generateArdite = config.get("Worldgen", "Generate Ardite", true)
+            .getBoolean();
+        generateIronSurface = config.get("Worldgen", "Generate Surface Iron", true)
+            .getBoolean();
+        generateGoldSurface = config.get("Worldgen", "Generate Surface Gold", true)
+            .getBoolean();
+        generateCopperSurface = config.get("Worldgen", "Generate Surface Copper", true)
+            .getBoolean();
+        generateTinSurface = config.get("Worldgen", "Generate Surface Tin", true)
+            .getBoolean();
+        generateAluminumSurface = config.get("Worldgen", "Generate Surface Aluminum", true)
+            .getBoolean();
+
+        copperDensity = config.get("Worldgen", "Copper Underground Density", 2, "Density: Chances per chunk")
+            .getInt();
+        tinDensity = config.get("Worldgen", "Tin Underground Density", 2)
+            .getInt();
+        aluminumDensity = config.get("Worldgen", "Aluminum Underground Density", 3)
+            .getInt();
+        cobaltDensity = config.get("worldgen", "Cobalt Ore Density", 8)
+            .getInt();
+        arditeDensity = config.get("worldgen", "Ardite Ore Density", 8)
+            .getInt();
+        ironsRarity = config.get("Worldgen", "Iron Surface Rarity", 400, "Rarity: 1/num to generate in chunk")
+            .getInt();
+        goldsRarity = config.get("Worldgen", "Gold Surface Rarity", 900)
+            .getInt();
         coppersRarity = config.get("Worldgen", "Copper Surface Rarity", 100)
-                .getInt();
-        tinsRarity = config.get("Worldgen", "Tin Surface Rarity", 100).getInt();
-        aluminumsRarity = config.get("Worldgen", "Aluminum Surface Rarity", 50).getInt();
+            .getInt();
+        tinsRarity = config.get("Worldgen", "Tin Surface Rarity", 100)
+            .getInt();
+        aluminumsRarity = config.get("Worldgen", "Aluminum Surface Rarity", 50)
+            .getInt();
+
+        defaultModifiers = config.get("Tools", "", 3)
+            .getInt();
     }
 
 }

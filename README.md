@@ -293,15 +293,19 @@ flowchart TB
     "Durability": 1,
     "Attack": 2.1,
     "MiningSpeed": 2.2,
-    "HarvestLevel": 3
+    "HarvestLevel": 3,
+    "FreeModifiers": 2
   },
   // this tool's base stats READONLY
   "StatsOriginal":{
     "Durability": 0.5,
     "Attack": 2.1,
     "MiningSpeed": 1.0,
-    "HarvestLevel": 3
+    "HarvestLevel": 3,
+    "FreeModifiers": 3
   },
+  // 1 broken, 0 not broken, use boolean
+  "Broken":0
 }
 
 ```

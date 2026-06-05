@@ -17,8 +17,8 @@ public abstract class HarvestTool extends ToolCore {
 
     public static final Set<Material> effectiveMaterials = new HashSet<>();
 
-    public HarvestTool(String toolTypeName) {
-        super(toolTypeName);
+    public HarvestTool(String toolTypeName, int partAmount) {
+        super(toolTypeName, partAmount);
         this.categoryTags.add("harvest");
     }
 

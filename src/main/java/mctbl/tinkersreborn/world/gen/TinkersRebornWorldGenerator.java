@@ -2,23 +2,24 @@ package mctbl.tinkersreborn.world.gen;
 
 import java.util.Random;
 
-import cpw.mods.fml.common.IWorldGenerator;
-import mctbl.tinkersreborn.TinkersRebornConfig;
-import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 
+import cpw.mods.fml.common.IWorldGenerator;
+import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
+
 public class TinkersRebornWorldGenerator implements IWorldGenerator {
-    
+
     WorldGenMinable copper;
     WorldGenMinable tin;
     WorldGenMinable aluminum;
     WorldGenMinable cobalt;
     WorldGenMinable ardite;
-    
+
     public TinkersRebornWorldGenerator() {
         copper = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 3, 8, Blocks.stone);
         tin = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 4, 8, Blocks.stone);
@@ -30,16 +31,17 @@ public class TinkersRebornWorldGenerator implements IWorldGenerator {
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
-	    IChunkProvider chunkProvider) {
+        IChunkProvider chunkProvider) {
         if (world.provider.isHellWorld) {
             generateNether(random, chunkX * 16, chunkZ * 16, world);
         } else if (world.provider.terrainType != WorldType.FLAT) {
             generateSurface(random, chunkX * 16, chunkZ * 16, world);
         }
     }
-    
+
     void generateSurface(Random random, int xChunk, int zChunk, World world) {
-        String biomeName = world.getWorldChunkManager().getBiomeGenAt(xChunk, zChunk).biomeName;
+        String biomeName = world.getWorldChunkManager()
+            .getBiomeGenAt(xChunk, zChunk).biomeName;
 
         generateUndergroundOres(random, xChunk, zChunk, world);
 
@@ -47,7 +49,7 @@ public class TinkersRebornWorldGenerator implements IWorldGenerator {
             generateUndergroundOres(random, xChunk, zChunk, world);
         }
     }
-    
+
     void generateUndergroundOres(Random random, int xChunk, int zChunk, World world) {
         int xPos, yPos, zPos;
         if (TinkersRebornConfig.generateCopper) {
@@ -78,7 +80,7 @@ public class TinkersRebornWorldGenerator implements IWorldGenerator {
             }
         }
     }
-    
+
     void generateNether(Random random, int xChunk, int zChunk, World world) {
         int xPos, yPos, zPos;
         if (TinkersRebornConfig.generateCobalt) {
