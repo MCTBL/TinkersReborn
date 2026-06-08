@@ -12,6 +12,7 @@ public class TinkersRebornConfig {
 
     public static boolean disableAllRecipes;
     public static String[] miningLevels;
+    public static String fluidUnit;
 
     public static int naturalSlimeSpawn;
 
@@ -43,8 +44,7 @@ public class TinkersRebornConfig {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
 
-        oreTypes = new String[] { "nether_slag", "nether_cobalt", "nether_ardite", "ore_copper", "ore_tin",
-            "ore_aluminum", "ore_slag" };
+        oreTypes = new String[] { "nether_cobalt", "nether_ardite", "ore_copper", "ore_tin", "ore_aluminum" };
 
         gravelOreTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum" };
 
@@ -63,8 +63,10 @@ public class TinkersRebornConfig {
                 "Mining Levels",
                 new String[] { "§7tile.stone.name", "§fIron", "§4item.redstone.name", "§dtile.obsidian.name",
                     "§9Cobalt", "§5Manyullyn" },
-                "How many mining levels have")
+                "Mining levels")
             .getStringList();
+        fluidUnit = config.get("General", "Fluid unit", "mB", "Only for display")
+            .getString();
 
         naturalSlimeSpawn = config.get("Mobs", "Blue Slime spawn chance", 1, "Set to 0 to disable")
             .getInt();

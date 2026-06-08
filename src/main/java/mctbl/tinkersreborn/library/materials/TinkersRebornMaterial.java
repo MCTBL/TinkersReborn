@@ -18,8 +18,8 @@ import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class TinkersRebornMaterial {
 
-    public static final String LOC_Name = "material.%s.name";
-    public static final String LOC_Prefix = "material.%s.prefix";
+    static final String LOC_Name = "material.%s.name";
+    static final String LOC_Prefix = "material.%s.prefix";
 
     // How much the different items are "worth"
     // the values are used for both liquid conversion as well as part crafting
@@ -45,6 +45,7 @@ public class TinkersRebornMaterial {
      */
     public final String identifier;
     public final String localizationIdentifier;
+    public final String localizationPrefix;
 
     /** The fluid associated with this material, can be null */
     protected Fluid fluid;
@@ -96,7 +97,10 @@ public class TinkersRebornMaterial {
     public TinkersRebornMaterial(int id, String identifier, int color) {
         this.materialId = id;
         this.identifier = TinkersRebornUtils.sanitizeLocalizationString(identifier); // lowercases and removes
-        this.localizationIdentifier = String.format(LOC_Name, identifier);
+        this.localizationIdentifier = String.format(LOC_Name, this.identifier);
+
+        String tempPrefix = String.format(LOC_Prefix, this.identifier);
+        this.localizationPrefix = StatCollector.canTranslate(tempPrefix) ? tempPrefix : this.localizationIdentifier;
 
         // if invisible, make it fully opaque.
         if (((color >> 24) & 0xFF) == 0) {
@@ -188,6 +192,10 @@ public class TinkersRebornMaterial {
 
     public String localizedName() {
         return StatCollector.translateToLocal(localizationIdentifier);
+    }
+
+    public String localizedPrefix() {
+        return StatCollector.translateToLocal(localizationPrefix);
     }
 
     public ItemStack getRepresentativeItem() {

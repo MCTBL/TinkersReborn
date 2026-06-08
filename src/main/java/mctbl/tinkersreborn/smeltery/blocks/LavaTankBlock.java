@@ -39,10 +39,15 @@ public class LavaTankBlock extends BlockContainer {
         this.setHardness(3F);
         this.setResistance(20F);
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
-        this.setBlockName("tinkersreborn.lavatank");
+        this.setBlockName("tinkersreborn.LavaTank");
         this.setStepSound(Block.soundTypeGlass);
         this.textureNames = new String[] { "lavatank_top", "lavatank_side", "lavatank_bottom", "searedgague_top",
             "searedgague_side", "searedgague_bottom", "searedwindow_top", "searedwindow_side", "searedwindow_bottom" };
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.LavaTank";
     }
 
     @Override

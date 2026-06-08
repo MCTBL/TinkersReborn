@@ -27,6 +27,11 @@ public class SlimeFluid extends BlockFluidClassic {
     }
 
     @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.liquid.slime";
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
         stillIcon = iconRegister.registerIcon("tinkersreborn:slime/slime_blue");

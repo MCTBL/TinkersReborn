@@ -8,7 +8,7 @@ import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 public class GravelOreItem extends TinkersRebornItemBlock {
 
     public GravelOreItem(Block b) {
-        super(b, "block.ore.tinkersreborn.gravel", TinkersRebornConfig.gravelOreTypes);
+        super(b, "tinkersreborn.GravelOre", TinkersRebornConfig.gravelOreTypes);
         setMaxDamage(0);
         setHasSubtypes(true);
     }

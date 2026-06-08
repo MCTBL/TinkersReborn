@@ -16,6 +16,7 @@ public class TinkersRebornMetalBlock extends TinkersRebornBlock {
     public TinkersRebornMetalBlock(Material material, float hardness) {
         super(
             material,
+            "tinkersreborn.metalblock",
             hardness,
             Arrays.asList(TinkersRebornConfig.metalTypes)
                 .stream()
@@ -23,7 +24,6 @@ public class TinkersRebornMetalBlock extends TinkersRebornBlock {
                 .collect(Collectors.toList())
                 .toArray(new String[0]));
         this.setStepSound(Block.soundTypeMetal);
-        this.setBlockName("tinkersreborn.metalblock");
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
 

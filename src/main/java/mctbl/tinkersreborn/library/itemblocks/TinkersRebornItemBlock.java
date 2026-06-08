@@ -36,6 +36,9 @@ public class TinkersRebornItemBlock extends ItemBlock {
     }
 
     public String getUnlocalizedName(ItemStack itemstack) {
+        if (this.blockType.length == 1) {
+            return this.unlocalizedName;
+        }
         int pos = itemstack.getItemDamage();
         try {
             return (new StringBuilder()).append(unlocalizedName)

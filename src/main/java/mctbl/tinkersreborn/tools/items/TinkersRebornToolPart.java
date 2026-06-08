@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.tools.items;
 
+import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +13,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,11 +23,11 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.IMaterialPart;
 import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.util.TextureHelper;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IMaterialPart {
 
-    public static final String LOC_NAME = "tinkersreborn.toolpart.%s";
-    public static final String UNLOC_NAME = "tinkersreborn.toolpart.%s.%s";
+    public static final String toolNameFormatter = TinkersStr.tooNamePattern.toString();
 
     public String partName;
     public String texture;
@@ -34,7 +35,6 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
     public IIcon defaultIcon;
     public Map<Integer, IIcon> icons;
     public MaterialStatusType allowType; // TODO shard is null (maybe sharpen kit is too)
-    public String partLocName;
 
     public TinkersRebornToolPart(String texture, String name, MaterialStatusType allowType) {
         // texture -> pickaxe_head for texture
@@ -43,12 +43,19 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
         this.texture = texture;
         this.partName = name;
         this.allowType = allowType;
-        this.partLocName = String.format(LOC_NAME, name);
         this.setUnlocalizedName("tinkersreborn." + name); // tinkersreborn.PickaxeHead
     }
 
     public TinkersRebornToolPart(String texture, String name) {
         this(texture, name, MaterialStatusType.HEAD);
+    }
+
+    public String getUnlocalizedToolName() {
+        return "tinkersreborn.toolpart." + this.partName;
+    }
+
+    public String getLocalizedPartName() {
+        return translate(this.getUnlocalizedToolName());
     }
 
     @Override
@@ -57,10 +64,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
         if (id == -1) {
             return super.getItemStackDisplayName(stack);
         } else {
-            String partBaseName = StatCollector.translateToLocal(this.partLocName); // "%%material Tool Rod"
-            String materialName = StatCollector
-                .translateToLocal(TinkersRebornRegistry.getMaterialById(id).localizationIdentifier); // "Wood"
-            return partBaseName.replace("%%material", materialName);
+            return String.format(
+                toolNameFormatter,
+                TinkersRebornRegistry.getMaterialById(id)
+                    .localizedPrefix(),
+                this.getLocalizedPartName());
         }
     }
 
@@ -68,7 +76,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
     public String getUnlocalizedName(ItemStack stack) {
         int id = getMaterialId(stack);
         return id == -1 ? super.getUnlocalizedName()
-            : String.format(UNLOC_NAME, partName, TinkersRebornRegistry.getMaterialById(id).identifier);
+            : String.format(
+                toolNameFormatter,
+                TinkersRebornRegistry.getMaterialById(id)
+                    .localizedPrefix(),
+                this.getLocalizedPartName());
     }
 
     @Override

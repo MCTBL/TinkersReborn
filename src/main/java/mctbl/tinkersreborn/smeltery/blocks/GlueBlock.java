@@ -15,9 +15,13 @@ import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 public class GlueBlock extends TinkersRebornBlock {
 
     public GlueBlock() {
-        super(Material.ground, 4.0f, new String[] { "glue" });
-        this.setBlockName("tinkersreborn.glueblock");
+        super(Material.ground, "tinkersreborn.glueblock", 4.0f, new String[] { "glue" });
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.glueblock";
     }
 
     @Override
@@ -25,8 +29,7 @@ public class GlueBlock extends TinkersRebornBlock {
         entity.motionX *= 0.1;
         entity.motionZ *= 0.1;
 
-        if (entity instanceof EntityLivingBase) {
-            EntityLivingBase living = (EntityLivingBase) entity;
+        if (entity instanceof EntityLivingBase living) {
             // Well you'd feel ill too standing on glue...
             living.addPotionEffect(new PotionEffect(Potion.hunger.getId(), 20, 4));
 

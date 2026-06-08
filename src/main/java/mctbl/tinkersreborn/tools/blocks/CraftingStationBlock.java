@@ -30,6 +30,11 @@ public class CraftingStationBlock extends TinkersRebornInventoryBlock {
     }
 
     @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.CraftingStation";
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         return switch (ForgeDirection.getOrientation(side)) {

@@ -35,6 +35,11 @@ public class CastChestBlock extends TinkersRebornInventoryBlock implements ITink
     }
 
     @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.CastChest";
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         return switch (ForgeDirection.getOrientation(side)) {

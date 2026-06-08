@@ -6,7 +6,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import org.lwjgl.input.Keyboard;
@@ -17,6 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.tools.entity.TinkersRebornToolStationLogic;
 import mctbl.tinkersreborn.tools.inventory.TinkersRebornToolStationContainer;
 import mctbl.tinkersreborn.util.ColorUtil;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 @SideOnly(Side.CLIENT)
 public class GuiToolStation extends GuiContainer {
@@ -36,8 +36,8 @@ public class GuiToolStation extends GuiContainer {
         selectedButton = 0;
         setSlotType(0);
         setIconUVs();
-        title = ColorUtil.addUnderLine(StatCollector.translateToLocal("gui.toolforge1"));
-        body = StatCollector.translateToLocal("gui.toolforge2");
+        title = ColorUtil.addUnderLine(TinkersStr.toolForgeTitle.toString());
+        body = TinkersStr.toolForgeDesc.toString();
         Keyboard.enableRepeatEvents(true);
     }
 

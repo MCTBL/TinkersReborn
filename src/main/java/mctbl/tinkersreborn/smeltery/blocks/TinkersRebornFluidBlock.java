@@ -17,10 +17,17 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
     public IIcon flowIcon;
     boolean overwriteFluidIcons = true;
     private TinkersRebornFluid fluid = null;
+    String unlocalizedName;
 
-    public TinkersRebornFluidBlock(TinkersRebornFluid fluid, Material material) {
+    public TinkersRebornFluidBlock(TinkersRebornFluid fluid, Material material, String unlocalizedName) {
         super(fluid, material);
         this.fluid = fluid;
+        this.unlocalizedName = "fluid." + unlocalizedName;
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return this.unlocalizedName;
     }
 
     @Override

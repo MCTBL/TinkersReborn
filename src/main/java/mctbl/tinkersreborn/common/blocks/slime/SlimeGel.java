@@ -19,11 +19,11 @@ public class SlimeGel extends TinkersRebornBlock {
     public SlimeGel() {
         super(
             Material.sponge,
+            "tinkersreborn.slime.gel",
             0.5f,
             new String[] { "slime/slimeblock_blue", "slime/slimeblock_green", "slime/slimeblock_purple" });
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.setHarvestLevel("axe", 0, 1);
-        this.setBlockName("tinkersreborn.slime.gel");
         this.setLightOpacity(0);
         this.setStepSound(TinkersRebornGeneral.slimeStep);
     }

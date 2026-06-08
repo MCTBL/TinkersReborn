@@ -21,6 +21,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.util.TextureHelper;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class FilledBucket extends ItemBucket {
 
@@ -35,6 +36,11 @@ public class FilledBucket extends ItemBucket {
         this.setHasSubtypes(true);
         this.icons = new HashMap<>();
         this.setCreativeTab(TinkersRebornRegistry.miscTab);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.bucket";
     }
 
     @Override
@@ -97,9 +103,21 @@ public class FilledBucket extends ItemBucket {
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        return super.getUnlocalizedName() + "."
-            + TinkersRebornRegistry.allTinkersFluid.get(stack.getItemDamage()).identifier;
+    public String getItemStackDisplayName(ItemStack stack) {
+        int itemDamage = stack.getItemDamage();
+        String bucketName;
+        String fluidUnName = TinkersRebornRegistry.allTinkersFluid.get(itemDamage)
+            .getUnlocalizedName();
+        if (fluidUnName.startsWith("molten_")) {
+            bucketName = TinkersRebornUtils.translate("tinkersreborn.moltenBucket");
+            fluidUnName = TinkersRebornRegistry.getMaterialByIdentifier(fluidUnName.replace("molten_", ""))
+                .localizedName();
+        } else {
+            bucketName = TinkersRebornUtils.translate("tinkersreborn.bucket");
+            fluidUnName = TinkersRebornUtils.translate("fluid." + fluidUnName);
+        }
+
+        return bucketName.replace("%%material", fluidUnName);
     }
 
     @Override

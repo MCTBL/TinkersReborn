@@ -2,4 +2,189 @@ itemGroup.TinkersRebornBlocks=Tinkers Reborn Blocks
 itemGroup.TinkersRebornTools=Tinkers Reborn Tools
 itemGroup.TinkersRebornWeapons=Tinkers Reborn Weapons
 itemGroup.TinkersRebornParts=Tinkers Reborn Parts
+itemGroup.TinkersRebornMisc=Tinkers Reborn Others
 
+tinkersreborn.stonetorch.name=Stone Torch
+tinkersreborn.goldenhead.name=Golden Head
+tinkersreborn.goldenhead.tooltip1=EAT?
+tinkersreborn.goldenhead.tooltip2=Golden Head
+
+tinkersreborn.metalblock.Cobalt.name=Cobalt Block
+tinkersreborn.metalblock.Ardite.name=Ardite Block
+tinkersreborn.metalblock.Manyullyn.name=Manyullyn Block
+tinkersreborn.metalblock.Copper.name=Copper Block
+tinkersreborn.metalblock.Bronze.name=Bronze Block
+tinkersreborn.metalblock.Tin.name=Tin Block
+tinkersreborn.metalblock.Aluminum.name=Aluminum Block
+tinkersreborn.metalblock.AluBrass.name=AluBrass Block
+tinkersreborn.metalblock.Alumite.name=Alumite Block
+tinkersreborn.metalblock.Steel.name=Steel Block
+tinkersreborn.metalblock.Ender.name=Ender Block
+
+tinkersreborn.slimesand.name=Slime Sand
+tinkersreborn.grout.name=Grout
+tinkersreborn.graveyardsoil.name=Grave Yard Soil
+tinkersreborn.consecratedsoil.name=Consecrated Soil
+tinkersreborn.slimedirt.name=Slime Dirt
+tinkersreborn.slime.gel.blue.name=Blue Slime Block
+tinkersreborn.slime.gel.green.name=Green Slime Block
+tinkersreborn.slime.gel.purple.name=Purple Slime Block
+tinkersreborn.slime.grass.name=Slime Grass
+tinkersreborn.slime.grass.tall.name=Slimy Grass
+tinkersreborn.slime.leaves.name=Slime Leaves
+tinkersreborn.slime.sapling.name=Slime Sapling
+
+tinkersreborn.MetalOre.nether_cobalt.name=Cobalt Ore
+tinkersreborn.MetalOre.nether_ardite.name=Ardite Ore
+tinkersreborn.MetalOre.ore_copper.name=Copper Ore
+tinkersreborn.MetalOre.ore_tin.name=Tin Ore
+tinkersreborn.MetalOre.ore_aluminum.name=Aluminum Ore
+
+tinkersreborn.GravelOre.iron.name=Iron Gravel
+tinkersreborn.GravelOre.gold.name=Gold Gravel
+tinkersreborn.GravelOre.copper.name=Copper Gravel
+tinkersreborn.GravelOre.tin.name=Tin Gravel
+tinkersreborn.GravelOre.aluminum.name=Aluminum Gravel
+
+tinkersreborn.ToolStation.name=Tool Station
+tinkersreborn.ToolForge.name=Tool Forge
+tinkersreborn.PartBuilder.name=Part Builder
+tinkersreborn.CastChest.name=Cast Chest
+tinkersreborn.PartChest.name=Part Chest
+tinkersreborn.CraftingStation.name=Crafting Station
+
+tinkersreborn.glueblock.name=Glue Block
+tinkersreborn.Smeltery.Cobblestone.name=Seared Cobblestone
+tinkersreborn.Smeltery.Brick.name=Seared Bricks
+tinkersreborn.Smeltery.Controller.name=Smeltery Controller
+tinkersreborn.Smeltery.Furnace.name=Furnace Controller
+tinkersreborn.Smeltery.Drain.name=Smeltery Drain
+tinkersreborn.LavaTank.Tank.name=Seared Tank
+tinkersreborn.LavaTank.Gague.name=Seared Glass
+tinkersreborn.LavaTank.Window.name=Seared Window
+tinkersreborn.SearedBlock.Table.name=Casting Table
+tinkersreborn.SearedBlock.Faucet.name=Seared Faucet
+tinkersreborn.SearedBlock.Basin.name=Casting Basin
+
+
+tinkersreborn.moltenBucket=Molten %%material Bucket
+tinkersreborn.bucket=%%material Bucket
+
+fluid.blue_slime=Blue Slime
+
+
+tinkersreborn.material.Mossball.name=Ball of Moss
+tinkersreborn.material.SlimeCrystal.name=Slime Crystal
+tinkersreborn.material.BlueSlimeCrystal.name=Slime Crystal
+tinkersreborn.material.LavaCrystal.name=Lava Crystal
+tinkersreborn.material.SilkyCloth.name=Silky Cloth
+tinkersreborn.material.SilkyJewel.name=Silky Jewel
+tinkersreborn.material.NecroticBone.name=Necrotic Bone
+tinkersreborn.material.Reinforcement.name=Reinforcement
+tinkersreborn.material.PaperStack.name=Paper Stack
+tinkersreborn.material.SearedBrick.name=Seared Brick
+tinkersreborn.material.CobaltIngot.name=Cobalt Ingot
+tinkersreborn.material.ArditeIngot.name=Ardite Ingot
+tinkersreborn.material.ManyullynIngot.name=Manyullyn Ingot
+tinkersreborn.material.CopperIngot.name=Copper Ingot
+tinkersreborn.material.TinIngot.name=Tin Ingot
+tinkersreborn.material.AluminumIngot.name=Aluminum Ingot
+tinkersreborn.material.BronzeIngot.name=Bronze Ingot
+tinkersreborn.material.AluBrassIngot.name=Aluminum Brass Ingot
+tinkersreborn.material.AlumiteIngot.name=Alumite Ingot
+tinkersreborn.material.SteelIngot.name=Steel Ingot
+tinkersreborn.material.ObsidianIngot.name=Obsidian Ingot
+tinkersreborn.material.PigIronIngot.name=Pig Iron Ingot
+tinkersreborn.material.IronNugget.name=Iron Nugget
+tinkersreborn.material.CopperNugget.name=Copper Nugget
+tinkersreborn.material.TinNugget.name=Tin Nugget
+tinkersreborn.material.AluminumNugget.name=Aluminum Nugget
+tinkersreborn.material.AluBrassNugget.name=Aluminum Brass Nugget
+tinkersreborn.material.ObsidianNugget.name=Obsidian Nugget
+tinkersreborn.material.ArditeNugget.name=Ardite Nugget
+tinkersreborn.material.CobaltNugget.name=Cobalt Nugget
+tinkersreborn.material.ManyullynNugget.name=Manyullyn Nugget
+tinkersreborn.material.BronzeNugget.name=Bronze Nugget
+tinkersreborn.material.AlumiteNugget.name=Alumite Nugget
+tinkersreborn.material.SteelNugget.name=Steel Nugget
+tinkersreborn.material.PigIronNugget.name=Pig Iron Platter
+tinkersreborn.material.GlueBall.name=Ball of Glue
+tinkersreborn.material.RawAluminum.name=Raw Aluminum
+tinkersreborn.material.ArditeDust.name=Ardite Dust
+tinkersreborn.material.CobaltDust.name=Cobalt Dust
+tinkersreborn.material.AluminumDust.name=Aluminum Dust
+tinkersreborn.material.ManyullynDust.name=Manyullyn Dust
+tinkersreborn.material.AluBrassDust.name=Aluminum Brass Dust
+
+
+// materials
+material.wood.name=Wood
+material.wood.prefix=Wooden
+material.stone.name=Stone
+material.iron.name=Iron
+material.flint.name=Flint
+material.cactus.name=Cactus
+material.bone.name=Bone
+material.obsidian.name=Obsidian
+material.netherrack.name=Nether Rack
+material.slime.name=Slime
+material.paper.name=Paper
+material.cobalt.name=Cobalt
+material.ardite.name=Ardite
+material.manyullyn.name=Manyullyn
+material.copper.name=Copper
+material.bronze.name=Bronze
+material.alumite.name=Alumite
+material.steel.name=Steel
+material.blueslime.name=Blue Slime
+material.pigiron.name=Pig Iron
+
+
+// tools
+tinkersreborn.tooltip.nameformat=%s %s
+
+tinkersreborn.tool.pickaxe=Pickaxe
+
+tinkersreborn.toolpart.ToolRod=Tool Rod
+tinkersreborn.toolpart.PickaxeHead=Pickaxe Head
+tinkersreborn.toolpart.ShovelHead=Shovel Head
+tinkersreborn.toolpart.AxeHead=Axe Head
+tinkersreborn.toolpart.Binding=Binding
+tinkersreborn.toolpart.ToughBinding=Tough Binding
+tinkersreborn.toolpart.ToughRod=Tough Rod
+tinkersreborn.toolpart.LargePlate=Large Plate
+tinkersreborn.toolpart.SwordBlade=Sword Blade
+tinkersreborn.toolpart.LargeGuard=Wide Guard
+tinkersreborn.toolpart.MediumGuard=Hand Guard
+tinkersreborn.toolpart.Crossbar=Crossbar
+tinkersreborn.toolpart.KnifeBlade=Knife Blade
+tinkersreborn.toolpart.FullGuard=Full Guard
+tinkersreborn.toolpart.FrypanHead=Pan
+tinkersreborn.toolpart.SignHead=Sign Head
+tinkersreborn.toolpart.ChiselHead=Chisel Head
+tinkersreborn.toolpart.ScytheHead=Scythe Head
+tinkersreborn.toolpart.LumberAxeHead=Broad Axe Head
+tinkersreborn.toolpart.ExcavatorHead=Excavator Head
+tinkersreborn.toolpart.ToolShard=Shard
+tinkersreborn.toolpart.LargeSwordBlade=Large Sword Blade
+tinkersreborn.toolpart.HammerHead=Hammer Head
+tinkersreborn.toolpart.Bowstring=Bowstring
+tinkersreborn.toolpart.ArrowHead=Arrowhead
+tinkersreborn.toolpart.Fletching=Fletching
+tinkersreborn.toolpart.Shuriken=Shuriken
+tinkersreborn.toolpart.CrossbowLimb=Crossbow Limb
+tinkersreborn.toolpart.CrossbowBody=Crossbow Body
+tinkersreborn.toolpart.BowLimb=Bow Limb
+tinkersreborn.toolpart.Bolt=Bolt
+tinkersreborn.toolpart.Shaft=Arrow Shaft
+
+// stats
+
+tinkersreborn.durability=Durability
+tinkersreborn.durability.desc=
+tinkersreborn.miningspeed=Mining Speed
+tinkersreborn.miningspeed.desc=
+tinkersreborn.attack=Attack
+tinkersreborn.attack.desc=
+tinkersreborn.harvestlevel=Harvest Level
+tinkersreborn.harvestlevel.desc=

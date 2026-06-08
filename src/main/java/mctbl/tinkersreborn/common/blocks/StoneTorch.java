@@ -25,6 +25,11 @@ public class StoneTorch extends Block {
         this.setBlockName("tinkersreborn.stonetorch");
     }
 
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.stonetorch";
+    }
+
     /**
      * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
      * cleared to be reused)

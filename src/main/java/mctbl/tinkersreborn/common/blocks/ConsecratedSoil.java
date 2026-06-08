@@ -16,10 +16,9 @@ import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 public class ConsecratedSoil extends TinkersRebornBlock {
 
     public ConsecratedSoil() {
-        super(Material.gourd, 3.0F, new String[] { "consecratedsoil" });
+        super(Material.gourd, "tinkersreborn.consecratedsoil", 3.0F, new String[] { "consecratedsoil" });
         this.setHarvestLevel("shovel", -1);
         this.setLightOpacity(0);
-        this.setBlockName("tinkersreborn.consecratedsoil");
         this.stepSound = Block.soundTypeSand;
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }

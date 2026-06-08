@@ -15,8 +15,7 @@ import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 public class MetalOre extends TinkersRebornBlock {
 
     public MetalOre() {
-        super(Material.rock, 10.0F, TinkersRebornConfig.oreTypes);
-        this.setBlockName("tinkersreborn.stoneore");
+        super(Material.rock, "tinkersreborn.MetalOre", 10.0F, TinkersRebornConfig.oreTypes);
 
         this.setHarvestLevel("pickaxe", 4, 1); // cobalt
         this.setHarvestLevel("pickaxe", 4, 2); // ardite
@@ -37,9 +36,7 @@ public class MetalOre extends TinkersRebornBlock {
     @Override
     public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
         for (int iter = 0; iter < textureNames.length; iter++) {
-            if (!textureNames[iter].endsWith("slag")) {
-                list.add(new ItemStack(b, 1, iter));
-            }
+            list.add(new ItemStack(b, 1, iter));
         }
     }
 

@@ -10,7 +10,15 @@ public class TinkersRebornEvents {
     @SubscribeEvent
     public void tinkersToolTooltipEvent(ItemTooltipEvent e) {
         // use this to prevent vailnila durability display
-        if (e.itemStack.getItem() instanceof ToolCore) e.toolTip.removeIf(s -> s.startsWith("Durability: "));
+        if (e.itemStack.getItemDamage() != 0 && e.itemStack.getItem() instanceof ToolCore) {
+            for (int idx = e.toolTip.size() - 1; idx >= 0; idx--) {
+                if (e.toolTip.get(idx)
+                    .startsWith("Durability: ")) {
+                    e.toolTip.remove(e.toolTip.get(idx));
+                    break;
+                }
+            }
+        }
     }
 
 }

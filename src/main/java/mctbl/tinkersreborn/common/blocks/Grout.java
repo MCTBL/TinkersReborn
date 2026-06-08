@@ -9,10 +9,9 @@ import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 public class Grout extends TinkersRebornBlock {
 
     public Grout() {
-        super(Material.gourd, 3.0F, new String[] { "grout" });
+        super(Material.gourd, "tinkersreborn.grout", 3.0F, new String[] { "grout" });
         this.setHarvestLevel("shovel", -1);
         this.setLightOpacity(0);
-        this.setBlockName("tinkersreborn.grout");
         this.stepSound = Block.soundTypeGravel;
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }

@@ -130,7 +130,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(slimeDirt, slimeDirt.getUnlocalizedName());
 
         slimeStep = new StepSoundSlime("mob.slime", 1.0f, 1.0f);
-        blueSlimeFluid = new TinkersRebornFluid("slime_blue", 0X42E9F4, true, false);
+        blueSlimeFluid = new TinkersRebornFluid("blue_slime", 0X42E9F4, true, false);
 
         slimePool = new SlimeFluid(blueSlimeFluid);
         GameRegistry.registerBlock(slimePool, slimePool.getUnlocalizedName());
@@ -185,12 +185,12 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     private void oreRegistry() {
         ItemStack craftingTable = new ItemStack(Blocks.crafting_table, 1);
 
-        OreDictionary.registerOre("oreCobalt", new ItemStack(oreSlag, 1, 1));
-        OreDictionary.registerOre("oreArdite", new ItemStack(oreSlag, 1, 2));
-        OreDictionary.registerOre("oreCopper", new ItemStack(oreSlag, 1, 3));
-        OreDictionary.registerOre("oreTin", new ItemStack(oreSlag, 1, 4));
-        OreDictionary.registerOre("oreAluminum", new ItemStack(oreSlag, 1, 5));
-        OreDictionary.registerOre("oreAluminium", new ItemStack(oreSlag, 1, 5));
+        OreDictionary.registerOre("oreCobalt", new ItemStack(oreSlag, 1, 0));
+        OreDictionary.registerOre("oreArdite", new ItemStack(oreSlag, 1, 1));
+        OreDictionary.registerOre("oreCopper", new ItemStack(oreSlag, 1, 2));
+        OreDictionary.registerOre("oreTin", new ItemStack(oreSlag, 1, 3));
+        OreDictionary.registerOre("oreAluminum", new ItemStack(oreSlag, 1, 4));
+        OreDictionary.registerOre("oreAluminium", new ItemStack(oreSlag, 1, 4));
 
         OreDictionary.registerOre("oreIron", new ItemStack(oreGravel, 1, 0));
         OreDictionary.registerOre("oreGold", new ItemStack(oreGravel, 1, 1));

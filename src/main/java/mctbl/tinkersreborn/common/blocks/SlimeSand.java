@@ -14,10 +14,9 @@ import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 public class SlimeSand extends TinkersRebornBlock {
 
     public SlimeSand() {
-        super(Material.gourd, 3.0F, new String[] { "slimesand", "slimesandblue" });
+        super(Material.gourd, "tinkersreborn.slimesand", 3.0F, new String[] { "slimesand", "slimesandblue" });
         this.setHarvestLevel("shovel", -1);
         this.setLightOpacity(0);
-        this.setBlockName("tinkersreborn.slimesand");
         this.stepSound = Block.soundTypeSand;
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }

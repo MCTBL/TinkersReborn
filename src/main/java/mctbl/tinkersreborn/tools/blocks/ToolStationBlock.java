@@ -32,6 +32,11 @@ public class ToolStationBlock extends TinkersRebornInventoryBlock implements ITi
             "tools/toolstation_side" };
     }
 
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.ToolStation";
+    }
+
     public ToolStationBlock(Material m) {
         // for tool forge
         super(m);

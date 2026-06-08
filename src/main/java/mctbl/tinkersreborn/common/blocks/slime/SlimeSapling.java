@@ -34,7 +34,12 @@ public class SlimeSapling extends BlockSapling {
         setStepSound(Block.soundTypeGrass);
         setCreativeTab(TinkersRebornRegistry.blockTab);
         setStepSound(TinkersRebornGeneral.slimeStep);
-        setBlockName("tinkersreborn.slime.sapling");
+        this.setBlockName("tinkersreborn.slime.sapling");
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.slime.sapling";
     }
 
     @Override
@@ -105,7 +110,7 @@ public class SlimeSapling extends BlockSapling {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
-        par3List.add(new ItemStack(par1, 1, 0));
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> list) {
+        list.add(new ItemStack(par1, 1, 0));
     }
 }

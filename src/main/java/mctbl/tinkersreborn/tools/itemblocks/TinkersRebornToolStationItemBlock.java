@@ -10,4 +10,5 @@ public class TinkersRebornToolStationItemBlock extends ItemBlock {
         this.setMaxDamage(0);
         this.setUnlocalizedName("tinkersreborn.ToolStation");
     }
+
 }

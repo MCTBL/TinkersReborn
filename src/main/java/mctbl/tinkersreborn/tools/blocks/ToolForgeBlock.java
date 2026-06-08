@@ -39,6 +39,11 @@ public class ToolForgeBlock extends ToolStationBlock {
     }
 
     @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.ToolFroge";
+    }
+
+    @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
         List<IIcon> l = new ArrayList<>();
         l.add(iconRegister.registerIcon(getTextureDomain(0) + ":" + TEXTURENAMES[0]));

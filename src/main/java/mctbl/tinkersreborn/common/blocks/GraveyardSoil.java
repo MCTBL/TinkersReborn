@@ -15,10 +15,9 @@ import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 public class GraveyardSoil extends TinkersRebornBlock {
 
     public GraveyardSoil() {
-        super(Material.gourd, 3.0F, new String[] { "graveyardsoil" });
+        super(Material.gourd, "tinkersreborn.graveyardsoil", 3.0F, new String[] { "graveyardsoil" });
         this.setHarvestLevel("shovel", -1);
         this.setLightOpacity(0);
-        this.setBlockName("tinkersreborn.graveyardsoil");
         this.stepSound = Block.soundTypeSand;
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }

@@ -8,7 +8,6 @@ import java.util.Map;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.util.ColorUtil;
 
@@ -31,7 +30,6 @@ public final class MiningLevelHelper {
             String local = s.substring(2);
 
             MiningLevel newLevel = new MiningLevel(idx, charToFormatting.get(prefix), prefix, local);
-            TinkersReborn.LOG.info("Tinker mining level init %s =================", newLevel.getLocalization());
             levelList.add(newLevel);
             nameToLevel.put(local, newLevel);
             idx++;

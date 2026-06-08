@@ -35,6 +35,7 @@ public final class ToolTags {
     // misc. tool info
     public static final String FREE_MODIFIERS = "FreeModifiers";
     public static final String BROKEN = "Broken";
+    public static final String CUSTOMNAME = "CustomName";
 
     // Extra
     public static final String REPAIR_COUNT = "RepairCount";
@@ -43,12 +44,6 @@ public final class ToolTags {
     public static final String RESET_FLAG = "ResetFlag";
 
     public static final String NO_RENAME = "NoRename";
-
-    // Render
-    public static final String RENDERHEAD = "RenderHead";
-    public static final String RENDERHANDLE = "RenderHandle";
-    public static final String RENDERACCESSORY = "RenderAccessory";
-    public static final String RENDEREXTRA = "RenderExtra";
 
     private ToolTags() {}
 

@@ -83,6 +83,10 @@ public class ToolTagsHelper {
     }
 
     // stats
+    public static String getCustomName(ItemStack stack) {
+        return getToolBaseNBTSafe(stack).getString(ToolTags.CUSTOMNAME);
+    }
+
     public static boolean isBroken(ItemStack stack) {
         return getToolBaseNBTSafe(stack).getBoolean(ToolTags.BROKEN);
     }

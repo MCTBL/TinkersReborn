@@ -14,13 +14,25 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 public class MaterialItem extends Item {
 
     String textureName;
+    String name;
 
     public MaterialItem(String name, String textureName) {
         super();
         this.setCreativeTab(TinkersRebornRegistry.miscTab);
         this.setUnlocalizedName("tinkersreborn.material." + name);
+        this.name = name;
         this.hasSubtypes = false;
         this.textureName = textureName;
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        return this.getUnlocalizedName();
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.material." + this.name;
     }
 
     @Override

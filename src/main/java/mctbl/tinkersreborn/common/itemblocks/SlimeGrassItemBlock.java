@@ -6,10 +6,10 @@ import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 
 public class SlimeGrassItemBlock extends TinkersRebornItemBlock {
 
-    public static final String[] blockTypes = { "blue", "dirt" };
+    public static final String[] blockTypes = { "blue" };
 
     public SlimeGrassItemBlock(Block b) {
-        super(b, "block.tinkersreborn.slime.grass", blockTypes);
+        super(b, "tinkersreborn.slime.grass", blockTypes);
         setMaxDamage(0);
         setHasSubtypes(true);
     }

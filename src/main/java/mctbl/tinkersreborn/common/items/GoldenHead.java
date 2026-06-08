@@ -11,13 +11,13 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.util.ColorUtil;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class GoldenHead extends ItemFood {
 
@@ -28,6 +28,16 @@ public class GoldenHead extends ItemFood {
         this.setAlwaysEdible();
         this.setPotionEffect(Potion.regeneration.id, 10, 0, 1.0F);
         this.setUnlocalizedName("tinkersreborn.goldenhead");
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.goldenhead";
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        return this.getUnlocalizedName();
     }
 
     @Override
@@ -76,11 +86,7 @@ public class GoldenHead extends ItemFood {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
-        list.add(
-            ColorUtil.addDarkPurple(
-                ColorUtil.addItalic(StatCollector.translateToLocal("tinkersreborn.goldenhead1.tooltip"))));
-        list.add(
-            ColorUtil.addDarkPurple(
-                ColorUtil.addItalic(StatCollector.translateToLocal("tinkersreborn.goldenhead2.tooltip"))));
+        list.add(ColorUtil.addDarkPurple(ColorUtil.addItalic(TinkersStr.goldenHeadToolToip1.toString())));
+        list.add(ColorUtil.addDarkPurple(ColorUtil.addItalic(TinkersStr.goldenHeadToolToip2.toString())));
     }
 }

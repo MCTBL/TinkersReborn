@@ -1,24 +1,27 @@
 package mctbl.tinkersreborn.smeltery.itemblocks;
 
+import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
+
 import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class LavaTankItemBlock extends TinkersRebornItemBlock implements IFluidContainerItem {
 
     public static final String[] blockTypes = { "Tank", "Gague", "Window" };
 
     public LavaTankItemBlock(Block b) {
-        super(b, "tinkersreborn.lavatank", blockTypes);
+        super(b, "tinkersreborn.LavaTank", blockTypes);
         setMaxDamage(0);
         setHasSubtypes(true);
     }
@@ -29,14 +32,12 @@ public class LavaTankItemBlock extends TinkersRebornItemBlock implements IFluidC
             NBTTagCompound liquidTag = stack.getTagCompound()
                 .getCompoundTag("Fluid");
             if (liquidTag != null) {
-                list.add(
-                    StatCollector.translateToLocal("tinkersreborn.tank.tooltip1") + " "
-                        + StatCollector.translateToLocal(liquidTag.getString("FluidName")));
-                list.add(liquidTag.getInteger("Amount") + " mB");
+                list.add(TinkersStr.tankToolToip1 + " " + translate(liquidTag.getString("FluidName")));
+                list.add(liquidTag.getInteger("Amount") + " " + TinkersRebornConfig.fluidUnit);
             }
         } else {
-            list.add(StatCollector.translateToLocal("tinkersreborn.tank.tooltip3"));
-            list.add(StatCollector.translateToLocal("tinkersreborn.tank.tooltip2"));
+            list.add(TinkersStr.tankToolToip2.toString());
+            list.add(TinkersStr.tankToolToip3.toString());
         }
     }
 

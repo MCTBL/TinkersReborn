@@ -20,9 +20,11 @@ public class TinkersRebornFluid extends Fluid {
     private Integer materialId;
     private Integer color;
     public String identifier;
+    String unlocalizedName;
 
     public TinkersRebornFluid(String fluidName, int color, boolean initFluid, boolean needFluidBlock) {
         super(fluidName);
+        this.unlocalizedName = fluidName;
         this.identifier = fluidName;
         this.color = color;
         if (initFluid) {
@@ -36,8 +38,7 @@ public class TinkersRebornFluid extends Fluid {
         }
 
         if (needFluidBlock) {
-            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.water);
-            fluidBlock.setBlockName("fluid." + fluidName);
+            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.water, this.unlocalizedName);
             GameRegistry.registerBlock(fluidBlock, fluidBlock.getUnlocalizedName());
         }
     }
@@ -48,7 +49,8 @@ public class TinkersRebornFluid extends Fluid {
      * @param initFluid true if need auto register fluid and add to material
      */
     public TinkersRebornFluid(TinkersRebornMaterial m, boolean initFluid) {
-        super("molten." + m.identifier);
+        super("molten_" + m.identifier);
+        this.unlocalizedName = "molten_" + m.identifier;
         this.setDensity(3000)
             .setViscosity(6000)
             .setTemperature(1300)
@@ -59,8 +61,7 @@ public class TinkersRebornFluid extends Fluid {
             FluidRegistry.registerFluid(this);
             m.setFluidAndCastable(this);
 
-            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.lava);
-            fluidBlock.setBlockName("fluid.molten." + m.identifier);
+            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.lava, this.unlocalizedName);
             GameRegistry.registerBlock(fluidBlock, fluidBlock.getUnlocalizedName());
 
             FluidContainerRegistry.registerFluidContainer(
@@ -71,6 +72,11 @@ public class TinkersRebornFluid extends Fluid {
             TinkersRebornRegistry.allTinkersFluid.add(this);
         }
 
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return this.unlocalizedName;
     }
 
     @Override

@@ -180,10 +180,9 @@ public class ColorUtil {
 
     public static String formatPartialAmount(int value, int max) {
         return String.format(
-            "%s%s%s/%s%s",
+            "%s%s" + EnumChatFormatting.GRAY.toString() + "/" + EnumChatFormatting.RESET.toString() + "%s%s",
             valueToColorCode((float) value / (float) max),
             TinkersRebornUtils.df.format(value),
-            EnumChatFormatting.GRAY.toString(),
             valueToColorCode(1f),
             TinkersRebornUtils.df.format(max));
     }

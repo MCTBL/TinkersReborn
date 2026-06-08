@@ -46,6 +46,7 @@ import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TextureHelper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -56,6 +57,8 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     public Random random = TinkersReborn.random;
+
+    public static final String toolNameFormatter = TinkersStr.tooNamePattern.toString();
 
     /**
      * first one is main part and has broken icon, but it will render second second
@@ -454,9 +457,17 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack p_77653_1_) {
-        // TODO Auto-generated method stub
-        return super.getItemStackDisplayName(p_77653_1_);
+    public String getItemStackDisplayName(ItemStack stack) {
+        String customName = ToolTagsHelper.getCustomName(stack);
+        if (!customName.isEmpty()) return customName;
+
+        String toolBaseName = getLocalizedToolName();
+        String materialIdentifier = ToolTagsHelper.getToolBaseMaterialsNBTSafe(stack)
+            .getStringTagAt(0);
+        String materialName = TinkersRebornRegistry.getMaterialByIdentifier(materialIdentifier)
+            .localizedPrefix();
+
+        return String.format(toolNameFormatter, materialName, toolBaseName);
     }
 
     @Override
@@ -469,7 +480,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         this.getTooltipDetailed(stack, player, list);
 
         if (!shift) {
-            list.add(translate("tinkersreborn.tooltip.holdShift"));
+            list.add(TinkersStr.holdShift.toString());
         } else {
             this.getTooltipComponents(stack, player, list);
         }
@@ -498,8 +509,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
             list.add(
                 String.format(
                     "%s: %s",
-                    translate(HeadMaterialStats.LOC_Durability),
-                    ColorUtil.addDarkRed(ColorUtil.addUnderLine(translate("tinkersreborn.tooltip.broken")))));
+                    HeadMaterialStats.LOC_Durability,
+                    ColorUtil.addDarkRed(ColorUtil.addUnderLine(TinkersStr.broken.toString()))));
         } else {
             list.add(
                 HeadMaterialStats.formatDurability(

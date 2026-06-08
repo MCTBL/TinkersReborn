@@ -2,7 +2,6 @@ package mctbl.tinkersreborn.tools.gui;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
@@ -10,6 +9,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.tools.entity.TinkersRebornPartBuilderLogic;
 import mctbl.tinkersreborn.tools.inventory.TinkersRebornPartBuilderContainer;
 import mctbl.tinkersreborn.util.ColorUtil;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 @SideOnly(Side.CLIENT)
 public class GuiPartBuilder extends GuiContainer {
@@ -27,7 +27,7 @@ public class GuiPartBuilder extends GuiContainer {
 
         // this.drawChestPart = inventorySlots instanceof PartCrafterChestContainer;
 
-        this.title = ColorUtil.addUnderLine(StatCollector.translateToLocal("gui.partcrafter1"));
+        this.title = ColorUtil.addUnderLine(TinkersStr.partCrafterTitle.toString());
     }
 
     @Override

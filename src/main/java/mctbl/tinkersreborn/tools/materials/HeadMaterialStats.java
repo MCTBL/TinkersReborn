@@ -10,18 +10,19 @@ import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
 import mctbl.tinkersreborn.library.utils.MiningLevelHelper.MiningLevel;
 import mctbl.tinkersreborn.util.ColorUtil;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class HeadMaterialStats extends AbstractMaterialStats {
 
-    public final static String LOC_Durability = "tinkersreborn.stat.head.durability.name";
-    public final static String LOC_MiningSpeed = "tinkersreborn.stat.head.miningspeed.name";
-    public final static String LOC_Attack = "tinkersreborn.stat.head.attack.name";
-    public final static String LOC_HarvestLevel = "tinkersreborn.stat.head.harvestlevel.name";
+    public final static String LOC_Durability = TinkersStr.durability.toString();
+    public final static String LOC_MiningSpeed = TinkersStr.miningSpeed.toString();
+    public final static String LOC_Attack = TinkersStr.attack.toString();
+    public final static String LOC_HarvestLevel = TinkersStr.harvestLevel.toString();
 
-    public final static String LOC_DurabilityDesc = "tinkersreborn.stat.head.durability.desc";
-    public final static String LOC_MiningSpeedDesc = "tinkersreborn.stat.head.miningspeed.desc";
-    public final static String LOC_AttackDesc = "tinkersreborn.stat.head.attack.desc";
-    public final static String LOC_HarvestLevelDesc = "tinkersreborn.stat.head.harvestlevel.desc";
+    public final static String LOC_DurabilityDesc = TinkersStr.durabilityDesc.toString();
+    public final static String LOC_MiningSpeedDesc = TinkersStr.miningSpeedDesc.toString();
+    public final static String LOC_AttackDesc = TinkersStr.attackDesc.toString();
+    public final static String LOC_HarvestLevelDesc = TinkersStr.harvestLevelDesc.toString();
 
     public final int durability; // usually between 1 and 1000
     public final int harvestLevel; // see HarvestLevels class
@@ -61,10 +62,10 @@ public class HeadMaterialStats extends AbstractMaterialStats {
     public List<String> getLocalizedDesc() {
         List<String> info = new ArrayList<>();
 
-        if (durability != 0) info.add(translate(LOC_DurabilityDesc));
-        info.add(translate(LOC_HarvestLevelDesc));
-        if (miningspeed != 0) info.add(translate(LOC_MiningSpeedDesc));
-        if (attack != 0) info.add(translate(LOC_AttackDesc));
+        if (durability != 0) info.add(LOC_DurabilityDesc);
+        info.add(LOC_HarvestLevelDesc);
+        if (miningspeed != 0) info.add(LOC_MiningSpeedDesc);
+        if (attack != 0) info.add(LOC_AttackDesc);
 
         return info;
     }
@@ -79,8 +80,7 @@ public class HeadMaterialStats extends AbstractMaterialStats {
     }
 
     public static String formatDurability(int durability, int maxDurability) {
-        return String
-            .format("%s: %s", translate(LOC_Durability), ColorUtil.formatPartialAmount(durability, maxDurability));
+        return String.format("%s: %s", LOC_Durability, ColorUtil.formatPartialAmount(durability, maxDurability));
     }
 
     public static String formatMiningSpeed(float miningspeed) {

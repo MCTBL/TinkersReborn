@@ -33,6 +33,7 @@ public class TinersRebornFontRender extends FontRenderer {
 
     @Override
     public int drawStringWithShadow(String text, int x, int y, int color) {
+        // TODO now shadow render have error
         return super.drawString(text, x, y, color);
     }
 
@@ -160,7 +161,7 @@ public class TinersRebornFontRender extends FontRenderer {
                 case ' ':
                     l = k;
                 default:
-                    j += this.getCharWidth(c0);
+                    j += getCharWidth(c0);
 
                     if (flag) {
                         ++j;

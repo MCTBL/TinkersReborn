@@ -9,7 +9,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.StatCollector;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,10 +22,18 @@ public class TinkersRebornBlock extends Block {
         super(material);
     }
 
-    public TinkersRebornBlock(Material material, float hardness, String[] tex) {
+    public TinkersRebornBlock(Material material, String unlocalizedName, float hardness, String[] tex) {
         super(material);
         setHardness(hardness);
         textureNames = tex;
+        this.unlocalizedName = unlocalizedName;
+    }
+
+    private String unlocalizedName;
+
+    @Override
+    public String getUnlocalizedName() {
+        return this.unlocalizedName;
     }
 
     @Override
@@ -65,11 +72,6 @@ public class TinkersRebornBlock extends Block {
                 list.add(new ItemStack(block, 1, iter));
             }
         }
-    }
-
-    @Override
-    public String getLocalizedName() {
-        return StatCollector.translateToLocal(this.getUnlocalizedName());
     }
 
 }

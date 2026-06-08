@@ -22,6 +22,7 @@ public class SmelteryItemBlock extends TinkersRebornItemBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+        // TODO
         // switch (stack.getItemDamage()) {
         // case 0:
         // list.add(StatCollector.translateToLocal("smeltery.controller.tooltip"));

@@ -9,7 +9,7 @@ public class SlimeSaplingItemBlock extends TinkersRebornItemBlock {
     public static final String[] blockTypes = { "bluegreen" };
 
     public SlimeSaplingItemBlock(Block b) {
-        super(b, "block.tinkersreborn.slime.sapling", blockTypes);
+        super(b, "tinkersreborn.slime.sapling", blockTypes);
         setMaxDamage(0);
         setHasSubtypes(true);
     }

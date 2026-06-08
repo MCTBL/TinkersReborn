@@ -26,9 +26,14 @@ public class SlimeLeaves extends BlockLeaves {
     public SlimeLeaves() {
         super();
         setStepSound(TinkersRebornGeneral.slimeStep);
-        setBlockName("tinkersreborn.slime.leaves");
+        this.setBlockName("tinkersreborn.slime.leaves");
         setCreativeTab(TinkersRebornRegistry.blockTab);
         setHardness(0.3f);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.slime.leaves";
     }
 
     @Override

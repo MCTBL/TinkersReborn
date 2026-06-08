@@ -9,7 +9,7 @@ public class SlimeGelItemBlock extends TinkersRebornItemBlock {
     public static final String[] blockTypes = { "blue", "green", "purple" };
 
     public SlimeGelItemBlock(Block b) {
-        super(b, "block.tinkersreborn.slime.congealed", blockTypes);
+        super(b, "tinkersreborn.slime.gel", blockTypes);
         setMaxDamage(0);
         setHasSubtypes(true);
     }

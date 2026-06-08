@@ -25,7 +25,7 @@ public class GravelOre extends BlockSand {
     public GravelOre() {
         this.textureNames = TinkersRebornConfig.gravelOreTypes;
         this.setStepSound(soundTypeGravel);
-        this.setBlockName("tinkersreborn.gravelore");
+        this.setBlockName("tinkersreborn.GravelOre");
 
         this.setHarvestLevel("shovel", 1, 0);// iron
         this.setHarvestLevel("shovel", 2, 1);// gold
@@ -35,6 +35,11 @@ public class GravelOre extends BlockSand {
         this.setHarvestLevel("shovel", 4, 5);// cobalt
 
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.GravelOre";
     }
 
     @Override

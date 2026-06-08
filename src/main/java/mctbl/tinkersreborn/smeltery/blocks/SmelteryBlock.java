@@ -52,6 +52,11 @@ public class SmelteryBlock extends TinkersRebornInventoryBlock {
     }
 
     @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.Smeltery";
+    }
+
+    @Override
     public int getRenderType() {
         return SmelteryRender.smelteryModel;
     }
