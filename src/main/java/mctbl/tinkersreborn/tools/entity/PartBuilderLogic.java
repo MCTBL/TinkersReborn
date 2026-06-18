@@ -9,13 +9,13 @@ import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.tools.gui.GuiPartBuilder;
-import mctbl.tinkersreborn.tools.inventory.TinkersRebornPartBuilderContainer;
+import mctbl.tinkersreborn.tools.inventory.ContainerPartBuilder;
 
-public class TinkersRebornPartBuilderLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
+public class PartBuilderLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
 
     public boolean isCrafted;
 
-    public TinkersRebornPartBuilderLogic() {
+    public PartBuilderLogic() {
         super(3);
         this.isCrafted = false;
     }
@@ -27,7 +27,7 @@ public class TinkersRebornPartBuilderLogic extends TinkersRebornInventoryLogic i
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new TinkersRebornPartBuilderContainer(inventoryplayer, this);
+        return new ContainerPartBuilder(inventoryplayer, this);
     }
 
     @Override

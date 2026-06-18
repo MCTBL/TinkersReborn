@@ -18,6 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Same as Container but provides some extra functionality to simplify things
@@ -36,10 +37,21 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
     public List<Container> subContainers = new ArrayList<>();
 
     public BaseContainer(T tile) {
-        this(tile, null);
+        this(tile, EnumFacing.DOWN);
     }
 
     public BaseContainer(T tile, EnumFacing invDir) {
+        this.tile = tile;
+        this.inventory = (IInventory) this.tile;
+        this.xCoord = this.tile.xCoord;
+        this.yCoord = this.tile.yCoord;
+        this.zCoord = this.tile.zCoord;
+        this.world = this.tile.getWorldObj();
+        this.originalBlock = this.tile.getBlockType();
+
+    }
+
+    public BaseContainer(T tile, ForgeDirection invDir) {
         this.tile = tile;
         this.inventory = (IInventory) this.tile;
         this.xCoord = this.tile.xCoord;
@@ -89,8 +101,8 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
      */
     protected void syncNewContainer(EntityPlayerMP player) {}
 
-    public boolean sameGui(BaseContainer<T> otherContainer) {
-        return this.tile == otherContainer.tile;
+    public boolean sameGui(BaseContainer<T> openContainer) {
+        return this.tile == openContainer.tile;
     }
 
     @Override

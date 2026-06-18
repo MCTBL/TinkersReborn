@@ -6,20 +6,20 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.tools.entity.TinkersRebornPartBuilderLogic;
-import mctbl.tinkersreborn.tools.inventory.TinkersRebornPartBuilderContainer;
+import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
+import mctbl.tinkersreborn.tools.inventory.ContainerPartBuilder;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersStr;
 
 @SideOnly(Side.CLIENT)
 public class GuiPartBuilder extends GuiContainer {
 
-    public TinkersRebornPartBuilderLogic logic;
-    public TinkersRebornPartBuilderContainer toolSlots;
+    public PartBuilderLogic logic;
+    public ContainerPartBuilder toolSlots;
     String title;
 
-    public GuiPartBuilder(InventoryPlayer inventoryplayer, TinkersRebornPartBuilderLogic stationlogic, World world,
-        int x, int y, int z) {
+    public GuiPartBuilder(InventoryPlayer inventoryplayer, PartBuilderLogic stationlogic, World world, int x, int y,
+        int z) {
         super(stationlogic.getGuiContainer(inventoryplayer, world, x, y, z));
         this.logic = stationlogic;
 

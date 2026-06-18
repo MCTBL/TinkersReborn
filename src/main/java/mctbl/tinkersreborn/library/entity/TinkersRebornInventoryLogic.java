@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public abstract class TinkersRebornInventoryLogic extends TileEntity implements IInventory {
 
@@ -31,7 +32,6 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     }
 
     /* Inventory management */
-
     @Override
     public ItemStack getStackInSlot(int slot) {
         return slot < inventory.length ? inventory[slot] : null;
@@ -44,6 +44,10 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     @Override
     public int getSizeInventory() {
         return inventory.length;
+    }
+
+    public ItemStack[] getInventory() {
+        return this.inventory;
     }
 
     @Override
@@ -203,4 +207,13 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     @Override
     public void closeInventory() {}
 
+    public boolean isInventoryEmpty() {
+        for (int i = 0; i < this.getSizeInventory(); ++i) {
+            if (!TinkersRebornUtils.isStackEmpty(getStackInSlot(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

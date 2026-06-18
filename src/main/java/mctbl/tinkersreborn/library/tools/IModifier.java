@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 
 public interface IModifier extends IToolMod {
@@ -28,7 +29,7 @@ public interface IModifier extends IToolMod {
      *                            contains a localized string describing what's
      *                            wrong.
      */
-    boolean canApply(ItemStack stack, ItemStack original);
+    boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException;
     // throws TinkerGuiException;
 
     /** Apply the modifier to that itemstack. The complete procedure */

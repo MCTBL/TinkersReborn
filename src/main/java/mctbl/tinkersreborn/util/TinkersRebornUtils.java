@@ -2,7 +2,11 @@ package mctbl.tinkersreborn.util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -28,6 +32,10 @@ public class TinkersRebornUtils {
 
     public static String translate(String string) {
         return StatCollector.translateToLocal(string);
+    }
+
+    public static String translate(String string, Object... obj) {
+        return String.format(StatCollector.translateToLocal(string), obj);
     }
 
     public static boolean canTranslate(String string) {
@@ -117,5 +125,27 @@ public class TinkersRebornUtils {
             value -= 1;
         }
         return sb.toString();
+    }
+
+    public static boolean isStackEmpty(@Nullable ItemStack stack) {
+        if (stack == null || stack.stackSize == 0) return true;
+
+        return false;
+    }
+
+    public static List<ItemStack> copyItemStackList(List<ItemStack> stackList) {
+        return stackList.stream()
+            .map(i -> i.copy())
+            .collect(Collectors.toList());
+    }
+
+    public static String convertNewlines(String line) {
+        if (line == null) return null;
+        int j;
+        while ((j = line.indexOf("\\n")) >= 0) {
+            line = line.substring(0, j) + '\n' + line.substring(j + 2);
+        }
+
+        return line;
     }
 }

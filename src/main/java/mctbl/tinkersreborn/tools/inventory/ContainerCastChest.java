@@ -9,11 +9,11 @@ import net.minecraft.item.ItemStack;
 import mctbl.tinkersreborn.library.inventory.TinkersRebornContainer;
 import mctbl.tinkersreborn.tools.entity.CastChestLogic;
 
-public class CastChestContainer extends TinkersRebornContainer {
+public class ContainerCastChest extends TinkersRebornContainer {
 
     public CastChestLogic chest;
 
-    public CastChestContainer(InventoryPlayer inventoryplayer, CastChestLogic chest) {
+    public ContainerCastChest(InventoryPlayer inventoryplayer, CastChestLogic chest) {
         super(inventoryplayer);
         this.chest = chest;
 

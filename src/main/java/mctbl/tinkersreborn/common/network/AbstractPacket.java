@@ -1,17 +1,15 @@
-package mctbl.tinkersreborn.util;
-
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.network.NetHandlerPlayServer;
+package mctbl.tinkersreborn.common.network;
 
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public abstract class AbstractPacket implements IMessage {
 
-    public abstract IMessage handleClient(NetHandlerPlayClient netHandler);
+    public abstract IMessage handleClient(MessageContext netHandler);
 
-    public abstract IMessage handleServer(NetHandlerPlayServer netHandler);
+    public abstract IMessage handleServer(MessageContext netHandler);
 
     protected void writePos(BlockPos pos, ByteBuf buf) {
         buf.writeInt(pos.getX());
@@ -25,5 +23,4 @@ public abstract class AbstractPacket implements IMessage {
         int z = buf.readInt();
         return new BlockPos(x, y, z);
     }
-
 }

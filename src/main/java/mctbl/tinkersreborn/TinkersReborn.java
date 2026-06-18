@@ -15,6 +15,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
+import mctbl.tinkersreborn.common.network.AbstractPacketThreadsafe;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
@@ -51,6 +52,7 @@ public class TinkersReborn {
     public void preInit(FMLPreInitializationEvent event) {
         TinkersRebornConfig.setupConfig(event.getModConfigurationDirectory());
         TinkersRebornRegistry.instance.preInit();
+        AbstractPacketThreadsafe.init();
 
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 

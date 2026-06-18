@@ -9,9 +9,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.annotation.Nonnull;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
@@ -30,6 +34,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import com.google.common.collect.Sets;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
@@ -39,8 +45,12 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
+import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.tools.Category;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
+import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
@@ -56,7 +66,7 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
  * All the base of a Tinkers style Tool class Author MCTBL Time 2026-05-24
  * 11:46:03
  */
-public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
+public abstract class ToolCore extends Item implements IModifyable, IToolEvent, IRepairable {
 
     public Random random = TinkersReborn.random;
 
@@ -77,6 +87,11 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     public String toolTypeName; // pickaxe
     public final int partAmount;
+
+    public ItemStack toolForRender;
+
+    // use getToolBuildGuiInfo instanced
+    protected ToolBuildGuiInfo toolBuildGuiInfo;
 
     public ToolCore(String toolTypeName, int partAmount) {
         super();
@@ -174,11 +189,13 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int renderPass) {
-        NBTTagList renderMaterials = ToolTagsHelper.getToolRenderMaterialsNBTSafe(stack);
-        if (renderMaterials.tagCount() != 0) {
+        List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
+        if (renderMaterials.size() != 0) {
             if (renderPass < this.partAmount) {
                 int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.partAmount : renderPass;
-                return getCorrectIcon(this.allIcons.get(iconsIdx), renderMaterials.getStringTagAt(renderPass));
+                int materialId = renderMaterials.get(renderPass) == null ? -1
+                    : renderMaterials.get(renderPass).materialId;
+                return getCorrectIcon(this.allIcons.get(iconsIdx), materialId);
             }
             // Effects
             // else if (renderPass <= 10) {
@@ -190,14 +207,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         return emptyIcon;
     }
 
-    protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, int id) {
+    protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, Integer id) {
         if (icons.containsKey(id)) return icons.get(id);
         // default icon
         return icons.get(-1);
-    }
-
-    protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, String materialIdentifier) {
-        return this.getCorrectIcon(icons, TinkersRebornRegistry.getMaterialByIdentifier(materialIdentifier).materialId);
     }
 
     @Override
@@ -216,8 +229,14 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     }
 
     protected int getCorrectColor(Map<Integer, IIcon> icons, String materialIdentifier) {
-        TinkersRebornMaterial material = TinkersRebornRegistry.getMaterialByIdentifier(materialIdentifier);
-        if (material != null && !icons.containsKey(material.materialId)) return material.materialTextColor;
+        TinkersRebornMaterial material = null;
+        if (materialIdentifier.startsWith("_internal_render")) {
+            material = TinkersRebornRegistry.renderMaterials.get(materialIdentifier);
+            return material.materialTextColor;
+        } else {
+            material = TinkersRebornRegistry.getMaterialByIdentifier(materialIdentifier);
+            if (material != null && !icons.containsKey(material.materialId)) return material.materialTextColor;
+        }
 
         return TinkersRebornMaterial.UNKNOWN.materialTextColor;
     }
@@ -244,6 +263,11 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     public String getLocalizedToolName() {
         return translate(this.getUnlocalizedToolName());
+    }
+
+    /** Returns info about the Tool. Displayed in the tool stations etc. */
+    public String getLocalizedDescription() {
+        return translate(this.getUnlocalizedName() + ".desc");
     }
 
     @Override
@@ -372,7 +396,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
                 list.add(new ItemStack(toolPartRecord.toolPart(), 1, material.materialId));
             }
         }
-        return ToolBuilderHelper.instance.buildTool(null, list.toArray(new ItemStack[0]));
+        return ToolBuilderHelper.buildTool(null, list.toArray(new ItemStack[0]));
     }
 
     public boolean checkRecipeMatch(ItemStack[] parts) {
@@ -388,7 +412,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     /**
      * Builds a default tool from: 1. Handle 2. Head 3. Accessoire (if present)
      */
-    protected ToolNBT buildToolTag(List<TinkersRebornMaterial> materials) {
+    public ToolNBT buildToolTag(List<TinkersRebornMaterial> materials) {
         ToolNBT data = new ToolNBT();
         List<HeadMaterialStats> heads = new ArrayList<>();
         List<HandleMaterialStats> handles = new ArrayList<>();
@@ -436,6 +460,21 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     }
 
     /**
+     * Builds an Itemstack of this tool with the given materials.
+     *
+     * @param materials Materials to build with. Have to be in the correct order. No
+     *                  nulls!
+     * @return The built item or null if invalid input.
+     */
+    @Nonnull
+    public ItemStack buildItem(List<TinkersRebornMaterial> materials) {
+        ItemStack tool = new ItemStack(this);
+        tool.setTagCompound(buildItemNBT(materials));
+
+        return tool;
+    }
+
+    /**
      * Builds the NBT for a new tinker item with the given data.
      *
      * @param materials TinkersRebornMaterial to build with. Have to be in the
@@ -458,8 +497,33 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         // TagUtil.setCategories(basetag, getCategories());
 
         // add traits
-        // addMaterialTraits(basetag, materials);
+        addMaterialTraits(tinkersTag, materials);
 
+        basetag.setTag(ToolTags.TOOLBASETAG, tinkersTag);
+        return basetag;
+    }
+
+    public void addMaterialTraits(NBTTagCompound root, List<TinkersRebornMaterial> materials) {
+        int size = this.componentsParts.size();
+        // safety
+        if (materials.size() < size) {
+            size = materials.size();
+        }
+        // add corresponding traits per material usage
+        for (int i = 0; i < size; i++) {
+            ToolPartRecord required = this.componentsParts.get(i);
+            TinkersRebornMaterial material = materials.get(i);
+            for (ITrait trait : required.getApplicableTraitsForMaterial(material)) {
+                ToolBuilderHelper.addTrait(root, trait, material.materialTextColor);
+            }
+        }
+    }
+
+    private NBTTagCompound buildRenderNBT(List<TinkersRebornMaterial> materials) {
+        NBTTagCompound basetag = new NBTTagCompound();
+        NBTTagCompound tinkersTag = new NBTTagCompound();
+        NBTTagList dataTag = this.buildMaterialListData(materials);
+        tinkersTag.setTag(ToolTags.RENDERMATERIALS, dataTag.copy());
         basetag.setTag(ToolTags.TOOLBASETAG, tinkersTag);
         return basetag;
     }
@@ -500,7 +564,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
     }
 
     // @Override
-    // public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+    // public boolean hitEntity(ItemStack stack, EntityLivingBase target,
+    // EntityLivingBase attacker) {
     // float speed = ToolTagsHelper.getActualAttackSpeed(stack);
     // int time = Math.round(20f / speed);
     // if(time < target.hurtResistantTime / 2) {
@@ -512,8 +577,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
-        // if(!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool && ((IAoeTool) this).isAoeHarvestTool()) {
-        // for(BlockPos extraPos : ((IAoeTool) this).getAOEBlocks(itemstack, player.getEntityWorld(), player, pos)) {
+        // if(!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool &&
+        // ((IAoeTool) this).isAoeHarvestTool()) {
+        // for(BlockPos extraPos : ((IAoeTool) this).getAOEBlocks(itemstack,
+        // player.getEntityWorld(), player, pos)) {
         // breakExtraBlock(itemstack, player.getEntityWorld(), player, extraPos, pos);
         // }
         // }
@@ -550,7 +617,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     public void afterBlockBreak(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase player,
         int damage, boolean wasEffective) {
-        // TinkerUtil.getTraitsOrdered(stack).forEach(trait -> trait.afterBlockBreak(stack, world, state, pos, player,
+        // TinkerUtil.getTraitsOrdered(stack).forEach(trait ->
+        // trait.afterBlockBreak(stack, world, state, pos, player,
         // wasEffective));
         ToolTagsHelper.damageTool(stack, damage, player);
     }
@@ -571,9 +639,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
         if (!customName.isEmpty()) return customName;
 
         String toolBaseName = getLocalizedToolName();
-        String materialIdentifier = ToolTagsHelper.getToolBaseMaterialsNBTSafe(stack)
-            .getStringTagAt(0);
-        String materialName = TinkersRebornRegistry.getMaterialByIdentifier(materialIdentifier)
+        String materialName = ToolTagsHelper.getToolBaseMaterialsList(stack)
+            .get(0)
             .localizedPrefix();
 
         return String.format(toolNameFormatter, materialName, toolBaseName);
@@ -641,6 +708,207 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
     }
 
+    public ItemStack getToolForRender() {
+        // lazy init
+        if (this.toolForRender == null) {
+            List<TinkersRebornMaterial> materials = IntStream.range(0, getToolComponentsParts().size())
+                .mapToObj(this::getMaterialForPartForGuiRendering)
+                .collect(Collectors.toList());
+
+            this.toolForRender = new ItemStack(this);
+            this.toolForRender.setTagCompound(this.buildRenderNBT(materials));
+            ToolTagsHelper.setCustomName(this.toolForRender, this.getLocalizedToolName());
+        }
+
+        return this.toolForRender;
+    }
+
+    @SideOnly(Side.CLIENT)
+    private RenderMaterial getMaterialForPartForGuiRendering(int idx) {
+        int correctId = idx % TinkersRebornRegistry.renderMaterials.size() + 1;
+        String renderMaterialName = ToolTags.INTERNALPREFIX + correctId;
+        return TinkersRebornRegistry.renderMaterials.get(renderMaterialName);
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack repair(ItemStack repairable, List<ItemStack> repairItems) {
+        if (repairable.getItemDamage() == 0 && !ToolTagsHelper.isBroken(repairable)) {
+            // undamaged and not broken - no need to repair
+            return null;
+        }
+
+        // we assume the first required part exclusively determines repair material
+        List<TinkersRebornMaterial> materials = ToolTagsHelper.getToolBaseMaterialsList(repairable);
+        if (materials.isEmpty()) {
+            return null;
+        }
+
+        // ensure the items only contain valid items
+        List<ItemStack> items = TinkersRebornUtils.copyItemStackList(repairItems);
+        boolean foundMatch = false;
+
+        for (int index = 0; index < componentsParts.size(); index++) {
+            if (componentsParts.get(index)
+                .statusType() != MaterialStatusType.HEAD) continue;
+
+            TinkersRebornMaterial material = materials.get(index);
+
+            if (repairCustom(material, items) > 0) {
+                foundMatch = true;
+            }
+
+            Optional<RecipeMatch.Match> match = material.matches(items);
+
+            // not a single match -> nothing to repair with
+            if (!match.isPresent()) {
+                continue;
+            }
+            foundMatch = true;
+
+            while ((match = material.matches(items)).isPresent()) {
+                RecipeMatch.removeMatch(items, match.get());
+            }
+        }
+
+        if (!foundMatch) {
+            return null;
+        }
+
+        // check if all items were used
+        for (int i = 0; i < repairItems.size(); i++) {
+            // was non-null and did not get modified (stacksize changed or null now,
+            // usually)
+            if (!TinkersRebornUtils.isStackEmpty(repairItems.get(i))
+                && ItemStack.areItemStacksEqual(repairItems.get(i), items.get(i))) {
+                // found an item that was not touched
+                return null;
+            }
+        }
+
+        // now do it all over again with the real items, to actually repair \o/
+        ItemStack item = repairable.copy();
+
+        do {
+            int amount = calculateRepairAmount(materials, repairItems);
+
+            // nothing to repair with, we're therefore done
+            if (amount <= 0) {
+                break;
+            }
+
+            ToolTagsHelper.repairTool(item, calculateRepair(item, amount));
+            // save that we repaired it :I
+            ToolTagsHelper.addRepairCount(item);
+        } while (item.getItemDamage() > 0);
+
+        return item;
+    }
+
+    private int calculateRepairAmount(List<TinkersRebornMaterial> materials, List<ItemStack> repairItems) {
+        Set<TinkersRebornMaterial> materialsMatched = Sets.newHashSet();
+        float durability = 0f;
+        // try to match each material once
+        for (int index = 0; index < componentsParts.size(); index++) {
+            if (componentsParts.get(index)
+                .statusType() != MaterialStatusType.HEAD) continue;
+            TinkersRebornMaterial material = materials.get(index);
+
+            if (materialsMatched.contains(material)) {
+                continue;
+            }
+
+            // custom repairing
+            durability += repairCustom(material, repairItems) * getRepairModifierForPart(index);
+
+            Optional<RecipeMatch.Match> matchOptional = material.matches(repairItems);
+            if (matchOptional.isPresent()) {
+                RecipeMatch.Match match = matchOptional.get();
+                HeadMaterialStats stats = material.getStats(MaterialStatusType.HEAD);
+                if (stats != null) {
+                    materialsMatched.add(material);
+                    durability += ((float) stats.durability * (float) match.amount * getRepairModifierForPart(index))
+                        / 144f;
+                    RecipeMatch.removeMatch(repairItems, match);
+                }
+            }
+        }
+
+        durability *= 1f + ((float) materialsMatched.size() - 1) / 9f;
+
+        return (int) durability;
+    }
+
+    public float getRepairModifierForPart(int index) {
+        return 1f;
+    }
+
+    protected int calculateRepair(ItemStack tool, int amount) {
+        float origDur = ToolTagsHelper.getOriginalDurability(tool);
+        float actualDur = ToolTagsHelper.getMaxDurability(tool);
+
+        // calculate in modifiers that change the total durability of a tool, like
+        // diamond
+        // they should not punish the player with higher repair costs
+        float durabilityFactor = actualDur / origDur;
+        float increase = amount * Math.min(10f, durabilityFactor);
+
+        increase = Math.max(increase, actualDur / 64f);
+        // increase = Math.max(50, increase);
+
+        int modifiersUsed = ToolTagsHelper.getFreeModifiers(tool);
+        float mods = 1.0f;
+        if (modifiersUsed == 1) {
+            mods = 0.85f;
+        } else if (modifiersUsed == 2) {
+            mods = 0.9f;
+        } else if (modifiersUsed == 3) {
+            mods = 0.95f;
+        }
+
+        increase *= mods;
+
+        int repair = ToolTagsHelper.getRepairCount(tool);
+        float repairDimishingReturns = (100 - repair / 2) / 100f;
+        if (repairDimishingReturns < 0.5f) {
+            repairDimishingReturns = 0.5f;
+        }
+        increase *= repairDimishingReturns;
+
+        return (int) Math.ceil(increase);
+    }
+
+    /**
+     * for sharpening kit
+     * 
+     * @param material
+     * @param repairItems
+     * @return
+     */
+    private int repairCustom(TinkersRebornMaterial material, List<ItemStack> repairItems) {
+        Optional<RecipeMatch.Match> matchOptional = RecipeMatch.of(TinkersRebornTools.sharpeningKit)
+            .matches(repairItems);
+        if (!matchOptional.isPresent()) {
+            return 0;
+        }
+
+        RecipeMatch.Match match = matchOptional.get();
+        for (ItemStack stacks : match.stacks) {
+            // invalid material?
+            if (TinkersRebornTools.sharpeningKit.getMaterialId(stacks) != material.materialId) {
+                return 0;
+            }
+        }
+
+        RecipeMatch.removeMatch(repairItems, match);
+        HeadMaterialStats stats = material.getStats(MaterialStatusType.HEAD);
+        float durability = stats.durability * match.amount * TinkersRebornTools.sharpeningKit.getCost();
+        durability /= TinkersRebornMaterial.VALUE_Ingot;
+        return (int) (durability);
+    }
+
+    public abstract ToolBuildGuiInfo getToolBuildGuiInfo();
+
     public final class ToolPartRecord {
 
         private final TinkersRebornToolPart toolPart;
@@ -663,6 +931,32 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent {
 
         public String texturePostfix() {
             return this.texturePostfix;
+        }
+
+        public boolean isValid(ItemStack stack) {
+            if (stack.getItem() instanceof IToolPart itp) {
+                return isValid(itp, itp.getMaterial(stack));
+            }
+            return false;
+        }
+
+        public boolean isValid(IToolPart part, TinkersRebornMaterial material) {
+            return isValidItem(part) && isValidMaterial(material);
+        }
+
+        public boolean isValidItem(IToolPart part) {
+            return this.toolPart.equals(part);
+        }
+
+        public boolean isValidMaterial(TinkersRebornMaterial material) {
+            return material.hasStats(this.statusType);
+        }
+
+        public List<ITrait> getApplicableTraitsForMaterial(TinkersRebornMaterial material) {
+            List<ITrait> list = new ArrayList<>();
+            list.addAll(material.getAllTraitsForStats(this.statusType));
+            if (list.size() == 0) list.addAll(material.getAllTraitsForStats(null));
+            return list;
         }
 
     }

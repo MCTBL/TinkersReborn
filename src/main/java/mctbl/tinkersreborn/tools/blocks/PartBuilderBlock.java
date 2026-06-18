@@ -22,7 +22,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
-import mctbl.tinkersreborn.tools.entity.TinkersRebornPartBuilderLogic;
+import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.model.TableRender;
 
 public class PartBuilderBlock extends TinkersRebornInventoryBlock implements ITinkersToolStationBlock {
@@ -107,7 +107,7 @@ public class PartBuilderBlock extends TinkersRebornInventoryBlock implements ITi
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TinkersRebornPartBuilderLogic();
+        return new PartBuilderLogic();
     }
 
     @Override

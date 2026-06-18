@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornChestLogic;
 import mctbl.tinkersreborn.tools.gui.GuiPartChest;
-import mctbl.tinkersreborn.tools.inventory.PartChestContainer;
+import mctbl.tinkersreborn.tools.inventory.ContainerPartChest;
 
 public class PartChestLogic extends TinkersRebornChestLogic {
 
@@ -28,7 +28,7 @@ public class PartChestLogic extends TinkersRebornChestLogic {
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new PartChestContainer(inventoryplayer, this);
+        return new ContainerPartChest(inventoryplayer, this);
     }
 
     @Override

@@ -20,8 +20,8 @@ import mctbl.tinkersreborn.library.gui.GuiMultiModule;
 import mctbl.tinkersreborn.library.gui.Icons;
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.tools.gui.container.ContainerTinkerStation;
 import mctbl.tinkersreborn.tools.gui.module.GuiTinkerTabs;
+import mctbl.tinkersreborn.tools.inventory.ContainerTinkerStation;
 
 @SideOnly(Side.CLIENT)
 // Takes care of the tinker station pseudo-multiblock

@@ -19,8 +19,8 @@ public final class ToolTags {
     public static final String TOOLDATA = "Stats";
     public static final String TOOLDATAORIG = "StatsOriginal";
 
-    public static final String TOOLMODIFIERS = "Modifiers";
-    public static final String TOOLTRAITS = "Traits";
+    public static final String TYPEMODIFIERS = "modifier";
+    public static final String TYPETRAITS = "trait";
 
     // tools
     public static final String DURABILITY = "Durability";
@@ -60,6 +60,8 @@ public final class ToolTags {
     public static final String CURRENT = "current";
     public static final String MAX = "max";
     public static final String MODIFIERUSED = "modifierUsed";
+
+    public static final String INTERNALPREFIX = "_internal_render";
 
     private ToolTags() {}
 

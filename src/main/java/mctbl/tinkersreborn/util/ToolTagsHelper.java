@@ -22,6 +22,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.tools.Category;
@@ -66,10 +68,6 @@ public class ToolTagsHelper {
         return getTagListSafe(tag, key, TAG_TYPE_COMPOUND);
     }
 
-    public static NBTTagList getModifiersTagList(NBTTagCompound tag) {
-        return getCompoundTagListSafe(tag, ToolTags.MODIFIERS);
-    }
-
     /**
      * get the base tagcompound of tool {@link ToolTags}
      * 
@@ -90,6 +88,13 @@ public class ToolTagsHelper {
         return getTagSafe(tags, ToolTags.TOOLBASETAG);
     }
 
+    /**
+     * if root tag is not equal with stack's root tag mean new tag is new tag, set
+     * it
+     * 
+     * @param stack
+     * @param tags
+     */
     public static void setToolBaseNBTSafe(ItemStack stack, NBTTagCompound tags) {
         NBTTagCompound basetag = getTagSafe(stack);
         basetag.setTag(ToolTags.TOOLBASETAG, tags);
@@ -105,12 +110,8 @@ public class ToolTagsHelper {
         return getStringTagListSafe(getToolBaseNBTSafe(stack), ToolTags.RENDERMATERIALS);
     }
 
-    /**
-     * @param stack
-     * @return tool -> TinkersRebornTool -> FreeModifiers
-     */
-    public static int getToolFreeModifiers(ItemStack stack) {
-        return getToolBaseNBTSafe(stack).getInteger(ToolTags.FREEMODIFIERS);
+    public static List<TinkersRebornMaterial> getToolRenderMaterialsList(ItemStack stack) {
+        return fromTagToMaterial(getToolRenderMaterialsNBTSafe(stack));
     }
 
     /**
@@ -121,12 +122,56 @@ public class ToolTagsHelper {
         return getStringTagListSafe(getToolBaseNBTSafe(stack), ToolTags.BASEMATERIALS);
     }
 
+    public static void setToolBaseMaterialsNBTSafe(ItemStack stack, NBTTagList tagList) {
+        NBTTagCompound toolBaseNBTSafe = getToolBaseNBTSafe(stack);
+        toolBaseNBTSafe.setTag(ToolTags.BASEMATERIALS, tagList);
+        setToolBaseNBTSafe(stack, toolBaseNBTSafe);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Materials
+     */
+    public static List<TinkersRebornMaterial> getToolBaseMaterialsList(ItemStack stack) {
+        return fromTagToMaterial(getToolBaseMaterialsNBTSafe(stack));
+    }
+
+    public static List<TinkersRebornMaterial> fromTagToMaterial(NBTTagList tagList) {
+        List<TinkersRebornMaterial> materialList = new ArrayList<>();
+        int tagCount = tagList.tagCount();
+        for (int idx = 0; idx < tagCount; idx++) {
+            materialList.add(TinkersRebornRegistry.getMaterialByIdentifier(tagList.getStringTagAt(idx)));
+        }
+        return materialList;
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> RepairCount
+     */
+    public static int getRepairCount(ItemStack stack) {
+        return getToolBaseNBTSafe(stack).getInteger(ToolTags.REPAIR_COUNT);
+    }
+
+    public static void addRepairCount(ItemStack stack) {
+        NBTTagCompound toolBase = getToolBaseNBTSafe(stack);
+        toolBase.setInteger(ToolTags.REPAIR_COUNT, toolBase.getInteger(ToolTags.REPAIR_COUNT) + 1);
+    }
+
     /**
      * @param stack
      * @return tool -> TinkersRebornTool -> Stats
      */
     public static NBTTagCompound getToolDataNBTSafe(ItemStack stack) {
-        return getTagSafe(getToolBaseNBTSafe(stack), ToolTags.TOOLDATA);
+        return getToolDataNBTSafe(getToolBaseNBTSafe(stack));
+    }
+
+    /**
+     * @param compound
+     * @return tool -> TinkersRebornTool -> Stats
+     */
+    public static NBTTagCompound getToolDataNBTSafe(NBTTagCompound compound) {
+        return getTagSafe(compound, ToolTags.TOOLDATA);
     }
 
     /**
@@ -146,12 +191,22 @@ public class ToolTagsHelper {
         return getToolBaseNBTSafe(stack).getString(ToolTags.CUSTOMNAME);
     }
 
+    public static void setCustomName(ItemStack stack, String name) {
+        getToolBaseNBTSafe(stack).setString(ToolTags.CUSTOMNAME, name);
+    }
+
     /**
      * @param stack
      * @return tool -> TinkersRebornTool -> Broken
      */
     public static boolean isBroken(ItemStack stack) {
         return getToolBaseNBTSafe(stack).getBoolean(ToolTags.BROKEN);
+    }
+
+    public static void setBroken(ItemStack stack, boolean isBroken) {
+        NBTTagCompound toolBaseNBTSafe = getToolBaseNBTSafe(stack);
+        toolBaseNBTSafe.setBoolean(ToolTags.BROKEN, isBroken);
+        setToolBaseNBTSafe(stack, toolBaseNBTSafe);
     }
 
     /**
@@ -167,7 +222,69 @@ public class ToolTagsHelper {
      * @return tool -> TinkersRebornTool -> FreeModifiers
      */
     public static int getFreeModifiers(ItemStack stack) {
-        return getToolBaseNBTSafe(stack).getInteger(ToolTags.FREEMODIFIERS);
+        return getFreeModifiers(getToolBaseNBTSafe(stack));
+    }
+
+    /**
+     * @param compound
+     * @return tool -> TinkersRebornTool -> FreeModifiers
+     */
+    public static int getFreeModifiers(NBTTagCompound compound) {
+        return compound.getInteger(ToolTags.FREEMODIFIERS);
+    }
+
+    /**
+     * @param compound
+     * @return tool -> TinkersRebornTool -> NoRename
+     */
+    public static boolean isToolNoRenaem(ItemStack stack) {
+        return getToolBaseNBTSafe(stack).getBoolean(ToolTags.NO_RENAME);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> FreeModifiers
+     */
+    public static void setFreeModifiers(ItemStack stack, int modifiers) {
+        NBTTagCompound baseTag = getToolBaseNBTSafe(stack);
+        baseTag.setInteger(ToolTags.FREEMODIFIERS, modifiers);
+        setToolBaseNBTSafe(stack, baseTag);
+    }
+
+    /**
+     * 
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Modifiers
+     */
+    public static NBTTagList getModifiersTagList(ItemStack stack) {
+        return getCompoundTagListSafe(getToolBaseNBTSafe(stack), ToolTags.MODIFIERS);
+    }
+
+    public static List<NBTTagCompound> getModifiersList(ItemStack stack) {
+        NBTTagList tagList = getCompoundTagListSafe(getToolBaseNBTSafe(stack), ToolTags.MODIFIERS);
+        List<NBTTagCompound> list = new ArrayList<>();
+        for (int idx = 0; idx < tagList.tagCount(); idx++) list.add(tagList.getCompoundTagAt(idx));
+
+        return list;
+    }
+
+    /**
+     * 
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Modifiers
+     */
+    public static NBTTagList getModifiersTagList(NBTTagCompound compound) {
+        return getCompoundTagListSafe(compound, ToolTags.MODIFIERS);
+    }
+
+    public static void setModifiersTagList(ItemStack stack, NBTTagList list) {
+        NBTTagCompound toolBaseNBTSafe = getToolBaseNBTSafe(stack);
+        toolBaseNBTSafe.setTag(ToolTags.MODIFIERS, list);
+        setToolBaseNBTSafe(stack, toolBaseNBTSafe);
+    }
+
+    public static void setModifiersTagList(NBTTagCompound compound, NBTTagList list) {
+        if (!getModifiersTagList(compound).equals(list)) compound.setTag(ToolTags.MODIFIERS, list);
     }
 
     /**
@@ -184,6 +301,14 @@ public class ToolTagsHelper {
      */
     public static int getDurabilityStat(ItemStack stack) {
         return getToolDataNBTSafe(stack).getInteger(ToolTags.DURABILITY);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> UsedModifiers
+     */
+    public static int getUsedModifiers(ItemStack stack) {
+        return getToolDataNBTSafe(stack).getInteger(ToolTags.USEDMODIFIERS);
     }
 
     /**
@@ -267,6 +392,20 @@ public class ToolTagsHelper {
         }
     }
 
+    public static void unbreakTool(ItemStack stack) {
+        if (isBroken(stack)) {
+            // ensure correct damage value
+            stack.setItemDamage(stack.getMaxDamage());
+
+            // setItemDamage might break the tool again, so we do this afterwards
+            NBTTagCompound tag = getToolBaseNBTSafe(stack);
+            if (tag == null) {
+                setToolBaseNBTSafe(stack, new NBTTagCompound());
+            }
+            tag.setBoolean(ToolTags.BROKEN, false);
+        }
+    }
+
     public static float calcMiningSpeed(ItemStack stack, Block block, int meta) {
         if (!stack.hasTagCompound()) {
             return 1F;
@@ -304,6 +443,10 @@ public class ToolTagsHelper {
 
     public static int getMaxDurability(ItemStack stack) {
         return stack.getMaxDamage();
+    }
+
+    public static int getOriginalDurability(ItemStack stack) {
+        return getToolOriginDataNBTSafe(stack).getInteger(ToolTags.DURABILITY);
     }
 
     /**
@@ -354,6 +497,24 @@ public class ToolTagsHelper {
         if (getCurrentDurability(stack) == 0) {
             breakTool(stack, entity);
         }
+    }
+
+    public static void healTool(ItemStack stack, int amount, EntityLivingBase entity) {
+        damageTool(stack, -amount, entity);
+    }
+
+    public static void repairTool(ItemStack stack, int amount) {
+        // entity is optional, only needed for rendering break effect, never needed when
+        // repairing
+        repairTool(stack, amount, null);
+    }
+
+    public static void repairTool(ItemStack stack, int amount, EntityLivingBase entity) {
+        unbreakTool(stack);
+
+        // TinkerToolEvent.OnRepair.fireEvent(stack, amount);
+
+        healTool(stack, amount, entity);
     }
 
     public static List<ITrait> getTraitsOrdered(ItemStack tool) {
@@ -614,7 +775,7 @@ public class ToolTagsHelper {
     }
 
     public static NBTTagCompound getModifierTag(NBTTagCompound root, String identifier) {
-        NBTTagList modifiersList = getTagListSafe(root, ToolTags.MODIFIERS, TAG_TYPE_COMPOUND);
+        NBTTagList modifiersList = getModifiersTagList(root);
         int tagLength = modifiersList.tagCount();
         if (tagLength == 0) {
             root.setTag(ToolTags.MODIFIERS, modifiersList);
@@ -625,10 +786,7 @@ public class ToolTagsHelper {
             if (identifier.equals(modifierCompound.getString(ToolTags.IDENTIFIER))) return modifierCompound;
         }
 
-        NBTTagCompound newModifierTag = new NBTTagCompound();
-        modifiersList.appendTag(newModifierTag);
-
-        return newModifierTag;
+        return new NBTTagCompound();
     }
 
     public static boolean hasCategory(ItemStack stack, Category category) {

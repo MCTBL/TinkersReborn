@@ -123,6 +123,10 @@ public class BlockPos extends Vector3i implements Comparable<BlockPos> {
         return this.offset(ForgeDirection.EAST, n);
     }
 
+    public BlockPos offset(ForgeDirection d) {
+        return offset(d, 1);
+    }
+
     public BlockPos offset(ForgeDirection d, int n) {
         return new BlockPos(this.x + d.offsetX * n, this.y + d.offsetY * n, this.z + d.offsetZ * n);
     }

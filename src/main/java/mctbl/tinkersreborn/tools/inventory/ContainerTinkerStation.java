@@ -1,4 +1,4 @@
-package mctbl.tinkersreborn.tools.gui.container;
+package mctbl.tinkersreborn.tools.inventory;
 
 import java.util.Comparator;
 import java.util.List;
@@ -30,6 +30,8 @@ public class ContainerTinkerStation<T extends TileEntity & IInventory> extends C
 
     public final boolean hasCraftingStation;
     public final List<Pair<BlockPos, Block>> tinkerStationBlocks;
+
+    public final static TinkerBlockComp tinkerBlockComp = new TinkerBlockComp();
 
     public ContainerTinkerStation(T tile) {
         super(tile);
@@ -106,8 +108,7 @@ public class ContainerTinkerStation<T extends TileEntity & IInventory> extends C
         }
 
         // sort the found blocks by priority
-        TinkerBlockComp comp = new TinkerBlockComp();
-        tinkerStationBlocks.sort(comp);
+        tinkerStationBlocks.sort(tinkerBlockComp);
 
         return hasMaster;
     }

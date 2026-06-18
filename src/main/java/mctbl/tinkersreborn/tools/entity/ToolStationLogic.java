@@ -9,20 +9,21 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiToolStation;
-import mctbl.tinkersreborn.tools.inventory.TinkersRebornToolStationContainer;
+import mctbl.tinkersreborn.tools.inventory.ContainerToolStation;
 
-public class TinkersRebornToolStationLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
+public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
 
     public ItemStack previousTool;
     public String toolName;
 
-    public TinkersRebornToolStationLogic() {
+    public ToolStationLogic() {
         super(4);
         toolName = "";
     }
 
-    public TinkersRebornToolStationLogic(int slots) {
+    public ToolStationLogic(int slots) {
         super(slots);
         toolName = "";
     }
@@ -44,12 +45,12 @@ public class TinkersRebornToolStationLogic extends TinkersRebornInventoryLogic i
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new TinkersRebornToolStationContainer(inventoryplayer, this);
+        return new ContainerToolStation(inventoryplayer, this);
     }
 
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new GuiToolStation(inventoryplayer, this, world, x, y, z);
+        return new GuiToolStation(inventoryplayer, world, BlockPos.of(x, y, z), this);
     }
 
     @Override

@@ -62,9 +62,9 @@ import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
 import mctbl.tinkersreborn.util.RecipeRemover;
+import mctbl.tinkersreborn.world.gen.SlimeIslandGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornSurfaceOreGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornWorldGenerator;
-import tconstruct.world.gen.SlimeIslandGen;
 
 public class TinkersRebornGeneral implements ITinkersRebornModule {
 

@@ -9,12 +9,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import serverutils.lib.client.GlStateManager;
 
 @SideOnly(Side.CLIENT)
 public class GuiWidgetTabs extends GuiWidget {
@@ -160,7 +160,7 @@ public class GuiWidgetTabs extends GuiWidget {
     // guiContainer.drawItemStack
     private void drawItemStack(ItemStack stack, int x, int y) {
         RenderItem itemRender = this.parent.getRenderItem();
-        GlStateManager.translate(0.0F, 0.0F, 32.0F);
+        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
         itemRender.zLevel = 200;
         itemRender.renderItemAndEffectIntoGUI(
             stack.getItem()

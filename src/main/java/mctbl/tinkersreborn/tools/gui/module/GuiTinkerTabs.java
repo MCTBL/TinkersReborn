@@ -7,6 +7,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.common.collect.Lists;
 
 import mctbl.tinkersreborn.library.gui.GuiElement;
@@ -14,7 +16,6 @@ import mctbl.tinkersreborn.library.gui.GuiModule;
 import mctbl.tinkersreborn.library.gui.GuiWidgetTabs;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiTinkerStation;
-import serverutils.lib.client.GlStateManager;
 
 public class GuiTinkerTabs extends GuiModule {
 
@@ -65,7 +66,7 @@ public class GuiTinkerTabs extends GuiModule {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         int sel = tabs.selected;
         tabs.update(mouseX, mouseY);
         tabs.draw();

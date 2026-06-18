@@ -6,17 +6,19 @@ import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 import com.google.common.collect.ImmutableList;
 
+import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.IToolMod;
@@ -36,7 +38,6 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
 
     public final String identifier;
 
-    // protected final List<ModifierAspect> aspects = Lists.newLinkedList();
     protected final List<ModifierAspect> aspects = new LinkedList<>();
 
     public AbstractModifier(String identifier) {
@@ -59,35 +60,44 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         this.aspects.addAll(Arrays.asList(aspects));
     }
 
-    // throws TinkerGuiException
     @Override
-    public final boolean canApply(ItemStack stack, ItemStack original) {
+    public final boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException {
 
         Set<Integer> enchantments = EnchantmentHelper.getEnchantments(stack)
             .keySet();
-        //
-        NBTTagList traits = ToolTagsHelper.getStringTagListSafe(ToolTagsHelper.getTagSafe(stack), ToolTags.TOOLTRAITS);
-        for (int i = 0; i < traits.tagCount(); i++) {
-            String id = traits.getStringTagAt(i);
+
+        List<NBTTagCompound> modifiersTagList = ToolTagsHelper.getModifiersList(stack);
+        Map<String, List<NBTTagCompound>> compoundMap = modifiersTagList.stream()
+            .collect(Collectors.groupingBy(c -> c.getString(ToolTags.TYPE)));
+        List<NBTTagCompound> traits = compoundMap.get(ToolTags.TYPETRAITS);
+        for (int i = 0; i < traits.size(); i++) {
+            String id = traits.get(i)
+                .getString(ToolTags.IDENTIFIER);
             ITrait trait = TinkersRebornRegistry.getTrait(id);
             if (trait != null) {
                 if (!canApplyTogether(trait) || !trait.canApplyTogether(this)) {
-                    // throw new TinkerGuiException(Util.translateFormatted("gui.error.incompatible_trait",
-                    // this.getLocalizedName(), trait.getLocalizedName()));
+                    throw new TinkerGuiException(
+                        String.format(
+                            translate("gui.error.incompatible_trait"),
+                            this.getLocalizedName(),
+                            trait.getLocalizedName()));
                 }
                 canApplyWithEnchantment(trait, enchantments);
             }
         }
 
-        NBTTagList modifiers = ToolTagsHelper
-            .getStringTagListSafe(ToolTagsHelper.getTagSafe(stack), ToolTags.TOOLMODIFIERS);
-        for (int i = 0; i < modifiers.tagCount(); i++) {
-            String id = modifiers.getStringTagAt(i);
+        List<NBTTagCompound> modifiers = compoundMap.get(ToolTags.TYPEMODIFIERS);
+        for (int i = 0; i < modifiers.size(); i++) {
+            String id = modifiers.get(i)
+                .getString(ToolTags.IDENTIFIER);
             IModifier mod = TinkersRebornRegistry.getModifier(id);
             if (mod != null) {
                 if (!canApplyTogether(mod) || !mod.canApplyTogether(this)) {
-                    // throw new TinkerGuiException(Util.translateFormatted("gui.error.incompatible_modifiers",
-                    // this.getLocalizedName(), mod.getLocalizedName()));
+                    throw new TinkerGuiException(
+                        String.format(
+                            translate("gui.error.incompatible_modifiers"),
+                            this.getLocalizedName(),
+                            mod.getLocalizedName()));
                 }
                 canApplyWithEnchantment(mod, enchantments);
             }
@@ -105,14 +115,17 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         return canApplyCustom(stack);
     }
 
-    private static void canApplyWithEnchantment(IToolMod iToolMod, Set<Integer> enchantments) {
-        // throws TinkerGuiException
+    private static void canApplyWithEnchantment(IToolMod iToolMod, Set<Integer> enchantments)
+        throws TinkerGuiException {
         for (Integer idx : enchantments) {
             Enchantment enchantment = Enchantment.enchantmentsList[idx];
             if (!iToolMod.canApplyTogether(enchantment)) {
-                // String enchName = I18n.translateToLocal(enchantment.getName());
-                // throw new TinkerGuiException(Util.translateFormatted("gui.error.incompatible_enchantments",
-                // iToolMod.getLocalizedName(), enchName));
+                String enchName = translate(enchantment.getName());
+                throw new TinkerGuiException(
+                    String.format(
+                        translate("gui.error.incompatible_enchantments"),
+                        iToolMod.getLocalizedName(),
+                        enchName));
             }
         }
     }
@@ -127,8 +140,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         return true;
     }
 
-    protected boolean canApplyCustom(ItemStack stack) {
-        // throws TinkerGuiException
+    protected boolean canApplyCustom(ItemStack stack) throws TinkerGuiException {
         return true;
     }
 
@@ -243,26 +255,33 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         return false;
     }
 
-    // protected static boolean attackEntitySecondary(DamageSource source, float damage, Entity entity, boolean
+    // protected static boolean attackEntitySecondary(DamageSource source, float
+    // damage, Entity entity, boolean
     // ignoreInvulv, boolean resetInvulv) {
-    // return attackEntitySecondary(source, damage, entity, ignoreInvulv, resetInvulv, true);
+    // return attackEntitySecondary(source, damage, entity, ignoreInvulv,
+    // resetInvulv, true);
     // }
     //
-    // protected static boolean attackEntitySecondary(DamageSource source, float damage, Entity entity, boolean
+    // protected static boolean attackEntitySecondary(DamageSource source, float
+    // damage, Entity entity, boolean
     // ignoreInvulv, boolean resetInvulv, boolean noKnockback) {
     // Optional<EntityLivingBase> entityLivingBase = Optional.of(entity)
     // .filter(e -> e instanceof EntityLivingBase)
     // .map(e -> (EntityLivingBase) e);
-    // Optional<IAttributeInstance> knockbackAttribute = entityLivingBase.map(living ->
+    // Optional<IAttributeInstance> knockbackAttribute = entityLivingBase.map(living
+    // ->
     // living.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE))
     // .filter(attribute -> !attribute.hasModifier(ANTI_KNOCKBACK_MOD));
-    // float oldLastDamage = entityLivingBase.map(living -> living.lastDamage).orElse(0f);
+    // float oldLastDamage = entityLivingBase.map(living ->
+    // living.lastDamage).orElse(0f);
     //
     // if(noKnockback) {
-    // knockbackAttribute.ifPresent(attribute -> attribute.applyModifier(ANTI_KNOCKBACK_MOD));
+    // knockbackAttribute.ifPresent(attribute ->
+    // attribute.applyModifier(ANTI_KNOCKBACK_MOD));
     // }
     //
-    // // set hurt resistance time to 0 because we always want to deal damage in traits
+    // // set hurt resistance time to 0 because we always want to deal damage in
+    // traits
     // if(ignoreInvulv) {
     // entity.hurtResistantTime = 0;
     // }
@@ -276,7 +295,8 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
     // }
     //
     // if(noKnockback) {
-    // knockbackAttribute.ifPresent(attribute -> attribute.removeModifier(ANTI_KNOCKBACK_MOD));
+    // knockbackAttribute.ifPresent(attribute ->
+    // attribute.removeModifier(ANTI_KNOCKBACK_MOD));
     // }
     //
     // return hit;
@@ -287,7 +307,8 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         return !items.isEmpty();
     }
 
-    // private static final AttributeModifier ANTI_KNOCKBACK_MOD = new AttributeModifier("Anti Modifier Knockback", 1f,
+    // private static final AttributeModifier ANTI_KNOCKBACK_MOD = new
+    // AttributeModifier("Anti Modifier Knockback", 1f,
     // 0);
 
 }

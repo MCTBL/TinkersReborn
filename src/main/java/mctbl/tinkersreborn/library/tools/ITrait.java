@@ -12,7 +12,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 
 import com.google.common.collect.Multimap;
-import com.gtnewhorizon.gtnhlib.blockpos.BlockPos;
+
+import mctbl.tinkersreborn.library.utils.BlockPos;
 
 /**
  * Traits are specific properties on tools with special effects.
@@ -50,7 +51,7 @@ public interface ITrait extends IToolMod {
      * {@link net.minecraft.item.Item#onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving)}
      * Called before the tools durability is reduced.
      */
-    void afterBlockBreak(ItemStack tool, World world, Block block, int x, int y, int z, EntityLivingBase player,
+    void afterBlockBreak(ItemStack tool, World world, Block block, BlockPos pos, EntityLivingBase player,
         boolean wasEffective);
 
     /**

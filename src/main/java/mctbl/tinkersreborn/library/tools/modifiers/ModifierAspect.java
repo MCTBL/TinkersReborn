@@ -1,9 +1,12 @@
 package mctbl.tinkersreborn.library.tools.modifiers;
 
+import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 
+import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT.IntegerNBT;
 import mctbl.tinkersreborn.tools.Category;
@@ -12,9 +15,9 @@ import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 /**
- * Have you ever wanted to create a simple modifier that is only allowed on tools
- * but needed something else too so you couldn't derive from a single base-modifier-class?
- * Well now you can!
+ * Have you ever wanted to create a simple modifier that is only allowed on
+ * tools but needed something else too so you couldn't derive from a single
+ * base-modifier-class? Well now you can!
  */
 public abstract class ModifierAspect {
 
@@ -36,8 +39,7 @@ public abstract class ModifierAspect {
         this.parent = parent;
     }
 
-    public abstract boolean canApply(ItemStack stack, ItemStack original);
-    // throws TinkerGuiException
+    public abstract boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException;
 
     public abstract void updateNBT(NBTTagCompound root, NBTTagCompound modifierTag);
 
@@ -58,12 +60,11 @@ public abstract class ModifierAspect {
         }
 
         @Override
-        public boolean canApply(ItemStack stack, ItemStack original) {
-            // throws TinkerGuiException
+        public boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException {
             if (ToolTagsHelper.getFreeModifiers(stack) < requiredModifiers) {
-                // String error = I18n.translateToLocalFormatted("gui.error.not_enough_modifiers", requiredModifiers);
+                String error = String.format(translate("gui.error.not_enough_modifiers"), requiredModifiers);
                 // also returns false if the tooltag is missing
-                // throw new TinkerGuiException(error);
+                throw new TinkerGuiException(error);
             }
 
             return true;
@@ -90,8 +91,7 @@ public abstract class ModifierAspect {
         }
 
         @Override
-        public boolean canApply(ItemStack stack, ItemStack original) {
-            // throws TinkerGuiException
+        public boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException {
             // can always apply if the parent already has the modifier
             if (ToolTagsHelper.hasModifier(stack, parent.getIdentifier())) {
                 return true;
@@ -114,8 +114,8 @@ public abstract class ModifierAspect {
     }
 
     /**
-     * Saves the base data of the modifier onto the tool.
-     * Any modifier not having this has to take care of it itself.
+     * Saves the base data of the modifier onto the tool. Any modifier not having
+     * this has to take care of it itself.
      */
     public static class DataAspect extends ModifierAspect {
 
@@ -186,8 +186,7 @@ public abstract class ModifierAspect {
         }
 
         @Override
-        public boolean canApply(ItemStack stack, ItemStack original) {
-            // throws TinkerGuiException
+        public boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException {
             // check if the threshold has been reached
             NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(stack, parent.getIdentifier());
             IntegerNBT data = getData(modifierTag);
@@ -205,7 +204,8 @@ public abstract class ModifierAspect {
                 }
             }
 
-            // we have not maxed out this level OR we have enough modifiers and can add a new level
+            // we have not maxed out this level OR we have enough modifiers and can add a
+            // new level
             return true;
         }
 
@@ -306,16 +306,17 @@ public abstract class ModifierAspect {
         }
 
         @Override
-        public boolean canApply(ItemStack stack, ItemStack original) {
-            // throws TinkerGuiException
+        public boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException {
             // check if the modifier is present in the base info.
-            // this is not the same as checking if the modifier has data. But should be sufficient
+            // this is not the same as checking if the modifier has data. But should be
+            // sufficient
 
             if (ToolTagsHelper.hasModifier(stack, parent.getIdentifier())) {
                 // check if original already had it too
                 if (ToolTagsHelper.hasModifier(original, parent.getIdentifier())) {
                     // error, can't apply if it already had it
-                    // throw new TinkerGuiException(I18n.translateToLocalFormatted("gui.error.single_modifier",
+                    // throw new
+                    // TinkerGuiException(I18n.translateToLocalFormatted("gui.error.single_modifier",
                     // parent.getLocalizedName()));
                 } else {
                     // original didn't have it, we can apply it once therefore, no error
@@ -346,20 +347,21 @@ public abstract class ModifierAspect {
         }
 
         @Override
-        public boolean canApply(ItemStack stack, ItemStack original) {
-            // throws TinkerGuiException
+        public boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException {
             int levelNew = ModifierNBT.readTag(ToolTagsHelper.getModifierTag(stack, parent.getIdentifier())).level;
             int levelOld = ModifierNBT.readTag(ToolTagsHelper.getModifierTag(original, parent.getIdentifier())).level;
 
             // only 1 level per application
-            // original and stack are equal for the first application, any multiple applications therefore yield >0
+            // original and stack are equal for the first application, any multiple
+            // applications therefore yield >0
             if (levelNew - levelOld > 0) {
                 return false;
             }
 
             // new level would be above max level
             if (levelNew >= maxLevel) {
-                // throw new TinkerGuiException(I18n.translateToLocalFormatted("gui.error.max_level_modifier",
+                // throw new
+                // TinkerGuiException(I18n.translateToLocalFormatted("gui.error.max_level_modifier",
                 // parent.getLocalizedName()));
             }
 

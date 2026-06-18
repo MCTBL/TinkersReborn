@@ -3,6 +3,7 @@ package mctbl.tinkersreborn.library.gui;
 import java.awt.Rectangle;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 
@@ -124,8 +125,36 @@ public abstract class GuiModule extends GuiContainer {
         return this.guiLeft;
     }
 
+    public void guiLeftBias(int bias) {
+        this.guiLeft += bias;
+    }
+
     public int guiTop() {
         return this.guiTop;
+    }
+
+    public void guiTopBias(int bias) {
+        this.guiTop += bias;
+    }
+
+    public int xSize() {
+        return this.xSize;
+    }
+
+    public void xSizeBias(int bias) {
+        this.xSize += bias;
+    }
+
+    public int ySize() {
+        return this.ySize;
+    }
+
+    public void ySizeBias(int bias) {
+        this.ySize += bias;
+    }
+
+    public RenderItem getRenderItem() {
+        return itemRender;
     }
 
 }

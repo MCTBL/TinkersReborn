@@ -316,7 +316,8 @@ flowchart TB
   },
   // 1 broken, 0 not broken, use boolean
   "Broken":0,
-  "Unbreakable":1
+  "Unbreakable":1,
+  "RepairCount":10
 }
 
 ```

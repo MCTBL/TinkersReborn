@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.tools.items;
 
+import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Ingot;
+
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,7 +18,7 @@ public class BoltCore extends TinkersRebornToolPart {
     public IIcon[][] icons;
 
     public BoltCore() {
-        super("bolt", "BoltCore", MaterialStatusType.HANDLE);
+        super("bolt", "BoltCore", VALUE_Ingot * 2, MaterialStatusType.HANDLE);
     }
 
     @Override

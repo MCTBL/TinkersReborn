@@ -7,15 +7,14 @@ import net.minecraft.item.ItemStack;
 
 import mctbl.tinkersreborn.library.inventory.TinkersRebornContainer;
 import mctbl.tinkersreborn.library.inventory.slots.SlotOnlyTake;
-import mctbl.tinkersreborn.tools.entity.TinkersRebornPartBuilderLogic;
+import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 
-public class TinkersRebornPartBuilderContainer extends TinkersRebornContainer {
+public class ContainerPartBuilder extends TinkersRebornContainer {
 
-    public TinkersRebornPartBuilderLogic logic;
+    public PartBuilderLogic logic;
     public Slot[] slots;
 
-    public TinkersRebornPartBuilderContainer(InventoryPlayer inventoryplayer,
-        TinkersRebornPartBuilderLogic builderlogic) {
+    public ContainerPartBuilder(InventoryPlayer inventoryplayer, PartBuilderLogic builderlogic) {
         super(inventoryplayer);
         this.invPlayer = inventoryplayer;
         this.logic = builderlogic;

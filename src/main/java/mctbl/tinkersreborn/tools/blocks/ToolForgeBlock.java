@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.tools.entity.TinkersRebornToolForgeLogic;
+import mctbl.tinkersreborn.tools.entity.ToolForgeLogic;
 
 public class ToolForgeBlock extends ToolStationBlock {
 
@@ -80,7 +80,7 @@ public class ToolForgeBlock extends ToolStationBlock {
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return new TinkersRebornToolForgeLogic();
+        return new ToolForgeLogic();
     }
 
     @Override

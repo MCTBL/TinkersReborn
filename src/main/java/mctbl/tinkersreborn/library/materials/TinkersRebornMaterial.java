@@ -2,7 +2,8 @@ package mctbl.tinkersreborn.library.materials;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,10 +14,12 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.library.tools.ITrait;
+import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class TinkersRebornMaterial {
+public class TinkersRebornMaterial extends RecipeMatchRegistry {
 
     static final String LOC_Name = "material.%s.name";
     static final String LOC_Prefix = "material.%s.prefix";
@@ -80,7 +83,12 @@ public class TinkersRebornMaterial {
     public final int materialId;
     public int materialTextColor = 0xffffff; // used in tooltips and other text. Saved in NBT.
 
+    // we use a specific map for 2 reasons:
+    // * A Map so we can obtain the stats we want quickly
+    // * the linked map to ensure the order when iterating
     public final Map<MaterialStatusType, IMaterialStats> statsMap;
+    /** Stat-ID -> Traits */
+    public final Map<MaterialStatusType, List<ITrait>> traits;
 
     public static final TinkersRebornMaterial UNKNOWN = new TinkersRebornMaterial(
         -1,
@@ -108,7 +116,8 @@ public class TinkersRebornMaterial {
         }
 
         this.materialTextColor = color;
-        this.statsMap = new HashMap<>();
+        this.statsMap = new LinkedHashMap<>();
+        this.traits = new LinkedHashMap<>();
     }
 
     public TinkersRebornMaterial addStats(IMaterialStats m) {
@@ -225,4 +234,45 @@ public class TinkersRebornMaterial {
         return this;
     }
 
+    /**
+     * Obtains the list of traits for the given stat, creates it if it doesn't exist
+     * yet.
+     */
+    protected List<ITrait> getStatTraits(MaterialStatusType stats) {
+        return this.traits.computeIfAbsent(stats, k -> new LinkedList<>());
+    }
+
+    /**
+     * Returns whether the material has a trait with that identifier.
+     */
+    public boolean hasTrait(String identifier, MaterialStatusType stats) {
+        if (identifier == null || identifier.isEmpty()) {
+            return false;
+        }
+
+        for (ITrait trait : this.getAllTraitsForStats(stats)) {
+            if (trait.getIdentifier()
+                .equals(identifier)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<ITrait> getAllTraitsForStats(MaterialStatusType staus) {
+        if (this.traits.containsKey(staus)) {
+            return this.traits.get(staus);
+        } else if (this.traits.containsKey(null)) {
+            return this.traits.get(null);
+        } else {
+            return new LinkedList<>();
+        }
+    }
+
+    public static final class RenderMaterial extends TinkersRebornMaterial {
+
+        public RenderMaterial(String identifier, int color) {
+            super(-1, identifier, color);
+        }
+    }
 }

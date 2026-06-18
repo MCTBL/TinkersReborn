@@ -8,7 +8,7 @@ import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.tools.gui.GuiCraftingStation;
-import mctbl.tinkersreborn.tools.inventory.CraftingStationContainer;
+import mctbl.tinkersreborn.tools.inventory.ContainerCraftingStation;
 
 public class CraftingStationLogic extends TinkersRebornInventoryLogic {
 
@@ -31,7 +31,7 @@ public class CraftingStationLogic extends TinkersRebornInventoryLogic {
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new CraftingStationContainer(inventoryplayer, this);
+        return new ContainerCraftingStation(inventoryplayer, this);
     }
 
     @Override

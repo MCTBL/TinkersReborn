@@ -5,7 +5,6 @@ import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -33,10 +32,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
     public String texture;
     public int cost;
     public IIcon defaultIcon;
+    public IIcon outlineIcon;
     public Map<Integer, IIcon> icons;
     public MaterialStatusType allowType; // TODO shard is null (maybe sharpen kit is too)
 
-    public TinkersRebornToolPart(String texture, String name, MaterialStatusType allowType) {
+    public TinkersRebornToolPart(String texture, String name, int cost, MaterialStatusType allowType) {
         // texture -> pickaxe_head for texture
         // name -> PickaxeHead for localization
         super(null, null, "tools/parts/" + texture + "/", TinkersRebornRegistry.partsTab);
@@ -44,10 +44,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
         this.partName = name;
         this.allowType = allowType;
         this.setUnlocalizedName("tinkersreborn." + name); // tinkersreborn.PickaxeHead
+        this.cost = cost;
     }
 
-    public TinkersRebornToolPart(String texture, String name) {
-        this(texture, name, MaterialStatusType.HEAD);
+    public TinkersRebornToolPart(String texture, String name, int cost) {
+        this(texture, name, cost, MaterialStatusType.HEAD);
     }
 
     public String getUnlocalizedToolName() {
@@ -85,8 +86,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
 
     @Override
     public void getSubItems(Item b, CreativeTabs tab, List<ItemStack> list) {
-        for (Entry<Integer, IIcon> e : this.icons.entrySet()) {
-            list.add(new ItemStack(this, 1, e.getKey()));
+        List<TinkersRebornMaterial> statsList = TinkersRebornRegistry.allMaterialsList.stream()
+            .filter(m -> m.statsMap.containsKey(this.allowType))
+            .collect(Collectors.toList());
+        for (TinkersRebornMaterial m : statsList) {
+            list.add(new ItemStack(this, 1, m.materialId));
         }
     }
 
@@ -104,11 +108,16 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
         }
         // default texture
         this.defaultIcon = iconRegister.registerIcon("tinkersreborn:" + folder + "_" + texture);
+        if (TextureHelper.itemTextureExists("tinkersreborn:" + folder + "outline_" + texture)) {
+            this.outlineIcon = iconRegister.registerIcon("tinkersreborn:" + folder + "outline_" + texture);
+        } else {
+            this.outlineIcon = this.defaultIcon;
+        }
     }
 
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int meta) {
-        if (this.icons.containsKey(meta)) return this.icons.get(meta);
+        if (this.icons != null && this.icons.containsKey(meta)) return this.icons.get(meta);
         return this.defaultIcon;
     }
 
@@ -127,4 +136,12 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart, IM
         return stack.getItemDamage();
     }
 
+    @Override
+    public TinkersRebornMaterial getMaterial(ItemStack stack) {
+        return TinkersRebornRegistry.getMaterialById(stack.getItemDamage());
+    }
+
+    public int getCost() {
+        return this.cost;
+    }
 }

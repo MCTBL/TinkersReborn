@@ -6,15 +6,16 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiToolForge;
-import mctbl.tinkersreborn.tools.inventory.TinkersRebornToolForgeContainer;
+import mctbl.tinkersreborn.tools.inventory.ContainerToolForge;
 
-public class TinkersRebornToolForgeLogic extends TinkersRebornToolStationLogic {
+public class ToolForgeLogic extends ToolStationLogic {
 
     public ItemStack previousTool;
     public String toolName;
 
-    public TinkersRebornToolForgeLogic() {
+    public ToolForgeLogic() {
         super(5);
         toolName = "";
     }
@@ -26,12 +27,12 @@ public class TinkersRebornToolForgeLogic extends TinkersRebornToolStationLogic {
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new TinkersRebornToolForgeContainer(inventoryplayer, this);
+        return new ContainerToolForge(inventoryplayer, this);
     }
 
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new GuiToolForge(inventoryplayer, null, world, x, y, z);
+        return new GuiToolForge(inventoryplayer, world, BlockPos.of(x, y, z), this);
     }
 
 }

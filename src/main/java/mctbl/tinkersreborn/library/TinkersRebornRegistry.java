@@ -2,7 +2,9 @@ package mctbl.tinkersreborn.library;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +13,8 @@ import net.minecraft.item.ItemStack;
 
 import mctbl.tinkersreborn.library.crafting.LiquidCasting;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
+import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.modifiers.AbstractModifier;
@@ -29,12 +33,15 @@ public class TinkersRebornRegistry {
     public static TinkersRebornCreativeTab miscTab;
 
     public static List<ToolCore> tools;
+    public static List<ToolCore> toolStationCrafting;
+    public static List<ToolCore> toolForgeCrafting;
 
     public static List<TinkersRebornMaterial> allMaterialsList;
     public static Map<String, TinkersRebornMaterial> materialIdentifierMaps;
     public static Map<Integer, TinkersRebornMaterial> materialIdMaps;
+    public static Map<String, RenderMaterial> renderMaterials;
 
-    public static Map<String, AbstractModifier> modifierIdentifierMaps;
+    public static Map<String, IModifier> modifierIdentifierMaps;
 
     public static Map<String, ITrait> traitIdentifierMaps;
     public static Map<Integer, ITrait> traitIdMaps;
@@ -64,13 +71,24 @@ public class TinkersRebornRegistry {
 
     private void init() {
         tools = new ArrayList<>();
+        toolStationCrafting = new ArrayList<>();
+        toolForgeCrafting = new ArrayList<>();
         allMaterialsList = new ArrayList<>();
         materialIdentifierMaps = new HashMap<>();
         materialIdMaps = new HashMap<>();
-        modifierIdentifierMaps = new HashMap<>();
-        traitIdentifierMaps = new HashMap<>();
-        traitIdMaps = new HashMap<>();
+        modifierIdentifierMaps = new LinkedHashMap<>();
+        traitIdentifierMaps = new LinkedHashMap<>();
+        traitIdMaps = new LinkedHashMap<>();
         allTinkersFluid = new ArrayList<>();
+        this.initRenderMaterial();
+    }
+
+    private void initRenderMaterial() {
+        renderMaterials = new HashMap<>();
+        renderMaterials.put("_internal_render1", new RenderMaterial("_internal_render1", 0XC1C1C1));
+        renderMaterials.put("_internal_render2", new RenderMaterial("_internal_render2", 0X684E1E));
+        renderMaterials.put("_internal_render3", new RenderMaterial("_internal_render3", 0X2376DD));
+        renderMaterials.put("_internal_render4", new RenderMaterial("_internal_render4", 0X7146B0));
     }
 
     public static void addMaterialToMap(TinkersRebornMaterial m) {
@@ -119,7 +137,39 @@ public class TinkersRebornRegistry {
         return traitIdentifierMaps.get(identifier);
     }
 
-    public static AbstractModifier getModifier(String identifier) {
+    public static IModifier getModifier(String identifier) {
         return modifierIdentifierMaps.get(identifier);
+    }
+
+    public static Collection<IModifier> getAllModifier() {
+        return modifierIdentifierMaps.values();
+    }
+
+    public static void registerTool(ToolCore tool) {
+        tools.add(tool);
+    }
+
+    public static List<ToolCore> getAllTools() {
+        return tools;
+    }
+
+    /**
+     * Adds a tool to the Crafting UI of both the Tool Station as well as the Tool
+     * Forge
+     */
+    public static void registerToolCrafting(ToolCore tool) {
+        registerToolStationCrafting(tool);
+        registerToolForgeCrafting(tool);
+    }
+
+    /** Adds a tool to the Crafting UI of the Tool Station */
+    public static void registerToolStationCrafting(ToolCore tool) {
+        // TODO add event?
+        toolStationCrafting.add(tool);
+    }
+
+    /** Adds a tool to the Crafting UI of the Tool Forge */
+    public static void registerToolForgeCrafting(ToolCore tool) {
+        toolForgeCrafting.add(tool);
     }
 }

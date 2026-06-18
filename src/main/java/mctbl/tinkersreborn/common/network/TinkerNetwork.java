@@ -1,4 +1,4 @@
-package mctbl.tinkersreborn.util;
+package mctbl.tinkersreborn.common.network;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +30,7 @@ public class TinkerNetwork {
     }
 
     public void setUp() {
+        // register packet
 
     }
 
@@ -64,9 +65,9 @@ public class TinkerNetwork {
         @Override
         public IMessage onMessage(AbstractPacket packet, MessageContext ctx) {
             if (ctx.side == Side.SERVER) {
-                return packet.handleServer(ctx.getServerHandler());
+                return packet.handleServer(ctx);
             } else {
-                return packet.handleClient(ctx.getClientHandler());
+                return packet.handleClient(ctx);
             }
         }
     }

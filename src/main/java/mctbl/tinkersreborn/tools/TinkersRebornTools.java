@@ -1,24 +1,8 @@
 package mctbl.tinkersreborn.tools;
 
-import static mctbl.tinkersreborn.library.MaterialID.Alumite;
-import static mctbl.tinkersreborn.library.MaterialID.Ardite;
-import static mctbl.tinkersreborn.library.MaterialID.BlueSlime;
-import static mctbl.tinkersreborn.library.MaterialID.Bone;
-import static mctbl.tinkersreborn.library.MaterialID.Bronze;
-import static mctbl.tinkersreborn.library.MaterialID.Cactus;
-import static mctbl.tinkersreborn.library.MaterialID.Cobalt;
-import static mctbl.tinkersreborn.library.MaterialID.Copper;
-import static mctbl.tinkersreborn.library.MaterialID.Flint;
-import static mctbl.tinkersreborn.library.MaterialID.Iron;
-import static mctbl.tinkersreborn.library.MaterialID.Manyullyn;
-import static mctbl.tinkersreborn.library.MaterialID.Netherrack;
-import static mctbl.tinkersreborn.library.MaterialID.Obsidian;
-import static mctbl.tinkersreborn.library.MaterialID.Paper;
-import static mctbl.tinkersreborn.library.MaterialID.PigIron;
-import static mctbl.tinkersreborn.library.MaterialID.Slime;
-import static mctbl.tinkersreborn.library.MaterialID.Steel;
-import static mctbl.tinkersreborn.library.MaterialID.Stone;
-import static mctbl.tinkersreborn.library.MaterialID.Wood;
+import static mctbl.tinkersreborn.library.MaterialID.*;
+import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Ingot;
+import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Shard;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -50,10 +34,10 @@ import mctbl.tinkersreborn.tools.blocks.ToolForgeBlock;
 import mctbl.tinkersreborn.tools.blocks.ToolStationBlock;
 import mctbl.tinkersreborn.tools.entity.CastChestLogic;
 import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
+import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
-import mctbl.tinkersreborn.tools.entity.TinkersRebornPartBuilderLogic;
-import mctbl.tinkersreborn.tools.entity.TinkersRebornToolForgeLogic;
-import mctbl.tinkersreborn.tools.entity.TinkersRebornToolStationLogic;
+import mctbl.tinkersreborn.tools.entity.ToolForgeLogic;
+import mctbl.tinkersreborn.tools.entity.ToolStationLogic;
 import mctbl.tinkersreborn.tools.itemblocks.TinkersRebornCastChestItemBlock;
 import mctbl.tinkersreborn.tools.itemblocks.TinkersRebornPartBuilderItemBlock;
 import mctbl.tinkersreborn.tools.itemblocks.TinkersRebornPartChestItemBlock;
@@ -123,6 +107,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornToolPart bowString;
     public static TinkersRebornToolPart fletching;
     public static TinkersRebornToolPart boltCore;
+
+    public static TinkersRebornToolPart sharpeningKit;
 
     // Tools
     public static ToolCore pickaxe;
@@ -216,16 +202,16 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         toolStation = new ToolStationBlock();
         GameRegistry
             .registerBlock(toolStation, TinkersRebornToolStationItemBlock.class, toolStation.getUnlocalizedName());
-        GameRegistry.registerTileEntity(TinkersRebornToolStationLogic.class, toolStation.getUnlocalizedName());
+        GameRegistry.registerTileEntity(ToolStationLogic.class, toolStation.getUnlocalizedName());
 
         toolForge = new ToolForgeBlock();
         GameRegistry.registerBlock(toolForge, TinkersRebornToolForgeItemBlock.class, toolForge.getUnlocalizedName());
-        GameRegistry.registerTileEntity(TinkersRebornToolForgeLogic.class, toolForge.getUnlocalizedName());
+        GameRegistry.registerTileEntity(ToolForgeLogic.class, toolForge.getUnlocalizedName());
 
         partBuilder = new PartBuilderBlock();
         GameRegistry
             .registerBlock(partBuilder, TinkersRebornPartBuilderItemBlock.class, partBuilder.getUnlocalizedName());
-        GameRegistry.registerTileEntity(TinkersRebornPartBuilderLogic.class, partBuilder.getUnlocalizedName());
+        GameRegistry.registerTileEntity(PartBuilderLogic.class, partBuilder.getUnlocalizedName());
 
         castChest = new CastChestBlock();
         GameRegistry.registerBlock(castChest, TinkersRebornCastChestItemBlock.class, castChest.getUnlocalizedName());
@@ -239,35 +225,40 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerBlock(craftingStation, craftingStation.getUnlocalizedName());
         GameRegistry.registerTileEntity(CraftingStationLogic.class, craftingStation.getUnlocalizedName());
 
-        arrowhead = new TinkersRebornToolPart("arrowhead", "ArrowHead");
-        arrowShaft = new TinkersRebornToolPart("arrow_shaft", "ArrowShaft", MaterialStatusType.SHAFT);
-        axeHead = new TinkersRebornToolPart("axe_head", "AxeHead");
-        battlesignHead = new TinkersRebornToolPart("battlesign_head", "SignHead");
-        binding = new TinkersRebornToolPart("binding", "Binding");
-        bowLimb = new TinkersRebornToolPart("bow_limb", "BowLimb", MaterialStatusType.BOW);
-        chiselHead = new TinkersRebornToolPart("chisel_head", "ChiselHead");
-        crossbar = new TinkersRebornToolPart("crossbar", "Crossbar");
-        crossbowBody = new TinkersRebornToolPart("crossbow_body", "CrossbowBody");
-        crossbowLimb = new TinkersRebornToolPart("crossbow_limb", "CrossbowLimb", MaterialStatusType.BOW);
-        excavatorHead = new TinkersRebornToolPart("excavator_head", "ExcavatorHead");
-        frypanHead = new TinkersRebornToolPart("frypan_head", "FrypanHead");
-        fullGuard = new TinkersRebornToolPart("full_guard", "FullGuard");
-        hammerHead = new TinkersRebornToolPart("hammer_head", "HammerHead");
-        knifeBlade = new TinkersRebornToolPart("knife_blade", "KnifeBlade");
-        largeplate = new TinkersRebornToolPart("largeplate", "LargePlate");
-        largeGuard = new TinkersRebornToolPart("large_guard", "LargeGuard");
-        largeSwordBlade = new TinkersRebornToolPart("large_sword_blade", "LargeSwordBlade");
-        lumberaxeHead = new TinkersRebornToolPart("lumberaxe_head", "LumberAxeHead");
-        mediumGuard = new TinkersRebornToolPart("medium_guard", "MediumGuard");
-        pickaxeHead = new TinkersRebornToolPart("pickaxe_head", "PickaxeHead");
-        rod = new TinkersRebornToolPart("rod", "ToolRod");
-        scytheHead = new TinkersRebornToolPart("scythe_head", "ScytheHead");
-        shard = new TinkersRebornToolPart("shard", "ToolShard");
-        shovelHead = new TinkersRebornToolPart("shovel_head", "ShovelHead");
-        shuriken = new TinkersRebornToolPart("shuriken", "Shuriken");
-        swordBlade = new TinkersRebornToolPart("sword_blade", "SwordBlade");
-        toughbind = new TinkersRebornToolPart("toughbind", "ToughBinding");
-        toughrod = new TinkersRebornToolPart("toughrod", "ToughRod");
+        arrowhead = new TinkersRebornToolPart("arrowhead", "ArrowHead", VALUE_Ingot * 2);
+        arrowShaft = new TinkersRebornToolPart("arrow_shaft", "ArrowShaft", VALUE_Ingot * 2, MaterialStatusType.SHAFT);
+        axeHead = new TinkersRebornToolPart("axe_head", "AxeHead", VALUE_Ingot * 2);
+        battlesignHead = new TinkersRebornToolPart("battlesign_head", "SignHead", VALUE_Ingot * 3);
+        binding = new TinkersRebornToolPart("binding", "Binding", VALUE_Ingot);
+        bowLimb = new TinkersRebornToolPart("bow_limb", "BowLimb", VALUE_Ingot * 3, MaterialStatusType.BOW);
+        chiselHead = new TinkersRebornToolPart("chisel_head", "ChiselHead", VALUE_Ingot * 2);
+        crossbar = new TinkersRebornToolPart("crossbar", "Crossbar", VALUE_Ingot);
+        crossbowBody = new TinkersRebornToolPart("crossbow_body", "CrossbowBody", VALUE_Ingot * 4);
+        crossbowLimb = new TinkersRebornToolPart(
+            "crossbow_limb",
+            "CrossbowLimb",
+            VALUE_Ingot * 2,
+            MaterialStatusType.BOW);
+        excavatorHead = new TinkersRebornToolPart("excavator_head", "ExcavatorHead", VALUE_Ingot * 8);
+        frypanHead = new TinkersRebornToolPart("frypan_head", "FrypanHead", VALUE_Ingot * 4);
+        fullGuard = new TinkersRebornToolPart("full_guard", "FullGuard", VALUE_Ingot);
+        hammerHead = new TinkersRebornToolPart("hammer_head", "HammerHead", VALUE_Ingot * 8);
+        knifeBlade = new TinkersRebornToolPart("knife_blade", "KnifeBlade", VALUE_Ingot);
+        largeplate = new TinkersRebornToolPart("largeplate", "LargePlate", VALUE_Ingot * 8);
+        largeGuard = new TinkersRebornToolPart("large_guard", "LargeGuard", VALUE_Ingot);
+        largeSwordBlade = new TinkersRebornToolPart("large_sword_blade", "LargeSwordBlade", VALUE_Ingot * 8);
+        lumberaxeHead = new TinkersRebornToolPart("lumberaxe_head", "LumberAxeHead", VALUE_Ingot * 8);
+        mediumGuard = new TinkersRebornToolPart("medium_guard", "MediumGuard", VALUE_Ingot);
+        pickaxeHead = new TinkersRebornToolPart("pickaxe_head", "PickaxeHead", VALUE_Ingot * 2);
+        rod = new TinkersRebornToolPart("rod", "ToolRod", VALUE_Ingot);
+        scytheHead = new TinkersRebornToolPart("scythe_head", "ScytheHead", VALUE_Ingot * 8);
+        shard = new TinkersRebornToolPart("shard", "ToolShard", VALUE_Shard);
+        shovelHead = new TinkersRebornToolPart("shovel_head", "ShovelHead", VALUE_Ingot * 2);
+        shuriken = new TinkersRebornToolPart("shuriken", "Shuriken", VALUE_Ingot * 2);
+        swordBlade = new TinkersRebornToolPart("sword_blade", "SwordBlade", VALUE_Ingot * 2);
+        toughbind = new TinkersRebornToolPart("toughbind", "ToughBinding", VALUE_Ingot * 3);
+        toughrod = new TinkersRebornToolPart("toughrod", "ToughRod", VALUE_Ingot * 3);
+        sharpeningKit = new TinkersRebornToolPart("sharpening_kit", "SharpeningKit", VALUE_Ingot * 2);
         bowString = new BowString();
         fletching = new Fletching();
         boltCore = new BoltCore();
@@ -304,10 +295,12 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(bowString, bowString.getUnlocalizedName());
         GameRegistry.registerItem(fletching, fletching.getUnlocalizedName());
         GameRegistry.registerItem(boltCore, boltCore.getUnlocalizedName());
+        GameRegistry.registerItem(sharpeningKit, sharpeningKit.getUnlocalizedName());
 
         pickaxe = new Pickaxe();
         GameRegistry.registerItem(pickaxe, pickaxe.getUnlocalizedName());
-        TinkersRebornRegistry.tools.add(pickaxe);
+        TinkersRebornRegistry.registerTool(pickaxe);
+        TinkersRebornRegistry.registerToolCrafting(pickaxe);
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");
@@ -607,4 +600,5 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         OreDictionary.registerOre("slimeball", new ItemStack(glueBall));
     }
+
 }

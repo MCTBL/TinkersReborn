@@ -9,6 +9,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -156,13 +157,15 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     }
 
     public void renderHoveredToolTip(int mouseX, int mouseY) {
-        if (this.mc.thePlayer.inventory.getItemStack() == null && this.hoveredSlot != null) {
+        if (this.mc.thePlayer.inventory.getItemStack() == null && this.hoveredSlot != null
+            && this.hoveredSlot.getStack() != null) {
             this.renderToolTip(this.hoveredSlot.getStack(), mouseX, mouseY);
         }
     }
 
     protected void updateSubmodule(GuiModule module) {
         module.updatePosition(this.cornerX, this.cornerY, this.realWidth, this.realHeight);
+        module.mc = this.mc;
 
         if (module.guiLeft() < this.guiLeft) {
             this.xSize += this.guiLeft - module.guiLeft();
@@ -237,7 +240,43 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         return (ContainerMultiModule) inventorySlots;
     }
 
+    public void renderItemIntoGui(ItemStack stack, int xPos, int yPos) {
+        itemRender.renderItemAndEffectIntoGUI(fontRendererObj, this.mc.getTextureManager(), stack, xPos, yPos);
+    }
+
     public RenderItem getRenderItem() {
         return itemRender;
+    }
+
+    public int guiLeft() {
+        return this.guiLeft;
+    }
+
+    public void guiLeftBias(int bias) {
+        this.guiLeft += bias;
+    }
+
+    public int guiTop() {
+        return this.guiTop;
+    }
+
+    public void guiTopBias(int bias) {
+        this.guiTop += bias;
+    }
+
+    public int xSize() {
+        return this.xSize;
+    }
+
+    public void xSizeBias(int bias) {
+        this.xSize += bias;
+    }
+
+    public int ySize() {
+        return this.ySize;
+    }
+
+    public void ySizeBias(int bias) {
+        this.ySize += bias;
     }
 }
