@@ -16,7 +16,7 @@ public class ToolForgeLogic extends ToolStationLogic {
     public String toolName;
 
     public ToolForgeLogic() {
-        super(5);
+        super(6);
         toolName = "";
     }
 

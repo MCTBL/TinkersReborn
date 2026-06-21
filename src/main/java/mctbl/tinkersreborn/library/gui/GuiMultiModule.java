@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -27,8 +26,6 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     public int cornerY;
     public int realWidth;
     public int realHeight;
-
-    private Slot hoveredSlot;
 
     public GuiMultiModule(ContainerMultiModule container) {
         super(container);
@@ -138,37 +135,10 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         ySize = realHeight;
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        this.updateHoverSlot(mouseX, mouseY);
-
-        this.renderHoveredToolTip(mouseX, mouseY);
         guiLeft = oldX;
         guiTop = oldY;
         xSize = oldW;
         ySize = oldH;
-    }
-
-    public void updateHoverSlot(int mouseX, int mouseY) {
-        for (Slot s : this.inventorySlots.inventorySlots) {
-            if (s.func_111238_b()
-                && this.func_146978_c(s.xDisplayPosition, s.yDisplayPosition, 16, 16, mouseX, mouseY)) {
-                this.hoveredSlot = s;
-                return;
-            }
-        }
-        this.hoveredSlot = null;
-    }
-
-    public boolean func_146978_c(int left, int top, int right, int bottom, int pointX, int pointY) {
-        pointX -= this.cornerX;
-        pointY -= this.cornerY;
-        return pointX >= left - 1 && pointX < left + right + 1 && pointY >= top - 1 && pointY < top + bottom + 1;
-    }
-
-    public void renderHoveredToolTip(int mouseX, int mouseY) {
-        if (this.mc.thePlayer.inventory.getItemStack() == null && this.hoveredSlot != null
-            && this.hoveredSlot.getStack() != null) {
-            this.renderToolTip(this.hoveredSlot.getStack(), mouseX, mouseY);
-        }
     }
 
     protected void updateSubmodule(GuiModule module) {
