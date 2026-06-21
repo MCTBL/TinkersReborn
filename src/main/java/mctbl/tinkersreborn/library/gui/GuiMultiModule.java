@@ -151,6 +151,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
                 return;
             }
         }
+        this.hoveredSlot = null;
     }
 
     public boolean func_146978_c(int left, int top, int right, int bottom, int pointX, int pointY) {
