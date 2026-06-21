@@ -13,6 +13,8 @@ import mctbl.tinkersreborn.util.ColorUtil;
 
 public final class MiningLevelHelper {
 
+    public static final String chatFormattingCode = "§";
+
     private MiningLevelHelper() {}
 
     public static Map<String, MiningLevel> nameToLevel;
@@ -26,13 +28,28 @@ public final class MiningLevelHelper {
         levelList = new ArrayList<>();
         int idx = 0;
         for (String s : TinkersRebornConfig.miningLevels) {
-            String prefix = s.substring(0, 2);
-            String local = s.substring(2);
-
-            MiningLevel newLevel = new MiningLevel(idx, charToFormatting.get(prefix), prefix, local);
-            levelList.add(newLevel);
-            nameToLevel.put(local, newLevel);
-            idx++;
+            MiningLevel newLevel = null;
+            String local = null;
+            if (s.startsWith(chatFormattingCode)) {
+                String prefix = s.substring(0, 2);
+                local = s.substring(2);
+                newLevel = new MiningLevel(idx, charToFormatting.get(prefix), prefix, local);
+            } else if (s.startsWith("#")) {
+                // #5C1BBD
+                String prefix = s.substring(1, 7);
+                local = s.substring(7);
+                newLevel = new MiningLevel(idx, Integer.parseInt(prefix, 16), prefix, local);
+            } else if (s.startsWith("0X") || s.startsWith("0x")) {
+                // 0X5C1BBD / 0x5C1BBD
+                String prefix = s.substring(2, 8);
+                local = s.substring(8);
+                newLevel = new MiningLevel(idx, Integer.parseInt(prefix, 16), prefix, local);
+            }
+            if (newLevel != null && local != null) {
+                levelList.add(newLevel);
+                nameToLevel.put(local, newLevel);
+                idx++;
+            }
         }
     }
 

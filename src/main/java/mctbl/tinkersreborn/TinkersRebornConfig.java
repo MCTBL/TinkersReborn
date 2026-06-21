@@ -63,7 +63,7 @@ public class TinkersRebornConfig {
             .get(
                 "General",
                 "Mining Levels",
-                new String[] { "§7tile.stone.name", "§fIron", "§4item.redstone.name", "§dtile.obsidian.name",
+                new String[] { "§7tile.stone.name", "§fIron", "§4item.redstone.name", "#5C1BBDtile.obsidian.name",
                     "§9Cobalt", "§5Manyullyn" },
                 "Mining levels")
             .getStringList();

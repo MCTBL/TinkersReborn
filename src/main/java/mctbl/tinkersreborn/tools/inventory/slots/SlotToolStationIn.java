@@ -29,11 +29,13 @@ public class SlotToolStationIn extends Slot {
     public void putStack(ItemStack stack) {
         if (this.getSlotIndex() == 0 && stack != null
             && stack.getItem() instanceof ToolCore
-            && parent instanceof ContainerToolStation cts
-            && stack.hasDisplayName()) {
-
-            String toolName = stack.getDisplayName();
-            if (!toolName.isEmpty()) cts.setToolName(toolName);
+            && parent instanceof ContainerToolStation cts) {
+            if (stack.hasDisplayName()) {
+                String toolName = stack.getDisplayName();
+                if (!toolName.isEmpty()) cts.setToolName(toolName);
+            } else {
+                cts.setToolName("");
+            }
         }
         super.putStack(stack);
     }
