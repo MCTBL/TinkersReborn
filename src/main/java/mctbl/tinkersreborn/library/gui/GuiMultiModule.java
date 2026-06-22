@@ -141,6 +141,12 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         ySize = oldH;
     }
 
+    public boolean func_146978_c(int left, int top, int right, int bottom, int pointX, int pointY) {
+        pointX -= this.cornerX;
+        pointY -= this.cornerY;
+        return pointX >= left - 1 && pointX < left + right + 1 && pointY >= top - 1 && pointY < top + bottom + 1;
+    }
+    
     protected void updateSubmodule(GuiModule module) {
         module.updatePosition(this.cornerX, this.cornerY, this.realWidth, this.realHeight);
         module.mc = this.mc;

@@ -34,11 +34,13 @@
  * For more details, see https://docs.gradle.org/8.0.1/userguide/java_library_plugin.html#sec:java_library_configurations_graph
  */
 dependencies {
-    compileOnly('com.github.GTNewHorizons:Angelica:2.1.15:api')
-	compileOnly("com.github.GTNewHorizons:waila:1.19.22:api")
-    compileOnly("com.github.GTNewHorizons:Mobs-Info:0.5.10-GTNH:dev")
-    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.2')
-    
+//    compileOnly('com.github.GTNewHorizons:Angelica:2.1.15:api')
+//	compileOnly("com.github.GTNewHorizons:waila:1.19.22:api")
+//    compileOnly("com.github.GTNewHorizons:Mobs-Info:0.5.10-GTNH:dev")
+//    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.2')
+    api('org.joml:joml:1.10.5')
+
+
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:waila:1.19.22:api')
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:TiC-Tooltips:1.4.1:dev'){transitive = false}
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:ServerUtilities:2.2.20:dev")
