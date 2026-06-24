@@ -679,16 +679,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             IModifier modifier = TinkersRebornRegistry.getModifier(data.identifier);
             if (modifier != null && !modifier.isHidden()) {
                 list.add(data.getColorString() + modifier.getTooltip(tag, false));
-
-            } else {
-                ITrait trait = TinkersRebornRegistry.getTrait(data.identifier);
-                if (trait != null && !trait.isHidden()) {
-                    list.add(data.getColorString() + trait.getLocalizedName());
-                }
             }
-
         }
-
     }
 
     /**
@@ -725,6 +717,31 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         }
         float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
         list.add(HeadMaterialStats.formatAttack(attack));
+
+        if (!isTooltip) {
+            list.addAll(getModifierInfo(stack));
+        }
+
+        return list;
+    }
+
+    protected List<String> getModifierInfo(ItemStack tool) {
+        List<String> list = new ArrayList<>();
+
+        List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(tool);
+        for (NBTTagCompound compound : modifiersList) {
+            ModifierNBT data = ModifierNBT.readTag(compound);
+            String modifierIdentifier = compound.getString(ToolTags.IDENTIFIER);
+
+            // get matching modifier
+            IModifier modifier = TinkersRebornRegistry.getModifier(modifierIdentifier);
+            if (modifier != null && !modifier.isHidden()) {
+                for (String str : modifier.getExtraInfo(tool, compound)) {
+                    if (!str.isEmpty()) list.add(data.getColorString() + str);
+
+                }
+            }
+        }
 
         return list;
     }

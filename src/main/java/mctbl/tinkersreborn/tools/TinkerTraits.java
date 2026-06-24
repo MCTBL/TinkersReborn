@@ -1,17 +1,24 @@
 package mctbl.tinkersreborn.tools;
 
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
+import mctbl.tinkersreborn.tools.traits.TraitAlien;
+import mctbl.tinkersreborn.tools.traits.TraitAridiculous;
 import mctbl.tinkersreborn.tools.traits.TraitCheap;
 import mctbl.tinkersreborn.tools.traits.TraitCheapskate;
 import mctbl.tinkersreborn.tools.traits.TraitCrude;
+import mctbl.tinkersreborn.tools.traits.TraitDuritos;
 import mctbl.tinkersreborn.tools.traits.TraitEcological;
+import mctbl.tinkersreborn.tools.traits.TraitEnderference;
+import mctbl.tinkersreborn.tools.traits.TraitHellish;
+import mctbl.tinkersreborn.tools.traits.TraitPrickly;
+import mctbl.tinkersreborn.tools.traits.TraitSpiky;
 
 public class TinkerTraits {
 
     // // general material traits
-    // public static final AbstractTrait alien = new TraitAlien();
+    public static final AbstractTrait alien = new TraitAlien();
     // public static final AbstractTrait aquadynamic = new TraitAquadynamic();
-    // public static final AbstractTrait aridiculous = new TraitAridiculous();
+    public static final AbstractTrait aridiculous = new TraitAridiculous();
     // public static final AbstractTrait autosmelt = new TraitAutosmelt();
     // public static final AbstractTrait baconlicious = new TraitBaconlicious();
     public static final AbstractTrait cheap = new TraitCheap();
@@ -22,14 +29,14 @@ public class TinkerTraits {
     // public static final AbstractTrait crumbling = new TraitCrumbling();
     // public static final AbstractTrait dense = new TraitDense();
     // public static final AbstractTrait depthdigger = new TraitDepthdigger();
-    // public static final AbstractTrait duritos = new TraitDuritos(); // yes you read that correctly
+    public static final AbstractTrait duritos = new TraitDuritos(); // yes you read that correctly
     public static final AbstractTrait ecological = new TraitEcological();
-    // public static final AbstractTrait enderference = new TraitEnderference();
+    public static final AbstractTrait enderference = new TraitEnderference();
     // public static final AbstractTrait established = new TraitEstablished();
     // public static final AbstractTrait flammable = new TraitFlammable();
     // public static final AbstractTrait fractured = new TraitBonusDamage("fractured", 1.5f);
     // public static final AbstractTrait heavy = new TraitHeavy();
-    // public static final AbstractTrait hellish = new TraitHellish();
+    public static final AbstractTrait hellish = new TraitHellish();
     // public static final AbstractTrait holy = new TraitHoly();
     // public static final AbstractTrait insatiable = new TraitInsatiable();
     // public static final AbstractTrait jagged = new TraitJagged();
@@ -39,14 +46,14 @@ public class TinkerTraits {
     // public static final AbstractTrait momentum = new TraitMomentum();
     // public static final AbstractTrait petramor = new TraitPetramor();
     // public static final AbstractTrait poisonous = new TraitPoisonous();
-    // public static final AbstractTrait prickly = new TraitPrickly();
+    public static final AbstractTrait prickly = new TraitPrickly();
     // public static final AbstractTrait raging = new TraitRaging(1);
     // public static final AbstractTrait raging2 = new TraitRaging(2);
     // public static final AbstractTrait sharp = new TraitSharp();
     // public static final AbstractTrait shocking = new TraitShocking();
     // public static final AbstractTrait slimeyGreen = new TraitSlimey("green", EntitySlime.class);
     // public static final AbstractTrait slimeyBlue = new TraitSlimey("blue", EntityBlueSlime.class);
-    // public static final AbstractTrait spiky = new TraitSpiky();
+    public static final AbstractTrait spiky = new TraitSpiky();
     // public static final AbstractTrait splintering = new TraitSplintering();
     // public static final AbstractTrait splinters = new TraitSplinters();
     // public static final AbstractTrait squeaky = new TraitSqueaky();

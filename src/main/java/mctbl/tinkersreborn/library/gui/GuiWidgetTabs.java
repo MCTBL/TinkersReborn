@@ -164,7 +164,7 @@ public class GuiWidgetTabs extends GuiWidget {
         GL11.glTranslatef(0.0F, 0.0F, 32.0F);
 
         RenderHelper.enableGUIStandardItemLighting();
-        // GL11.glDisable(GL11.GL_LIGHTING);
+
         itemRender.zLevel = 200;
         itemRender.renderItemAndEffectIntoGUI(
             stack.getItem()

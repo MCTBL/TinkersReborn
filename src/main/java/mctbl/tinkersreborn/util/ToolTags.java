@@ -18,6 +18,11 @@ public final class ToolTags {
     /** The tag that contains all the actual calculated runtime-information of the tools */
     public static final String TOOLDATA = "Stats";
     public static final String TOOLDATAORIG = "StatsOriginal";
+    /**
+     * Extra-data that is specific to this Itemstack and is used to build the item. An example would be if a special
+     * pickaxe had 100 more durability, it'd be stored in here.
+     */
+    public static final String TOOLDATAEXTRA = "Special";
 
     public static final String TYPEMODIFIERS = "modifier";
     public static final String TYPETRAITS = "trait";

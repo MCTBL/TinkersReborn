@@ -314,6 +314,21 @@ flowchart TB
     "HarvestLevel": 3,
     "FreeModifiers": 3
   },
+  // for some traits data
+  "Special":{
+    "alien":{
+      "pool":{
+        "durability":282,
+        "attack":1.349999,
+        "speed":1.7359989
+      },
+      "bonus":{
+        "durability":19,
+        "attack":0.110000014,
+        "speed":0.14
+      }
+    }
+  },
   // 1 broken, 0 not broken, use boolean
   "Broken":0,
   "Unbreakable":1,

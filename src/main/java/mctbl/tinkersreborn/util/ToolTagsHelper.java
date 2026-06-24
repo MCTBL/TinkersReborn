@@ -117,6 +117,26 @@ public class ToolTagsHelper {
         setToolBaseNBTSafe(stack, toolBaseNBTSafe);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Special
+     */
+    public static NBTTagCompound getToolExtraNBTSafe(ItemStack stack) {
+        return getToolBaseNBTSafe(stack).getCompoundTag(ToolTags.TOOLDATAEXTRA);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Special
+     */
+    public static NBTTagCompound getToolExtraNBTSafe(NBTTagCompound root) {
+        return root.getCompoundTag(ToolTags.TOOLDATAEXTRA);
+    }
+
+    public static void setToolExtraNBTSafe(NBTTagCompound root, NBTTagCompound toolExtraNBT) {
+        if (getToolExtraNBTSafe(root) != toolExtraNBT) root.setTag(ToolTags.TOOLDATAEXTRA, toolExtraNBT);
+    }
+
     public static List<TinkersRebornMaterial> getToolRenderMaterialsList(ItemStack stack) {
         return fromTagToMaterial(getToolRenderMaterialsNBTSafe(stack));
     }
@@ -306,6 +326,10 @@ public class ToolTagsHelper {
         return getToolDataNBTSafe(root).getInteger(ToolTags.DURABILITY);
     }
 
+    public static void setDurabilityStat(ItemStack stack, int newDurability) {
+        getToolDataNBTSafe(stack).setInteger(ToolTags.DURABILITY, newDurability);
+    }
+
     public static void setDurabilityStat(NBTTagCompound root, int newDurability) {
         getToolDataNBTSafe(root).setInteger(ToolTags.DURABILITY, newDurability);
     }
@@ -328,10 +352,42 @@ public class ToolTagsHelper {
 
     /**
      * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> MiningSpeed
+     */
+    public static float getMiningSpeed(NBTTagCompound root) {
+        return getToolDataNBTSafe(root).getFloat(ToolTags.MININGSPEED);
+    }
+
+    public static void setMiningSpeed(ItemStack stack, float newMiningSpeed) {
+        getToolDataNBTSafe(stack).setFloat(ToolTags.MININGSPEED, newMiningSpeed);
+    }
+
+    public static void setMiningSpeed(NBTTagCompound root, float newMiningSpeed) {
+        getToolDataNBTSafe(root).setFloat(ToolTags.MININGSPEED, newMiningSpeed);
+    }
+
+    /**
+     * @param stack
      * @return tool -> TinkersRebornTool -> Stats -> Attack
      */
     public static float getAttackStat(ItemStack stack) {
         return getToolDataNBTSafe(stack).getFloat(ToolTags.ATTACK);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> Attack
+     */
+    public static float getAttackStat(NBTTagCompound root) {
+        return getToolDataNBTSafe(root).getFloat(ToolTags.ATTACK);
+    }
+
+    public static void setAttackStat(ItemStack stack, float newDamamge) {
+        getToolDataNBTSafe(stack).setFloat(ToolTags.ATTACK, newDamamge);
+    }
+
+    public static void setAttackStat(NBTTagCompound root, float newDamamge) {
+        getToolDataNBTSafe(root).setFloat(ToolTags.ATTACK, newDamamge);
     }
 
     public static float getActualToolAttack(ItemStack stack) {
@@ -766,7 +822,7 @@ public class ToolTagsHelper {
             sound = "entity.player.attack.nodamage";
         }
 
-        if (player != null && sound != null) {
+        if (player != null && sound != null && !player.worldObj.isRemote) {
             player.playSound(sound, 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F);
         }
 

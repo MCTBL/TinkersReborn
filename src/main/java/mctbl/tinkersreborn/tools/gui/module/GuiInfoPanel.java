@@ -312,7 +312,7 @@ public class GuiInfoPanel extends GuiModule {
             return;
         }
 
-        int w = MathHelper.clamp_int(this.width - mouseX - 12, 0, 200);
+        int w = MathHelper.clamp_int(this.width - mouseX, 0, 200);
         if (w < 100) {
             mouseX -= 100 - w;
             w = 100;
@@ -320,9 +320,16 @@ public class GuiInfoPanel extends GuiModule {
 
         List<String> lines = fontRenderer.listFormattedStringToWidth(tooltips.get(i), w);
 
+        // drawHoveringText(
+        // lines,
+        // mouseX - guiLeft,
+        // mouseY - guiTop - lines.size() * fontRenderer.FONT_HEIGHT / 2,
+        // this.fontRenderer);
+
+        // TODO tooltip position is incorrect
         drawHoveringText(
             lines,
-            mouseX - guiLeft,
+            (int) (mouseX - guiLeft + this.xSize * 1.5F),
             mouseY - guiTop - lines.size() * fontRenderer.FONT_HEIGHT / 2,
             this.fontRenderer);
     }

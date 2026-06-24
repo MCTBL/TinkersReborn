@@ -7,14 +7,21 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 
 import com.google.common.collect.ImmutableList;
 
@@ -24,6 +31,7 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.IToolMod;
 import mctbl.tinkersreborn.library.tools.ITrait;
+import mctbl.tinkersreborn.library.utils.EntityLivingBaseReflector;
 import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTags;
@@ -256,60 +264,52 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         return false;
     }
 
-    // protected static boolean attackEntitySecondary(DamageSource source, float
-    // damage, Entity entity, boolean
-    // ignoreInvulv, boolean resetInvulv) {
-    // return attackEntitySecondary(source, damage, entity, ignoreInvulv,
-    // resetInvulv, true);
-    // }
-    //
-    // protected static boolean attackEntitySecondary(DamageSource source, float
-    // damage, Entity entity, boolean
-    // ignoreInvulv, boolean resetInvulv, boolean noKnockback) {
-    // Optional<EntityLivingBase> entityLivingBase = Optional.of(entity)
-    // .filter(e -> e instanceof EntityLivingBase)
-    // .map(e -> (EntityLivingBase) e);
-    // Optional<IAttributeInstance> knockbackAttribute = entityLivingBase.map(living
-    // ->
-    // living.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE))
-    // .filter(attribute -> !attribute.hasModifier(ANTI_KNOCKBACK_MOD));
-    // float oldLastDamage = entityLivingBase.map(living ->
-    // living.lastDamage).orElse(0f);
-    //
-    // if(noKnockback) {
-    // knockbackAttribute.ifPresent(attribute ->
-    // attribute.applyModifier(ANTI_KNOCKBACK_MOD));
-    // }
-    //
-    // // set hurt resistance time to 0 because we always want to deal damage in
-    // traits
-    // if(ignoreInvulv) {
-    // entity.hurtResistantTime = 0;
-    // }
-    // boolean hit = entity.attackEntityFrom(source, damage);
-    // // set total received damage, important for AI and stuff
-    // entityLivingBase.ifPresent(living -> living.lastDamage += oldLastDamage);
-    //
-    // // reset hurt resistance time if desired
-    // if(hit && resetInvulv) {
-    // entity.hurtResistantTime = 0;
-    // }
-    //
-    // if(noKnockback) {
-    // knockbackAttribute.ifPresent(attribute ->
-    // attribute.removeModifier(ANTI_KNOCKBACK_MOD));
-    // }
-    //
-    // return hit;
-    // }
+    protected static boolean attackEntitySecondary(DamageSource source, float damage, Entity entity,
+        boolean ignoreInvulv, boolean resetInvulv) {
+        return attackEntitySecondary(source, damage, entity, ignoreInvulv, resetInvulv, true);
+    }
+
+    protected static boolean attackEntitySecondary(DamageSource source, float damage, Entity entity,
+        boolean ignoreInvulv, boolean resetInvulv, boolean noKnockback) {
+        Optional<EntityLivingBase> entityLivingBase = Optional.of(entity)
+            .filter(e -> e instanceof EntityLivingBase)
+            .map(e -> (EntityLivingBase) e);
+        Optional<IAttributeInstance> knockbackAttribute = entityLivingBase
+            .map(living -> living.getEntityAttribute(SharedMonsterAttributes.knockbackResistance))
+            .filter(attribute -> attribute.getModifier(ANTI_KNOCKBACK_MOD.getID()) == null);
+        float oldLastDamage = entityLivingBase.map(living -> EntityLivingBaseReflector.getLastDamage(living))
+            .orElse(0f);
+
+        if (noKnockback) {
+            knockbackAttribute.ifPresent(attribute -> attribute.applyModifier(ANTI_KNOCKBACK_MOD));
+        }
+
+        // set hurt resistance time to 0 because we always want to deal damage in traits
+        if (ignoreInvulv) {
+            entity.hurtResistantTime = 0;
+        }
+        boolean hit = entity.attackEntityFrom(source, damage);
+        // set total received damage, important for AI and stuff
+        entityLivingBase.ifPresent(
+            living -> EntityLivingBaseReflector
+                .setLastDamage(living, EntityLivingBaseReflector.getLastDamage(living) + oldLastDamage));
+
+        // reset hurt resistance time if desired
+        if (hit && resetInvulv) {
+            entity.hurtResistantTime = 0;
+        }
+
+        if (noKnockback) {
+            knockbackAttribute.ifPresent(attribute -> attribute.removeModifier(ANTI_KNOCKBACK_MOD));
+        }
+
+        return hit;
+    }
 
     @Override
     public boolean hasItemsToApplyWith() {
         return !items.isEmpty();
     }
 
-    // private static final AttributeModifier ANTI_KNOCKBACK_MOD = new
-    // AttributeModifier("Anti Modifier Knockback", 1f,
-    // 0);
-
+    private static final AttributeModifier ANTI_KNOCKBACK_MOD = new AttributeModifier("Anti Modifier Knockback", 1f, 0);
 }

@@ -460,28 +460,28 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         cactusMaterial = new TinkersRebornMaterial(Cactus, "Cactus", 0x12690B).setCraftable(true);
         cactusMaterial.addItem("blockCactus", 1, VALUE_Ingot);
         cactusMaterial.setRepresentativeItem(Blocks.cactus);
-        // cactusMaterial.addTrait(prickly, HEAD);
-        // cactusMaterial.addTrait(spiky);
+        cactusMaterial.addTrait(prickly, MaterialStatusType.HEAD);
+        cactusMaterial.addTrait(spiky);
 
         obsidianMaterial = new TinkersRebornMaterial(Obsidian, "Obsidian", 0xAA7FF5).setCraftable(true);
         obsidianFluid = new TinkersRebornFluid(obsidianMaterial, true);
         obsidianMaterial.addItem("obsidian", 1, VALUE_Ingot);
         obsidianMaterial.setRepresentativeItem(Blocks.obsidian);
-        // obsidianMaterial.addTrait(duritos);
+        obsidianMaterial.addTrait(duritos);
 
         netherrackMaterial = new TinkersRebornMaterial(Netherrack, "Netherrack", 0x833238).setCraftable(true);
         netherrackMaterial.addItem("netherrack", 1, VALUE_Ingot);
         netherrackMaterial.setRepresentativeItem(Blocks.netherrack);
-        // netherrackMaterial.addTrait(aridiculous, HEAD);
-        // netherrackMaterial.addTrait(hellish, HEAD);
-        // netherrackMaterial.addTrait(hellish);
+        netherrackMaterial.addTrait(aridiculous, MaterialStatusType.HEAD);
+        netherrackMaterial.addTrait(hellish, MaterialStatusType.HEAD);
+        netherrackMaterial.addTrait(hellish);
 
         endStoneMaterial = new TinkersRebornMaterial(EndStone, "Endstone", 0xE0D890).setCraftable(true);
         endStoneMaterial.addItem("endstone", 1, VALUE_Ingot);
         endStoneMaterial.setRepresentativeItem(Blocks.end_stone);
-        // endStoneMaterial.addTrait(alien, HEAD);
-        // endStoneMaterial.addTrait(enderference);
-        // endStoneMaterial.addTrait(enderference, PROJECTILE);
+        endStoneMaterial.addTrait(alien, MaterialStatusType.HEAD);
+        endStoneMaterial.addTrait(enderference);
+        endStoneMaterial.addTrait(enderference, MaterialStatusType.PROJECTILE);
 
         boneMaterial = new TinkersRebornMaterial(Bone, "Bone", 0xEDEBCA).setCraftable(true);
         boneMaterial.addItem("bone", 1, VALUE_Ingot);
@@ -578,6 +578,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         TinkersRebornRegistry.addMaterialToMap(steelMaterial);
         TinkersRebornRegistry.addMaterialToMap(blueSlimeMaterial);
         TinkersRebornRegistry.addMaterialToMap(pigIronMaterial);
+        TinkersRebornRegistry.addMaterialToMap(endStoneMaterial);
 
         this.registerBaseMaterialsStats();
     }
@@ -659,6 +660,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             new HeadMaterialStats(250, 3, 2, 6.0F),
             new HandleMaterialStats(1.3F, 0),
             new ExtraMaterialStats(0));
+        endStoneMaterial.addStats(
+            new HeadMaterialStats(420, 4, 3.23F, 3.23F),
+            new HandleMaterialStats(0.85F, 0),
+            new ExtraMaterialStats(42));
     }
 
     private void oreDictRegistry() {

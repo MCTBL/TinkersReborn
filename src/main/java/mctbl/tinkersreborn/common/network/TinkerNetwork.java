@@ -35,6 +35,8 @@ public class TinkerNetwork {
         registerPacket(ToolStationSelectionPacket.class);
         registerPacket(ToolStationTextPacket.class);
 
+        registerPacketClient(SpawnParticlePacket.class);
+
         registerPacketServer(TinkerStationTabPacket.class);
     }
 

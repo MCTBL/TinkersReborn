@@ -138,7 +138,7 @@ material.alumite.name=Alumite
 material.steel.name=Steel
 material.blueslime.name=Blue Slime
 material.pigiron.name=Pig Iron
-
+material.endstone.name=End
 
 // tools
 tinkersreborn.tooltip.nameformat=%s %s
@@ -200,4 +200,18 @@ modifier.cheapskate.desc=§oCheeky!§r\nStone is bad. Your tool has less durabil
 modifier.crude.name=Crude
 modifier.crude.desc=§oArmor is for cowards!§r\nBonus damage against unarmored targets.
 modifier.crude.extra=Vs Unarmored: +%s
-
+modifier.prickly.name=Prickly
+modifier.prickly.desc=§oOuch!§r\nNobody is safe from those thorns, they always hurt.
+modifier.spiky.name=Spiky
+modifier.spiky.desc=§o200% cooler with spikes!§r\nBlocking and getting hurt deals damage to the attacker.
+modifier.duritos.name=Duritae
+modifier.duritos.desc=§oDoesn't taste as good as it sounds.§r\nYour tool lasts longer ...most of the time.
+modifier.aridiculous.name=Aridiculous
+modifier.aridiculous.desc=§oTurn up the heat!§r\nThe tool works better in hotter environments.
+modifier.hellish.name=Hellish
+modifier.hellish.desc=§oFrom down below!§r\nDeal bonus damage to non-Nether mobs.
+modifier.hellish.extra=Vs Non-Nether: +%s
+modifier.alien.name=Alien
+modifier.alien.desc=§oThe stats feel off...§r\n..as if they're changing! Maybe time will tell?
+modifier.enderference.name=Enderference
+modifier.enderference.desc=§oAnti-Teleport!§r\nPrevents Endermen from teleporting around for a short time.

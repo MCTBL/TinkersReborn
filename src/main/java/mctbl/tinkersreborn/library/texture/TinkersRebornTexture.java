@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.util.ColorUtil;
 
+// TODO deldte?
 public class TinkersRebornTexture extends TextureAtlasSprite {
 
     public static TextureAtlasSprite loadManually(ResourceLocation sprite) {

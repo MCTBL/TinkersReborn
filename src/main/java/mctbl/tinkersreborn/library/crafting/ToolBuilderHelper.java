@@ -428,7 +428,6 @@ public class ToolBuilderHelper {
                 c -> c.getString(ToolTags.TYPE)
                     .equals(ToolTags.TYPEMODIFIERS))
             .collect(Collectors.toList());
-        // ModifierNBT.readTag(toolTag)
 
         // copy over and reapply all relevant modifiers
         for (NBTTagCompound modifiers : oldModifiersTag) {
@@ -483,6 +482,7 @@ public class ToolBuilderHelper {
         AbstractTrait traitModifier = (AbstractTrait) newTrait;
 
         NBTTagList tagList = ToolTagsHelper.getModifiersTagList(rootCompound);
+        ToolTagsHelper.setModifiersTagList(rootCompound, tagList);
 
         NBTTagCompound traitTag = ToolTagsHelper.getModifierTag(rootCompound, traitModifier.getIdentifier());
         if (traitTag.hasNoTags()) {

@@ -42,6 +42,8 @@ public class TinkersRebornConfig {
 
     public static int defaultModifiers;
 
+    public static int potionIdBias;
+
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
@@ -119,7 +121,10 @@ public class TinkersRebornConfig {
         islandRarity = config.get("Worldgen", "Slime Island Rarity", 1450)
             .getInt();
 
-        defaultModifiers = config.get("Tools", "", 3)
+        defaultModifiers = config.get("Tools", "Default tool modifiers", 3)
+            .getInt();
+
+        potionIdBias = config.get("General", "Potion effect start id", 500)
             .getInt();
     }
 

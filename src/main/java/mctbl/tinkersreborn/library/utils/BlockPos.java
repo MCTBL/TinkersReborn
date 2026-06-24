@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.library.utils;
 
 import java.util.Iterator;
 
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -13,6 +14,14 @@ public class BlockPos extends Vector3i implements Comparable<BlockPos> {
 
     public static BlockPos of(int x, int y, int z) {
         return new BlockPos(x, y, z);
+    }
+
+    public static BlockPos of(float x, float y, float z) {
+        return new BlockPos(MathHelper.floor_float(x), MathHelper.floor_float(y), MathHelper.floor_float(z));
+    }
+
+    public static BlockPos of(double x, double y, double z) {
+        return new BlockPos(MathHelper.floor_double(x), MathHelper.floor_double(y), MathHelper.floor_double(z));
     }
 
     public BlockPos() {

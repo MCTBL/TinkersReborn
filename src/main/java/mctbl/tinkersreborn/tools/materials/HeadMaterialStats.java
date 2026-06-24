@@ -25,7 +25,7 @@ public class HeadMaterialStats extends AbstractMaterialStats {
     public final static String LOC_HarvestLevelDesc = TinkersStr.harvestLevelDesc.toString();
 
     public final int durability; // usually between 1 and 1000
-    public final int harvestLevel; // see HarvestLevels class
+    public final int harvestLevel; // see MiningLevelHelper class
     public final float attack; // usually between 0 and 10 (in 1/2 hearts, so divide by 2 for damage in hearts)
     public final float miningspeed; // usually between 1 and 10
 
