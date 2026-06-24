@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
@@ -30,24 +32,24 @@ public class TinkersRebornParticle extends EntityFX {
     public TinkersRebornParticle(int typeId, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
         double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn);
-        if (typeId < 0 || typeId > Type.values().length) {
+        if (typeId < 0 || typeId >= Type.values().length) {
             typeId = 0;
         }
 
         this.type = Type.values()[typeId];
 
-        this.particleMaxAge = 20;
+        this.particleMaxAge = 40;
         this.particleTextureIndexX = type.x / 8;
         this.particleTextureIndexY = type.y / 8;
 
         this.u0 = (float) type.x / 128f;
-        this.v0 = (float) (128 - type.y - 8) / 128f;
+        this.v0 = (float) type.y / 128f;
         this.u1 = (float) (type.x + 8) / 128f;
-        this.v1 = (float) (128 - type.y) / 128f;
+        this.v1 = (float) (type.y + 8) / 128f;
 
-        this.motionY += 0.1f;
-        this.motionX += -0.25f + rand.nextFloat() * 0.5f;
-        this.motionZ += -0.25f + rand.nextFloat() * 0.5f;
+        this.motionX = xSpeedIn * 0.03D + (-0.02D + rand.nextFloat() * 0.04D);
+        this.motionY = ySpeedIn * 0.03D + 0.02D;
+        this.motionZ = zSpeedIn * 0.03D + (-0.02D + rand.nextFloat() * 0.04D);
 
         this.textureManager = Minecraft.getMinecraft()
             .getTextureManager();
@@ -58,8 +60,8 @@ public class TinkersRebornParticle extends EntityFX {
         // functions
         this.layer = 3;
 
-        this.particleScale = 0.2F;
-        this.particleMaxAge = 20;
+        this.particleScale = 1.0F;
+        this.particleMaxAge = 40;
         this.noClip = false;
     }
 
@@ -96,22 +98,18 @@ public class TinkersRebornParticle extends EntityFX {
         float rotXZ) {
         Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURE);
 
-        TinkersReborn.LOG.info(
-            "Render TinkersRebornParticle from ({}, {}), to ({}, {}) at {} {} {}",
-            this.u0,
-            this.v0,
-            this.u1,
-            this.v1,
-            this.prevPosX,
-            this.prevPosY,
-            this.prevPosZ);
-
         float scale = 0.1F * this.particleScale;
 
         float x = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks - interpPosX);
         float y = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks - interpPosY);
         float z = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks - interpPosZ);
 
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        tess.startDrawingQuads();
+        tess.setBrightness(this.getBrightnessForRender(partialTicks));
         tess.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
 
         tess.addVertexWithUV(
@@ -141,6 +139,11 @@ public class TinkersRebornParticle extends EntityFX {
             z + rotYZ * scale - rotXZ * scale,
             u0,
             v1);
+
+        tess.draw();
+
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     @Override

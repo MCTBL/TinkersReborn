@@ -39,7 +39,7 @@ public class CommonProxy implements IGuiHandler {
             Particles.EFFECT,
             entity.worldObj,
             entity.posX,
-            entity.posY + entity.height * 0.5f,
+            entity.posY + entity.height + 0.1D,
             entity.posZ,
             0d,
             1d,
