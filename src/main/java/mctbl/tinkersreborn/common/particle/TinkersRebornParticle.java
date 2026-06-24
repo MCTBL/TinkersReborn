@@ -3,9 +3,11 @@ package mctbl.tinkersreborn.common.particle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
+import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -13,7 +15,6 @@ import mctbl.tinkersreborn.TinkersReborn;
 
 @SideOnly(Side.CLIENT)
 public class TinkersRebornParticle extends EntityFX {
-    // TODO render incorrect
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(
         TinkersReborn.MODID,
@@ -21,8 +22,8 @@ public class TinkersRebornParticle extends EntityFX {
     public static final ResourceLocation VANILLA_PARTICLE_TEXTURES = new ResourceLocation(
         "textures/particle/particles.png");
     private final float u0, v0, u1, v1;
+    protected final float oSize;
 
-    protected TextureManager textureManager;
     protected final Type type;
 
     private int layer = 0;
@@ -30,27 +31,35 @@ public class TinkersRebornParticle extends EntityFX {
     public TinkersRebornParticle(int typeId, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
         double xSpeedIn, double ySpeedIn, double zSpeedIn) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn);
-        if (typeId < 0 || typeId > Type.values().length) {
+        if (typeId < 0 || typeId >= Type.values().length) {
             typeId = 0;
         }
+        this.particleScale = (this.rand.nextFloat() * 0.5F + 0.5F) * 0.5F;
+        this.oSize = this.particleScale;
 
         this.type = Type.values()[typeId];
 
         this.particleMaxAge = 20;
-        this.particleTextureIndexX = type.x / 8;
-        this.particleTextureIndexY = type.y / 8;
 
         this.u0 = (float) type.x / 128f;
-        this.v0 = (float) (128 - type.y - 8) / 128f;
+        this.v0 = (float) type.y / 128f;
         this.u1 = (float) (type.x + 8) / 128f;
-        this.v1 = (float) (128 - type.y) / 128f;
+        this.v1 = (float) (type.y + 8) / 128f;
 
-        this.motionY += 0.1f;
+        this.motionX = xSpeedIn + (this.rand.nextDouble() * 2.0D - 1.0D) * 0.4000000059604645D;
+        this.motionY = ySpeedIn + (this.rand.nextDouble() * 2.0D - 1.0D) * 0.4000000059604645D;
+        this.motionZ = zSpeedIn + (this.rand.nextDouble() * 2.0D - 1.0D) * 0.4000000059604645D;
+
+        this.motionX *= 0.10000000149011612D;
+        this.motionY *= 0.10000000149011612D;
+        this.motionZ *= 0.10000000149011612D;
+        this.motionX += xSpeedIn * 0.4D;
+        this.motionY += ySpeedIn * 0.4D;
+        this.motionZ += zSpeedIn * 0.4D;
+
         this.motionX += -0.25f + rand.nextFloat() * 0.5f;
+        this.motionY += 0.1f;
         this.motionZ += -0.25f + rand.nextFloat() * 0.5f;
-
-        this.textureManager = Minecraft.getMinecraft()
-            .getTextureManager();
 
         particleRed = particleBlue = particleGreen = particleAlpha = 1f;
 
@@ -58,9 +67,8 @@ public class TinkersRebornParticle extends EntityFX {
         // functions
         this.layer = 3;
 
-        this.particleScale = 0.2F;
-        this.particleMaxAge = 20;
         this.noClip = false;
+
     }
 
     protected ResourceLocation getTexture() {
@@ -79,39 +87,29 @@ public class TinkersRebornParticle extends EntityFX {
         this.particleBlue = b * 0.975f;
     }
 
-    // @Override
-    // public void renderParticle(Tessellator tessellator, float partialTicks, float rotX, float rotZ, float rotYZ,
-    // float rotXY, float rotXZ) {
-    //
-    // TinkersReborn.LOG.info("Render TinkersRebornParticle");
-    // TinkersReborn.LOG.info("x={}, y={}, z={}", this.lastTickPosX, this.lastTickPosY, this.lastTickPosZ);
-    //
-    // Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURE);
-    // super.renderParticle(tessellator, partialTicks, rotX, rotZ, rotYZ, rotXY, rotXZ);
-    // // this.textureManager.bindTexture(VANILLA_PARTICLE_TEXTURES);
-    // }
-
     @Override
     public void renderParticle(Tessellator tess, float partialTicks, float rotX, float rotZ, float rotYZ, float rotXY,
         float rotXZ) {
         Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURE);
 
-        TinkersReborn.LOG.info(
-            "Render TinkersRebornParticle from ({}, {}), to ({}, {}) at {} {} {}",
-            this.u0,
-            this.v0,
-            this.u1,
-            this.v1,
-            this.prevPosX,
-            this.prevPosY,
-            this.prevPosZ);
+        float f = ((float) this.particleAge + partialTicks) / (float) this.particleMaxAge * 32.0F;
+        f = MathHelper.clamp_float(f, 0.0F, 1.0F);
 
-        float scale = 0.1F * this.particleScale;
+//        TinkersReborn.LOG.info("renderParticle f={} particleAge={} particleAge={}", f, particleAge, partialTicks);
+        this.particleScale = this.oSize * f;
+
+        float scale = this.particleScale;
 
         float x = (float) (this.prevPosX + (this.posX - this.prevPosX) * partialTicks - interpPosX);
         float y = (float) (this.prevPosY + (this.posY - this.prevPosY) * partialTicks - interpPosY);
         float z = (float) (this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks - interpPosZ);
 
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+        tess.startDrawingQuads();
+        tess.setBrightness(this.getBrightnessForRender(partialTicks));
         tess.setColorRGBA_F(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha);
 
         tess.addVertexWithUV(
@@ -141,6 +139,11 @@ public class TinkersRebornParticle extends EntityFX {
             z + rotYZ * scale - rotXZ * scale,
             u0,
             v1);
+
+        tess.draw();
+
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
     }
 
     @Override
