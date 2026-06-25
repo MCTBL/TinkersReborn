@@ -31,10 +31,6 @@ public class TinkersEntityProperties implements IExtendedEntityProperties {
     public void tick() {
         this.typeTicksMap.values()
             .forEach(e -> e.tick());
-        // this.typeTicksMap.keySet()
-        // .removeIf(
-        // k -> !this.typeTicksMap.get(k)
-        // .isActive());
     }
 
     public boolean isActive(String identifier) {

@@ -535,29 +535,29 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         manyullynMaterial = new TinkersRebornMaterial(Manyullyn, "Manyullyn", 0x7338A5);
         manyullynFluid = new TinkersRebornFluid(manyullynMaterial, true);
         manyullynMaterial.addCommonItems("Manyullyn");
-        // manyullynMaterial.addTrait(insatiable, MaterialStatusType.HEAD);
-        // manyullynMaterial.addTrait(coldblooded);
+        manyullynMaterial.addTrait(insatiable, MaterialStatusType.HEAD);
+        manyullynMaterial.addTrait(coldblooded);
 
         copperMaterial = new TinkersRebornMaterial(Copper, "Copper", 0xCC6410);
         copperFluid = new TinkersRebornFluid(copperMaterial, true);
         copperMaterial.addCommonItems("Copper");
-        // copperMaterial.addTrait(established);
+        copperMaterial.addTrait(established);
 
         bronzeMaterial = new TinkersRebornMaterial(Bronze, "Bronze", 0xCA9956);
         bronzeFluid = new TinkersRebornFluid(bronzeMaterial, true);
         bronzeMaterial.addCommonItems("Bronze");
-        // bronzeMaterial.addTrait(dense);
+        bronzeMaterial.addTrait(dense);
 
         alumiteMaterial = new TinkersRebornMaterial(Alumite, "Alumite", 0xFFA7E9);
         alumiteFluid = new TinkersRebornFluid(alumiteMaterial, true);
         alumiteMaterial.addCommonItems("Alumite");
-        // alumiteMaterial.addTrait(duritos);
+        alumiteMaterial.addTrait(duritos);
 
         steelMaterial = new TinkersRebornMaterial(Steel, "Steel", 0xA0A0A0);
         steelFluid = new TinkersRebornFluid(steelMaterial, true);
         steelMaterial.addCommonItems("Steel");
-        // steel.addTrait(sharp, HEAD);
-        // steel.addTrait(stiff);
+        steelMaterial.addTrait(sharp, MaterialStatusType.HEAD);
+        steelMaterial.addTrait(stiff);
 
         TinkersRebornRegistry.addMaterialToMap(woodMaterial);
         TinkersRebornRegistry.addMaterialToMap(stoneMaterial);
