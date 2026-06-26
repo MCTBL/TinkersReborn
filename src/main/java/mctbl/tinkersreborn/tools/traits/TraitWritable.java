@@ -14,6 +14,6 @@ public class TraitWritable extends AbstractTraitLeveled {
     @Override
     public void applyModifierEffect(NBTTagCompound rootCompound) {
         // yaaay, modifiers
-        ToolTagsHelper.setFreeModifiers(rootCompound, ToolTagsHelper.getFreeModifiers(rootCompound) + 1);
+        ToolTagsHelper.setModifierSlots(rootCompound, ToolTagsHelper.getModifierSlots(rootCompound) + 1);
     }
 }

@@ -461,7 +461,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         data.handle(handles);
 
         // 3 free modifiers
-        data.modifiers = TinkersRebornConfig.defaultModifiers;
+        data.modifierSlots = TinkersRebornConfig.defaultModifiers;
 
         return data;
     }
@@ -506,6 +506,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     public NBTTagCompound buildItemNBT(List<TinkersRebornMaterial> materials) {
         NBTTagCompound basetag = new NBTTagCompound();
         NBTTagCompound tinkersTag = new NBTTagCompound();
+        basetag.setTag(ToolTags.TOOLBASETAG, tinkersTag);
+
         NBTTagCompound toolTag = this.buildToolTag(materials)
             .get();
         NBTTagList dataTag = this.buildMaterialListData(materials);
@@ -520,10 +522,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         tinkersTag.setTag(ToolTags.TOOLCATEGORY, categoryList);
 
         // add traits
-        addMaterialTraits(tinkersTag, materials);
+        addMaterialTraits(basetag, materials);
+
         TinkersRebornEvent.OnItemBuilding.fireEvent(toolTag, materials, this);
 
-        basetag.setTag(ToolTags.TOOLBASETAG, tinkersTag);
         return basetag;
     }
 
@@ -923,13 +925,13 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         increase = Math.max(increase, actualDur / 64f);
         // increase = Math.max(50, increase);
 
-        int modifiersUsed = ToolTagsHelper.getFreeModifiers(tool);
+        int freeModifier = ToolTagsHelper.getModifierSlots(tool) - ToolTagsHelper.getUsedModifiers(tool);
         float mods = 1.0f;
-        if (modifiersUsed == 1) {
+        if (freeModifier <= 1) {
             mods = 0.85f;
-        } else if (modifiersUsed == 2) {
+        } else if (freeModifier == 2) {
             mods = 0.9f;
-        } else if (modifiersUsed == 3) {
+        } else if (freeModifier == 3) {
             mods = 0.95f;
         }
 

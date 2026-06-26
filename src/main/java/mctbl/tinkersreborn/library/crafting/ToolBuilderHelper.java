@@ -407,6 +407,9 @@ public class ToolBuilderHelper {
             }
         }
 
+        // save UsedModifiers before Stats gets overwritten
+        int oldUsedModifiers = ToolTagsHelper.getUsedModifiers(tool);
+
         // the base stats of the tool
         NBTTagCompound toolTag = tinkersItem.buildToolTag(materials)
             .get();
@@ -421,11 +424,13 @@ public class ToolBuilderHelper {
         // clear old
         tinkersTag.removeTag(ToolTags.MODIFIERS); // the active-modifiers tag
         tinkersTag.setTag(ToolTags.MODIFIERS, new NBTTagList());
-        tinkersTag.removeTag("ench"); // and the enchantments tag
         tinkersTag.removeTag(ToolTags.ENCHANT_EFFECT); // enchant effect too, will be readded by a trait either way
 
+        tool.getTagCompound()
+            .removeTag("ench"); // and the enchantments tag
+
         // readd traits
-        tinkersItem.addMaterialTraits(tinkersTag, materials);
+        tinkersItem.addMaterialTraits(tool.getTagCompound(), materials);
 
         // fire event
         TinkersRebornEvent.OnItemBuilding.fireEvent(tinkersTag, materials, tinkersItem);
@@ -445,25 +450,25 @@ public class ToolBuilderHelper {
                 TinkersReborn.LOG.debug("Missing modifier: {}", identifier);
                 continue;
             }
-            ToolTagsHelper.getModifiersTagList(tinkersTag)
+            ToolTagsHelper.getModifiersTagList(tool.getTagCompound())
                 .appendTag(modifiers);
 
-            modifier.applyEffect(tinkersTag, modifiers);
+            modifier.applyEffect(tool.getTagCompound(), modifiers);
 
         }
 
-        // remaining info, get updated toolTag
-        // adjust free modifiers
-        int freeModifiers = ToolTagsHelper.getFreeModifiers(tool);
-        freeModifiers -= oldModifiersTag.size();
-        ToolTagsHelper.setFreeModifiers(tool, freeModifiers);
+        // remaining info, restore UsedModifiers (ModifierSlots is the cap, unchanged by modifiers)
+        ToolTagsHelper.setUsedModifiers(tool, oldUsedModifiers);
 
         // broken?
         ToolTagsHelper.setBroken(tool, broken);
 
-        if (freeModifiers < 0) {
+        // validate: cap must be >= used
+        int slots = ToolTagsHelper.getModifierSlots(tool);
+        int used = ToolTagsHelper.getUsedModifiers(tool);
+        if (slots < used) {
             throw new TinkerGuiException(
-                String.format(TinkersRebornUtils.translate("gui.error.not_enough_modifiers"), -freeModifiers));
+                String.format(TinkersRebornUtils.translate("gui.error.not_enough_modifiers"), used - slots));
         }
     }
 

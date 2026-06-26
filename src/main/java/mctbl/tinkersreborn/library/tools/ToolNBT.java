@@ -17,7 +17,8 @@ public class ToolNBT {
     public float attack;
     public float speed; // mining speed
     public float attackSpeedMultiplier;
-    public int modifiers; // free modifiers
+    public int modifierSlots;
+    public int usedModifiers;
 
     private final NBTTagCompound parent;
 
@@ -27,7 +28,8 @@ public class ToolNBT {
         attack = 0;
         speed = 0;
         attackSpeedMultiplier = 1;
-        modifiers = TinkersRebornConfig.defaultModifiers;
+        modifierSlots = TinkersRebornConfig.defaultModifiers;
+        usedModifiers = 0;
         parent = new NBTTagCompound();
     }
 
@@ -118,7 +120,8 @@ public class ToolNBT {
         attack = tag.getFloat(ToolTags.ATTACK);
         speed = tag.getFloat(ToolTags.MININGSPEED);
         attackSpeedMultiplier = tag.getFloat(ToolTags.ATTACKSPEEDMULTIPLIER);
-        modifiers = tag.getInteger(ToolTags.FREEMODIFIERS);
+        modifierSlots = tag.getInteger(ToolTags.MODIFIER_SLOTS);
+        usedModifiers = tag.getInteger(ToolTags.USEDMODIFIERS);
     }
 
     public void write(NBTTagCompound tag) {
@@ -127,7 +130,8 @@ public class ToolNBT {
         tag.setFloat(ToolTags.ATTACK, attack);
         tag.setFloat(ToolTags.MININGSPEED, speed);
         tag.setFloat(ToolTags.ATTACKSPEEDMULTIPLIER, attackSpeedMultiplier);
-        tag.setInteger(ToolTags.FREEMODIFIERS, modifiers);
+        tag.setInteger(ToolTags.MODIFIER_SLOTS, modifierSlots);
+        tag.setInteger(ToolTags.USEDMODIFIERS, usedModifiers);
     }
 
     public NBTTagCompound get() {
@@ -160,7 +164,7 @@ public class ToolNBT {
         if (Float.compare(toolNBT.speed, speed) != 0) {
             return false;
         }
-        return modifiers == toolNBT.modifiers;
+        return modifierSlots == toolNBT.modifierSlots;
 
     }
 
@@ -170,7 +174,7 @@ public class ToolNBT {
         result = 31 * result + harvestLevel;
         result = 31 * result + (attack != +0.0f ? Float.floatToIntBits(attack) : 0);
         result = 31 * result + (speed != +0.0f ? Float.floatToIntBits(speed) : 0);
-        result = 31 * result + modifiers;
+        result = 31 * result + modifierSlots;
         return result;
     }
 }

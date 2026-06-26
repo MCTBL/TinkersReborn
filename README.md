@@ -303,7 +303,7 @@ flowchart TB
     "Attack": 2.1,
     "MiningSpeed": 2.2,
     "HarvestLevel": 3,
-    "FreeModifiers": 2,
+    "ModifierSlots": 3,
     "UsedModifiers": 1
   },
   // this tool's base stats READONLY
@@ -312,7 +312,7 @@ flowchart TB
     "Attack": 2.1,
     "MiningSpeed": 1.0,
     "HarvestLevel": 3,
-    "FreeModifiers": 3
+    "ModifierSlots": 3
   },
   // for some traits data
   "Special":{

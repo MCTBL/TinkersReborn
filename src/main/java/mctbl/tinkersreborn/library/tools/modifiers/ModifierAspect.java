@@ -62,7 +62,7 @@ public abstract class ModifierAspect {
 
         @Override
         public boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException {
-            if (ToolTagsHelper.getFreeModifiers(stack) < requiredModifiers) {
+            if (ToolTagsHelper.getModifierSlots(stack) - ToolTagsHelper.getUsedModifiers(stack) < requiredModifiers) {
                 String error = String.format(translate("gui.error.not_enough_modifiers"), requiredModifiers);
                 // also returns false if the tooltag is missing
                 throw new TinkerGuiException(error);
@@ -73,15 +73,10 @@ public abstract class ModifierAspect {
 
         @Override
         public void updateNBT(NBTTagCompound root, NBTTagCompound modifierTag) {
-            // substract the modifiers
-            NBTTagCompound toolTag = ToolTagsHelper.getToolBaseNBTSafe(root);
-            int modifiers = toolTag.getInteger(ToolTags.FREEMODIFIERS) - requiredModifiers;
-            toolTag.setInteger(ToolTags.FREEMODIFIERS, Math.max(0, modifiers));
-
-            // and increase the count of used modifiers
-            int usedModifiers = toolTag.getInteger(ToolTags.USEDMODIFIERS);
-            usedModifiers += requiredModifiers;
-            toolTag.setInteger(ToolTags.USEDMODIFIERS, usedModifiers);
+            // increase the count of used modifiers in Stats
+            NBTTagCompound statsTag = ToolTagsHelper.getToolDataNBTSafe(root);
+            int used = statsTag.getInteger(ToolTags.USEDMODIFIERS) + requiredModifiers;
+            statsTag.setInteger(ToolTags.USEDMODIFIERS, used);
         }
     }
 

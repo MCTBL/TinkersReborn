@@ -167,9 +167,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
 
     @Override
     public void apply(ItemStack stack) {
-        NBTTagCompound root = ToolTagsHelper.getToolBaseNBTSafe(stack);
-        apply(root);
-        ToolTagsHelper.setToolBaseNBTSafe(stack, root);
+        apply(ToolTagsHelper.getTagSafe(stack));
     }
 
     @Override

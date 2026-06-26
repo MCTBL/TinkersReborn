@@ -52,9 +52,8 @@ public class ModifierTrait extends AbstractTrait implements IModifierDisplay {
         // not present yet, ok
         if (super.canApplyCustom(stack)) {
             return true;
-        }
-        // no max level
-        else if (maxLevel == 0) {
+        } else if (maxLevel == 0) {
+            // no max level
             return false;
         }
 

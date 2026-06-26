@@ -12,7 +12,7 @@ public final class ToolTags {
     public static final String RENDERMATERIALS = "RenderMaterials";
     /** Contains all the applied modifiers */
     public static final String MODIFIERS = "Modifiers";
-    public static final String FREEMODIFIERS = "FreeModifiers";
+    public static final String MODIFIER_SLOTS = "ModifierSlots";
     public static final String USEDMODIFIERS = "UsedModifiers";
 
     /** The tag that contains all the actual calculated runtime-information of the tools */
