@@ -184,8 +184,15 @@ public class ToolBuilderHelper {
                 // stacks might be null because stacksize got 0 during processing, we have to
                 // reflect that in the input
                 // so the caller can identify that
-                if (!isStackEmpty(usedStacks.get(i))) {
-                    input.get(i).stackSize = usedStacks.get(i).stackSize;
+                ItemStack original = input.get(i);
+                if (isStackEmpty(original)) {
+                    continue;
+                }
+                ItemStack used = usedStacks.get(i);
+                if (!isStackEmpty(used)) {
+                    original.stackSize = used.stackSize;
+                } else {
+                    original.stackSize = 0;
                 }
             }
         }
@@ -437,8 +444,11 @@ public class ToolBuilderHelper {
                 TinkersReborn.LOG.debug("Missing modifier: {}", identifier);
                 continue;
             }
+            ToolTagsHelper.getModifiersTagList(tinkersTag)
+                .appendTag(modifiers);
 
             modifier.applyEffect(tinkersTag, modifiers);
+
         }
 
         // remaining info, get updated toolTag

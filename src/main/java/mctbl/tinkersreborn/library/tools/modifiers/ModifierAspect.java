@@ -11,6 +11,7 @@ import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT.IntegerNBT;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.util.ColorUtil;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -315,9 +316,10 @@ public abstract class ModifierAspect {
                 // check if original already had it too
                 if (ToolTagsHelper.hasModifier(original, parent.getIdentifier())) {
                     // error, can't apply if it already had it
-                    // throw new
-                    // TinkerGuiException(I18n.translateToLocalFormatted("gui.error.single_modifier",
-                    // parent.getLocalizedName()));
+                    throw new TinkerGuiException(
+                        String.format(
+                            TinkersRebornUtils.translate("gui.error.single_modifier"),
+                            parent.getLocalizedName()));
                 } else {
                     // original didn't have it, we can apply it once therefore, no error
                     return false;
@@ -360,9 +362,10 @@ public abstract class ModifierAspect {
 
             // new level would be above max level
             if (levelNew >= maxLevel) {
-                // throw new
-                // TinkerGuiException(I18n.translateToLocalFormatted("gui.error.max_level_modifier",
-                // parent.getLocalizedName()));
+                throw new TinkerGuiException(
+                    String.format(
+                        TinkersRebornUtils.translate("gui.error.max_level_modifier"),
+                        parent.getLocalizedName()));
             }
 
             return true;

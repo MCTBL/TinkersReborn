@@ -40,7 +40,7 @@ import mctbl.tinkersreborn.tools.traits.TraitStonebound;
 import mctbl.tinkersreborn.tools.traits.TraitTasty;
 import mctbl.tinkersreborn.tools.traits.TraitWritable;
 
-public class TinkerTraits {
+public class TinkersRebornTraits {
 
     // // general material traits
     public static final AbstractTrait alien = new TraitAlien();

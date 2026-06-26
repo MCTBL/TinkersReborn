@@ -13,7 +13,7 @@ import mctbl.tinkersreborn.util.ColorUtil;
 
 public final class MiningLevelHelper {
 
-    public static final String chatFormattingCode = "§";
+    private static final String chatFormattingCode = "§";
 
     private MiningLevelHelper() {}
 

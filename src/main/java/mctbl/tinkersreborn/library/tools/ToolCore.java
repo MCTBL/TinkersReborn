@@ -83,6 +83,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
      */
     protected final List<ToolPartRecord> componentsParts = new ArrayList<>(4);
     public final List<Map<Integer, IIcon>> allIcons = new ArrayList<>();
+    public final Map<String, IIcon> effectIcons = new HashMap<>();
+
     public final Set<Category> categoryTags = new HashSet<>();
 
     // public final Set<Material> effectiveMaterials = new HashSet<>();
@@ -90,6 +92,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     public static IIcon blankSprite;
     public static IIcon emptyIcon;
 
+    public String toolModifierEffect;
     public String toolTypeName; // pickaxe
     public final int partAmount;
 
@@ -107,8 +110,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         this.setNoRepair();
         this.toolTypeName = toolTypeName.toLowerCase();
 
-        // extra 2 map for broken and effect
-        for (int i = 0; i < this.partAmount + 2; i++) {
+        this.toolModifierEffect = "_" + this.toolTypeName + "_effect";
+
+        // extra 2 map for broken
+        for (int i = 0; i < this.partAmount + 1; i++) {
             this.allIcons.add(new HashMap<>());
         }
     }
@@ -187,6 +192,14 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                 }
             }
         }
+
+        for (IModifier m : TinkersRebornRegistry.getAllModifier()) {
+            String tempPath = basePath + m.getIdentifier() + this.toolModifierEffect;
+            if (TextureHelper.itemTextureExists(tempPath)) {
+                this.effectIcons.put(m.getIdentifier(), register.registerIcon(tempPath));
+            }
+        }
+
         emptyIcon = register.registerIcon("tinkersreborn:blankface");
         blankSprite = register.registerIcon("tinkersreborn:blanksprite");
     }
@@ -203,10 +216,11 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                 return getCorrectIcon(this.allIcons.get(iconsIdx), materialId);
             }
             // Effects
-            // else if (renderPass <= 10) {
-            // String effect = "Effect" + (1 + renderPass - this.partAmount);
-            // if (tags.hasKey(effect)) return effectIcons.get(tags.getInteger(effect));
-            // }
+            else {
+                List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(stack);
+                ModifierNBT tag = ModifierNBT.readTag(modifiersList.get(renderPass - this.partAmount));
+                return this.effectIcons.get(tag.identifier);
+            }
 
         }
         return emptyIcon;

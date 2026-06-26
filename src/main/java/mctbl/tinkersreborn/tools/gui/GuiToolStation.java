@@ -552,4 +552,20 @@ public class GuiToolStation extends GuiTinkerStation {
         beamR = BeamRight.shift(0, BeamRight.h);
         beamC = BeamCenter.shift(0, BeamCenter.h);
     }
+
+    @Override
+    public void error(String message) {
+        toolInfo.setCaption(TinkersRebornUtils.translate("gui.error"));
+        toolInfo.setText(message);
+        traitInfo.setCaption(null);
+        traitInfo.setText();
+    }
+
+    @Override
+    public void warning(String message) {
+        toolInfo.setCaption(TinkersRebornUtils.translate("gui.warning"));
+        toolInfo.setText(message);
+        traitInfo.setCaption(null);
+        traitInfo.setText();
+    }
 }

@@ -211,6 +211,14 @@ public class ToolTagsHelper {
         return getTagSafe(getToolBaseNBTSafe(stack), ToolTags.TOOLDATAORIG);
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> StatsOriginal
+     */
+    public static NBTTagCompound getToolOriginDataNBTSafe(NBTTagCompound compound) {
+        return getTagSafe(compound, ToolTags.TOOLDATAORIG);
+    }
+
     // stats
     /**
      * @param stack
@@ -296,8 +304,8 @@ public class ToolTagsHelper {
 
     public static void setModifiersTagList(ItemStack stack, NBTTagList list) {
         NBTTagCompound toolBaseNBTSafe = getToolBaseNBTSafe(stack);
-        toolBaseNBTSafe.setTag(ToolTags.MODIFIERS, list);
         setToolBaseNBTSafe(stack, toolBaseNBTSafe);
+        setModifiersTagList(toolBaseNBTSafe, list);
     }
 
     public static void setModifiersTagList(NBTTagCompound compound, NBTTagList list) {
@@ -310,6 +318,22 @@ public class ToolTagsHelper {
      */
     public static int getHarvestLevelStat(ItemStack stack) {
         return getToolDataNBTSafe(stack).getInteger(ToolTags.HARVESTLEVEL);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> HarvestLevel
+     */
+    public static int getHarvestLevelStat(NBTTagCompound root) {
+        return getToolDataNBTSafe(root).getInteger(ToolTags.HARVESTLEVEL);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Stats -> HarvestLevel
+     */
+    public static void setHarvestLevelStat(NBTTagCompound root, int newHarvertLevel) {
+        getToolDataNBTSafe(root).setInteger(ToolTags.HARVESTLEVEL, newHarvertLevel);
     }
 
     /**
@@ -518,8 +542,20 @@ public class ToolTagsHelper {
         return stack.getMaxDamage();
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> StatsOriginal -> Durability
+     */
     public static int getOriginalDurability(ItemStack stack) {
         return getToolOriginDataNBTSafe(stack).getInteger(ToolTags.DURABILITY);
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> StatsOriginal -> Durability
+     */
+    public static int getOriginalDurability(NBTTagCompound root) {
+        return getToolOriginDataNBTSafe(root).getInteger(ToolTags.DURABILITY);
     }
 
     /**
@@ -865,6 +901,18 @@ public class ToolTagsHelper {
         }
 
         return new NBTTagCompound();
+    }
+
+    public static void removeModifiersTag(NBTTagCompound root, String identifier) {
+        NBTTagList modifiersList = getModifiersTagList(root);
+        int tagLength = modifiersList.tagCount();
+        for (int idx = 0; idx < tagLength; idx++) {
+            NBTTagCompound modifierCompound = modifiersList.getCompoundTagAt(idx);
+            if (identifier.equals(modifierCompound.getString(ToolTags.IDENTIFIER))) {
+                modifiersList.removeTag(idx);
+                return;
+            }
+        }
     }
 
     public static boolean hasCategory(ItemStack stack, Category category) {

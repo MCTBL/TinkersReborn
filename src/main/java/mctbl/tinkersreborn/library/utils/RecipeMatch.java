@@ -1,6 +1,9 @@
 package mctbl.tinkersreborn.library.utils;
 
+import static mctbl.tinkersreborn.util.TinkersRebornUtils.isStackEmpty;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -121,8 +124,8 @@ public abstract class RecipeMatch {
         for (int j = 0; j < amountsRemoved.length; j++) {
             ItemStack stack = toRemove.get(j);
             for (; i < stacks.size(); i++) {
+                if (isStackEmpty(stack) || isStackEmpty(stacks.get(i))) continue;
                 // nbt sensitive since toolparts etc. use nbt
-
                 if (stack.isItemEqual(stacks.get(i)) && ItemStack.areItemStackTagsEqual(stack, stacks.get(i))) {
                     if (stacks.get(i).stackSize >= stack.stackSize) {
                         stacks.get(i).stackSize -= stack.stackSize;
@@ -141,8 +144,10 @@ public abstract class RecipeMatch {
     private static void removeRemaining(List<ItemStack> stacks, List<ItemStack> toRemove, int[] amountsRemoved) {
         for (int j = 0; j < amountsRemoved.length; j++) {
             ItemStack stack = toRemove.get(j);
+            if (isStackEmpty(stack)) continue;
             int needed = stack.stackSize - amountsRemoved[j];
             for (int i = 0; i < stacks.size() && needed > 0; i++) {
+                if (isStackEmpty(stacks.get(i))) continue;
                 if (stack.isItemEqual(stacks.get(i)) && ItemStack.areItemStackTagsEqual(stack, stacks.get(i))) {
                     int change = Math.min(stacks.get(i).stackSize, needed);
                     stacks.get(i).stackSize -= change;
@@ -219,7 +224,7 @@ public abstract class RecipeMatch {
         public ItemCombination(int amountMatched, ItemStack... stacks) {
             super(amountMatched, 0);
 
-            List<ItemStack> nonNullStacks = new ArrayList<>(stacks.length);
+            List<ItemStack> nonNullStacks = new ArrayList<>(Collections.nCopies(stacks.length, null));
             for (int i = 0; i < stacks.length; i++) {
                 if (stacks[i].stackSize != 0) {
                     nonNullStacks.set(i, stacks[i].copy());
@@ -250,6 +255,7 @@ public abstract class RecipeMatch {
                 while (iter.hasNext()) {
                     int index = iter.next();
                     ItemStack template = itemStacks.get(index);
+                    if (isStackEmpty(template) || isStackEmpty(stack)) continue;
                     if (template.isItemEqual(stack) && ItemStack.areItemStackTagsEqual(template, stack)) {
                         // add the amount found to the list
                         ItemStack copy = stack.copy();

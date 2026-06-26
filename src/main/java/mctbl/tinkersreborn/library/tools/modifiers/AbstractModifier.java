@@ -3,6 +3,7 @@ package mctbl.tinkersreborn.library.tools.modifiers;
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.canTranslate;
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.common.collect.ImmutableList;
 
 import mctbl.tinkersreborn.TinkersReborn;
@@ -38,6 +42,8 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public abstract class AbstractModifier extends RecipeMatchRegistry implements IModifier {
 
+    public static final Logger LOG = LogManager.getLogger(TinkersReborn.MODID + "Modifier");
+
     public static final String LOC_Name = "modifier.%s.name";
     public static final String LOC_Desc = "modifier.%s.desc";
     public static final String LOC_Extra = "modifier.%s.extra";
@@ -51,7 +57,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
     public AbstractModifier(String identifier) {
         this.identifier = TinkersRebornUtils.sanitizeLocalizationString(identifier);
 
-        TinkersRebornRegistry.addModifierToMap(this);
+        TinkersRebornRegistry.addModifierAndTrait(this);
     }
 
     @Override
@@ -77,7 +83,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         List<NBTTagCompound> modifiersTagList = ToolTagsHelper.getModifiersList(stack);
         Map<String, List<NBTTagCompound>> compoundMap = modifiersTagList.stream()
             .collect(Collectors.groupingBy(c -> c.getString(ToolTags.TYPE)));
-        List<NBTTagCompound> traits = compoundMap.get(ToolTags.TYPETRAITS);
+        List<NBTTagCompound> traits = compoundMap.getOrDefault(ToolTags.TYPETRAITS, new ArrayList<>());
         for (int i = 0; i < traits.size(); i++) {
             String id = traits.get(i)
                 .getString(ToolTags.IDENTIFIER);
@@ -94,7 +100,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
             }
         }
 
-        List<NBTTagCompound> modifiers = compoundMap.get(ToolTags.TYPEMODIFIERS);
+        List<NBTTagCompound> modifiers = compoundMap.getOrDefault(ToolTags.TYPEMODIFIERS, new ArrayList<>());
         for (int i = 0; i < modifiers.size(); i++) {
             String id = modifiers.get(i)
                 .getString(ToolTags.IDENTIFIER);
@@ -167,10 +173,9 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
     @Override
     public void apply(NBTTagCompound root) {
         // add the modifier to its data
-
         // have the modifier itself save its data
-        NBTTagCompound tempTag = ToolTagsHelper.getModifierTag(root, this.identifier);
-        NBTTagCompound modifierTag = tempTag.hasNoTags() ? new NBTTagCompound() : tempTag;
+
+        NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(root, this.identifier);
 
         // update NBT through aspects
         for (ModifierAspect aspect : aspects) {
@@ -187,6 +192,11 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
                 data.identifier = identifier;
                 data.write(modifierTag);
             }
+        }
+
+        if (!ToolTagsHelper.hasModifier(root, this.identifier)) {
+            ToolTagsHelper.getModifiersTagList(root)
+                .appendTag(modifierTag);
         }
 
         applyEffect(root, modifierTag);

@@ -306,8 +306,8 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
         if (isStackEmpty(modifyable) || !(modifyable.getItem() instanceof IModifyable)) {
             return null;
         }
-
-        ItemStack result = ToolBuilderHelper.tryModifyTool(getInputs(), modifyable, remove);
+        List<ItemStack> inputs = getInputs();
+        ItemStack result = ToolBuilderHelper.tryModifyTool(inputs, modifyable, remove);
 
         if (!isStackEmpty(result)) {
             // TinkerCraftingEvent.ToolModifyEvent.fireEvent(result, player, modifyable.copy());

@@ -1,13 +1,13 @@
 package mctbl.tinkersreborn.library;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
@@ -18,8 +18,8 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ToolCore;
-import mctbl.tinkersreborn.library.tools.modifiers.AbstractModifier;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class TinkersRebornRegistry {
 
@@ -44,17 +44,18 @@ public class TinkersRebornRegistry {
     public static Map<String, RenderMaterial> renderMaterials;
 
     public static Map<String, IModifier> modifierAndTraitIdentifierMaps;
-    // public static Map<String, ITrait> traitIdentifierMaps;
 
     // contains all fluid that tinkers reborn registered
     public static List<TinkersRebornFluid> allTinkersFluid;
+
+    private static Map<Class<? extends EntityLivingBase>, ItemStack> headDrops;
 
     public static LiquidCasting tableCasting;
     public static LiquidCasting basinCasting;
 
     public void preInit() {
         this.initCreativeTab();
-        this.init();
+        this.initRegistry();
 
         tableCasting = new LiquidCasting();
         basinCasting = new LiquidCasting();
@@ -69,7 +70,7 @@ public class TinkersRebornRegistry {
         miscTab = new TinkersRebornCreativeTab("TinkersRebornMisc").init(new ItemStack(Items.iron_pickaxe));
     }
 
-    private void init() {
+    private void initRegistry() {
         tools = new ArrayList<>();
         toolNameMap = new HashMap<>();
         toolStationCrafting = new ArrayList<>();
@@ -78,8 +79,8 @@ public class TinkersRebornRegistry {
         materialIdentifierMaps = new HashMap<>();
         materialIdMaps = new HashMap<>();
         modifierAndTraitIdentifierMaps = new LinkedHashMap<>();
-        // traitIdentifierMaps = new LinkedHashMap<>();
         allTinkersFluid = new ArrayList<>();
+        headDrops = new HashMap<>();
         this.initRenderMaterial();
     }
 
@@ -95,26 +96,6 @@ public class TinkersRebornRegistry {
         materialIdentifierMaps.put(m.identifier, m);
         materialIdMaps.put(m.materialId, m);
         allMaterialsList.add(m);
-    }
-
-    public static void addMaterialToMap(List<TinkersRebornMaterial> l) {
-        for (TinkersRebornMaterial m : l) addMaterialToMap(m);
-    }
-
-    public static void addMaterialToMap(TinkersRebornMaterial... l) {
-        addMaterialToMap(Arrays.asList(l));
-    }
-
-    public static void addModifierToMap(AbstractModifier m) {
-        modifierAndTraitIdentifierMaps.put(m.getIdentifier(), m);
-    }
-
-    public static void addModifierToMap(List<AbstractModifier> m) {
-        for (AbstractModifier mo : m) addModifierToMap(mo);
-    }
-
-    public static void addModifierToMap(AbstractModifier... m) {
-        addModifierToMap(Arrays.asList(m));
     }
 
     public static TinkersRebornMaterial getMaterialByIdentifier(String identifier) {
@@ -188,5 +169,35 @@ public class TinkersRebornRegistry {
     /** Adds a tool to the Crafting UI of the Tool Forge */
     public static void registerToolForgeCrafting(ToolCore tool) {
         toolForgeCrafting.add(tool);
+    }
+
+    /**
+     * Registers a beheading head drop for an entity
+     * 
+     * @param clazz Entity class
+     * @param head  Head that drops from that entity
+     */
+    public static void registerHeadDrop(Class<? extends EntityLivingBase> clazz, ItemStack head) {
+        headDrops.put(clazz, head);
+    }
+
+    /**
+     * Gets the heads that would be dropped by an entity
+     * 
+     * @param entity Entity to check
+     * @return A collection of the entity's head drops
+     */
+    public static Collection<ItemStack> getHeadDrops(EntityLivingBase entity) {
+        Collection<ItemStack> drops = new ArrayList<>();
+        for (Map.Entry<Class<? extends EntityLivingBase>, ItemStack> entry : headDrops.entrySet()) {
+            if (entry.getKey()
+                .isAssignableFrom(entity.getClass())) {
+                ItemStack stack = entry.getValue();
+                if (!TinkersRebornUtils.isStackEmpty(stack)) {
+                    drops.add(stack.copy());
+                }
+            }
+        }
+        return drops;
     }
 }

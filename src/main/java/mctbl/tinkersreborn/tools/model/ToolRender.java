@@ -1,5 +1,8 @@
 package mctbl.tinkersreborn.tools.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
@@ -12,12 +15,11 @@ import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
 
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ToolRender implements IItemRenderer {
 
     public float depth = 1 / 32f;
-
-    private static final int toolIcons = 10;
 
     public void setDepth(float d) {
         depth = d;
@@ -52,7 +54,8 @@ public class ToolRender implements IItemRenderer {
         Entity ent = null;
         if (data.length > 1) ent = (Entity) data[1];
 
-        IIcon[] parts = new IIcon[toolIcons];
+        // IIcon[] parts = new IIcon[toolIcons];
+        List<IIcon> parts = new ArrayList<>();
         int iconParts = getIcons(item, type, ent, parts);
 
         // drawing the inventory is a simple procedure
@@ -74,7 +77,7 @@ public class ToolRender implements IItemRenderer {
         float[] xSub = new float[iconParts];
         float[] ySub = new float[iconParts];
         for (int i = 0; i < iconParts; ++i) {
-            IIcon icon = parts[i];
+            IIcon icon = parts.get(i);
             xMin[i] = icon.getMinU();
             xMax[i] = icon.getMaxU();
             yMin[i] = icon.getMinV();
@@ -213,7 +216,7 @@ public class ToolRender implements IItemRenderer {
         GL11.glPopMatrix();
     }
 
-    public void renderInventory(int count, IIcon[] icons, ItemStack item) {
+    public void renderInventory(int count, List<IIcon> icons, ItemStack item) {
         Tessellator tess = Tessellator.instance;
         GL11.glPushMatrix();
 
@@ -230,7 +233,7 @@ public class ToolRender implements IItemRenderer {
                 item.getItem()
                     .getColorFromItemStack(item, i));
 
-            final IIcon icon = icons[i];
+            final IIcon icon = icons.get(i);
             final float xmin = icon.getMinU();
             final float xmax = icon.getMaxU();
             final float ymin = icon.getMinV();
@@ -249,15 +252,17 @@ public class ToolRender implements IItemRenderer {
         GL11.glPopMatrix();
     }
 
-    public int getIcons(ItemStack item, ItemRenderType type, Entity ent, IIcon[] parts) {
+    public int getIcons(ItemStack item, ItemRenderType type, Entity ent, List<IIcon> parts) {
         if (item.getItem() instanceof ToolCore tool) {
-            for (int i = tool.partAmount; i-- > 0;) parts[i] = tool.getIcon(item, i);
-            return tool.partAmount;
+            int idx = tool.partAmount + ToolTagsHelper.getModifiersList(item)
+                .size();
+            for (int i = 0; i < idx; i++) {
+                IIcon icon = tool.getIcon(item, i);
+                if (icon != null) parts.add(icon);
+            }
+            return parts.size();
         }
-
-        for (int i = 4; i-- > 0;) parts[i] = item.getItem()
-            .getIcon(item, i);
-        return 4;
+        return 0;
     }
 
 }

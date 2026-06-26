@@ -1,10 +1,80 @@
 package mctbl.tinkersreborn.tools;
 
-import static mctbl.tinkersreborn.library.MaterialID.*;
+import static mctbl.tinkersreborn.library.MaterialID.Alumite;
+import static mctbl.tinkersreborn.library.MaterialID.Ardite;
+import static mctbl.tinkersreborn.library.MaterialID.Blaze;
+import static mctbl.tinkersreborn.library.MaterialID.BloodBone;
+import static mctbl.tinkersreborn.library.MaterialID.BlueSlime;
+import static mctbl.tinkersreborn.library.MaterialID.Bone;
+import static mctbl.tinkersreborn.library.MaterialID.Bronze;
+import static mctbl.tinkersreborn.library.MaterialID.Cactus;
+import static mctbl.tinkersreborn.library.MaterialID.Cobalt;
+import static mctbl.tinkersreborn.library.MaterialID.Copper;
+import static mctbl.tinkersreborn.library.MaterialID.EndStone;
+import static mctbl.tinkersreborn.library.MaterialID.Feather;
+import static mctbl.tinkersreborn.library.MaterialID.Flint;
+import static mctbl.tinkersreborn.library.MaterialID.Ice;
+import static mctbl.tinkersreborn.library.MaterialID.Iron;
+import static mctbl.tinkersreborn.library.MaterialID.Lead;
+import static mctbl.tinkersreborn.library.MaterialID.Leaf;
+import static mctbl.tinkersreborn.library.MaterialID.Manyullyn;
+import static mctbl.tinkersreborn.library.MaterialID.Netherrack;
+import static mctbl.tinkersreborn.library.MaterialID.Obsidian;
+import static mctbl.tinkersreborn.library.MaterialID.Paper;
+import static mctbl.tinkersreborn.library.MaterialID.PigIron;
+import static mctbl.tinkersreborn.library.MaterialID.Reed;
+import static mctbl.tinkersreborn.library.MaterialID.Silver;
+import static mctbl.tinkersreborn.library.MaterialID.Slime;
+import static mctbl.tinkersreborn.library.MaterialID.SlimeLeaf;
+import static mctbl.tinkersreborn.library.MaterialID.SlimeVine;
+import static mctbl.tinkersreborn.library.MaterialID.Steel;
+import static mctbl.tinkersreborn.library.MaterialID.Stone;
+import static mctbl.tinkersreborn.library.MaterialID.String;
+import static mctbl.tinkersreborn.library.MaterialID.Vine;
+import static mctbl.tinkersreborn.library.MaterialID.Wood;
 import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Fragment;
 import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Ingot;
 import static mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.VALUE_Shard;
-import static mctbl.tinkersreborn.tools.TinkerTraits.*;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.alien;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.aridiculous;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.baconlicious;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.breakable;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.cheap;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.cheapskate;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.coldblooded;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.crude;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.crude2;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.dense;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.duritos;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.ecological;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.enderference;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.established;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.fractured;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.freezing;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.heavy;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.hellish;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.holy;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.insatiable;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.lightweight;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.magnetic;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.magnetic2;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.momentum;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.petramor;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.poisonous;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.prickly;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.raging;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.raging2;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.sharp;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.slimeyBlue;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.slimeyGreen;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.spiky;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.splintering;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.splitting;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.stiff;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.stonebound;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.tasty;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.writable;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.writable2;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -427,6 +497,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     @Override
     public void init(FMLInitializationEvent e) {
         this.registerMaterials();
+
+        TinkersRebornModifiers.INSTANCE.init(e);
 
         proxy.initialize();
     }

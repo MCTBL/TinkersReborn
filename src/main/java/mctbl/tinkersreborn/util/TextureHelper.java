@@ -12,7 +12,6 @@ public class TextureHelper {
 
     @SideOnly(Side.CLIENT)
     public static boolean textureExists(ResourceLocation texture) {
-
         try {
             Minecraft.getMinecraft()
                 .getResourceManager()
@@ -25,13 +24,11 @@ public class TextureHelper {
 
     @SideOnly(Side.CLIENT)
     public static boolean textureExists(String texture) {
-
         return textureExists(new ResourceLocation(texture));
     }
 
     @SideOnly(Side.CLIENT)
     public static boolean blockTextureExists(String texture) {
-
         int i = texture.indexOf(':');
 
         if (i > 0) {
@@ -44,7 +41,6 @@ public class TextureHelper {
 
     @SideOnly(Side.CLIENT)
     public static boolean itemTextureExists(String texture) {
-
         int i = texture.indexOf(':');
 
         if (i > 0) {

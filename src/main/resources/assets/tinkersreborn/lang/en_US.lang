@@ -279,3 +279,17 @@ modifier.freezing.name=Freezing
 modifier.freezing.desc=§oWinter is Coming§r\nSuccessful hits slow your target more and more.
 modifier.breakable.name=Breakable
 modifier.breakable.desc=§oThis side up!§r\nProjectiles have a 50% chance to break on impact.
+
+// modifiers
+modifier.bane_of_arthopods.name=Bane of Arthropods
+modifier.bane_of_arthopods.desc=§oAnti-Spider!§r\nDeal massive damage to spiders.
+modifier.bane_of_arthopods.extra=Vs Spiders: +%s
+modifier.beheading.name=Beheading
+modifier.beheading.desc=§oOff with his head!§r\nEach level adds a 10% chance to get the enemies head on kill.
+modifier.blasting.name=Blasting
+modifier.blasting.desc=§oKa-Boom!§r\nYou can break non-effective blocks like normal blocks, but they might get destroyed.
+modifier.blasting.extra=Blast Power: %s
+modifier.diamond.name=Diamond
+modifier.diamond.desc=§oShiny!§r\nIncreased durability!
+modifier.emerald.name=Emerald
+modifier.emerald.desc=§oFancy!§r\nIncreases durability depending on base stats!
