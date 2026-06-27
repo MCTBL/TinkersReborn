@@ -190,9 +190,11 @@ tinkersreborn.toolpart.CrossbowBody=Crossbow Body
 tinkersreborn.toolpart.BowLimb=Bow Limb
 tinkersreborn.toolpart.Bolt=Bolt
 tinkersreborn.toolpart.Shaft=Arrow Shaft
+tinkersreborn.toolpart.SharpeningKit=Sharpening Kit
+tinkersreborn.toolpart.SharpeningKit.tooltip=Combine with a flint\nUpgrades your tool to the material's mining level.
+
 
 // stats
-
 tinkersreborn.durability=Durability
 tinkersreborn.durability.desc=
 tinkersreborn.miningspeed=Mining Speed
@@ -324,3 +326,16 @@ modifier.sharpness.name3=Sharpest
 modifier.sharpness.name4=Sharpester
 modifier.sharpness.name5=Sharpestest
 modifier.sharpness.desc=§oOuch!§r\nSo sharp, it hurts to look at it.
+modifier.silktouch.name=Silktouch
+modifier.silktouch.desc=§oSmooth as silk!§r\nMined blocks drop themselves instead of the usual items.
+modifier.mod_autosmelt.name=Autosmelt
+modifier.mod_autosmelt.desc=§oA furnace in tool form!§r\nHarvested blocks get smelted.
+modifier.webbed.name=Webbed
+modifier.webbed.desc=§oYuck!§r\nEntangle your foes in cobwebs, slowing them.
+modifier.smite.name=Smite
+modifier.smite.desc=§oFor Justice!§r\nDeal massive damage to undead.
+modifier.smite.extra=Vs Undead: +%s
+modifier.extramodifier.name=Endearment
+modifier.extramodifier.desc=§oExplored the End with passion!§r\nEndeared with an Ender Dragon head, giving you an extra modifier.
+modifier.fortify.name=Fortified
+modifier.fortify.desc=§oHarder, better, faster, stronger!§r\nMining level increased to the same level as %s.

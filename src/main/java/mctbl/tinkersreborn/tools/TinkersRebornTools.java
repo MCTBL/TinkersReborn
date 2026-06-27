@@ -122,6 +122,7 @@ import mctbl.tinkersreborn.tools.items.Fletching;
 import mctbl.tinkersreborn.tools.items.MaterialItem;
 import mctbl.tinkersreborn.tools.items.Pattern;
 import mctbl.tinkersreborn.tools.items.Pickaxe;
+import mctbl.tinkersreborn.tools.items.SharpeningKit;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
@@ -354,7 +355,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         swordBlade = new TinkersRebornToolPart("sword_blade", "SwordBlade", VALUE_Ingot * 2);
         toughbind = new TinkersRebornToolPart("toughbind", "ToughBinding", VALUE_Ingot * 3);
         toughrod = new TinkersRebornToolPart("toughrod", "ToughRod", VALUE_Ingot * 3);
-        sharpeningKit = new TinkersRebornToolPart("sharpening_kit", "SharpeningKit", VALUE_Ingot * 2);
+        sharpeningKit = new SharpeningKit("sharpening_kit", "SharpeningKit");
         bowString = new BowString();
         fletching = new Fletching();
         boltCore = new BoltCore();
@@ -492,6 +493,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         this.oreDictRegistry();
         MiningLevelHelper.init();
+
+        TinkersRebornModifiers.INSTANCE.preInit(e);
     }
 
     @Override
@@ -506,7 +509,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     @Override
     public void postInit(FMLPostInitializationEvent e) {
         // TODO Auto-generated method stub
-
+        TinkersRebornModifiers.INSTANCE.postInit(e);
     }
 
     /**

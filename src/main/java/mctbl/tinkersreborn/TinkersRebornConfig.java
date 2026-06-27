@@ -44,6 +44,8 @@ public class TinkersRebornConfig {
 
     public static int potionIdBias;
 
+    public static boolean autoSmeltWithLapis;
+
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
@@ -123,6 +125,9 @@ public class TinkersRebornConfig {
 
         defaultModifiers = config.get("Tools", "Default tool modifiers", 3)
             .getInt();
+
+        autoSmeltWithLapis = config.get("Tools", "Can Autosmelt modify work with fortune", false)
+            .getBoolean();
 
         potionIdBias = config.get("General", "Potion effect start id", 500)
             .getInt();
