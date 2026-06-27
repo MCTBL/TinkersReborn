@@ -17,6 +17,7 @@ import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiToolStation;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.tools.inventory.ContainerToolStation;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
 
@@ -31,11 +32,6 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
     public ToolStationLogic(int slots) {
         super(slots);
         toolName = "";
-    }
-
-    @Override
-    public boolean canDropInventorySlot(int slot) {
-        return slot != 0;
     }
 
     @Override
@@ -95,7 +91,7 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
 
     @Override
     public String getInventoryName() {
-        return "null";
+        return TinkersRebornUtils.translate(this.getDefaultName() + ".name");
     }
 
     @Override

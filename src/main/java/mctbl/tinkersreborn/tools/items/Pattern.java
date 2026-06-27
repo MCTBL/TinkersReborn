@@ -3,6 +3,7 @@ package mctbl.tinkersreborn.tools.items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -36,7 +37,7 @@ public class Pattern extends CraftingItem {
     public String getUnlocalizedName(ItemStack stack) {
         return this.getUnlocalizedName() + "." + patternName[stack.getItemDamage()];
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int meta) {

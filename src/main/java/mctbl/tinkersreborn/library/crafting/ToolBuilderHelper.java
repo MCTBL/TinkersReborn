@@ -66,9 +66,10 @@ public class ToolBuilderHelper {
             return null;
         List<TinkersRebornMaterial> materials = new ArrayList<>();
         for (ItemStack stack : inputToolPartList) {
-            if(stack.getItem() instanceof TinkersRebornToolPart) {
-        	TinkersRebornMaterial materialByIdentifier = TinkersRebornRegistry.getMaterialByIdentifier(TinkersRebornToolPart.readNBT(stack));
-        	if(materialByIdentifier != TinkersRebornMaterial.UNKNOWN) materials.add(materialByIdentifier);
+            if (stack.getItem() instanceof TinkersRebornToolPart) {
+                TinkersRebornMaterial materialByIdentifier = TinkersRebornRegistry
+                    .getMaterialByIdentifier(TinkersRebornToolPart.readNBT(stack));
+                if (materialByIdentifier != TinkersRebornMaterial.UNKNOWN) materials.add(materialByIdentifier);
             }
         }
 

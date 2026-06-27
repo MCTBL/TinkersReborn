@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 @SideOnly(Side.CLIENT)
 public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler {
@@ -114,7 +115,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
 
     protected void drawPlayerInventoryName() {
         String localizedName = Minecraft.getMinecraft().thePlayer.inventory.getInventoryName();
-        this.fontRendererObj.drawString(localizedName, 8, this.ySize - 96 + 2, 0x404040);
+        this.fontRendererObj.drawString(TinkersRebornUtils.translate(localizedName), 8, this.ySize - 96 + 2, 0x404040);
     }
 
     @Override

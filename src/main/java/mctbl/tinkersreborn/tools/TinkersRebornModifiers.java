@@ -166,8 +166,9 @@ public class TinkersRebornModifiers {
     }
 
     public void postInit(FMLPostInitializationEvent e) {
-        // registerMobHeadDrops();
+        // registerMobHeadDrops(); // TODO
         registerFortifyModifiers();
+        // registerFortifyModifiers(); // TODO
     }
 
     private void registerFortifyModifiers() {

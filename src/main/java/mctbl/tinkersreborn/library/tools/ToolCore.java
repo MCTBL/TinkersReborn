@@ -745,6 +745,14 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
         list.add(HeadMaterialStats.formatAttack(attack));
 
+        int modifierSlots = ToolTagsHelper.getModifierSlots(stack);
+        int extraModifier = ToolTagsHelper.getExtraModifier(stack);
+        int usedModifiers = ToolTagsHelper.getUsedModifiers(stack);
+        int freeModifier = modifierSlots + extraModifier - usedModifiers;
+        if (freeModifier > 0) {
+            list.add(String.format("%s: %d", TinkersStr.modifierToolTip.toString(), freeModifier));
+        }
+
         if (!isTooltip) {
             list.addAll(getModifierInfo(stack));
         }

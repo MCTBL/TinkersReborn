@@ -155,6 +155,7 @@ material.slimeleaf_blue.name=Blue Slimeleaf
 
 // tools
 tinkersreborn.tooltip.nameformat=%s %s
+tinkersreborn.tooltip.modifiers=Modifiers
 
 tinkersreborn.tool.pickaxe=Pickaxe
 
@@ -339,3 +340,11 @@ modifier.extramodifier.name=Endearment
 modifier.extramodifier.desc=§oExplored the End with passion!§r\nEndeared with an Ender Dragon head, giving you an extra modifier.
 modifier.fortify.name=Fortified
 modifier.fortify.desc=§oHarder, better, faster, stronger!§r\nMining level increased to the same level as %s.
+
+
+// GUI
+tinkersreborn.gui.toolstation.repair.title=Repair & Modify
+tinkersreborn.gui.toolstation.repair.desc=The main way to repair or change your tools. Place a tool and a material on the left to get started.
+tinkersreborn.gui.toolstation.traits.title=Traits
+tinkersreborn.gui.toolstation.components.title=Components
+tinkersreborn.gui.gui.toolstation.noTraits=None :[

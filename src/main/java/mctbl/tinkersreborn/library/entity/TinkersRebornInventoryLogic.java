@@ -128,9 +128,6 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
 
             int j = nbttagcompound1.getShort("Slot");
 
-            // Backwards compatibility for when "Slot" was stored in a byte
-            if (j < 0) j += 256;
-
             if (j >= 0 && j < this.inventory.length) {
                 this.inventory[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
             }

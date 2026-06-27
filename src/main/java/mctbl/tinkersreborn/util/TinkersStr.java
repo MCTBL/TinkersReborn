@@ -15,11 +15,16 @@ public enum TinkersStr {
     tankToolToip1("tank.tooltip1"),
     tankToolToip2("tank.tooltip2"),
     tankToolToip3("tank.tooltip3"),
+    modifierToolTip("tooltip.modifiers"),
 
     // gui
     partCrafterTitle("gui.partcrafter.title"),
-    toolForgeTitle("gui.toolforge.title"),
-    toolForgeDesc("gui.toolforge.desc"),
+
+    toolStationRepairTitle("gui.toolstation.repair.title"),
+    toolStationRepairDesc("gui.toolstation.repair.desc"),
+    toolStationComponentTitle("gui.toolstation.components.title"),
+    toolStationTraitTitle("gui.toolstation.traits.title"),
+    toolStationNoTrait("gui.gui.toolstation.noTraits"),
 
     // general
     durability("durability"),

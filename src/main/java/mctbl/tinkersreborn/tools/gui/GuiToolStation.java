@@ -48,6 +48,7 @@ import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.tools.network.ToolStationSelectionPacket;
 import mctbl.tinkersreborn.tools.network.ToolStationTextPacket;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 @SideOnly(Side.CLIENT)
@@ -132,8 +133,6 @@ public class GuiToolStation extends GuiTinkerStation {
         this.cornerY += 4;
 
         textField = new GuiTextField(fontRendererObj, cornerX + 70, cornerY + 7, 92, 12);
-        // textField.setFocused(true);
-        // textField.setCanLoseFocus(false);
         textField.setEnableBackgroundDrawing(false);
         textField.setMaxStringLength(40);
 
@@ -194,7 +193,7 @@ public class GuiToolStation extends GuiTinkerStation {
                 toolInfo.setText();
             }
 
-            traitInfo.setCaption(translate("gui.toolstation.traits"));
+            traitInfo.setCaption(TinkersStr.toolStationTraitTitle.toString());
 
             List<String> mods = Lists.newLinkedList();
             List<String> tips = Lists.newLinkedList();
@@ -214,14 +213,14 @@ public class GuiToolStation extends GuiTinkerStation {
             }
 
             if (mods.isEmpty()) {
-                mods.add(translate("gui.toolstation.noTraits"));
+                mods.add(TinkersStr.toolStationNoTrait.toString());
             }
 
             traitInfo.setText(mods, tips);
         } else if (TinkersRebornUtils.isStackEmpty(currentInfo.tool)) {
             // repair info
-            toolInfo.setCaption(translate("gui.toolstation.repair"));
-            toolInfo.setText(translate("gui.toolstation.info"));
+            toolInfo.setCaption(TinkersStr.toolStationRepairTitle.toString());
+            toolInfo.setText(TinkersStr.toolStationRepairDesc.toString());
 
             traitInfo.setCaption(null);
             String c = EnumChatFormatting.DARK_GRAY.toString();
@@ -265,7 +264,7 @@ public class GuiToolStation extends GuiTinkerStation {
                 sb.deleteCharAt(sb.length() - 1); // removes last '/'
                 text.add(sb.toString());
             }
-            traitInfo.setCaption(translate("gui.toolstation.components"));
+            traitInfo.setCaption(TinkersStr.toolStationComponentTitle.toString());
             traitInfo.setText(text.toArray(new String[text.size()]));
         }
     }

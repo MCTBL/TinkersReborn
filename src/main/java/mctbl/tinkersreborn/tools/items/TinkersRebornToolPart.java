@@ -7,6 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.items.CraftingItem;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
@@ -16,15 +25,6 @@ import mctbl.tinkersreborn.util.TextureHelper;
 import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.IIcon;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
@@ -63,25 +63,19 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-	TinkersRebornMaterial material = this.getMaterial(stack);
+        TinkersRebornMaterial material = this.getMaterial(stack);
         if (material == TinkersRebornMaterial.UNKNOWN) {
             return super.getItemStackDisplayName(stack);
         } else {
-            return String.format(
-                toolNameFormatter,
-                material.localizedPrefix(),
-                this.getLocalizedPartName());
+            return String.format(toolNameFormatter, material.localizedPrefix(), this.getLocalizedPartName());
         }
     }
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-	TinkersRebornMaterial material = this.getMaterial(stack);
+        TinkersRebornMaterial material = this.getMaterial(stack);
         return material == TinkersRebornMaterial.UNKNOWN ? super.getUnlocalizedName()
-            : String.format(
-                toolNameFormatter,
-                material.localizedPrefix(),
-                this.getLocalizedPartName());
+            : String.format(toolNameFormatter, material.localizedPrefix(), this.getLocalizedPartName());
     }
 
     @Override
@@ -90,7 +84,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
             .filter(m -> m.statsMap.containsKey(this.allowType))
             .collect(Collectors.toList());
         for (TinkersRebornMaterial m : statsList) {
-	    list.add(writeNBT(new ItemStack(this), m.identifier));
+            list.add(writeNBT(new ItemStack(this), m.identifier));
         }
     }
 
@@ -154,7 +148,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     @Override
     public TinkersRebornMaterial getMaterial(ItemStack stack) {
-	return TinkersRebornRegistry.getMaterialByIdentifier(readNBT(stack));
+        return TinkersRebornRegistry.getMaterialByIdentifier(readNBT(stack));
     }
 
     public int getCost() {
@@ -169,6 +163,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     }
 
     public static String readNBT(ItemStack stack) {
-	return ToolTagsHelper.getTagSafe(stack).getString(ToolTags.IDENTIFIER);
+        return ToolTagsHelper.getTagSafe(stack)
+            .getString(ToolTags.IDENTIFIER);
     }
 }

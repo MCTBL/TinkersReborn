@@ -35,7 +35,8 @@ public class ModFortify extends ToolModifier {
             new ModifierAspect.DataAspect(this),
             ModifierAspect.harvestOnly);
 
-        ItemStack kit = TinkersRebornToolPart.writeNBT(new ItemStack(TinkersRebornTools.sharpeningKit), this.material.identifier);
+        ItemStack kit = TinkersRebornToolPart
+            .writeNBT(new ItemStack(TinkersRebornTools.sharpeningKit), this.material.identifier);
         ItemStack flint = new ItemStack(Items.flint);
         addRecipeMatch(new RecipeMatch.ItemCombination(1, kit, flint));
     }
