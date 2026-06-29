@@ -550,7 +550,7 @@ public class GuiToolStation extends GuiTinkerStation {
 
     @Override
     public void error(String message) {
-        toolInfo.setCaption(TinkersRebornUtils.translate("gui.error"));
+        toolInfo.setCaption(TinkersStr.errorTitle.toString());
         toolInfo.setText(message);
         traitInfo.setCaption(null);
         traitInfo.setText();
@@ -558,7 +558,7 @@ public class GuiToolStation extends GuiTinkerStation {
 
     @Override
     public void warning(String message) {
-        toolInfo.setCaption(TinkersRebornUtils.translate("gui.warning"));
+        toolInfo.setCaption(TinkersStr.warningTitle.toString());
         toolInfo.setText(message);
         traitInfo.setCaption(null);
         traitInfo.setText();

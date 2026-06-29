@@ -150,6 +150,9 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     }
 
     public ItemStack getNewPartWithMaterial(TinkersRebornMaterial material) {
+        if (this.allowType != null && !material.hasStats(this.allowType)) {
+            return null;
+        }
         return this.getNewPartWithMaterial(material.identifier);
     }
 

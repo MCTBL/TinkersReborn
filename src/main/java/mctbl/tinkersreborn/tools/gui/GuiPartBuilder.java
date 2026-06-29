@@ -109,7 +109,7 @@ public class GuiPartBuilder extends GuiTinkerStation {
 
             materialInfo.setCaption(
                 ColorUtil.encodeColor(container.getInputMaterial().materialTextColor) + container.getInputMaterial()
-                    .localizedPrefix());
+                    .localizedName());
             materialInfo.setText(materialInfoText);
         } else {
             materialInfo.setCaption(TinkersRebornUtils.translate("tinkersreborn.PartBuilder.name"));

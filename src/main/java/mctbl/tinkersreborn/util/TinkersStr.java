@@ -19,6 +19,8 @@ public enum TinkersStr {
     patternToolTip("tooltip.pattern"),
 
     // gui
+    errorTitle("gui.error"),
+    warningTitle("gui.warning"),
     partCrafterTitle("gui.partcrafter.title"),
 
     toolStationRepairTitle("gui.toolstation.repair.title"),
@@ -28,6 +30,7 @@ public enum TinkersStr {
     toolStationNoTrait("gui.toolstation.noTraits"),
     partCrafterInfo("gui.partcrafter.desc"),
     partCrafterMaterialValue("gui.partbuilder.material_value"),
+    partCrafterMaterialCantMakePart("gui.partbuilder.material_cant_make"),
 
     // general
     durability("durability"),

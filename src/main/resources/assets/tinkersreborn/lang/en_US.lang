@@ -353,6 +353,9 @@ modifier.fortify.desc=§oHarder, better, faster, stronger!§r\nMining level incr
 
 
 // GUI
+tinkersreborn.gui.error=ERROR
+tinkersreborn.gui.warning=WARNING
+
 tinkersreborn.gui.toolstation.repair.title=Repair & Modify
 tinkersreborn.gui.toolstation.repair.desc=The main way to repair or change your tools. Place a tool and a material on the left to get started.
 tinkersreborn.gui.toolstation.traits.title=Traits
@@ -361,3 +364,5 @@ tinkersreborn.gui.toolstation.noTraits=None :[
 
 tinkersreborn.gui.partcrafter.desc=Here you can craft tool parts to fulfill your tinkering fantasies.\n\nTo craft a part simply put its pattern into the left slot. The two remaining slots hold the material you want to craft your part out of.
 tinkersreborn.gui.partbuilder.material_value=Material Value: %s
+tinkersreborn.gui.partbuilder.material_cant_make=Material %s can't make %s
+

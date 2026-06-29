@@ -170,21 +170,17 @@ public class GuiDynButtons extends GuiModule {
     @Override
     public boolean handleMouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
-            boolean pressed = false;
-            for (GuiButtonItem<?> guibutton : this.buttonList) {
-                // or just loop button inside render, but will casue some other issue
-                // for (int idx = this.firstButtonId; idx < this.lastButtonId && idx < this.buttonList.size(); idx++) {
-                // GuiButtonItem<?> guibutton = this.buttonList.get(idx);
-                guibutton.pressed = false;
+            // for (GuiButtonItem<?> guibutton : this.buttonList) {
+            // or just loop button inside render, but will casue some other issue
+            for (int idx = this.firstButtonId; idx < this.lastButtonId && idx < this.buttonList.size(); idx++) {
+                GuiButtonItem<?> guibutton = this.buttonList.get(idx);
                 if (guibutton.mousePressed(this.mc, mouseX, mouseY)) {
                     this.clickedButton = guibutton;
-                    this.clickedButton.pressed = true;
                     guibutton.func_146113_a(this.mc.getSoundHandler());
                     this.actionPerformed(guibutton);
-                    pressed = true;
+                    return true;
                 }
             }
-            return pressed;
         }
         return false;
     }
@@ -208,8 +204,9 @@ public class GuiDynButtons extends GuiModule {
         }
 
         for (int idx = this.firstButtonId; idx < this.lastButtonId && idx < this.buttonList.size(); idx++) {
-            this.buttonList.get(idx)
-                .drawButton(this.mc, mouseX, mouseY);
+            GuiButtonItem<?> button = this.buttonList.get(idx);
+            button.pressed = this.clickedButton == button;
+            button.drawButton(this.mc, mouseX, mouseY);
         }
     }
 

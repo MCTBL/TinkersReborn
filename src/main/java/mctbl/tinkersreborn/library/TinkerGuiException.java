@@ -5,6 +5,8 @@ package mctbl.tinkersreborn.library;
  */
 public class TinkerGuiException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     public TinkerGuiException() {}
 
     public TinkerGuiException(String message) {
