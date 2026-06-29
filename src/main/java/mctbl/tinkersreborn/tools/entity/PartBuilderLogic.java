@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.tools.entity;
 
+import java.util.List;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -10,14 +12,12 @@ import net.minecraft.world.World;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.tools.gui.GuiPartBuilder;
 import mctbl.tinkersreborn.tools.inventory.ContainerPartBuilder;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class PartBuilderLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
 
-    public boolean isCrafted;
-
     public PartBuilderLogic() {
-        super(3);
-        this.isCrafted = false;
+        super(2);
     }
 
     @Override
@@ -36,25 +36,16 @@ public class PartBuilderLogic extends TinkersRebornInventoryLogic implements ISi
     }
 
     @Override
-    public boolean canDropInventorySlot(int slot) {
-        return slot <= 1;
+    public void markDirty() {
+        if (this.worldObj != null) {
+            this.blockMetadata = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
+            this.worldObj.markTileEntityChunkModified(this.xCoord, this.yCoord, this.zCoord, this);
+        }
     }
 
-    // Called when emptying a slot, not when another item is placed in it
     @Override
-    public ItemStack decrStackSize(int slotID, int quantity) {
-
-        return null;
-    }
-
-    public void tryBuildPart(int slotID) {
-
-    }
-
-    // Called when a slot has something placed into it.
-    @Override
-    public void setInventorySlotContents(int slot, ItemStack itemstack) {
-
+    public boolean canUpdate() {
+        return false;
     }
 
     @Override
@@ -74,7 +65,7 @@ public class PartBuilderLogic extends TinkersRebornInventoryLogic implements ISi
 
     @Override
     public String getInventoryName() {
-        return getDefaultName();
+        return TinkersRebornUtils.translate(this.getDefaultName() + ".name");
     }
 
     @Override
@@ -89,8 +80,8 @@ public class PartBuilderLogic extends TinkersRebornInventoryLogic implements ISi
     public void closeInventory() {}
 
     @Override
-    public boolean canUpdate() {
-        return false;
+    public List<DisplayItem> getDisplayItems() {
+        // TODO Auto-generated method stub
+        return super.getDisplayItems();
     }
-
 }

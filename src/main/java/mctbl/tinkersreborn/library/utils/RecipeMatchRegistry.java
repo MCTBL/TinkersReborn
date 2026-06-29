@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.library.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public class RecipeMatchRegistry {
 
     // looks for a match in the given itemstacks
     public Optional<RecipeMatch.Match> matches(ItemStack... stacks) {
-        List<ItemStack> nonNullStacks = new ArrayList<>(stacks.length);
+        List<ItemStack> nonNullStacks = new ArrayList<>(Collections.nCopies(stacks.length, null));
         for (int i = 0; i < stacks.length; i++) {
             if (stacks[i].stackSize != 0) {
                 nonNullStacks.set(i, stacks[i].copy());
@@ -159,7 +160,7 @@ public class RecipeMatchRegistry {
     }
 
     public static List<ItemStack> copyItemStackArray(List<ItemStack> in) {
-        List<ItemStack> stacksCopy = new ArrayList<>(in.size());
+        List<ItemStack> stacksCopy = new ArrayList<>(Collections.nCopies(in.size(), null));
         for (int i = 0; i < in.size(); i++) {
             if (in.get(i).stackSize != 0) {
                 stacksCopy.set(

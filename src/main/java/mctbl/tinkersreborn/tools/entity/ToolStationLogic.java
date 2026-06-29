@@ -35,11 +35,6 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int var1) {
-        return null;
-    }
-
-    @Override
     public String getDefaultName() {
         return "tinkersreborn.ToolStation";
     }
@@ -52,13 +47,6 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiToolStation(inventoryplayer, world, BlockPos.of(x, y, z), this);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int amount) {
-        ItemStack itemstack = super.decrStackSize(slot, amount);
-        if (slot != 0) {}
-        return itemstack;
     }
 
     @Override

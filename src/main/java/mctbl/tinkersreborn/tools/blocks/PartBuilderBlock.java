@@ -117,7 +117,6 @@ public class PartBuilderBlock extends TinkersRebornInventoryBlock implements ITi
         }
     }
 
-    /* Keep pattern chest inventory */
     @Override
     public boolean removedByPlayer(World world, EntityPlayer player, int x, int y, int z, boolean willHarvest) {
         player.addExhaustion(0.025F);

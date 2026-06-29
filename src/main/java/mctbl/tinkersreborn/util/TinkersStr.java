@@ -25,7 +25,9 @@ public enum TinkersStr {
     toolStationRepairDesc("gui.toolstation.repair.desc"),
     toolStationComponentTitle("gui.toolstation.components.title"),
     toolStationTraitTitle("gui.toolstation.traits.title"),
-    toolStationNoTrait("gui.gui.toolstation.noTraits"),
+    toolStationNoTrait("gui.toolstation.noTraits"),
+    partCrafterInfo("gui.partcrafter.desc"),
+    partCrafterMaterialValue("gui.partbuilder.material_value"),
 
     // general
     durability("durability"),

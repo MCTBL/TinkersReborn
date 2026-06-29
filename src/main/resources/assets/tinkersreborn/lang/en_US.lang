@@ -358,3 +358,6 @@ tinkersreborn.gui.toolstation.repair.desc=The main way to repair or change your 
 tinkersreborn.gui.toolstation.traits.title=Traits
 tinkersreborn.gui.toolstation.components.title=Components
 tinkersreborn.gui.toolstation.noTraits=None :[
+
+tinkersreborn.gui.partcrafter.desc=Here you can craft tool parts to fulfill your tinkering fantasies.\n\nTo craft a part simply put its pattern into the left slot. The two remaining slots hold the material you want to craft your part out of.
+tinkersreborn.gui.partbuilder.material_value=Material Value: %s
