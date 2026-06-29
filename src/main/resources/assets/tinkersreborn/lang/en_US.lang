@@ -206,14 +206,57 @@ tinkersreborn.toolpart.SharpeningKit.tooltip=Combine with a flint\nUpgrades your
 
 
 // stats
+tinkersreborn.stat.head.name=Head
 tinkersreborn.durability=Durability
-tinkersreborn.durability.desc=
+tinkersreborn.durability.desc=The base-value for durability calculations.\nUsually an integral part to the overall durability of a tool.
 tinkersreborn.miningspeed=Mining Speed
-tinkersreborn.miningspeed.desc=
+tinkersreborn.miningspeed.desc=How fast a tool with a tool head of this material can mine blocks.\nMay be influenced by other toolparts.
 tinkersreborn.attack=Attack
-tinkersreborn.attack.desc=
+tinkersreborn.attack.desc=Base value for attack calculations.\nThe end result depends on the tool itself and the other components used.
 tinkersreborn.harvestlevel=Mining Level
-tinkersreborn.harvestlevel.desc=
+tinkersreborn.harvestlevel.desc=What range of blocks a tool with a tool head of this material can mine.
+
+
+tinkersreborn.stat.handle.name=Handle
+tinkersreborn.stat.handle.modifier.name=Modifier
+tinkersreborn.stat.handle.modifier.desc=How suitable the tool material is as a handle.\nThe total durability of the tool will be multiplied by this.
+tinkersreborn.stat.handle.durability.name=Durability
+tinkersreborn.stat.handle.durability.desc=How well the material can be held.\nTool durability will be changed by this amount.
+
+tinkersreborn.stat.extra.name=Extra
+tinkersreborn.stat.extra.durability.name=Durability
+tinkersreborn.stat.extra.durability.desc=How much durability this part contributes when used as an accessory.
+
+//stat.mattock.axelevel.name=Axe Level
+//stat.mattock.shovellevel.name=Shovel Level
+
+tinkersreborn.stat.bow.name=Bow
+tinkersreborn.stat.bow.drawspeed.name=Drawspeed
+tinkersreborn.stat.bow.drawspeed.desc=How fast you can draw the bow.
+tinkersreborn.stat.bow.range.name=Range Multiplier
+tinkersreborn.stat.bow.range.desc=How far the projectile can be propelled.
+tinkersreborn.stat.bow.damage.name=Bonus Damage
+tinkersreborn.stat.bow.damage.desc=Bonus damage dealt on hit.\nThe force of the arrow.
+
+tinkersreborn.stat.string.name=Bowstring
+tinkersreborn.stat.string.modifier.name=Modifier
+tinkersreborn.stat.string.modifier.desc=Tool durability will be multiplied by this.
+
+tinkersreborn.stat.shaft.name=Arrow Shaft
+tinkersreborn.stat.shaft.modifier.name=Modifier
+tinkersreborn.stat.shaft.modifier.desc=Each arrow needs a suiting core. It determines how well it lasts.\nThe total ammo count of the tool will be multiplied by this.
+tinkersreborn.stat.shaft.ammo.name=Bonus-Ammo
+tinkersreborn.stat.shaft.ammo.desc=How many arrows you can get out of it.\nThis much flat ammo will be added.
+
+tinkersreborn.stat.fletching.name=Fletching
+tinkersreborn.stat.fletching.accuracy.name=Accuracy
+tinkersreborn.stat.fletching.accuracy.desc=How stable the flight path will be using this fletching.\nAffects the overall accuracy of the projectile.
+tinkersreborn.stat.fletching.modifier.name=Modifier
+tinkersreborn.stat.fletching.modifier.desc=How many arrows you can craft with this.\nProjectile ammo will be multiplied by this.
+
+tinkersreborn.stat.projectile.name=Projectile
+//stat.projectile.ammo.name=Ammo
+
 
 
 // traits

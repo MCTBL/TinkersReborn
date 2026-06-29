@@ -6,14 +6,15 @@ import java.util.List;
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class FletchingMaterialStats extends AbstractMaterialStats {
 
-    public final static String LOC_Accuracy = "stat.fletching.accuracy.name";
-    public final static String LOC_Multiplier = "stat.fletching.modifier.name";
+    public final static String LOC_Accuracy = "tinkersreborn.stat.fletching.accuracy.name";
+    public final static String LOC_Multiplier = "tinkersreborn.stat.fletching.modifier.name";
 
-    public final static String LOC_AccuracyDesc = "stat.fletching.accuracy.desc";
-    public final static String LOC_MultiplierDesc = "stat.fletching.modifier.desc";
+    public final static String LOC_AccuracyDesc = "tinkersreborn.stat.fletching.accuracy.desc";
+    public final static String LOC_MultiplierDesc = "tinkersreborn.stat.fletching.modifier.desc";
 
     public final float modifier;
     public final float accuracy;
@@ -34,7 +35,7 @@ public class FletchingMaterialStats extends AbstractMaterialStats {
 
     @Override
     public String getLocalizedName() {
-        return TinkersRebornUtils.translate("stat.fletching.name");
+        return TinkersStr.fletchingStatsName.toString();
     }
 
     @Override

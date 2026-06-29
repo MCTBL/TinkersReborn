@@ -14,6 +14,7 @@ import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.gui.GuiDynButtons;
 import mctbl.tinkersreborn.library.gui.GuiElement;
+import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
@@ -90,8 +91,10 @@ public class GuiPartBuilder extends GuiTinkerStation {
     @Override
     public void updateDisplay() {
         ContainerPartBuilder container = (ContainerPartBuilder) inventorySlots;
-        if (container.getInputMaterial() != null) {
+        TinkersRebornMaterial inputMaterial = container.getInputMaterial();
+        if (inputMaterial != null) {
             List<String> materialInfoText = new ArrayList<>();
+            List<String> materialInfoTooltips = new ArrayList<>();
 
             materialInfoText.add(
                 ColorUtil.addGold(
@@ -99,18 +102,31 @@ public class GuiPartBuilder extends GuiTinkerStation {
                         TinkersStr.patternToolTip.toString(),
                         container.getSelectedToolPart()
                             .getCost() / TinkersRebornMaterial.VALUE_Ingot)));
-            if (container.getMaterialValue() >= 1) {
-                materialInfoText.add(
-                    ColorUtil.addAqua(
-                        String.format(
-                            TinkersStr.partCrafterMaterialValue.toString(),
-                            container.getMaterialValue() / TinkersRebornMaterial.VALUE_Ingot)));
+            materialInfoTooltips.add(null);
+            materialInfoText.add(
+                ColorUtil.addAqua(
+                    String.format(
+                        TinkersStr.partCrafterMaterialValue.toString(),
+                        container.getMaterialValue() / TinkersRebornMaterial.VALUE_Ingot)));
+            materialInfoTooltips.add(null);
+
+            materialInfoText.add("");
+            materialInfoTooltips.add(null);
+
+            for (IMaterialStats stats : inputMaterial.getAllStats()) {
+                materialInfoText.add(ColorUtil.addUnderLine(stats.getLocalizedName()));
+                materialInfoTooltips.add(null);
+
+                materialInfoText.addAll(stats.getLocalizedInfo());
+                materialInfoTooltips.addAll(stats.getLocalizedDesc());
+
+                materialInfoText.add("");
+                materialInfoTooltips.add(null);
             }
 
-            materialInfo.setCaption(
-                ColorUtil.encodeColor(container.getInputMaterial().materialTextColor) + container.getInputMaterial()
-                    .localizedName());
-            materialInfo.setText(materialInfoText);
+            materialInfo
+                .setCaption(ColorUtil.encodeColor(inputMaterial.materialTextColor) + inputMaterial.localizedName());
+            materialInfo.setText(materialInfoText, materialInfoTooltips);
         } else {
             materialInfo.setCaption(TinkersRebornUtils.translate("tinkersreborn.PartBuilder.name"));
             materialInfo.setText(TinkersStr.partCrafterInfo.toString());

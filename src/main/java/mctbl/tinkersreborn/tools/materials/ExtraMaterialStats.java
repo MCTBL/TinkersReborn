@@ -6,11 +6,12 @@ import java.util.List;
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class ExtraMaterialStats extends AbstractMaterialStats {
 
-    public final static String LOC_Durability = "stat.extra.durability.name";
-    public final static String LOC_DurabilityDesc = "stat.extra.durability.desc";
+    public final static String LOC_Durability = "tinkersreborn.stat.extra.durability.name";
+    public final static String LOC_DurabilityDesc = "tinkersreborn.stat.extra.durability.desc";
 
     public final static String formatBase = "%s: <#%s>%s</#>";
 
@@ -30,7 +31,7 @@ public class ExtraMaterialStats extends AbstractMaterialStats {
 
     @Override
     public String getLocalizedName() {
-        return TinkersRebornUtils.translate("stat.extra.name");
+        return TinkersStr.extraStatsName.toString();
     }
 
     @Override

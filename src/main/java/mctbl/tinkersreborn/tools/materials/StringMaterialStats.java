@@ -6,12 +6,13 @@ import java.util.List;
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class StringMaterialStats extends AbstractMaterialStats {
 
-    public final static String LOC_Multiplier = "stat.bowstring.modifier.name";
+    public final static String LOC_Multiplier = "tinkersreborn.stat.string.modifier.name";
 
-    public final static String LOC_MultiplierDesc = "stat.bowstring.modifier.desc";
+    public final static String LOC_MultiplierDesc = "tinkersreborn.stat.string.modifier.desc";
 
     public final float modifier; // around 1.0
 
@@ -29,7 +30,7 @@ public class StringMaterialStats extends AbstractMaterialStats {
 
     @Override
     public String getLocalizedName() {
-        return TinkersRebornUtils.translate("stat.string.name");
+        return TinkersStr.stringStatsName.toString();
     }
 
     @Override

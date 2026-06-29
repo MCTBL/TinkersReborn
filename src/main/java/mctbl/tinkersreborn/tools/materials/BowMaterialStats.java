@@ -6,16 +6,17 @@ import java.util.List;
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class BowMaterialStats extends AbstractMaterialStats {
 
-    public final static String LOC_Drawspeed = "stat.bow.drawspeed.name";
-    public final static String LOC_Range = "stat.bow.range.name";
-    public final static String LOC_Damage = "stat.bow.damage.name";
+    public final static String LOC_Drawspeed = "tinkersreborn.stat.bow.drawspeed.name";
+    public final static String LOC_Range = "tinkersreborn.stat.bow.range.name";
+    public final static String LOC_Damage = "tinkersreborn.stat.bow.damage.name";
 
-    public final static String LOC_DrawspeedDesc = "stat.bow.drawspeed.desc";
-    public final static String LOC_RangeDesc = "stat.bow.range.desc";
-    public final static String LOC_DamageDesc = "stat.bow.damage.desc";
+    public final static String LOC_DrawspeedDesc = "tinkersreborn.stat.bow.drawspeed.desc";
+    public final static String LOC_RangeDesc = "tinkersreborn.stat.bow.range.desc";
+    public final static String LOC_DamageDesc = "tinkersreborn.stat.bow.damage.desc";
 
     /**
      * Ok, here is where things get complicated. Think about the bonus damage as the
@@ -47,7 +48,7 @@ public class BowMaterialStats extends AbstractMaterialStats {
 
     @Override
     public String getLocalizedName() {
-        return TinkersRebornUtils.translate("stat.bow.name");
+        return TinkersStr.bowStatsName.toString();
     }
 
     @Override

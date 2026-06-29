@@ -18,6 +18,16 @@ public enum TinkersStr {
     modifierToolTip("tooltip.modifiers"),
     patternToolTip("tooltip.pattern"),
 
+    // stats
+    headStatsName("stat.head.name"),
+    bowStatsName("stat.bow.name"),
+    extraStatsName("stat.extra.name"),
+    fletchingStatsName("stat.fletching.name"),
+    handleStatsName("stat.handle.name"),
+    projectileStatsName("stat.projectile.name"),
+    shaftStatsName("stat.shaft.name"),
+    stringStatsName("stat.string.name"),
+
     // gui
     errorTitle("gui.error"),
     warningTitle("gui.warning"),

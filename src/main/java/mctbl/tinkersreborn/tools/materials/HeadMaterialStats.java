@@ -1,7 +1,5 @@
 package mctbl.tinkersreborn.tools.materials;
 
-import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +41,7 @@ public class HeadMaterialStats extends AbstractMaterialStats {
 
     @Override
     public String getLocalizedName() {
-        return translate("stat.head.name");
+        return TinkersStr.headStatsName.toString();
     }
 
     @Override

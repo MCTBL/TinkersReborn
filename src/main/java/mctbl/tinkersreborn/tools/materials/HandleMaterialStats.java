@@ -6,14 +6,15 @@ import java.util.List;
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class HandleMaterialStats extends AbstractMaterialStats {
 
-    public final static String LOC_Multiplier = "stat.handle.modifier.name";
-    public final static String LOC_Durability = "stat.handle.durability.name";
+    public final static String LOC_Multiplier = "tinkersreborn.stat.handle.modifier.name";
+    public final static String LOC_Durability = "tinkersreborn.stat.handle.durability.name";
 
-    public final static String LOC_MultiplierDesc = "stat.handle.modifier.desc";
-    public final static String LOC_DurabilityDesc = "stat.handle.durability.desc";
+    public final static String LOC_MultiplierDesc = "tinkersreborn.stat.handle.modifier.desc";
+    public final static String LOC_DurabilityDesc = "tinkersreborn.stat.handle.durability.desc";
 
     public final float multiplier; // how good the material is for handles. 0.0 - 1.0
     public final int durability; // usually between -500 and 500
@@ -34,7 +35,7 @@ public class HandleMaterialStats extends AbstractMaterialStats {
 
     @Override
     public String getLocalizedName() {
-        return TinkersRebornUtils.translate("stat.handle.name");
+        return TinkersStr.handleStatsName.toString();
     }
 
     @Override
@@ -58,7 +59,7 @@ public class HandleMaterialStats extends AbstractMaterialStats {
     }
 
     public static String formatMultiplier(float multiplier) {
-        return format(LOC_MultiplierDesc, COLOR_Multiplier, multiplier);
+        return format(LOC_Multiplier, COLOR_Multiplier, multiplier);
     }
 
     public static String formatDurability(int durability) {

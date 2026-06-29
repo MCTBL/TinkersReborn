@@ -6,14 +6,15 @@ import java.util.List;
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class ShaftMaterialStats extends AbstractMaterialStats {
 
-    public final static String LOC_Multiplier = "stat.shaft.modifier.name";
-    public final static String LOC_Ammo = "stat.shaft.ammo.name";
+    public final static String LOC_Multiplier = "tinkersreborn.stat.shaft.modifier.name";
+    public final static String LOC_Ammo = "tinkersreborn.stat.shaft.ammo.name";
 
-    public final static String LOC_MultiplierDesc = "stat.shaft.modifier.desc";
-    public final static String LOC_AmmoDesc = "stat.shaft.ammo.desc";
+    public final static String LOC_MultiplierDesc = "tinkersreborn.stat.shaft.modifier.desc";
+    public final static String LOC_AmmoDesc = "tinkersreborn.stat.shaft.ammo.desc";
 
     public final static String COLOR_Ammo = COLOR_Durability;
 
@@ -36,7 +37,7 @@ public class ShaftMaterialStats extends AbstractMaterialStats {
 
     @Override
     public String getLocalizedName() {
-        return TinkersRebornUtils.translate("stat.shaft.name");
+        return TinkersStr.shaftStatsName.toString();
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.List;
 
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class ProjectileMaterialStats extends AbstractMaterialStats {
 
@@ -16,7 +16,7 @@ public class ProjectileMaterialStats extends AbstractMaterialStats {
 
     @Override
     public String getLocalizedName() {
-        return TinkersRebornUtils.translate("stat.projectile.name");
+        return TinkersStr.projectileStatsName.toString();
     }
 
     @Override

@@ -686,7 +686,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         bloodBoneMaterial.addTrait(fractured);
 
         stringMaterial = new TinkersRebornMaterial(String, "String", 0xEEEEEE);
-        stringMaterial.addItem("string", 1, VALUE_Ingot);
+        stringMaterial.addItem(Items.string, 1, VALUE_Ingot);
         stringMaterial.setRepresentativeItem(Items.string);
 
         vineMaterial = new TinkersRebornMaterial(Vine, "Vine", 0x40A10F);
