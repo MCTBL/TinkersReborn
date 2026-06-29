@@ -27,7 +27,7 @@ public class GuiCastChest extends GuiTinkerStation {
         super(
             world,
             BlockPos.of(x, y, z),
-            (ContainerTinkerStation<CastChestLogic>) tile.getGuiContainer(inventoryplayer, world, x, y, z));
+            (ContainerTinkerStation<?>) tile.getGuiContainer(inventoryplayer, world, x, y, z));
 
         // we use the sideinventory class for the inventory itself
         // it doesn't contain the player inventory

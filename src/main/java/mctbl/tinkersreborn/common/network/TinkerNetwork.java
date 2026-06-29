@@ -15,6 +15,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.tools.network.PartBuilderSelectionPacket;
 import mctbl.tinkersreborn.tools.network.TinkerStationTabPacket;
 import mctbl.tinkersreborn.tools.network.ToolStationSelectionPacket;
 import mctbl.tinkersreborn.tools.network.ToolStationTextPacket;
@@ -33,6 +34,7 @@ public class TinkerNetwork {
     public void setUp() {
         // register packet
         registerPacket(ToolStationSelectionPacket.class);
+        registerPacket(PartBuilderSelectionPacket.class);
         registerPacket(ToolStationTextPacket.class);
 
         registerPacketClient(SpawnParticlePacket.class);

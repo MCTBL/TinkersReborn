@@ -407,10 +407,6 @@ public class GuiToolStation extends GuiTinkerStation {
                     icon,
                     16,
                     16);
-
-                // itemRender.renderItemIntoGUI(stack, x + this.cornerX + slot.xDisplayPosition,
-                // y + this.cornerY +
-                // slot.yDisplayPosition);
             }
         }
 

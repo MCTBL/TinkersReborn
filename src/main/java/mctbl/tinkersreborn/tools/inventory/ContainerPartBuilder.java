@@ -16,7 +16,6 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.items.IPattern;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.RecipeMatch.Match;
-import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 
@@ -24,9 +23,9 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
 
     private final EntityPlayer player;
     protected SlotPartBuilderOut out;
-    protected TinkersRebornToolPart part = TinkersRebornTools.rod;
-    public TinkersRebornMaterial material;
-    public int materialCount = 0;
+    protected TinkersRebornToolPart part;
+    protected TinkersRebornMaterial material;
+    protected int materialCount = 0;
 
     public ContainerPartBuilder(InventoryPlayer inventoryplayer, PartBuilderLogic tile) {
         super(tile);
@@ -57,6 +56,7 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
 
     public void toolPartSelected(TinkersRebornToolPart part) {
         this.part = part;
+        this.updateMaterialAndCount();
     }
 
     @Override
@@ -73,12 +73,6 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
         updateGUI();
 
         updateMaterialAndCount();
-
-        if (part != null && material != null && materialCount >= 1) {
-            out.inventory.setInventorySlotContents(0, part.getNewPartWithMaterial(material));
-        } else {
-            out.inventory.setInventorySlotContents(0, null);
-        }
 
         // sync output with other open containers on the server
         if (!this.world.isRemote) {
@@ -100,13 +94,39 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
                 Optional<Match> matches = m.matchesRecursively(Arrays.asList(materialStack));
                 if (matches.isPresent() && matches.get().amount > 0) {
                     material = m;
-                    materialCount = matches.get().amount / TinkersRebornMaterial.VALUE_Ingot;
+                    materialCount = matches.get().amount;
                 }
             }
         } else {
             material = null;
             materialCount = 0;
         }
+
+        this.updateOutput();
+    }
+
+    public void updateOutput() {
+        // have pattern or cast
+        if (tile.getStackInSlot(0) != null && tile.getStackInSlot(0)
+            .getItem() instanceof IPattern) {
+            if (part != null && material != null && materialCount >= part.cost) {
+                out.inventory.setInventorySlotContents(0, part.getNewPartWithMaterial(material));
+                return;
+            }
+        }
+        out.inventory.setInventorySlotContents(0, null);
+    }
+
+    public TinkersRebornMaterial getInputMaterial() {
+        return this.material;
+    }
+
+    public int getMaterialValue() {
+        return this.materialCount;
+    }
+
+    public TinkersRebornToolPart getSelectedToolPart() {
+        return this.part;
     }
 
     public static class SlotPartBuilderIn extends Slot {

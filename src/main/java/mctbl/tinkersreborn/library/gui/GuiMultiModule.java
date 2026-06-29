@@ -42,6 +42,10 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         modules.add(module);
     }
 
+    protected void addModuleFirst(GuiModule module) {
+        modules.add(0, module);
+    }
+
     public List<Rectangle> getModuleAreas() {
         List<Rectangle> areas = new ArrayList<Rectangle>(modules.size());
         for (GuiModule module : modules) {

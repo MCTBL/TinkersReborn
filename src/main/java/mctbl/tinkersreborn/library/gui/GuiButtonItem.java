@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -11,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.tools.gui.GuiToolStation;
+import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 
 public class GuiButtonItem<T> extends GuiButton {
 
@@ -29,9 +30,9 @@ public class GuiButtonItem<T> extends GuiButton {
     private GuiElement guiHover = GUI_Button_hover;
     private ResourceLocation locBackground = Icons.ICON;
 
-    private GuiToolStation parent;
+    private GuiMultiModule parent;
 
-    public GuiButtonItem(int buttonId, int x, int y, String displayName, @Nonnull T data, GuiToolStation parent) {
+    public GuiButtonItem(int buttonId, int x, int y, String displayName, @Nonnull T data, GuiMultiModule parent) {
         super(buttonId, x, y, 18, 18, displayName);
 
         this.icon = null;
@@ -39,7 +40,7 @@ public class GuiButtonItem<T> extends GuiButton {
         this.parent = parent;
     }
 
-    public GuiButtonItem(int buttonId, int x, int y, ItemStack icon, @Nonnull T data, GuiToolStation parent) {
+    public GuiButtonItem(int buttonId, int x, int y, ItemStack icon, @Nonnull T data, GuiMultiModule parent) {
         super(buttonId, x, y, 18, 18, icon.getDisplayName());
 
         this.icon = icon;
@@ -83,8 +84,15 @@ public class GuiButtonItem<T> extends GuiButton {
 
     protected void drawIcon(Minecraft mc) {
         if (icon != null) {
-            parent.renderItemIntoGui(icon, xPosition + 1, yPosition + 1);
+            if (icon.getItem() instanceof TinkersRebornToolPart tp) {
+                mc.getTextureManager()
+                    .bindTexture(TextureMap.locationItemsTexture);
+                this.drawTexturedModelRectFromIcon(xPosition, yPosition, tp.outlineIcon, 16, 16);
+                mc.getTextureManager()
+                    .bindTexture(locBackground);
+            } else {
+                parent.renderItemIntoGui(icon, xPosition + 1, yPosition + 1);
+            }
         }
-        // this.drawTexturedModelRectFromIcon(xPosition + 1, yPosition + 1, icon, width, height);
     }
 }
