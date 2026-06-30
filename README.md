@@ -343,26 +343,6 @@ flowchart TB
 
 ## TODO
 
-`RenderEvents` for `renderExtraBlockBreak` and `drawBlockDamageTexture`
-
-`ToolEvents` have `ExtraBlockBreak`
-`TraitEvents` have these event `BreakSpeed`, `BreakEvent` etc, iterate all traits(modify) each time
-`ToolCore` has `getStrVsBlock`, `getDigSpeed` is same
-`AbstractTrait` have all trait's and modify's handler
-
-### handlers / override for `ToolCore`
-
-- `getStrVsBlock` / `getDigSpeed`
-- `canHarvestBlock`
-- `onBlockStartBreak`
-- `onLeftClickEntity`
-- `onEntitySwing`
-- `hitEntity`
-- `getHarvestLevel`
-- `onBlockDestroyed`
-- `onUpdate`
-- `getToolClasses`
-
-Item only provide attack / mining event
-
-those effect all provide by modify
+- [ ] furnace
+- [ ] smeltery
+- [ ] harvest level function
