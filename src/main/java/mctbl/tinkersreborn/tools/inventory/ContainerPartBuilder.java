@@ -28,9 +28,10 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
 
     private final EntityPlayer player;
     protected SlotPartBuilderOut out;
-    protected TinkersRebornToolPart part;
-    protected TinkersRebornMaterial material;
-    protected int materialCount = 0;
+    public TinkersRebornToolPart part;
+    public TinkersRebornMaterial material;
+    public int materialCount = 0;
+    protected int lastMaterialCount = 0;
 
     public ContainerPartBuilder(InventoryPlayer inventoryplayer, PartBuilderLogic tile) {
         super(tile);
@@ -62,7 +63,6 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
         if (materialStack.stackSize <= 0) tile.setInventorySlotContents(1, null);
 
         this.updateMaterialAndCount();
-        this.tile.markDirty();
     }
 
     public ItemStack getResult() {
@@ -85,8 +85,6 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
 
     @Override
     public void onCraftMatrixChanged(IInventory inventoryIn) {
-        updateGUI();
-
         this.updateMaterialAndCount();
 
         // sync output with other open containers on the server
@@ -100,9 +98,12 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
                 }
             }
         }
+
     }
 
     public void updateMaterialAndCount() {
+        updateGUI();
+
         ItemStack materialStack = tile.getStackInSlot(1);
         List<ItemStack> materialInputList = Arrays.asList(materialStack);
 
@@ -154,29 +155,17 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
                     secondary.stackSize = leftover;
                 }
             }
-            if (removeItems && !player.worldObj.isRemote) {
+            if (removeItems && !player.worldObj.isRemote && secondary != null) {
                 if (!player.inventory.addItemStackToInventory(secondary)) {
-                    player.dropPlayerItemWithRandomChoice(secondary, false);
+                    TinkersRebornUtils.drropItemAtPlayer(player, secondary);
                 }
-                this.player.inventory.markDirty();
+                player.inventoryContainer.detectAndSendChanges();
             }
 
             return output;
         }
 
         return null;
-    }
-
-    public TinkersRebornMaterial getInputMaterial() {
-        return this.material;
-    }
-
-    public int getMaterialValue() {
-        return this.materialCount;
-    }
-
-    public TinkersRebornToolPart getSelectedToolPart() {
-        return this.part;
     }
 
     public static class SlotPartBuilderIn extends Slot {

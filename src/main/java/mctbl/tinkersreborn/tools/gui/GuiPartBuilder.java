@@ -105,16 +105,15 @@ public class GuiPartBuilder extends GuiTinkerStation {
     @Override
     public void updateDisplay() {
         ContainerPartBuilder container = (ContainerPartBuilder) inventorySlots;
-        TinkersRebornMaterial inputMaterial = container.getInputMaterial();
+        TinkersRebornMaterial inputMaterial = container.material;
 
         if (inputMaterial != null) {
             String materialEncodeColor = ColorUtil.encodeColor(inputMaterial.materialTextColor);
             List<String> materialInfoText = new ArrayList<>();
             List<String> materialInfoTooltips = new ArrayList<>();
 
-            float cost = container.getSelectedToolPart()
-                .getCost() / (float) TinkersRebornMaterial.VALUE_Ingot;
-            float materialValue = container.getMaterialValue() / (float) TinkersRebornMaterial.VALUE_Ingot;
+            float cost = container.part.getCost() / (float) TinkersRebornMaterial.VALUE_Ingot;
+            float materialValue = container.materialCount / (float) TinkersRebornMaterial.VALUE_Ingot;
 
             materialInfoText
                 .add(ColorUtil.addGold(String.format(TinkersStr.patternToolTip.toString(), df.format(cost))));

@@ -9,11 +9,16 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
+
+import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public class TinkersRebornUtils {
 
@@ -147,5 +152,24 @@ public class TinkersRebornUtils {
         }
 
         return line;
+    }
+
+    public static void dropItemAtPos(World world, BlockPos pos, ItemStack stack) {
+        dropItemAtPos(world, pos.z, pos.y, pos.z, stack);
+    }
+
+    public static void dropItemAtPos(World world, int x, int y, int z, ItemStack stack) {
+        float f = 0.7F;
+        double d0 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+        double d1 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+        double d2 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+
+        EntityItem entityitem = new EntityItem(world, (double) x + d0, (double) y + d1, (double) z + d2, stack);
+        entityitem.delayBeforeCanPickup = 10;
+        world.spawnEntityInWorld(entityitem);
+    }
+
+    public static void drropItemAtPlayer(EntityPlayer player, ItemStack stack) {
+        dropItemAtPos(player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ, stack);
     }
 }
