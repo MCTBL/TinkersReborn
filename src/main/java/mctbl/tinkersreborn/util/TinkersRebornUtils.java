@@ -18,6 +18,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public class TinkersRebornUtils {
@@ -171,5 +172,29 @@ public class TinkersRebornUtils {
 
     public static void drropItemAtPlayer(EntityPlayer player, ItemStack stack) {
         dropItemAtPos(player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ, stack);
+    }
+
+    /**
+     * Formats the given temperature as a string using the config preference
+     * 
+     * @param temperature Temperature in kelvin
+     * @return Formatted string
+     */
+    public static String temperatureString(int temperature) {
+        return temperatureString(temperature, TinkersRebornConfig.celsiusPref);
+    }
+
+    /**
+     * Formats the given temperature as a string
+     * 
+     * @param temperature Temperature in kelvin
+     * @param celsius     If true, displays a celsius, false kelvin
+     * @return Formatted string
+     */
+    public static String temperatureString(int temperature, boolean celsius) {
+        if (celsius) {
+            return String.format(translate("gui.general.temperature.celsius"), temperature - 273);
+        }
+        return String.format(translate("gui.general.temperature.kelvin"), temperature);
     }
 }

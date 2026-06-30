@@ -28,6 +28,8 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.blocks.IActiveLogic;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
@@ -56,7 +58,6 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
 
     protected int internalTemp;
     public int useTime;
-    public int fuelGague;
     public int fuelAmount;
     public int fuelCapacity;
     protected boolean inUse;
@@ -777,4 +778,32 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
     @Override
     public void setRenderDirection(int side) {}
 
+    // newer
+    public int getFuel() {
+        return this.fuelAmount;
+    }
+
+    public int getTemperature(int i) {
+        if (i < 0 || i >= activeTemps.length) {
+            return 0;
+        }
+        return activeTemps[i];
+    }
+
+    /* Networking and saving */
+    @SideOnly(Side.CLIENT)
+    public void updateFuelFromPacket(int index, int fuel) {
+        if (index == 0) {
+            this.fuelAmount = fuel;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void updateTemperatureFromPacket(int index, int heat) {
+        if (index < 0 || index > getSizeInventory() - 1) {
+            return;
+        }
+
+        activeTemps[index] = heat;
+    }
 }

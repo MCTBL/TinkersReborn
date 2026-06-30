@@ -45,6 +45,7 @@ public class TinkersRebornConfig {
     public static int potionIdBias;
 
     public static boolean autoSmeltWithLapis;
+    public static boolean celsiusPref;
 
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
@@ -131,6 +132,9 @@ public class TinkersRebornConfig {
 
         potionIdBias = config.get("General", "Potion effect start id", 500)
             .getInt();
+
+        celsiusPref = config.get("General", "Temperature Unit Pref", true, "true is Celsius and false is kelvin")
+            .getBoolean();
     }
 
 }
