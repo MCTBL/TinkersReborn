@@ -13,6 +13,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import mctbl.tinkersreborn.library.crafting.Smeltery;
 import mctbl.tinkersreborn.library.utils.BlockSkinRenderHelper;
 import mctbl.tinkersreborn.library.world.CoordTuple;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.util.ItemHelper;
 
@@ -31,7 +32,8 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
         RenderBlocks renderer) {
         if (modelID == smelteryModel) {
-            if (world.getBlockMetadata(x, y, z) == 2) return renderSmeltery(world, x, y, z, block, modelID, renderer);
+            if (world.getBlock(x, y, z) == TinkersRebornSmeltery.smelteryController)
+                return renderSmeltery(world, x, y, z, block, modelID, renderer);
             else return renderer.renderStandardBlock(block, x, y, z);
         }
         return true;

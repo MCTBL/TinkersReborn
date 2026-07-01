@@ -3,7 +3,6 @@ package mctbl.tinkersreborn.smeltery.entity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -30,25 +29,26 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.blocks.IActiveLogic;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.crafting.Smeltery;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
 import mctbl.tinkersreborn.library.entity.IServantLogic;
-import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.library.utils.FuelInfo;
 import mctbl.tinkersreborn.library.world.CoordTuple;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
+import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
+import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
 
-public class SmelteryLogic extends TinkersRebornInventoryLogic
+public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
     implements IActiveLogic, ITinkersRebornIFacingLogic, IFluidTank, IMasterLogic {
 
     private static final int MAX_SMELTERY_SIZE = 7;
     public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
 
-    public boolean validStructure;
-    public boolean tempValidStructure;
     protected byte direction;
 
     public CoordTuple minPos = new CoordTuple(0, 0, 0);
@@ -62,9 +62,9 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
     public int fuelCapacity;
     protected boolean inUse;
 
-    protected List<CoordTuple> lavaTanks;
-    protected ArrayList<CoordTuple> drains;
-    protected CoordTuple activeLavaTank;
+    protected List<BlockPos> lavaTanks;
+    protected ArrayList<BlockPos> drains;
+    protected BlockPos activeLavaTank;
 
     public int[] activeTemps; // values are multiplied by 10
     public int[] meltingTemps; // values are multiplied by 10
@@ -74,7 +74,6 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
     public int maxLiquid;
     public int currentLiquid;
 
-    Random rand = TinkersReborn.random;
     boolean needsUpdate;
 
     private boolean drainComparatorOutputDirty;
@@ -109,11 +108,13 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
         }
     }
 
-    // aligns the position given (inside the smeltery) to be the center of the smeltery
+    // aligns the position given (inside the smeltery) to be the center of the
+    // smeltery
     public void alignInitialPlacement(int x, int y, int z) {
         // x/y/z = the block behind the controller "inside the smeltery"
 
-        // adjust the x-position of the block until the difference between the outer walls is at most 1
+        // adjust the x-position of the block until the difference between the outer
+        // walls is at most 1
         // basically this means we center the block inside the smeltery on the x axis.
         int xd1 = 1, xd2 = 1; // x-difference
         for (int i = 1; i < MAX_SMELTERY_SIZE; i++) // don't check farther than needed
@@ -121,7 +122,8 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
             if (this.worldObj.isAirBlock(x - xd1, y, z)) xd1++;
             else if (this.worldObj.isAirBlock(x + xd2, y, z)) xd2++;
 
-            // if one side hit a wall and the other didn't we might have to center our x-position again
+            // if one side hit a wall and the other didn't we might have to center our
+            // x-position again
             if (xd1 - xd2 > 1) {
                 // move x and offsets to the -x
                 xd1--;
@@ -142,7 +144,8 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
             if (this.worldObj.isAirBlock(x, y, z - zd1)) zd1++;
             else if (this.worldObj.isAirBlock(x, y, z + zd2)) zd2++;
 
-            // if one side hit a wall and the other didn't we might have to center our x-position again
+            // if one side hit a wall and the other didn't we might have to center our
+            // x-position again
             if (zd1 - zd2 > 1) {
                 // move x and offsets to the -x
                 zd1--;
@@ -185,7 +188,7 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
                 // try to derive temperature from fueltank
                 activeLavaTank = null;
                 synchronized (lavaTanks) {
-                    for (CoordTuple tank : lavaTanks) {
+                    for (BlockPos tank : lavaTanks) {
                         TileEntity tankContainer = worldObj.getTileEntity(tank.x, tank.y, tank.z);
                         if (!(tankContainer instanceof IFluidHandler)) continue;
 
@@ -323,8 +326,8 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
     }
 
     /*
-     * Returns whether the brick is a lava tank or not. Increments bricks, sets them as part of the structure, and adds
-     * tanks to the list.
+     * Returns whether the brick is a lava tank or not. Increments bricks, sets them
+     * as part of the structure, and adds tanks to the list.
      */
     int checkBricks(int x, int y, int z) {
         int tempBricks = 0;
@@ -344,9 +347,9 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
                 }
 
                 if (te instanceof LavaTankLogic) {
-                    lavaTanks.add(new CoordTuple(x, y, z));
+                    lavaTanks.add(BlockPos.of(x, y, z));
                 } else if (te instanceof SmelteryDrainLogic) {
-                    drains.add(new CoordTuple(x, y, z));
+                    drains.add(BlockPos.of(x, y, z));
                 }
             }
         }
@@ -454,7 +457,8 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
             }
         }
 
-        // update current liquid. This is done in case some config or something changed the capacity or other things.
+        // update current liquid. This is done in case some config or something changed
+        // the capacity or other things.
         updateCurrentLiquid();
     }
 
@@ -468,6 +472,11 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
     public FluidStack getFluid() {
         if (moltenMetal.size() == 0) return null;
         return moltenMetal.get(0);
+    }
+
+    public FluidStack getFluid(int idx) {
+        if (idx < 0 || moltenMetal.size() <= idx) return null;
+        return moltenMetal.get(idx);
     }
 
     @Override
@@ -638,14 +647,12 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        // TODO Auto-generated method stub
-        return null;
+        return new ContainerSmeltery(inventoryplayer, this);
     }
 
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        // TODO Auto-generated method stub
-        return null;
+        return new GuiSmeltery((ContainerSmeltery) getGuiContainer(inventoryplayer, world, x, y, z), this);
     }
 
     @Override
@@ -693,9 +700,9 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
         // adjustLayers(layers, true);
 
         if (!tags.getBoolean("ValidStructure")) validStructure = false; // only negative update because we want to do a
-                                                                        // clientside structure check too
+        // clientside structure check too
         else if (!validStructure && worldObj != null) // if the worldobj is null it happens on loading of a world. check
-                                                      // shouldn't be done
+            // shouldn't be done
             // there
             checkValidPlacement();
 
@@ -805,5 +812,91 @@ public class SmelteryLogic extends TinkersRebornInventoryLogic
         }
 
         activeTemps[index] = heat;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public FuelInfo getFuelDisplay() {
+        FuelInfo info = new FuelInfo();
+
+        // we still have leftover fuel
+        if (this.fuelAmount > 0) {
+            // if the current fuel is null, something in the fluid registry changed
+            // just replace it with lava and ignore for now, it will fix next time we
+            // consume fuel
+            info.fluid = new FluidStack(FluidRegistry.LAVA, 0);
+            info.fluid.amount = fuelAmount;
+            info.maxCap = fuelCapacity;
+            info.heat = this.internalTemp + 300;
+        } else if (lavaTanks != null && lavaTanks.size() > 0) {
+            // we need to consume fuel, check the current tank
+            if (hasTankWithFuel(lavaTanks.get(0), null)) {
+                IFluidTank tank = getTankAt(lavaTanks.get(0));
+                assert tank != null;
+                FluidStack tankFluid = tank.getFluid();
+                assert tankFluid != null;
+                info.fluid = tankFluid.copy();
+                info.maxCap = tank.getCapacity();
+                info.heat = this.internalTemp + 300;
+            }
+        }
+
+        // check all other tanks (except the current one that we already checked) for
+        // more fuel
+        for (BlockPos pos : lavaTanks) {
+            if (pos == activeLavaTank) {
+                continue;
+            }
+
+            IFluidTank tank = getTankAt(pos);
+            // tank exists and has something in it
+            if (tank != null && tank.getFluidAmount() > 0) {
+                assert tank.getFluid() != null;
+                // we don't have fuel yet, use this
+                if (info.fluid == null) {
+                    info.fluid = tank.getFluid()
+                        .copy();
+                    info.heat = info.fluid.getFluid()
+                        .getTemperature(info.fluid);
+                    info.maxCap = tank.getCapacity();
+                }
+                // otherwise add the same together
+                else if (tank.getFluid()
+                    .isFluidEqual(info.fluid)) {
+                        info.fluid.amount += tank.getFluidAmount();
+                        info.maxCap += tank.getCapacity();
+                    }
+            }
+        }
+
+        return info;
+    }
+
+    // checks if the given location has a fluid tank that contains fuel
+    private boolean hasTankWithFuel(BlockPos pos, FluidStack preference) {
+        IFluidTank tank = getTankAt(pos);
+        if (tank != null && tank.getFluid() != null) {
+            if (tank.getFluidAmount() > 0 && tank.getFluid()
+                .isFluidEqual(new FluidStack(FluidRegistry.LAVA, 0))) {
+                // if we have a preference, only use that
+                if (preference == null || tank.getFluid()
+                    .isFluidEqual(preference)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Grabs the tank at the given location (if present)
+     */
+    private IFluidTank getTankAt(BlockPos pos) {
+        TileEntity te = this.worldObj.getTileEntity(pos.x, pos.y, pos.z);
+        if (te instanceof LavaTankLogic) {
+            return ((LavaTankLogic) te).tank;
+        }
+
+        return null;
     }
 }

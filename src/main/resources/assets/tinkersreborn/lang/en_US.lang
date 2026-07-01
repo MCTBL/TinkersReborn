@@ -54,11 +54,11 @@ tinkersreborn.PartChest.name=Part Chest
 tinkersreborn.CraftingStation.name=Crafting Station
 
 tinkersreborn.glueblock.name=Glue Block
-tinkersreborn.Smeltery.Cobblestone.name=Seared Cobblestone
-tinkersreborn.Smeltery.Brick.name=Seared Bricks
-tinkersreborn.Smeltery.Controller.name=Smeltery Controller
-tinkersreborn.Smeltery.Furnace.name=Furnace Controller
-tinkersreborn.Smeltery.Drain.name=Smeltery Drain
+tinkersreborn.MultiBlock.Cobblestone.name=Seared Cobblestone
+tinkersreborn.MultiBlock.Brick.name=Seared Bricks
+tinkersreborn.SmelteryController.name=Smeltery Controller
+tinkersreborn.FurnaceController.name=Furnace Controller
+tinkersreborn.Drain.name=Smeltery Drain
 tinkersreborn.LavaTank.Tank.name=Seared Tank
 tinkersreborn.LavaTank.Gague.name=Seared Glass
 tinkersreborn.LavaTank.Window.name=Seared Window

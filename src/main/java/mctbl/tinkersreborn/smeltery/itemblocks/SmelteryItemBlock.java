@@ -14,7 +14,7 @@ import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 public class SmelteryItemBlock extends TinkersRebornItemBlock {
 
     public SmelteryItemBlock(Block b) {
-        super(b, "tinkersreborn.Smeltery", new String[] { "Cobblestone", "Brick", "Controller", "Furnace", "Drain" });
+        super(b, "tinkersreborn.MultiBlock", new String[] { "Cobblestone", "Brick" });
         setMaxDamage(0);
         setHasSubtypes(true);
     }
@@ -23,22 +23,6 @@ public class SmelteryItemBlock extends TinkersRebornItemBlock {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
         // TODO
-        // switch (stack.getItemDamage()) {
-        // case 0:
-        // list.add(StatCollector.translateToLocal("smeltery.controller.tooltip"));
-        // break;
-        // case 1:
-        // list.add(StatCollector.translateToLocal("smeltery.drain.tooltip1"));
-        // list.add(StatCollector.translateToLocal("smeltery.drain.tooltip2"));
-        // break;
-        // case 3:
-        // list.add(StatCollector.translateToLocal("smeltery.furnace.tooltip"));
-        // break;
-        // default:
-        // list.add(StatCollector.translateToLocal("smeltery.brick.tooltip1"));
-        // list.add(StatCollector.translateToLocal("smeltery.brick.tooltip2"));
-        // break;
-        // }
     }
 
     @Override
