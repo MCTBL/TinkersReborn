@@ -35,7 +35,7 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
 public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
-    public static Block smeltery;
+    public static Block smelteryBlock;
     public static Block smelteryController;
     public static Block smelteryDrain;
     public static Block furnaceController;
@@ -63,8 +63,8 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.registerBlock(glueBlock, glueBlock.getUnlocalizedName());
         OreDictionary.registerOre("blockRubber", new ItemStack(glueBlock));
 
-        smeltery = new SmelteryBlock();
-        GameRegistry.registerBlock(smeltery, SmelteryItemBlock.class, smeltery.getUnlocalizedName());
+        smelteryBlock = new SmelteryBlock();
+        GameRegistry.registerBlock(smelteryBlock, SmelteryItemBlock.class, smelteryBlock.getUnlocalizedName());
 
         smelteryController = new SmelteryController();
         GameRegistry.registerBlock(
@@ -114,10 +114,10 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         ItemStack searedBrick = new ItemStack(TinkersRebornTools.searedBrick, 1);
 
         // Register
-        GameRegistry.addRecipe(new ItemStack(smeltery, 1, 1), "bb", "bb", 'b', searedBrick); // Bricks Block
-        GameRegistry.addRecipe(new ItemStack(smeltery, 1, 2), "bbb", "b b", "bbb", 'b', searedBrick); // Controller
-        GameRegistry.addRecipe(new ItemStack(smeltery, 1, 3), " b ", "b b", "bbb", 'b', searedBrick); // Furnace
-        GameRegistry.addRecipe(new ItemStack(smeltery, 1, 4), "b b", "b b", "b b", 'b', searedBrick); // Drain
+        GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 0), "bb", "bb", 'b', searedBrick); // Bricks Block
+        GameRegistry.addRecipe(new ItemStack(smelteryController, 1), "bbb", "b b", "bbb", 'b', searedBrick); // Controller
+        // GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 3), " b ", "b b", "bbb", 'b', searedBrick); // Furnace
+        GameRegistry.addRecipe(new ItemStack(smelteryDrain, 1), "b b", "b b", "b b", 'b', searedBrick); // Drain
         GameRegistry.addRecipe(
             new ShapedOreRecipe(new ItemStack(lavaTank, 1, 0), patSurround, '#', searedBrick, 'm', "blockGlass")); // Tank
         GameRegistry.addRecipe(

@@ -357,7 +357,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic
     }
 
     boolean validBlockID(Block blockID) {
-        return blockID == TinkersRebornSmeltery.smeltery;
+        return blockID == TinkersRebornSmeltery.smelteryBlock || blockID == TinkersRebornSmeltery.smelteryDrain
+            || blockID == TinkersRebornSmeltery.smelteryController;
     }
 
     boolean validTankID(Block blockID) {
