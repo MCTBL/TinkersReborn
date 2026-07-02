@@ -22,6 +22,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public abstract class TinkersRebornInventoryLogic extends TileEntity implements IInventory, ITinkersRebornIFacingLogic {
@@ -247,6 +248,10 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     @Override
     public void setFrogeDirection(ForgeDirection direction) {
         this.faceDirection = direction;
+    }
+    
+    public BlockPos getBlockPos() {
+	return BlockPos.of(this.xCoord, this.yCoord, this.zCoord);
     }
 
     // for render item in world
