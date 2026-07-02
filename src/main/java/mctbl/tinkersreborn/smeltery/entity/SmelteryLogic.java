@@ -3,15 +3,15 @@ package mctbl.tinkersreborn.smeltery.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
-import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
-import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -30,8 +30,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     protected final List<BlockPos> drains;
 
     public final List<FluidStack> moltenMetal = new ArrayList<>();
-    public int maxLiquid;
-    public int currentLiquid;
+    public int maxMoltenMetalAmount;
+    public int currentMoltenMetalAmount;
 
     public SmelteryLogic() {
 	super("Smeltery");
@@ -51,54 +51,224 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
     @Override
     public FluidStack getFluid() {
-	// TODO Auto-generated method stub
+	if(this.moltenMetal.size() > 0) 
+	    return this.moltenMetal.get(0).copy();
+	
 	return null;
     }
 
     @Override
     public int getFluidAmount() {
-	// TODO Auto-generated method stub
-	return 0;
+	return this.currentMoltenMetalAmount;
     }
 
     @Override
     public int getCapacity() {
-	// TODO Auto-generated method stub
-	return 0;
+	return this.maxMoltenMetalAmount;
     }
 
     @Override
     public FluidTankInfo getInfo() {
-	// TODO Auto-generated method stub
-	return null;
+	return new FluidTankInfo(this);
     }
 
     @Override
     public int fill(FluidStack resource, boolean doFill) {
-	// TODO Auto-generated method stub
-	return 0;
+	int canFill = Math.max(0, Math.min(resource.amount, this.maxMoltenMetalAmount - this.currentMoltenMetalAmount));
+	
+	if(doFill) {
+	    boolean isAdded = false;
+	    for(FluidStack s : this.moltenMetal) {
+		if(s.isFluidEqual(resource)) {
+		    s.amount += canFill;
+		    resource.amount -= canFill;
+		    isAdded = true;
+		    break;
+		}
+	    }
+	    if(!isAdded) 
+		this.moltenMetal.add(resource.copy());
+	    
+	    this.currentMoltenMetalAmount += canFill;
+	    this.markDirty();
+	}
+	
+	return canFill;
     }
 
     @Override
     public FluidStack drain(int maxDrain, boolean doDrain) {
-	// TODO Auto-generated method stub
+	FluidStack fluid = this.getFluid();
+	
+	if(fluid != null && fluid.amount > 0) {
+	    int drainAmount = Math.min(maxDrain, fluid.amount);
+	    FluidStack copy = fluid.copy();
+	    copy.amount = drainAmount;
+	    
+	    if(doDrain) {
+		fluid.amount -= drainAmount;
+		this.currentMoltenMetalAmount -= drainAmount;
+		if(fluid.amount <= 0)
+		    this.moltenMetal.remove(fluid);
+	    }
+	    return copy;
+	}
 	return null;
+    }
+    
+    /**
+     * used by click in gui make that fluid to first output
+     * @param fluid
+     */
+    public void moveFluidToFirst(FluidStack fluid) {
+	if(fluid == null)
+	    return;
+	
+	FluidStack target = fluid;
+	for(FluidStack inside : this.moltenMetal) {
+	    if(inside.isFluidEqual(target)) {
+		target = inside;
+		this.moltenMetal.remove(inside);
+		break;
+	    }
+	}
+	this.moltenMetal.add(0, target);
     }
 
     @Override
     public void checkWholeStructureValid() {
 	ForgeDirection opposite = this.getForgeDirection().getOpposite();
 	BlockPos masterPos = this.getBlockPos();
-	BlockPos checkAir = masterPos.offset(opposite);
+	BlockPos center = masterPos.offset(opposite);
 
+	// check x axis
+	int xd1 = 1, xd2 = 1;
+	for (int idx = 1; idx < MAX_SMELTERY_SIZE; idx++) {
+	    if (this.worldObj.isAirBlock(center.x - xd1, center.y, center.z))
+		xd1++;
+	    else if (this.worldObj.isAirBlock(center.x + xd2, center.y, center.z))
+		xd2++;
+
+	    // if one side hit a wall and the other didn't we might have to center our
+	    // x-position again
+	    if (xd1 - xd2 > 1) {
+		// move x and offsets to the -x
+		xd1--;
+		center.x--;
+		xd2++;
+	    }
+	    // or the right
+	    if (xd2 - xd1 > 1) {
+		xd2--;
+		center.x++;
+		xd1++;
+	    }
+	}
+
+	// check z axis
+	int zd1 = 1, zd2 = 1;
+	for (int i = 1; i < MAX_SMELTERY_SIZE; i++) {
+	    if (this.worldObj.isAirBlock(center.x, center.y, center.z - zd1))
+		zd1++;
+	    else if (this.worldObj.isAirBlock(center.x, center.y, center.z + zd2))
+		zd2++;
+
+	    // if one side hit a wall and the other didn't we might have to center our
+	    // x-position again
+	    if (zd1 - zd2 > 1) {
+		// move x and offsets to the -x
+		zd1--;
+		center.z--;
+		zd2++;
+	    }
+	    // or the right
+	    if (zd2 - zd1 > 1) {
+		zd2--;
+		center.z++;
+		zd1++;
+	    }
+	}
+
+	this.lavaTanks.clear();
+
+	boolean hasBottmLayer = false;
+	int validLayerCount = 0;
+	int[] range = new int[] { -xd1, xd2, -zd1, zd2 };
+	// upper check this layer at same time
+	boolean checkUpper = true, checkLower = true;
+	int yd1 = 0, yd2 = 1;
+	while (checkUpper || checkLower) {
+	    if (checkUpper && isValidLayer(center, range, center.y + yd1)) {
+		yd1++;
+		validLayerCount++;
+	    } else {
+		checkUpper = false;
+	    }
+	    if (checkLower) {
+		if (isValidLayer(center, range, center.y - yd2)) {
+		    yd2++;
+		    validLayerCount++;
+		    continue;
+		} else if (isValidBottom(center, range, center.y - yd2)) {
+		    hasBottmLayer = true;
+		}
+		checkLower = false;
+	    }
+	}
+
+	if (hasBottmLayer && validLayerCount > 0 && this.lavaTanks.size() > 0) {
+	    TinkersReborn.LOG.info("SmelteryLogic works! Found {} layers", validLayerCount);
+	}
     }
 
-    protected boolean isValidWall(Block b) {
-	return b == TinkersRebornSmeltery.furnaceController || b == TinkersRebornSmeltery.smelteryDrain
+    protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y) {
+	for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
+	    for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
+		if (((dx == xAndZRange[0] || dx == xAndZRange[1]) && (dz == xAndZRange[2] || dz == xAndZRange[3]))) {
+		    // skip 4 corner
+		    continue;
+		} else {
+		    // check otter wall
+		    Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+		    if (dx == xAndZRange[0] || dx == xAndZRange[1] || dz == xAndZRange[2] || dz == xAndZRange[3]) {
+			if (!validWallBlock(block)) {
+			    return false;
+			}
+			if (validTankBlock(block)) {
+			    this.lavaTanks.add(BlockPos.of(center.x + dx, y, center.z + dz));
+			}
+		    } else if (block != Blocks.air) {
+			return false;
+		    }
+		}
+
+	    }
+	}
+	return true;
+    }
+
+    protected boolean isValidBottom(BlockPos center, int[] xAndZRange, int y) {
+	for (int dx = xAndZRange[0] + 1; dx <= xAndZRange[1] - 1; dx++) {
+	    for (int dz = xAndZRange[2] + 1; dz <= xAndZRange[3] - 1; dz++) {
+		Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+		if (!validBottomBlock(block)) {
+		    return false;
+		}
+	    }
+	}
+	return true;
+    }
+
+    protected boolean validWallBlock(Block b) {
+	return b == TinkersRebornSmeltery.smelteryController || b == TinkersRebornSmeltery.smelteryDrain
 		|| b == TinkersRebornSmeltery.smelteryBlock || b == TinkersRebornSmeltery.lavaTank;
     }
-    
-    protected boolean isValidTank(Block b) {
+
+    protected boolean validBottomBlock(Block b) {
+	return b == TinkersRebornSmeltery.smelteryBlock;
+    }
+
+    protected boolean validTankBlock(Block b) {
 	return b == TinkersRebornSmeltery.lavaTank;
     }
 
@@ -116,12 +286,14 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-	return new ContainerSmeltery(inventoryplayer, this);
+	return null;
+//	return new ContainerSmeltery(inventoryplayer, this);
     }
 
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-	return new GuiSmeltery((ContainerSmeltery) getGuiContainer(inventoryplayer, world, x, y, z), this);
+	return null;
+//	return new GuiSmeltery((ContainerSmeltery) getGuiContainer(inventoryplayer, world, x, y, z), this);
     }
 
 }

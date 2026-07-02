@@ -1,17 +1,15 @@
 package mctbl.tinkersreborn.library.blocks;
 
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.entity.IMasterLogic;
+import mctbl.tinkersreborn.library.entity.IServantLogic;
+import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
-
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.library.entity.IMasterLogic;
-import mctbl.tinkersreborn.library.entity.IServantLogic;
-import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
-import mctbl.tinkersreborn.smeltery.model.SmelteryRender;
 
 public abstract class TinkersRebornMultiBlock extends TinkersRebornInventoryBlock {
 
@@ -23,11 +21,6 @@ public abstract class TinkersRebornMultiBlock extends TinkersRebornInventoryBloc
         this.setResistance(20F);
         this.setStepSound(soundTypeMetal);
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
-    }
-
-    @Override
-    public int getRenderType() {
-        return SmelteryRender.smelteryModel;
     }
 
     @Override

@@ -127,9 +127,9 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
         // master (smeltery controller)
         if (smeltery == null) return 0;
 
-        if (smeltery.maxLiquid == 0) return 0;
+        if (smeltery.maxMoltenMetalAmount == 0) return 0;
 
-        return MathHelper.ceiling_float_int(15f * smeltery.currentLiquid / smeltery.maxLiquid);
+        return MathHelper.ceiling_float_int(15f * smeltery.currentMoltenMetalAmount / smeltery.maxMoltenMetalAmount);
     }
 
     @Override
