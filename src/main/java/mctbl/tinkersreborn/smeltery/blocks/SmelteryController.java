@@ -16,6 +16,7 @@ import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
+import org.joml.Vector3f;
 
 public class SmelteryController extends TinkersRebornMultiBlock {
 
@@ -67,34 +68,24 @@ public class SmelteryController extends TinkersRebornMultiBlock {
             ForgeDirection face = ForgeDirection.NORTH;
             if (logic instanceof ITinkersRebornIFacingLogic)
                 face = ((ITinkersRebornIFacingLogic) logic).getForgeDirection();
-            float f = (float) x + 0.5F;
-            float f1 = (float) y + 0.5F + (random.nextFloat() * 6F) / 16F;
-            float f2 = (float) z + 0.5F;
-            float f3 = 0.52F;
-            float f4 = random.nextFloat() * 0.6F - 0.3F;
-            switch (face) {
-                case WEST:
-                    world.spawnParticle("smoke", f - f3, f1, f2 + f4, 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle("flame", f - f3, f1, f2 + f4, 0.0D, 0.0D, 0.0D);
-                    break;
+            Vector3f center = new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f);
+            Vector3f rota = new Vector3f(0.52F, (random.nextFloat() * 6F) / 16F, random.nextFloat() * 0.6F - 0.3F);
+            rota.rotateY((float) Math.toRadians(getRotationYaw(face)));
+            rota.add(center);
 
-                case EAST:
-                    world.spawnParticle("smoke", f + f3, f1, f2 + f4, 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle("flame", f + f3, f1, f2 + f4, 0.0D, 0.0D, 0.0D);
-                    break;
-
-                case SOUTH:
-                    world.spawnParticle("smoke", f + f4, f1, f2 + f3, 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle("flame", f + f4, f1, f2 + f3, 0.0D, 0.0D, 0.0D);
-                    break;
-
-                case NORTH:
-                default:
-                    world.spawnParticle("smoke", f + f4, f1, f2 - f3, 0.0D, 0.0D, 0.0D);
-                    world.spawnParticle("flame", f + f4, f1, f2 - f3, 0.0D, 0.0D, 0.0D);
-                    break;
-            }
+            world.spawnParticle("smoke", rota.x, rota.y, rota.z, 0.0D, 0.0D, 0.0D);
+                world.spawnParticle("flame", rota.x, rota.y, rota.z, 0.0D, 0.0D, 0.0D);
         }
+    }
+
+    public static float getRotationYaw(ForgeDirection facing) {
+        return switch (facing) {
+            case NORTH -> 90;
+            case WEST -> 180;
+            case EAST -> 0;
+            case SOUTH -> 270;
+            default -> 0;
+        };
     }
 
     @Override
