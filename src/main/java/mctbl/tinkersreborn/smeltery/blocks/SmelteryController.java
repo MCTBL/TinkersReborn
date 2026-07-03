@@ -110,6 +110,10 @@ public class SmelteryController extends TinkersRebornMultiBlock {
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack stack) {
+        // TileEntity logic = world.getTileEntity(x, y, z);
+        // if (logic instanceof ITinkersRebornIFacingLogic direction) {
+        // direction.setFacedDirection(entityliving);
+        // }
         super.onBlockPlacedBy(world, x, y, z, entityliving, stack);
         ((IMasterLogic) world.getTileEntity(x, y, z)).checkWholeStructureValid();
     }

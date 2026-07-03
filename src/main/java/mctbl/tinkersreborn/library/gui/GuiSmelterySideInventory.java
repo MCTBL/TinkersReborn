@@ -59,6 +59,9 @@ public class GuiSmelterySideInventory extends GuiSideInventory {
 
     @Override
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        if (this.fontRendererObj == null) {
+            this.fontRendererObj = this.parent.getFontRender();
+        }
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
         this.mc.getTextureManager()

@@ -128,7 +128,8 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     public void readInventoryFromNBT(NBTTagCompound tags) {
         this.faceDirection = ForgeDirection.getOrientation(tags.getByte("Direction"));
         NBTTagList nbttaglist = tags.getTagList("Items", 10);
-        this.inventory = new ItemStack[this.getSizeInventory()];
+        int size = tags.hasKey("InvSize", 3) ? tags.getInteger("InvSize") : this.getSizeInventory();
+        this.inventory = new ItemStack[size];
 
         if (tags.hasKey("CustomName", 8)) {
             this.invName = tags.getString("CustomName");
@@ -164,6 +165,7 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
             }
         }
 
+        tags.setInteger("InvSize", this.inventory.length);
         tags.setTag("Items", nbttaglist);
 
         if (this.isInvNameLocalized()) {

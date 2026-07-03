@@ -286,6 +286,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     }
 
     protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y) {
+        List<BlockPos> tempList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
                 if (((dx == xAndZRange[0] || dx == xAndZRange[1]) && (dz == xAndZRange[2] || dz == xAndZRange[3]))) {
@@ -299,7 +300,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
                             return false;
                         }
                         if (validTankBlock(block)) {
-                            this.lavaTanks.add(BlockPos.of(center.x + dx, y, center.z + dz));
+                            tempList.add(BlockPos.of(center.x + dx, y, center.z + dz));
                         }
                     } else if (block != Blocks.air) {
                         return false;
@@ -308,6 +309,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
             }
         }
+        this.lavaTanks.addAll(tempList);
         return true;
     }
 
