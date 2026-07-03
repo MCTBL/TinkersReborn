@@ -95,7 +95,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
         drawGuiTank(smeltery, 8 + cornerX, 16 + cornerY, scala.w, scala.h, this.zLevel);
 
         // update fuel info
-        // fuelInfo = smeltery.getFuelDisplay();
+        fuelInfo = smeltery.getFuelDisplay();
         drawFuel(71, 16, 12, 52);
 
         // draw the scala

@@ -28,7 +28,7 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
         RenderBlocks renderer) {
         if (modelID == smelteryModel && world.getBlock(x, y, z) == TinkersRebornSmeltery.smelteryController)
-                return renderSmeltery(world, x, y, z, block, modelID, renderer);
+            return renderSmeltery(world, x, y, z, block, modelID, renderer);
         return false;
     }
 
@@ -42,9 +42,9 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
 
             // Melting
             if (logic.getSizeInventory() > 0) {
-//                for (int i = 0; i < logic.layers; i++) {
-                    // renderLayer(logic, i * logic.getBlocksPerLayer(), from, to, from.y + i, renderer, world);
-//                }
+                // for (int i = 0; i < logic.layers; i++) {
+                // renderLayer(logic, i * logic.getBlocksPerLayer(), from, to, from.y + i, renderer, world);
+                // }
             }
 
             // Liquids

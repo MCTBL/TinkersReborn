@@ -156,7 +156,7 @@ public class TinkersRebornUtils {
     }
 
     public static void dropItemAtPos(World world, BlockPos pos, ItemStack stack) {
-        dropItemAtPos(world, pos.z, pos.y, pos.z, stack);
+        dropItemAtPos(world, pos.x, pos.y, pos.z, stack);
     }
 
     public static void dropItemAtPos(World world, int x, int y, int z, ItemStack stack) {
@@ -193,8 +193,14 @@ public class TinkersRebornUtils {
      */
     public static String temperatureString(int temperature, boolean celsius) {
         if (celsius) {
-            return String.format(translate("gui.general.temperature.celsius"), temperature - 273);
+            return String.format(
+                translate("tinkersreborn.gui.general.temperature.celsius"),
+                df.format(transferFahrenheitToCelsius(temperature)));
         }
-        return String.format(translate("gui.general.temperature.kelvin"), temperature);
+        return String.format(translate("tinkersreborn.gui.general.temperature.fahrenheit"), temperature);
+    }
+
+    public static float transferFahrenheitToCelsius(int fahrenheit) {
+        return (fahrenheit - 32) * 1.0F / 1.8F;
     }
 }
