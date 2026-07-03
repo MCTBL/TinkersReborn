@@ -15,13 +15,16 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 
-import mctbl.tinkersreborn.TinkersReborn;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
+import mctbl.tinkersreborn.smeltery.network.SmelteryFluidUpdatePacket;
 
 public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic implements IFluidTank {
 
@@ -176,6 +179,14 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         this.moltenMetal.add(0, target);
     }
 
+    public void moveFluidToFirst(int idx) {
+        if (idx < 0 || idx >= this.moltenMetal.size()) return;
+
+        FluidStack fluidStack = this.moltenMetal.get(idx);
+        this.moltenMetal.remove(idx);
+        this.moltenMetal.add(0, fluidStack);
+    }
+
     @Override
     public void checkWholeStructureValid() {
         if (this.worldObj.isRemote) return;
@@ -265,7 +276,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
             this.adjustLayers();
 
-            TinkersReborn.LOG.info("SmelteryLogic works! Found {} layers", validLayerCount);
+            // TinkersReborn.LOG.info("SmelteryLogic works! Found {} layers", validLayerCount);
         } else {
             this.setActive(false);
             this.temperature = INIT_TEMPERATURES;
@@ -338,6 +349,22 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     protected void updateHeatRequired(int index) {
         // TODO Auto-generated method stub
 
+    }
+
+    public void onTankChanged(List<FluidStack> fluids, FluidStack changed) {
+        // notify clients of liquid changes.
+        // the null check is to prevent potential crashes during loading
+        if (!this.worldObj.isRemote) {
+            TinkerNetwork.sendToAll(new SmelteryFluidUpdatePacket(this.getBlockPos(), fluids));
+        }
+        // tell the chunk the tank changed
+        this.markDirty();
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void updateFluidsFromPacket(List<FluidStack> fluids) {
+        this.moltenMetal.clear();
+        this.moltenMetal.addAll(fluids);
     }
 
     @Override

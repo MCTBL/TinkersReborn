@@ -13,6 +13,7 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.Lists;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.gui.GuiElement;
 import mctbl.tinkersreborn.library.gui.GuiHeatingStructureFuelTank;
 import mctbl.tinkersreborn.library.gui.GuiSmelterySideInventory;
@@ -21,6 +22,7 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.IGuiLiquidTank;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
+import mctbl.tinkersreborn.smeltery.network.SmelteryFluidClicked;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiquidTank {
@@ -114,10 +116,10 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
             int bottom = y + w;
             for (int i = 0; i < heights.length; i++) {
                 int h = heights[i];
-                // FluidStack liquid = liquids.getFluid(i);
-                // drawFluidIcon(x, bottom - h, w, h, zLevel, liquid);
-                //
-                // bottom -= h;
+                FluidStack liquid = liquids.moltenMetal.get(i);
+                drawFluidIcon(x, bottom - h, w, h, zLevel, liquid);
+
+                bottom -= h;
             }
         }
     }
@@ -131,10 +133,8 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
     }
 
     public void handleTankClick(SmelteryLogic tank, int mouseX, int mouseY, int xmin, int ymin, int xmax, int ymax) {
-        getFluidStackIndexAtPosition(tank, mouseX, mouseY, xmin, ymin, xmax, ymax);
-        // .ifPresent(
-        // i -> TinkerNetwork.sendToServer(new SmelteryFluidClicked(i))
-        // );
+        getFluidStackIndexAtPosition(tank, mouseX, mouseY, xmin, ymin, xmax, ymax)
+            .ifPresent(i -> TinkerNetwork.sendToServer(new SmelteryFluidClicked(i)));
     }
 
     @Override
@@ -199,12 +199,12 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
     private FluidStack getFluidHovered(SmelteryLogic tank, int y, int height) {
         int[] heights = calcLiquidHeights(tank.moltenMetal, tank.getCapacity(), height);
 
-        // for (int i = 0; i < heights.length; i++) {
-        // if (y < heights[i]) {
-        // return tank.getFluid(i);
-        // }
-        // y -= heights[i];
-        // }
+        for (int i = 0; i < heights.length; i++) {
+            if (y < heights[i]) {
+                return tank.moltenMetal.get(i);
+            }
+            y -= heights[i];
+        }
 
         return null;
     }

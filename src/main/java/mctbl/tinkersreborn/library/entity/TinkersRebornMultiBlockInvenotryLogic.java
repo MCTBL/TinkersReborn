@@ -14,11 +14,13 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.IActiveLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.library.utils.FuelInfo;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
+import mctbl.tinkersreborn.smeltery.network.HeatingStructureFuelUpdatePacket;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebornInventoryLogic
@@ -42,9 +44,9 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     public static final BlockPos DEFAULT_POS = BlockPos.of(0, 0, 0);
 
     /** smallest coordinate INSIDE the multiblock */
-    protected BlockPos minPos = DEFAULT_POS;
+    public BlockPos minPos = DEFAULT_POS;
     /** biggest coordinate INSIDE the multiblock */
-    protected BlockPos maxPos = DEFAULT_POS;
+    public BlockPos maxPos = DEFAULT_POS;
 
     public boolean validStructure;
     /**
@@ -57,11 +59,11 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
      * Ticks left until the current fuel is depleted and fuel is taken from the
      * tanks. Depletes every tick
      */
-    protected int fuelReleaseTicks;
+    public int fuelReleaseTicks;
     // amount of fuel gotten from a single consumption of the fluid, used for GUI
     // fuel percentage
     public int fuelTotalTicks;
-    protected boolean needsFuel; // If the last tick executed an operation that required fuel.
+    public boolean needsFuel; // If the last tick executed an operation that required fuel.
 
     protected int tickCounter = 0;
     protected int secondCounter = 0;
@@ -156,8 +158,12 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
 
                         // notify client of fuel/temperature changes
                         if (!this.worldObj.isRemote) {
-                            // TinkerNetwork.sendToAll(
-                            // new HeatingStructureFuelUpdatePacket(pos, currentTank, temperature, currentFuel));
+                            TinkerNetwork.sendToAll(
+                                new HeatingStructureFuelUpdatePacket(
+                                    this.getBlockPos(),
+                                    activeLavaTank,
+                                    temperature,
+                                    currentFuel));
                         }
 
                         return;
@@ -234,34 +240,6 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
 
         return null;
     }
-
-    // protected LavaTankLogic getNextLavaTank() {
-    // TileEntity activateTankTile = null;
-    // if (this.activeLavaTank != null && this.checkTank(activateTankTile = worldObj
-    // .getTileEntity(this.activeLavaTank.x, this.activeLavaTank.y, this.activeLavaTank.z))) {
-    // return (LavaTankLogic) activateTankTile;
-    // } else {
-    // // find next avaliable tank
-    // for (int idx = 0; idx < this.lavaTanks.size(); idx++) {
-    // BlockPos tempPos = this.lavaTanks.get(idx);
-    // activateTankTile = worldObj.getTileEntity(tempPos.x, tempPos.y, tempPos.z);
-    // if (this.checkTank(activateTankTile)) {
-    // this.activeLavaTank = tempPos;
-    // return (LavaTankLogic) activateTankTile;
-    // }
-    // }
-    // }
-    // return null;
-    // }
-    //
-    // private boolean checkTank(TileEntity tile) {
-    // if (tile != null && tile instanceof LavaTankLogic tankLogic && tankLogic.tank.getFluid() != null
-    // && TinkersRebornRegistry.allAllowFuel.containsKey(tankLogic.tank.getFluid().getFluid())
-    // && tankLogic.tank.getFluidAmount() > 0) {
-    // return true;
-    // }
-    // return false;
-    // }
 
     /**
      * Calculate the heat required for the given slot
@@ -374,6 +352,54 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
             this.itemTemperatures[idx] = oldTemperatures[idx];
             this.itemTempRequired[idx] = oldTempRequired[idx];
         }
+    }
+
+    public int getTemperature(int i) {
+        if (i < 0 || i >= this.itemTemperatures.length) {
+            return 0;
+        }
+        return this.itemTemperatures[i];
+    }
+
+    public int getTempRequired(int i) {
+        if (i < 0 || i >= this.itemTempRequired.length) {
+            return 0;
+        }
+        return this.itemTempRequired[i];
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void updateFuelTemperatureFromPacket(HeatingStructureFuelUpdatePacket packet) {
+        this.temperature = packet.temperature;
+        this.currentFuel = packet.fuel;
+        this.activeLavaTank = packet.tank;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void updateFuelFromPacket(int index, int fuel) {
+        if (index == 0) {
+            this.fuelReleaseTicks = fuel;
+        } else if (index == 1) {
+            this.fuelTotalTicks = fuel;
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void updateTemperatureFromPacket(int index, int heat) {
+        if (index < 0 || index > getSizeInventory() - 1) {
+            return;
+        }
+
+        this.itemTemperatures[index] = heat;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void updateTempRequiredFromPacket(int index, int heat) {
+        if (index < 0 || index > getSizeInventory() - 1) {
+            return;
+        }
+
+        this.itemTempRequired[index] = heat;
     }
 
     @SideOnly(Side.CLIENT)
