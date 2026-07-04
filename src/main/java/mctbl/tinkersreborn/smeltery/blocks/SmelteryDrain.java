@@ -32,7 +32,7 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
             ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
             : ForgeDirection.getOrientation(0);
 
-        ForgeDirection internalDir = facing.getOpposite(); // 默认回退
+        ForgeDirection internalDir = facing.getOpposite();
 
         if (logic instanceof SmelteryDrainLogic drain) {
             BlockPos master = drain.getMasterPosition();
