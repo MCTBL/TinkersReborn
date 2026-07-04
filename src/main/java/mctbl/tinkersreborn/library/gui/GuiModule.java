@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.library.gui;
 
 import java.awt.Rectangle;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.inventory.Container;
@@ -27,6 +28,9 @@ public abstract class GuiModule extends GuiContainer {
 
     public GuiModule(GuiMultiModule parent, Container container, boolean right, boolean bottom) {
         super(container);
+
+        this.width= Minecraft.getMinecraft().displayWidth;
+        this.height= Minecraft.getMinecraft().displayHeight;
 
         this.parent = parent;
         this.right = right;

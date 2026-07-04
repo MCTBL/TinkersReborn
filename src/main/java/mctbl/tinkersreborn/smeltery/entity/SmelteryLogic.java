@@ -6,9 +6,12 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;
@@ -70,7 +73,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             // we gradually check if the inside of the smeltery is blocked (for performance
             // reasons)
             if (this.tickCounter == 0) {
-                // this.interactWithEntitiesInside();
+                this.interactWithEntitiesInside();
                 // called every second, we check every 15s or so
                 if (++this.secondCounter >= 15) {
                     this.secondCounter = 0;
@@ -82,6 +85,21 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         }
 
         this.tickCounter = (this.tickCounter + 1) % 20;
+    }
+
+    // This is how you get blisters
+    protected void interactWithEntitiesInside() {
+        AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(
+            minPos.getX(),
+            minPos.getY(),
+            minPos.getZ(),
+            maxPos.getX() + 1,
+            maxPos.getY() + 1,
+            maxPos.getZ() + 1);
+        List<Entity> entitiesInsideSmeltery = this.worldObj.getEntitiesWithinAABB(Entity.class, bb);
+        for (Entity entity : entitiesInsideSmeltery) {
+
+        }
     }
 
     @Override
@@ -159,7 +177,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
     /**
      * used by click in gui make that fluid to first output
-     * 
+     *
      * @param fluid
      */
     public void moveFluidToFirst(FluidStack fluid) {
@@ -248,19 +266,22 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         // upper check this layer at same time
         boolean checkUpper = true, checkLower = true;
         int yd1 = 0, yd2 = 1;
+
+        List<BlockPos> tempValidBlockList = new ArrayList<>();
+
         while (checkUpper || checkLower) {
-            if (checkUpper && isValidLayer(center, range, center.y + yd1)) {
+            if (checkUpper && isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
                 yd1++;
                 validLayerCount++;
             } else {
                 checkUpper = false;
             }
             if (checkLower) {
-                if (isValidLayer(center, range, center.y - yd2)) {
+                if (isValidLayer(center, range, center.y - yd2, tempValidBlockList)) {
                     yd2++;
                     validLayerCount++;
                     continue;
-                } else if (isValidBottom(center, range, center.y - yd2)) {
+                } else if (isValidBottom(center, range, center.y - yd2, tempValidBlockList)) {
                     hasBottmLayer = true;
                 }
                 checkLower = false;
@@ -276,16 +297,27 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
 
             this.adjustLayers();
 
-            // TinkersReborn.LOG.info("SmelteryLogic works! Found {} layers", validLayerCount);
+            for (BlockPos b : tempValidBlockList) {
+                TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
+                if (tempEntiry instanceof MultiServantLogic servant)
+                    servant.overrideMaster(masterPos);
+            }
         } else {
             this.setActive(false);
             this.temperature = INIT_TEMPERATURES;
+            for (BlockPos b : tempValidBlockList) {
+                TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
+                if (tempEntiry instanceof MultiServantLogic servant && servant.getHasMaster()
+                    && servant.getMasterPosition()
+                        .equals(masterPos))
+                    servant.removeMaster();
+            }
         }
 
         worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
-    protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y) {
+    protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
         List<BlockPos> tempList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
@@ -299,9 +331,11 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
                         if (!validWallBlock(block)) {
                             return false;
                         }
+                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
                         if (validTankBlock(block)) {
-                            tempList.add(BlockPos.of(center.x + dx, y, center.z + dz));
+                            tempList.add(newBlockPos);
                         }
+                        tempValidBlockList.add(newBlockPos);
                     } else if (block != Blocks.air) {
                         return false;
                     }
@@ -313,13 +347,14 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         return true;
     }
 
-    protected boolean isValidBottom(BlockPos center, int[] xAndZRange, int y) {
+    protected boolean isValidBottom(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
         for (int dx = xAndZRange[0] + 1; dx <= xAndZRange[1] - 1; dx++) {
             for (int dz = xAndZRange[2] + 1; dz <= xAndZRange[3] - 1; dz++) {
                 Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                 if (!validBottomBlock(block)) {
                     return false;
                 }
+                tempValidBlockList.add(BlockPos.of(center.x + dx, y, center.z + dz));
             }
         }
         return true;

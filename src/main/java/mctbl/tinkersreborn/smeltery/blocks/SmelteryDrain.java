@@ -32,7 +32,7 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
             ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
             : ForgeDirection.getOrientation(0);
 
-        ForgeDirection internalDir = facing.getOpposite();
+        ForgeDirection internalDir = facing.getOpposite(); // 默认值
 
         if (logic instanceof SmelteryDrainLogic drain) {
             BlockPos master = drain.getMasterPosition();
@@ -42,29 +42,39 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
                     BlockPos minPos = smeltery.minPos;
                     BlockPos maxPos = smeltery.maxPos;
                     if (minPos != null && maxPos != null) {
+                        int minX = minPos.x, maxX = maxPos.x;
+                        int minY = minPos.y, maxY = maxPos.y;
+                        int minZ = minPos.z, maxZ = maxPos.z;
 
-                        double cx = (minPos.x + maxPos.x) / 2.0;
-                        double cy = (minPos.y + maxPos.y) / 2.0;
-                        double cz = (minPos.z + maxPos.z) / 2.0;
+                        ForgeDirection bestDir = null;
+                        double bestDot = -2.0;
+                        ForgeDirection masterBack = facing.getOpposite();
 
+                        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+                            int nx = x + dir.offsetX;
+                            int ny = y + dir.offsetY;
+                            int nz = z + dir.offsetZ;
 
-                        double dx = cx - (x + 0.5);
-                        double dy = cy - (y + 0.5);
-                        double dz = cz - (z + 0.5);
+                            if (nx >= minX && nx <= maxX &&
+                                ny >= minY && ny <= maxY &&
+                                nz >= minZ && nz <= maxZ) {
 
-
-                        if (Math.abs(dx) >= Math.abs(dy) && Math.abs(dx) >= Math.abs(dz)) {
-                            internalDir = (dx > 0) ? ForgeDirection.EAST : ForgeDirection.WEST;
-                        } else if (Math.abs(dy) >= Math.abs(dx) && Math.abs(dy) >= Math.abs(dz)) {
-                            internalDir = (dy > 0) ? ForgeDirection.UP : ForgeDirection.DOWN;
-                        } else {
-                            internalDir = (dz > 0) ? ForgeDirection.SOUTH : ForgeDirection.NORTH;
+                                double dot = dir.offsetX * masterBack.offsetX +
+                                    dir.offsetY * masterBack.offsetY +
+                                    dir.offsetZ * masterBack.offsetZ;
+                                if (dot > bestDot) {
+                                    bestDot = dot;
+                                    bestDir = dir;
+                                }
+                            }
+                        }
+                        if (bestDir != null) {
+                            internalDir = bestDir;
                         }
                     }
                 }
             }
         }
-
 
         if (facing == ForgeDirection.getOrientation(side)) {
             return this.icons[0];

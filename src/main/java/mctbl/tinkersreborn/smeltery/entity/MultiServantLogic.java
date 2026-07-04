@@ -39,14 +39,24 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
         }
     }
 
+    @Override
+    public boolean verifyMaster(IMasterLogic logic, World world, BlockPos pos) {
+        if (this.hasMaster) {
+            return this.hasValidMaster();
+        } else {
+            this.overrideMaster(pos);
+            return true;
+        }
+    }
+
     public BlockPos getMasterPosition() {
         return master;
     }
 
-    public void overrideMaster(int x, int y, int z) {
+    public void overrideMaster(BlockPos pos) {
         hasMaster = true;
-        master = new BlockPos(x, y, z);
-        masterBlock = worldObj.getBlock(x, y, z);
+        master = new BlockPos(pos.x, pos.y, pos.z);
+        masterBlock = worldObj.getBlock(pos.x, pos.y, pos.z);
     }
 
     public void removeMaster() {
@@ -58,16 +68,6 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
     @Override
     public boolean setPotentialMaster(IMasterLogic master, World w, int x, int y, int z) {
         return !hasMaster;
-    }
-
-    @Override
-    public boolean verifyMaster(IMasterLogic logic, World world, int x, int y, int z) {
-        if (hasMaster) {
-            return hasValidMaster();
-        } else {
-            overrideMaster(x, y, z);
-            return true;
-        }
     }
 
     @Override

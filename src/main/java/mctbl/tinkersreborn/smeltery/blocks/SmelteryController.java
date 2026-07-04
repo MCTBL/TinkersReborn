@@ -17,7 +17,6 @@ import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.model.SmelteryRender;
-import org.joml.Vector3f;
 
 public class SmelteryController extends TinkersRebornMultiBlock {
 
@@ -74,24 +73,25 @@ public class SmelteryController extends TinkersRebornMultiBlock {
             ForgeDirection face = ForgeDirection.NORTH;
             if (logic instanceof ITinkersRebornIFacingLogic)
                 face = ((ITinkersRebornIFacingLogic) logic).getForgeDirection();
-            Vector3f center = new Vector3f(x + 0.5f, y + 0.5f, z + 0.5f);
-            Vector3f rota = new Vector3f(0.52F, (random.nextFloat() * 6F) / 16F, random.nextFloat() * 0.6F - 0.3F);
-            rota.rotateY((float) Math.toRadians(getRotationYaw(face)));
-            rota.add(center);
 
-            world.spawnParticle("smoke", rota.x, rota.y, rota.z, 0.0D, 0.0D, 0.0D);
-                world.spawnParticle("flame", rota.x, rota.y, rota.z, 0.0D, 0.0D, 0.0D);
+            world.spawnParticle(
+                "smoke",
+                x + 0.5 + face.offsetX * 0.55,
+                y + 0.5,
+                z + 0.5 + face.offsetZ * 0.55,
+                0.0D,
+                0.0D,
+                0.0D);
+            world.spawnParticle(
+                "flame",
+                x + 0.5 + face.offsetX * 0.55,
+                y + 0.5,
+                z + 0.5 + face.offsetZ * 0.55,
+                0.0D,
+                0.0D,
+                0.0D);
+
         }
-    }
-
-    public static float getRotationYaw(ForgeDirection facing) {
-        return switch (facing) {
-            case NORTH -> 90;
-            case WEST -> 180;
-            case EAST -> 0;
-            case SOUTH -> 270;
-            default -> 0;
-        };
     }
 
     @Override
@@ -101,10 +101,6 @@ public class SmelteryController extends TinkersRebornMultiBlock {
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack stack) {
-        // TileEntity logic = world.getTileEntity(x, y, z);
-        // if (logic instanceof ITinkersRebornIFacingLogic direction) {
-        // direction.setFacedDirection(entityliving);
-        // }
         super.onBlockPlacedBy(world, x, y, z, entityliving, stack);
         ((IMasterLogic) world.getTileEntity(x, y, z)).checkWholeStructureValid();
     }

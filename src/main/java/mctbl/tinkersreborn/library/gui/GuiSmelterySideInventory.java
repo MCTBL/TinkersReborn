@@ -108,7 +108,7 @@ public class GuiSmelterySideInventory extends GuiSideInventory {
                     tooltipText = tooltip;
                 }
 
-                drawTexturedModalRect(x, y + bar.h - height, 256, 256, bar.w, height);
+                drawTexturedModalRect(x, y + bar.h - height, bar.x, bar.y, bar.w, bar.h);
             }
         }
 
