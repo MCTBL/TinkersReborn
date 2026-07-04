@@ -42,17 +42,17 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
                     BlockPos minPos = smeltery.minPos;
                     BlockPos maxPos = smeltery.maxPos;
                     if (minPos != null && maxPos != null) {
-                        // 空腔中心（浮点数，精确计算）
+
                         double cx = (minPos.x + maxPos.x) / 2.0;
                         double cy = (minPos.y + maxPos.y) / 2.0;
                         double cz = (minPos.z + maxPos.z) / 2.0;
 
-                        // 当前方块中心到空腔中心的偏移
+
                         double dx = cx - (x + 0.5);
                         double dy = cy - (y + 0.5);
                         double dz = cz - (z + 0.5);
 
-                        // 选取绝对值最大的分量作为内部方向
+
                         if (Math.abs(dx) >= Math.abs(dy) && Math.abs(dx) >= Math.abs(dz)) {
                             internalDir = (dx > 0) ? ForgeDirection.EAST : ForgeDirection.WEST;
                         } else if (Math.abs(dy) >= Math.abs(dx) && Math.abs(dy) >= Math.abs(dz)) {
@@ -65,11 +65,11 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
             }
         }
 
-        // 纹理分配
+
         if (facing == ForgeDirection.getOrientation(side)) {
-            return this.icons[0];          // 正面
+            return this.icons[0];
         } else if (internalDir == ForgeDirection.getOrientation(side)) {
-            return this.icons[1];          // 背面（朝向空腔）
+            return this.icons[1];
         } else {
             return this.sideIcon;
         }
