@@ -46,6 +46,11 @@ public class SlotToolStationOut extends Slot {
     // }
 
     @Override
+    public boolean isItemValid(ItemStack stack) {
+        return false;
+    }
+
+    @Override
     public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack) {
         FMLCommonHandler.instance()
             .firePlayerCraftingEvent(playerIn, stack, parent.getTile());

@@ -1,7 +1,5 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
-import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
@@ -10,7 +8,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
+import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 
 public class SmelteryDrain extends TinkersRebornMultiBlock {
 
@@ -55,13 +55,10 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
                             int ny = y + dir.offsetY;
                             int nz = z + dir.offsetZ;
 
-                            if (nx >= minX && nx <= maxX &&
-                                ny >= minY && ny <= maxY &&
-                                nz >= minZ && nz <= maxZ) {
+                            if (nx >= minX && nx <= maxX && ny >= minY && ny <= maxY && nz >= minZ && nz <= maxZ) {
 
-                                double dot = dir.offsetX * masterBack.offsetX +
-                                    dir.offsetY * masterBack.offsetY +
-                                    dir.offsetZ * masterBack.offsetZ;
+                                double dot = dir.offsetX * masterBack.offsetX + dir.offsetY * masterBack.offsetY
+                                    + dir.offsetZ * masterBack.offsetZ;
                                 if (dot > bestDot) {
                                     bestDot = dot;
                                     bestDir = dir;
@@ -84,6 +81,7 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
             return this.sideIcon;
         }
     }
+
     @Override
     public IIcon getIcon(int side, int meta) {
         if (side == 3) {
