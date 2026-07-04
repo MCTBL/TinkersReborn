@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -35,7 +36,7 @@ public class SmelteryBlock extends TinkersRebornMultiBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        return this.icons[meta];
+        return this.icons[MathHelper.clamp_int(meta, 0, this.TEXTURENAMES.length - 1)];
     }
 
     @Override

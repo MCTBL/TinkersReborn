@@ -42,7 +42,6 @@ public class GuiHeatingStructureFuelTank extends GuiMultiModule {
             int h = height * fuelInfo.fluid.amount / fuelInfo.maxCap;
 
             drawFluidIcon(x, y - h, w, h, this.zLevel, fuelInfo.fluid);
-
         }
     }
 

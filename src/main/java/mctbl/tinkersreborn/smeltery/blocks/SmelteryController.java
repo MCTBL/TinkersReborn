@@ -16,6 +16,7 @@ import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
+import mctbl.tinkersreborn.smeltery.model.SmelteryRender;
 import org.joml.Vector3f;
 
 public class SmelteryController extends TinkersRebornMultiBlock {
@@ -37,6 +38,11 @@ public class SmelteryController extends TinkersRebornMultiBlock {
     }
 
     @Override
+    public int getRenderType() {
+        return SmelteryRender.smelteryModel;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
         TileEntity logic = world.getTileEntity(x, y, z);
@@ -49,7 +55,7 @@ public class SmelteryController extends TinkersRebornMultiBlock {
             return this.icons[isActive(world, x, y, z) ? 1 : 0];
         }
 
-        return super.sideIcon;
+        return this.sideIcon;
     }
 
     @Override
@@ -95,6 +101,10 @@ public class SmelteryController extends TinkersRebornMultiBlock {
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack stack) {
+        // TileEntity logic = world.getTileEntity(x, y, z);
+        // if (logic instanceof ITinkersRebornIFacingLogic direction) {
+        // direction.setFacedDirection(entityliving);
+        // }
         super.onBlockPlacedBy(world, x, y, z, entityliving, stack);
         ((IMasterLogic) world.getTileEntity(x, y, z)).checkWholeStructureValid();
     }

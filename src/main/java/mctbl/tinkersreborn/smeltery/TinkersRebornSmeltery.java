@@ -2,6 +2,8 @@ package mctbl.tinkersreborn.smeltery;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -11,6 +13,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
 import mctbl.tinkersreborn.smeltery.blocks.GlueBlock;
 import mctbl.tinkersreborn.smeltery.blocks.LavaTankBlock;
@@ -93,11 +96,11 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.registerTileEntity(FaucetLogic.class, "tinkersreborn.Faucet");
         GameRegistry.registerTileEntity(CastingBasinLogic.class, "tinkersreborn.CastingBasin");
 
+        TinkersRebornRegistry.registerFuel(new FluidStack(FluidRegistry.LAVA, 50), 100);
     }
 
     @Override
     public void init(FMLInitializationEvent e) {
-
         proxy.initialize();
         this.craftingTableRecipes();
     }

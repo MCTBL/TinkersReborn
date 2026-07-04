@@ -10,6 +10,8 @@ import java.util.Map;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.crafting.LiquidCasting;
@@ -19,6 +21,7 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMateria
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
+import mctbl.tinkersreborn.smeltery.utils.TinkersRebornFuelRecord;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
@@ -48,6 +51,7 @@ public class TinkersRebornRegistry {
 
     // contains all fluid that tinkers reborn registered
     public static List<TinkersRebornFluid> allTinkersFluid;
+    public static Map<Fluid, TinkersRebornFuelRecord> allAllowFuel;
 
     private static Map<Class<? extends EntityLivingBase>, ItemStack> headDrops;
 
@@ -82,6 +86,7 @@ public class TinkersRebornRegistry {
         modifierAndTraitIdentifierMaps = new LinkedHashMap<>();
         allTinkersFluid = new ArrayList<>();
         headDrops = new HashMap<>();
+        allAllowFuel = new LinkedHashMap<>();
         this.initRenderMaterial();
     }
 
@@ -111,8 +116,9 @@ public class TinkersRebornRegistry {
     }
 
     /**
-     * Call before adding a trait to a material. Checks consistency and takes care everything is in a consistent state.
-     * Registers the trait if it's not registered, takes events into account.
+     * Call before adding a trait to a material. Checks consistency and takes care
+     * everything is in a consistent state. Registers the trait if it's not
+     * registered, takes events into account.
      */
     public static boolean checkMaterialTrait(TinkersRebornMaterial material, IModifier trait,
         MaterialStatusType staus) {
@@ -203,5 +209,45 @@ public class TinkersRebornRegistry {
             }
         }
         return drops;
+    }
+
+    /**
+     * consume fuel.amount can make multi work how many ticks
+     * 
+     * @param fuel
+     * @param tick
+     */
+    public static void registerFuel(FluidStack fuel, int fuelDuration) {
+        allAllowFuel.put(fuel.getFluid(), new TinkersRebornFuelRecord(fuel, fuelDuration));
+    }
+
+    public static boolean isSmelteryFuel(FluidStack fluid) {
+        return allAllowFuel.containsKey(fluid.getFluid());
+    }
+
+    /**
+     * Reduces the fluidstack by one increment of the fuel and returns how much fuel
+     * duration it gives.
+     */
+    public static int consumeSmelteryFuel(FluidStack in) {
+        for (Map.Entry<Fluid, TinkersRebornFuelRecord> entry : allAllowFuel.entrySet()) {
+            if (in.getFluid() == entry.getKey()) {
+                FluidStack fuel = entry.getValue()
+                    .getFuel();
+                int out = entry.getValue()
+                    .getFuelDuration();
+                if (in.amount < fuel.amount) {
+                    float coeff = (float) in.amount / (float) fuel.amount;
+                    out = Math.round(coeff * out);
+                    in.amount = 0;
+                } else {
+                    in.amount -= fuel.amount;
+                }
+
+                return out;
+            }
+        }
+
+        return 0;
     }
 }
