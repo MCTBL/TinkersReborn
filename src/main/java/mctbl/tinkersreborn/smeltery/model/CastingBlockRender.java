@@ -2,14 +2,11 @@ package mctbl.tinkersreborn.smeltery.model;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.library.crafting.CastingRecipe;
 import mctbl.tinkersreborn.library.utils.BlockSkinRenderHelper;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
@@ -125,20 +122,6 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
                         float maxX = 0.9375F;
                         float minZ = 0.0625F;
                         float maxZ = 0.9375F;
-
-                        ItemStack it = logic.getStackInSlot(0);
-                        if (it != null) {
-                            CastingRecipe rec = TinkersRebornRegistry.tableCasting.getCastingRecipe(logic.liquid, it);
-                            if (rec != null && rec.fluidRenderProperties != null) {
-                                minHeight = rec.fluidRenderProperties.minHeight;
-                                maxHeight = rec.fluidRenderProperties.maxHeight;
-
-                                minX = rec.fluidRenderProperties.minX;
-                                maxX = rec.fluidRenderProperties.maxX;
-                                minZ = rec.fluidRenderProperties.minZ;
-                                maxZ = rec.fluidRenderProperties.maxZ;
-                            }
-                        }
 
                         float percent = (float) logic.getLiquidAmount() / (float) logic.getCapacity();
                         float height = percent * (maxHeight - minHeight);
@@ -341,19 +324,6 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
                         float minZ = 0.0625F;
                         float maxZ = 0.9375F;
 
-                        ItemStack it = logic.getStackInSlot(0);
-                        if (it != null) {
-                            CastingRecipe rec = TinkersRebornRegistry.basinCasting.getCastingRecipe(logic.liquid, it);
-                            if (rec != null && rec.fluidRenderProperties != null) {
-                                minHeight = rec.fluidRenderProperties.minHeight;
-                                maxHeight = rec.fluidRenderProperties.maxHeight;
-
-                                minX = rec.fluidRenderProperties.minX;
-                                maxX = rec.fluidRenderProperties.maxX;
-                                minZ = rec.fluidRenderProperties.minZ;
-                                maxZ = rec.fluidRenderProperties.maxZ;
-                            }
-                        }
                         float percent = (float) logic.getLiquidAmount() / (float) logic.getCapacity();
                         float height = percent * (maxHeight - minHeight);
 

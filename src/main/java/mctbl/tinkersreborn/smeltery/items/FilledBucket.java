@@ -3,6 +3,7 @@ package mctbl.tinkersreborn.smeltery.items;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -12,6 +13,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -22,10 +24,12 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.util.TextureHelper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.ToolTags;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class FilledBucket extends ItemBucket {
 
-    public Map<Integer, IIcon> icons;
+    public Map<String, IIcon> icons;
     public IIcon bucket;
     public IIcon content;
 
@@ -55,20 +59,19 @@ public class FilledBucket extends ItemBucket {
 
     @Override
     public int getColorFromItemStack(ItemStack stack, int renderpass) {
-        int itemDamage = stack.getItemDamage();
-        if (!icons.containsKey(itemDamage) && renderpass == 1) {
-            return TinkersRebornRegistry.allTinkersFluid.get(itemDamage)
-                .getColor();
+        TinkersRebornFluid fluidByIdentifier = TinkersRebornRegistry.getFluidByIdentifier(this.readNBT(stack));
+        if (!icons.containsKey(fluidByIdentifier.identifier) && renderpass == 1) {
+            return fluidByIdentifier.color;
         }
         return super.getColorFromItemStack(stack, renderpass);
     }
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderpass) {
-        int itemDamage = stack.getItemDamage();
-        if (icons.containsKey(itemDamage)) {
+        String identifier = this.readNBT(stack);
+        if (icons.containsKey(identifier)) {
             // has own icon
-            return icons.get(itemDamage);
+            return icons.get(identifier);
         } else {
             // other wise
             if (renderpass == 0) {
@@ -83,11 +86,11 @@ public class FilledBucket extends ItemBucket {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister register) {
-        for (int idx = 0; idx < TinkersRebornRegistry.allTinkersFluid.size(); idx++) {
-            TinkersRebornFluid f = TinkersRebornRegistry.allTinkersFluid.get(idx);
-            String path = "tinkersreborn:bucket/bucket_" + f.identifier;
+        for (Entry<String, TinkersRebornFluid> entry : TinkersRebornRegistry.getAllFluidMap()
+            .entrySet()) {
+            String path = "tinkersreborn:bucket/bucket_" + entry.getKey();
             if (TextureHelper.itemTextureExists(path)) {
-                icons.put(idx, register.registerIcon(path));
+                icons.put(entry.getKey(), register.registerIcon(path));
             }
         }
         bucket = register.registerIcon("tinkersreborn:bucket/bucket");
@@ -97,16 +100,16 @@ public class FilledBucket extends ItemBucket {
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item item, CreativeTabs tabs, List<ItemStack> list) {
-        for (int idx = 0; idx < TinkersRebornRegistry.allTinkersFluid.size(); idx++) {
-            list.add(new ItemStack(item, 1, idx));
+        for (Entry<String, TinkersRebornFluid> entry : TinkersRebornRegistry.getAllFluidMap()
+            .entrySet()) {
+            list.add(this.getNewFluidBucketWithMaterial(entry.getKey()));
         }
     }
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        int itemDamage = stack.getItemDamage();
         String bucketName;
-        String fluidUnName = TinkersRebornRegistry.allTinkersFluid.get(itemDamage)
+        String fluidUnName = TinkersRebornRegistry.getFluidByIdentifier(this.readNBT(stack))
             .getUnlocalizedName();
         if (fluidUnName.startsWith("molten_")) {
             bucketName = TinkersRebornUtils.translate("tinkersreborn.moltenBucket");
@@ -162,7 +165,7 @@ public class FilledBucket extends ItemBucket {
                     return stack;
                 }
 
-                if (this.tryPlaceContainedLiquid(world, clickX, clickY, clickZ, stack.getItemDamage())
+                if (this.tryPlaceContainedLiquid(world, clickX, clickY, clickZ, stack)
                     && !player.capabilities.isCreativeMode) {
                     return new ItemStack(Items.bucket);
                 }
@@ -171,7 +174,8 @@ public class FilledBucket extends ItemBucket {
         return stack;
     }
 
-    public boolean tryPlaceContainedLiquid(World world, int clickX, int clickY, int clickZ, int damage) {
+    public boolean tryPlaceContainedLiquid(World world, int clickX, int clickY, int clickZ, ItemStack stack) {
+
         if (!world.isAirBlock(clickX, clickY, clickZ) && world.getBlock(clickX, clickY, clickZ)
             .getMaterial()
             .isSolid()) {
@@ -181,7 +185,7 @@ public class FilledBucket extends ItemBucket {
                 clickX,
                 clickY,
                 clickZ,
-                TinkersRebornRegistry.allTinkersFluid.get(damage)
+                TinkersRebornRegistry.getFluidByIdentifier(this.readNBT(stack))
                     .getBlock(),
                 0,
                 3);
@@ -189,4 +193,20 @@ public class FilledBucket extends ItemBucket {
         }
     }
 
+    public ItemStack getNewFluidBucketWithMaterial(String identifier) {
+        ItemStack stack = new ItemStack(this);
+        stack.setTagCompound(this.getNewPartNBT(identifier));
+        return stack;
+    }
+
+    public NBTTagCompound getNewPartNBT(String identifier) {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString(ToolTags.IDENTIFIER, identifier);
+        return nbt;
+    }
+
+    public String readNBT(ItemStack stack) {
+        return ToolTagsHelper.getTagSafe(stack)
+            .getString(ToolTags.IDENTIFIER);
+    }
 }

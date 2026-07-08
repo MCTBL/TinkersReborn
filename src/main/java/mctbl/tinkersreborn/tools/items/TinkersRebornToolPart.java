@@ -28,7 +28,7 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
-    public static final String toolNameFormatter = TinkersStr.tooNamePattern.toString();
+    public static final String TOOLNAMEFORMATTER = TinkersStr.tooNamePattern.toString();
 
     public String partName;
     public String texture;
@@ -36,7 +36,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     public IIcon defaultIcon;
     public IIcon outlineIcon;
     public Map<String, IIcon> iconMap;
-    public MaterialStatusType allowType; // TODO shard is null (maybe sharpen kit is too)
+    public MaterialStatusType allowType;
 
     public TinkersRebornToolPart(String texture, String partName, int cost, MaterialStatusType allowType) {
         // texture -> pickaxe_head for texture
@@ -69,7 +69,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
         if (material == TinkersRebornMaterial.UNKNOWN) {
             return this.getLocalizedPartName();
         } else {
-            return String.format(toolNameFormatter, material.localizedPrefix(), this.getLocalizedPartName());
+            return String.format(TOOLNAMEFORMATTER, material.localizedPrefix(), this.getLocalizedPartName());
         }
     }
 
@@ -77,12 +77,13 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     public String getUnlocalizedName(ItemStack stack) {
         TinkersRebornMaterial material = this.getMaterial(stack);
         return material == TinkersRebornMaterial.UNKNOWN ? super.getUnlocalizedName()
-            : String.format(toolNameFormatter, material.localizedPrefix(), this.getLocalizedPartName());
+            : String.format(TOOLNAMEFORMATTER, material.localizedPrefix(), this.getLocalizedPartName());
     }
 
     @Override
     public void getSubItems(Item b, CreativeTabs tab, List<ItemStack> list) {
-        List<TinkersRebornMaterial> statsList = TinkersRebornRegistry.allMaterialsList.stream()
+        List<TinkersRebornMaterial> statsList = TinkersRebornRegistry.getAllMaterialList()
+            .stream()
             .filter(m -> m.statsMap.containsKey(this.allowType))
             .collect(Collectors.toList());
         for (TinkersRebornMaterial m : statsList) {
@@ -92,7 +93,8 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     @Override
     public void registerIcons(IIconRegister iconRegister) {
-        List<TinkersRebornMaterial> statsList = TinkersRebornRegistry.allMaterialsList.stream()
+        List<TinkersRebornMaterial> statsList = TinkersRebornRegistry.getAllMaterialList()
+            .stream()
             .filter(m -> m.statsMap.containsKey(this.allowType))
             .collect(Collectors.toList());
         this.iconMap = new HashMap<>();

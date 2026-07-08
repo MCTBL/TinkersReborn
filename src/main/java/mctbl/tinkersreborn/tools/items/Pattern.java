@@ -18,6 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.items.IPattern;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
@@ -28,15 +29,15 @@ public class Pattern extends Item implements IPattern {
 
     private final Map<String, IIcon> iconsMap;
 
-    private final String CAST_BLANK = "cast_blank";
+    public final static String CAST_BLANK = "cast_blank";
     private IIcon CAST_BLANK_ICON = null;
-    private final String PATTERN_BLANK = "pattern_blank";
+    public final static String PATTERN_BLANK = "pattern_blank";
     private IIcon PATTERN_BLANK_ICON = null;
-    private final String CAST_INGOT = "cast_ingot";
+    public final static String CAST_INGOT = "cast_ingot";
     private IIcon CAST_INGOT_ICON = null;
-    private final String CAST_GEM = "cast_gem";
+    public final static String CAST_GEM = "cast_gem";
     private IIcon CAST_GEM_ICON = null;
-    private final String CAST_NUGGET = "cast_nugget";
+    public final static String CAST_NUGGET = "cast_nugget";
     private IIcon CAST_NUGGET_ICON = null;
 
     public Pattern() {
@@ -118,13 +119,13 @@ public class Pattern extends Item implements IPattern {
 
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
-        list.add(this.newStackWithIdentifier(PATTERN_BLANK));
-        list.add(this.newStackWithIdentifier(CAST_BLANK));
-        list.add(this.newStackWithIdentifier(CAST_INGOT));
-        list.add(this.newStackWithIdentifier(CAST_GEM));
-        list.add(this.newStackWithIdentifier(CAST_NUGGET));
+        list.add(newStackWithIdentifier(PATTERN_BLANK));
+        list.add(newStackWithIdentifier(CAST_BLANK));
+        list.add(newStackWithIdentifier(CAST_INGOT));
+        list.add(newStackWithIdentifier(CAST_GEM));
+        list.add(newStackWithIdentifier(CAST_NUGGET));
         for (String p : patternType) {
-            list.add(this.newStackWithIdentifier(p));
+            list.add(newStackWithIdentifier(p));
         }
     }
 
@@ -149,7 +150,6 @@ public class Pattern extends Item implements IPattern {
 
     @Override
     public ItemStack getPatternOutput(ItemStack pattern, ItemStack input, TinkersRebornMaterial material) {
-        // TODO WTF?
         TinkersRebornToolPart toolPart = this.getToolPart(pattern);
         if (toolPart != null) {
             return toolPart.getNewPartWithMaterial(material);
@@ -184,21 +184,21 @@ public class Pattern extends Item implements IPattern {
             .getString(ToolTags.IDENTIFIER);
     }
 
-    public ItemStack newStackWithToolPart(TinkersRebornToolPart part) {
-        return this.newStackWithIdentifier(part.texture);
+    public static ItemStack newStackWithToolPart(TinkersRebornToolPart part) {
+        return newStackWithIdentifier(part.texture);
     }
 
-    public ItemStack newStackWithIdentifier(String identifier) {
-        ItemStack newStack = new ItemStack(this);
+    public static ItemStack newStackWithIdentifier(String identifier) {
+        ItemStack newStack = new ItemStack(TinkersRebornTools.patternAndCast);
         newStack.setTagCompound(getNewCompoundWithIdentifier(identifier));
         return newStack;
     }
 
-    public NBTTagCompound getNewCompoundWithToolPart(TinkersRebornToolPart part) {
-        return this.getNewCompoundWithIdentifier(part.texture);
+    public static NBTTagCompound getNewCompoundWithToolPart(TinkersRebornToolPart part) {
+        return getNewCompoundWithIdentifier(part.texture);
     }
 
-    public NBTTagCompound getNewCompoundWithIdentifier(String identifier) {
+    public static NBTTagCompound getNewCompoundWithIdentifier(String identifier) {
         NBTTagCompound newTag = new NBTTagCompound();
         newTag.setString(ToolTags.IDENTIFIER, identifier);
         return newTag;

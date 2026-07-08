@@ -18,6 +18,7 @@ import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -93,6 +94,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static SlimeLeaves slimeLeaves;
     public static SlimeSapling slimeSapling;
 
+    public static Fluid bloodFluid;
+
     // Ores
     public static Block oreSlag;
     public static Block oreGravel;
@@ -131,11 +134,12 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(slimeDirt, slimeDirt.getUnlocalizedName());
 
         slimeStep = new StepSoundSlime("mob.slime", 1.0f, 1.0f);
-        blueSlimeFluid = new TinkersRebornFluid("blue_slime", 0X42E9F4, true, false);
+
+        blueSlimeFluid = new TinkersRebornFluid("blue_slime", 0X42E9F4, "slime_blue");
+        FluidRegistry.registerFluid(blueSlimeFluid);
 
         slimePool = new SlimeFluid(blueSlimeFluid);
         GameRegistry.registerBlock(slimePool, slimePool.getUnlocalizedName());
-        blueSlimeFluid.setBlock(slimePool);
 
         // Slime Islands
         slimeGel = new SlimeGel();
@@ -153,6 +157,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(oreSlag, MetalOreItemBlock.class, oreSlag.getUnlocalizedName());
         oreGravel = new GravelOre();
         GameRegistry.registerBlock(oreGravel, GravelOreItem.class, oreGravel.getUnlocalizedName());
+
+        bloodFluid = new TinkersRebornFluid("blood", 0xFF0000, "blood");
 
         // Vanilla stack sizes
         Items.wooden_door.setMaxStackSize(16);

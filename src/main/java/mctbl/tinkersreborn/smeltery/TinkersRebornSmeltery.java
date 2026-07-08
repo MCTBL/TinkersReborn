@@ -1,7 +1,10 @@
 package mctbl.tinkersreborn.smeltery;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -14,6 +17,8 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
 import mctbl.tinkersreborn.smeltery.blocks.GlueBlock;
 import mctbl.tinkersreborn.smeltery.blocks.LavaTankBlock;
@@ -34,6 +39,7 @@ import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryControllerItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryDrainItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryItemBlock;
+import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
 public class TinkersRebornSmeltery implements ITinkersRebornModule {
@@ -101,8 +107,11 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
     @Override
     public void init(FMLInitializationEvent e) {
-        proxy.initialize();
         this.craftingTableRecipes();
+
+        this.registerMeltingCasting();
+
+        proxy.initialize();
     }
 
     @Override
@@ -119,7 +128,8 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         // Register
         GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 0), "bb", "bb", 'b', searedBrick); // Bricks Block
         GameRegistry.addRecipe(new ItemStack(smelteryController, 1), "bbb", "b b", "bbb", 'b', searedBrick); // Controller
-        // GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 3), " b ", "b b", "bbb", 'b', searedBrick); // Furnace
+        // GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 3), " b ", "b b",
+        // "bbb", 'b', searedBrick); // Furnace
         GameRegistry.addRecipe(new ItemStack(smelteryDrain, 1), "b b", "b b", "b b", 'b', searedBrick); // Drain
         GameRegistry.addRecipe(
             new ShapedOreRecipe(new ItemStack(lavaTank, 1, 0), patSurround, '#', searedBrick, 'm', "blockGlass")); // Tank
@@ -148,5 +158,48 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.addRecipe(new ItemStack(searedBlock, 1, 1), "b b", " b ", 'b', searedBrick); // Faucet
         GameRegistry.addRecipe(new ItemStack(searedBlock, 1, 2), "b b", "b b", "bbb", 'b', searedBrick); // Basin
         GameRegistry.addRecipe(new ItemStack(castingChannel, 4, 0), "b b", "bbb", 'b', searedBrick); // Channel
+    }
+
+    private void registerMeltingCasting() {
+        int bucket = 1000;
+
+        // Water
+        Fluid water = FluidRegistry.WATER;
+        TinkersRebornRegistry.registerMelting(new MeltingRecipe(RecipeMatch.of(Blocks.ice, bucket), water, 305));
+        TinkersRebornRegistry
+            .registerMelting(new MeltingRecipe(RecipeMatch.of(Blocks.packed_ice, bucket * 2), water, 310));
+        TinkersRebornRegistry.registerMelting(new MeltingRecipe(RecipeMatch.of(Blocks.snow, bucket), water, 305));
+        TinkersRebornRegistry
+            .registerMelting(new MeltingRecipe(RecipeMatch.of(Items.snowball, bucket / 8), water, 301));
+
+        // bloooooood
+        // TinkersRebornRegistry.registerMelting(Items.rotten_flesh, TinkerFluids.blood, 40);
+        // TinkersRebornTools.obsidianFluid
+
+        // obsidian
+        TinkersRebornRegistry.registerMelting(
+            MeltingRecipe.forAmount(
+                RecipeMatch.of("obsidian", TinkersRebornMaterial.VALUE_Ingot * 2),
+                TinkersRebornTools.obsidianFluid,
+                TinkersRebornMaterial.VALUE_Ingot * 2));
+
+        // special melting
+        TinkersRebornRegistry.registerMelting(
+            Items.iron_horse_armor,
+            TinkersRebornTools.ironFluid,
+            TinkersRebornMaterial.VALUE_Ingot * 4);
+        // TinkersRebornRegistry.registerMelting(Items.golden_horse_armor, TinkersRebornTools.goldFluid,
+        // TinkersRebornMaterial.VALUE_Ingot * 4);
+
+        // rails, some of these are caught through registerOredictMelting, but for
+        // consistency all are just registered here
+        TinkersRebornRegistry
+            .registerMelting(Blocks.rail, TinkersRebornTools.ironFluid, TinkersRebornMaterial.VALUE_Ingot * 6 / 16);
+        TinkersRebornRegistry
+            .registerMelting(Blocks.activator_rail, TinkersRebornTools.ironFluid, TinkersRebornMaterial.VALUE_Ingot);
+        TinkersRebornRegistry
+            .registerMelting(Blocks.detector_rail, TinkersRebornTools.ironFluid, TinkersRebornMaterial.VALUE_Ingot);
+        // TinkersRebornRegistry.registerMelting(Blocks.golden_rail, TinkersRebornTools.goldFluid,
+        // TinkersRebornMaterial.VALUE_Ingot);
     }
 }

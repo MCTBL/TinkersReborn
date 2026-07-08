@@ -480,7 +480,7 @@ public class GuiToolStation extends GuiTinkerStation {
     }
 
     public List<ToolCore> getBuildableItems() {
-        return TinkersRebornRegistry.toolStationCrafting;
+        return TinkersRebornRegistry.getToolStationCraftingList();
     }
 
     public void onToolSelection(ToolBuildGuiInfo info) {

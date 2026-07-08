@@ -19,7 +19,7 @@ public class ContainerToolForge extends ContainerToolStation {
 
     @Override
     public List<ToolCore> getBuildableTools() {
-        return TinkersRebornRegistry.toolForgeCrafting;
+        return TinkersRebornRegistry.getToolForgeCraftingList();
     }
 
     @Override

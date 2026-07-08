@@ -47,6 +47,10 @@ public class TinkersRebornConfig {
     public static boolean autoSmeltWithLapis;
     public static boolean celsiusPref;
 
+    public static double oreToIngotRatio;
+
+    public static String[] fluidIgnore;
+
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
@@ -135,6 +139,22 @@ public class TinkersRebornConfig {
 
         celsiusPref = config.get("General", "Temperature Unit Pref", true, "true is Celsius and false is kelvin")
             .getBoolean();
+
+        oreToIngotRatio = config.get(
+            "General",
+            "oreToIngotRatio",
+            2.0F,
+            "Determines the ratio of ore to ingot, or in other words how many ingots you get out of an ore. This ratio applies to all ores (including poor and dense). The ratio can be any decimal, including 1.5 and the like, but can't go below 1. THIS ALSO AFFECTS MELTING TEMPERATURE!")
+            .setMinValue(1)
+            .getDouble();
+
+        fluidIgnore = config
+            .get(
+                "General",
+                "fluidIgnore",
+                new String[] {},
+                "List of fluids to ignore, effectively preventing registration of melting and casting recipes.")
+            .getStringList();
     }
 
 }

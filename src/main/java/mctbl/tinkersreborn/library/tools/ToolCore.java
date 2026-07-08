@@ -75,14 +75,14 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     public Random random = TinkersReborn.random;
 
-    public static final String toolNameFormatter = TinkersStr.tooNamePattern.toString();
+    public static final String TOOLNAMEFORMATTER = TinkersStr.tooNamePattern.toString();
 
     /**
      * first one is main part and has broken icon, but it will render second second
      * will render first then other will render in order
      */
     protected final List<ToolPartRecord> componentsParts = new ArrayList<>(4);
-    public final List<Map<Integer, IIcon>> allIcons = new ArrayList<>();
+    public final List<Map<String, IIcon>> allIcons = new ArrayList<>();
     public final Map<String, IIcon> effectIcons = new HashMap<>();
 
     public final Set<Category> categoryTags = new HashSet<>();
@@ -161,30 +161,30 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             if (this.componentsParts.get(i) != null) {
                 MaterialStatusType type = this.componentsParts.get(i)
                     .statusType();
-                for (TinkersRebornMaterial material : TinkersRebornRegistry.allMaterialsList) {
+                for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
                     if (material.hasStats(type)) {
                         String path = basePath + material.identifier + this.componentsParts.get(i).texturePostfix;
                         if (TextureHelper.itemTextureExists(path)) {
                             this.allIcons.get(i)
-                                .put(material.materialId, register.registerIcon(path));
+                                .put(material.identifier, register.registerIcon(path));
                         }
                         if (i == 0) {
                             // broken
                             path += "_broken";
                             if (TextureHelper.itemTextureExists(path)) {
                                 this.allIcons.get(this.partAmount)
-                                    .put(material.materialId, register.registerIcon(path));
+                                    .put(material.identifier, register.registerIcon(path));
                             }
                         }
                     }
                 }
                 // standard
                 this.allIcons.get(i)
-                    .put(-1, register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix));
+                    .put(null, register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix));
                 if (i == 0) {
                     this.allIcons.get(this.partAmount)
                         .put(
-                            -1,
+                            null,
                             register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix + "_broken"));
 
                 }
@@ -209,8 +209,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         if (renderMaterials.size() != 0) {
             if (renderPass < this.partAmount) {
                 int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.partAmount : renderPass;
-                int materialId = renderMaterials.get(renderPass) == null ? -1
-                    : renderMaterials.get(renderPass).materialId;
+                String materialId = renderMaterials.get(renderPass) == null ? null
+                    : renderMaterials.get(renderPass).identifier;
                 return getCorrectIcon(this.allIcons.get(iconsIdx), materialId);
             }
             // Effects
@@ -224,10 +224,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return emptyIcon;
     }
 
-    protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, Integer id) {
+    protected IIcon getCorrectIcon(Map<String, IIcon> icons, String id) {
         if (icons.containsKey(id)) return icons.get(id);
         // default icon
-        return icons.get(-1);
+        return icons.get(null);
     }
 
     @Override
@@ -245,14 +245,14 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return super.getColorFromItemStack(stack, renderPass);
     }
 
-    protected int getCorrectColor(Map<Integer, IIcon> icons, String materialIdentifier) {
+    protected int getCorrectColor(Map<String, IIcon> icons, String materialIdentifier) {
         TinkersRebornMaterial material = null;
         if (materialIdentifier.startsWith("_internal_render")) {
-            material = TinkersRebornRegistry.renderMaterials.get(materialIdentifier);
+            material = TinkersRebornRegistry.getRenderMaterial(materialIdentifier);
             return material.materialTextColor;
         } else {
             material = TinkersRebornRegistry.getMaterialByIdentifier(materialIdentifier);
-            if (material != null && !icons.containsKey(material.materialId)) return material.materialTextColor;
+            if (material != null && !icons.containsKey(material.identifier)) return material.materialTextColor;
         }
 
         return TinkersRebornMaterial.UNKNOWN.materialTextColor;
@@ -399,7 +399,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
-        for (TinkersRebornMaterial material : TinkersRebornRegistry.allMaterialsList) {
+        for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
             ItemStack tool = buildTool(material, null);
             if (tool != null) list.add(tool);
         }
@@ -678,7 +678,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             .get(0)
             .localizedPrefix();
 
-        return String.format(toolNameFormatter, materialName, toolBaseName);
+        return String.format(TOOLNAMEFORMATTER, materialName, toolBaseName);
     }
 
     @Override
@@ -801,9 +801,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     @SideOnly(Side.CLIENT)
     private RenderMaterial getMaterialForPartForGuiRendering(int idx) {
-        int correctId = idx % TinkersRebornRegistry.renderMaterials.size() + 1;
+        int correctId = idx % TinkersRebornRegistry.getRenderMaterialMap()
+            .size() + 1;
         String renderMaterialName = ToolTags.INTERNALPREFIX + correctId;
-        return TinkersRebornRegistry.renderMaterials.get(renderMaterialName);
+        return TinkersRebornRegistry.getRenderMaterial(renderMaterialName);
     }
 
     @Nonnull

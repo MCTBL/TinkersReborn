@@ -173,7 +173,7 @@ public class TinkersRebornModifiers {
 
     private void registerFortifyModifiers() {
         fortifyMods = new ArrayList<>();
-        for (TinkersRebornMaterial mat : TinkersRebornRegistry.allMaterialsList) {
+        for (TinkersRebornMaterial mat : TinkersRebornRegistry.getAllMaterialList()) {
             if (mat.hasStats(MaterialStatusType.HEAD)) {
                 fortifyMods.add(new ModFortify(mat));
             }

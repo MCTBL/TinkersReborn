@@ -15,6 +15,7 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.smeltery.network.FluidUpdatePacket;
 import mctbl.tinkersreborn.smeltery.network.HeatingStructureFuelUpdatePacket;
 import mctbl.tinkersreborn.smeltery.network.SmelteryFluidClicked;
 import mctbl.tinkersreborn.smeltery.network.SmelteryFluidUpdatePacket;
@@ -42,6 +43,7 @@ public class TinkerNetwork {
 
         registerPacketClient(SpawnParticlePacket.class);
         registerPacketClient(HeatingStructureFuelUpdatePacket.class);
+        registerPacketClient(FluidUpdatePacket.class);
 
         registerPacketServer(TinkerStationTabPacket.class);
         registerPacketServer(SmelteryFluidClicked.class);

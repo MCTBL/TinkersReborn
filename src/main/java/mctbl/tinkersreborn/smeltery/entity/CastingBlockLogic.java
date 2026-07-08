@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.smeltery.entity;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
@@ -9,9 +10,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S2APacketParticles;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidEvent;
@@ -20,64 +22,42 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fluids.IFluidTank;
 
-import cpw.mods.fml.common.eventhandler.Event;
-import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.crafting.CastingRecipe;
-import mctbl.tinkersreborn.library.crafting.LiquidCasting;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
-import mctbl.tinkersreborn.library.event.SmelteryCastEvent;
-import mctbl.tinkersreborn.library.event.SmelteryCastedEvent;
-import mctbl.tinkersreborn.library.event.SmelteryEvent;
+import mctbl.tinkersreborn.library.event.Sounds;
+import mctbl.tinkersreborn.library.event.TinkerCastingEvent;
 import mctbl.tinkersreborn.library.items.IPattern;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.smeltery.ICastingRecipe;
+import mctbl.tinkersreborn.smeltery.network.FluidUpdatePacket;
 import mctbl.tinkersreborn.util.ItemHelper;
 
 public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
-    implements IFluidTank, IFluidHandler, ISidedInventory, ITinkersRebornIFacingLogic {
+    implements IFluidTank, IFluidHandler, ISidedInventory {
 
+    protected ICastingRecipe recipe; // current recipe
     public FluidStack liquid;
-    protected byte direction;
-    protected int maxCastingDelay = 0;
-    protected int castingDelay = 0;
     protected int renderOffset = 0;
     protected int capacity = 0;
-    protected boolean needsUpdate;
-    protected boolean init = true;
-    protected int tick;
-    protected final LiquidCasting liquidCasting;
+    protected int timer;
 
-    public CastingBlockLogic(LiquidCasting casting) {
+    public CastingBlockLogic() {
         // input slot and output slot, 1 item in it max
         super(2, 1);
-        this.liquidCasting = casting;
     }
 
-    public int updateCapacity() // Only used to initialize
-    {
-        ItemStack inv = inventory[0];
-        int ret = TinkersRebornMaterial.VALUE_Ingot;
-        int rec = liquidCasting.getCastingAmount(this.liquid, inv);
-
-        if (rec > 0) ret = rec;
-        else {
-            if (inv != null && inv.getItem() instanceof IPattern) {
-                int cost = ((IPattern) inv.getItem()).getPatternCost(inv);
-                if (cost > 0) ret *= ((IPattern) inv.getItem()).getPatternCost(inv) * 0.5;
-            }
-        }
-
-        return ret;
+    public int updateCapacity() {
+        return this.updateCapacity(recipe != null ? recipe.getFluidAmount() : 0);
     }
 
     public int updateCapacity(int capacity) {
+        ItemStack inv = inventory[0];
         int ret = TinkersRebornMaterial.VALUE_Ingot;
 
         if (capacity > 0) ret = capacity;
         else {
-            ItemStack inv = inventory[0];
-
-            if (inv != null && inv.getItem() instanceof IPattern) {
-                int cost = ((IPattern) inv.getItem()).getPatternCost(inv);
+            if (inv != null && inv.getItem() instanceof IPattern pat) {
+                int cost = pat.getPatternCost(inv);
                 if (cost > 0) ret *= cost * 0.5;
             }
         }
@@ -87,8 +67,117 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
 
     /* FluidHandler stuff. Mostly delegated to Tank stuff */
     @Override
+    public boolean canFill(ForgeDirection from, Fluid fluid) {
+        if (fluid == null) return false;
+        return fill(from, new FluidStack(fluid, 1), false) > 0;
+    }
+
+    @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
         return fill(resource, doFill);
+    }
+
+    @Override
+    public int fill(FluidStack resource, boolean doFill) {
+        // this is where all the action happens
+        if (resource == null || this.isStackInSlot(1)) {
+            return 0;
+        }
+        Fluid fluid = resource.getFluid();
+
+        // if empty, find a new recipe
+        if (this.getFluidAmount() == 0) {
+            int newCapacity = this.initNewCasting(fluid, doFill);
+            if (newCapacity > 0) {
+                // no extra checks needed for the tank since it's empty and we have to set the
+                // capacity anyway
+                if (doFill) {
+                    this.capacity = newCapacity;
+                    this.liquid = new FluidStack(resource.getFluid(), 0);
+                }
+
+                return this.fillInternal(resource, doFill);
+            }
+        }
+
+        // non-empty tank. just try to fill
+        return this.fillInternal(resource, doFill);
+    }
+
+    /**
+     * copy from 1.12.2 FluidTank#fillInternal
+     * 
+     * @param resource
+     * @param doFill
+     * @return
+     */
+    private int fillInternal(FluidStack resource, boolean doFill) {
+        if (!this.liquid.isFluidEqual(resource)) {
+            return 0;
+        }
+
+        if (resource == null || resource.amount <= 0) {
+            return 0;
+        }
+
+        if (!doFill) {
+            if (this.liquid == null) {
+                return Math.min(capacity, resource.amount);
+            }
+
+            if (!this.liquid.isFluidEqual(resource)) {
+                return 0;
+            }
+
+            return Math.min(capacity - this.liquid.amount, resource.amount);
+        }
+
+        if (this.liquid == null) {
+            this.liquid = new FluidStack(resource, Math.min(capacity, resource.amount));
+
+            if (this != null) {
+                FluidEvent.fireEvent(
+                    new FluidEvent.FluidFillingEvent(
+                        this.liquid,
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord,
+                        this.zCoord,
+                        this,
+                        this.liquid.amount));
+            }
+            return this.liquid.amount;
+        }
+
+        int filled = capacity - this.liquid.amount;
+
+        if (resource.amount < filled) {
+            this.liquid.amount += resource.amount;
+            filled = resource.amount;
+        } else {
+            this.liquid.amount = capacity;
+        }
+
+        if (this != null) {
+            FluidEvent.fireEvent(
+                new FluidEvent.FluidFillingEvent(
+                    this.liquid,
+                    this.worldObj,
+                    this.xCoord,
+                    this.yCoord,
+                    this.zCoord,
+                    this,
+                    filled));
+        }
+        return filled;
+    }
+
+    @Override
+    public boolean canDrain(ForgeDirection from, Fluid fluid) {
+        if (fluid == null) return false;
+
+        FluidStack drained = drain(from, new FluidStack(fluid, 1), false);
+        return drained != null && drained.amount > 0;
     }
 
     @Override
@@ -105,17 +194,54 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
     }
 
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) {
-        if (fluid == null) return false;
-        return fill(from, new FluidStack(fluid, 1), false) > 0;
+    public FluidStack drain(int maxDrain, boolean doDrain) {
+        FluidStack amount = this.drainInternal(maxDrain, doDrain);
+        if (amount != null && doDrain) {
+            if (liquid.amount == 0) {
+                this.reset();
+            }
+        }
+
+        return amount;
     }
 
-    @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) {
-        if (fluid == null) return false;
+    /**
+     * copy from 1.12.2 FluidTank#drainInternal
+     * 
+     * @param maxDrain
+     * @param doDrain
+     * @return
+     */
+    public FluidStack drainInternal(int maxDrain, boolean doDrain) {
+        if (liquid == null || maxDrain <= 0) {
+            return null;
+        }
 
-        FluidStack drained = drain(from, new FluidStack(fluid, 1), false);
-        return drained != null && drained.amount > 0;
+        int drained = maxDrain;
+        if (liquid.amount < drained) {
+            drained = liquid.amount;
+        }
+
+        FluidStack stack = new FluidStack(liquid, drained);
+        if (doDrain) {
+            liquid.amount -= drained;
+            if (liquid.amount <= 0) {
+                liquid = null;
+            }
+
+            if (this != null) {
+                FluidEvent.fireEvent(
+                    new FluidEvent.FluidDrainingEvent(
+                        liquid,
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord,
+                        this.zCoord,
+                        this,
+                        drained));
+            }
+        }
+        return stack;
     }
 
     /* Tank stuff */
@@ -149,105 +275,6 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         return new FluidTankInfo(this);
     }
 
-    /**
-     * Create and return the casting event here. It'll be fired automatically.
-     */
-    public abstract SmelteryCastEvent getCastingEvent(CastingRecipe recipe, FluidStack metal);
-
-    @Override
-    public int fill(FluidStack resource, boolean doFill) {
-        if (resource == null) return 0;
-
-        if (this.liquid == null) {
-            CastingRecipe recipe = liquidCasting.getCastingRecipe(resource, inventory[0]);
-            if (recipe == null) return 0;
-
-            SmelteryCastEvent event = getCastingEvent(recipe, resource);
-            MinecraftForge.EVENT_BUS.post(event);
-
-            if (event.getResult() == Event.Result.DENY) return 0;
-
-            this.capacity = updateCapacity(recipe.castingMetal.amount);
-
-            if (inventory[1] == null) {
-                FluidStack copyLiquid = resource.copy();
-
-                if (copyLiquid.amount > this.capacity) {
-                    copyLiquid.amount = this.capacity;
-                }
-
-                if (doFill) {
-                    if (copyLiquid.amount == this.capacity) {
-                        maxCastingDelay = castingDelay = recipe.coolTime;
-                    }
-                    renderOffset = copyLiquid.amount;
-                    worldObj.func_147479_m(xCoord, yCoord, zCoord);
-                    this.liquid = copyLiquid;
-                    needsUpdate = true;
-                }
-                return copyLiquid.amount;
-            } else {
-                return 0;
-            }
-        } else if (resource.isFluidEqual(this.liquid)) {
-            if (resource.amount + this.liquid.amount >= this.capacity) // Start timer here
-            {
-                int roomInTank = this.capacity - liquid.amount;
-                if (doFill && roomInTank > 0) {
-                    renderOffset = roomInTank;
-                    maxCastingDelay = castingDelay = liquidCasting.getCastingDelay(this.liquid, inventory[0]);
-                    this.liquid.amount = this.capacity;
-                    worldObj.func_147479_m(xCoord, yCoord, zCoord);
-                    needsUpdate = true;
-                }
-                return roomInTank;
-            } else {
-                if (doFill) {
-                    renderOffset += resource.amount;
-                    this.liquid.amount += resource.amount;
-                    worldObj.func_147479_m(xCoord, yCoord, zCoord);
-                    needsUpdate = true;
-                }
-                return resource.amount;
-            }
-        } else {
-            return 0;
-        }
-    }
-
-    @Override
-    public FluidStack drain(int maxDrain, boolean doDrain) {
-        if (liquid == null || liquid.getFluid() == null || liquid.getFluidID() <= 0 || castingDelay > 0) return null;
-        if (liquid.amount <= 0) return null;
-
-        int used = maxDrain;
-        if (liquid.amount < used) used = liquid.amount;
-
-        if (doDrain) {
-            liquid.amount -= used;
-        }
-
-        FluidStack drained = liquid.copy();
-        drained.amount = used;
-
-        renderOffset = 0;
-
-        // Reset liquid if emptied
-        if (liquid.amount <= 0) liquid = null;
-
-        if (doDrain) FluidEvent.fireEvent(
-            new FluidEvent.FluidDrainingEvent(
-                drained,
-                this.worldObj,
-                this.xCoord,
-                this.yCoord,
-                this.zCoord,
-                this,
-                used));
-
-        return drained;
-    }
-
     /* Inventory, inserting/extracting */
 
     public void interact(EntityPlayer player) {
@@ -262,43 +289,26 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         // put stuff in?
         if (!isStackInSlot(0) && !isStackInSlot(1)) {
             ItemStack stack = player.inventory.decrStackSize(player.inventory.currentItem, stackSizeLimit);
-            SmelteryEvent.ItemInsertedIntoCasting event = new SmelteryEvent.ItemInsertedIntoCasting(
-                this,
-                xCoord,
-                yCoord,
-                zCoord,
-                stack,
-                player);
-            MinecraftForge.EVENT_BUS.post(event);
-            if (!event.isCanceled()) setInventorySlotContents(0, event.item);
-            else player.inventory.addItemStackToInventory(stack); // should never return false, since the itemstack was
-                                                                  // taken from the inventory
+
+            setInventorySlotContents(0, stack);
         }
         // take stuff out.
         else {
-            int slot = 0;
-            // output-slot has higher priority
-            if (isStackInSlot(1)) slot = 1;
-
-            // Additional Info: Only 1 item can only be put into the casting block usually, however recipes
-            // can have multiple blocks as output (compressed gravel -> brownstone for example)
-            // we therefore spill the whole contents on extraction
-
-            SmelteryEvent.ItemRemovedFromCasting event = new SmelteryEvent.ItemRemovedFromCasting(
-                this,
-                xCoord,
-                yCoord,
-                zCoord,
-                getStackInSlot(slot),
-                player);
-            MinecraftForge.EVENT_BUS.post(event);
+            // take out of stack 1 if something is in there, 0 otherwise
+            int slot = isStackInSlot(1) ? 1 : 0;
 
             // try to transfer the stack to the player inventory
-            ItemStack output = event.item;
+            ItemStack output = getStackInSlot(slot);
             ItemHelper.spawnItemAtPlayer(player, output);
 
             // remove inventory contents, since we spilled the full contents of the slot
             inventory[slot] = null;
+
+            // send a block update for the comparator, needs to be done after the stack is
+            // removed
+            if (slot == 1) {
+                this.worldObj.notifyBlockOfNeighborChange(this.xCoord, this.yCoord, this.zCoord, this.getBlockType());
+            }
         }
     }
 
@@ -320,7 +330,7 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         if (liquid != null) return false;
 
         // only into input slot
-        return slot == 0;
+        return slot == 0 && !isStackInSlot(1);
     }
 
     @Override
@@ -368,60 +378,113 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
 
     /* NBT, Updating */
     @Override
-    public void markDirty() // Isn't actually called?
-    {
+    public void markDirty() {
         super.markDirty();
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
-        needsUpdate = true;
     }
 
     @Override
     public void updateEntity() {
-        if (castingDelay > 0) {
-            castingDelay--;
-            if (castingDelay == 0) castLiquid();
-        }
-        if (renderOffset > 0) {
-            // renderOffset -= Math.max(renderOffset/3, 6);
-            renderOffset -= 6;
-            if (renderOffset < 0) renderOffset = 0;
-            worldObj.func_147479_m(xCoord, yCoord, zCoord);
+        // no recipeeeh
+        if (recipe == null) {
+            return;
         }
 
-        tick++;
-        if (tick % 20 == 0) {
-            tick = 0;
-            if (needsUpdate) {
-                needsUpdate = false;
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        // fully filled
+        if (this.liquid.amount == this.capacity) {
+            timer++;
+            if (!this.worldObj.isRemote) {
+                if (timer >= recipe.getTime()) {
+                    TinkerCastingEvent.OnCasted event = TinkerCastingEvent.OnCasted.fire(recipe, this);
+                    // done, finish!
+                    if (event.consumeCast) {
+                        // todo: play breaking sound and animation
+                        setInventorySlotContents(0, null);
+
+                        for (EntityPlayer player : this.worldObj.playerEntities) {
+                            if (player.getDistanceSq(this.xCoord, this.yCoord, this.zCoord) < 1024
+                                && player instanceof EntityPlayerMP) {
+                                TinkerNetwork.sendPacket(
+                                    player,
+                                    new S2APacketParticles(
+                                        "flame",
+                                        this.xCoord + 0.5f,
+                                        this.yCoord + 1.1f,
+                                        this.zCoord + 0.5f,
+                                        0.25f,
+                                        0.0125f,
+                                        0.25f,
+                                        0.005f,
+                                        5));
+                            }
+                        }
+                    }
+
+                    // put result into output
+                    if (event.switchOutputs) {
+                        setInventorySlotContents(1, getStackInSlot(0));
+                        setInventorySlotContents(0, event.output);
+                    } else {
+                        setInventorySlotContents(1, event.output);
+                    }
+                    Sounds.playSoundAtPos(
+                        this.worldObj,
+                        this.xCoord,
+                        this.yCoord,
+                        this.zCoord,
+                        Sounds.sizzle,
+                        0.5F,
+                        4.0F);
+
+                    // reset state
+                    reset();
+
+                    // comparator update
+                    this.worldObj
+                        .notifyBlocksOfNeighborChange(this.xCoord, this.yCoord, this.zCoord, this.getBlockType());
+
+                }
+            } else if (this.worldObj.rand.nextFloat() > 0.9f) {
+                this.worldObj.spawnParticle(
+                    "smoke",
+                    this.xCoord + rand.nextDouble(),
+                    this.yCoord + 1.1,
+                    this.zCoord + rand.nextDouble(),
+                    0.0D,
+                    0.0D,
+                    0.0D);
             }
         }
     }
 
     /**
-     * Create and return the casting event here. It'll be fired automatically.
+     * Sets the state for a new casting recipe, returns the fluid amount needed for
+     * casting
      */
-    public abstract SmelteryCastedEvent getCastedEvent(CastingRecipe recipe, ItemStack result);
-
-    public void castLiquid() {
-        CastingRecipe recipe = liquidCasting.getCastingRecipe(liquid, inventory[0]);
-        if (recipe != null) {
-            SmelteryCastedEvent event = getCastedEvent(recipe, recipe.getResult());
-            MinecraftForge.EVENT_BUS.post(event);
-            maxCastingDelay = 0;
-
-            inventory[1] = event.output;
-            if (event.consumeCast) inventory[0] = null;
-
-            // if we just created a cast, move it to the first slot so we can use it directly afterwards
-            if (event.output != null && event.output.getItem() instanceof IPattern) {
-                inventory[1] = inventory[0];
-                inventory[0] = event.output;
+    public int initNewCasting(Fluid fluid, boolean setNewRecipe) {
+        ICastingRecipe recipeFind = findRecipe(fluid);
+        if (recipeFind != null) {
+            if (setNewRecipe) {
+                this.recipe = recipeFind;
             }
-
-            liquid = null;
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            return recipeFind.getFluidAmount();
         }
+        return 0;
+    }
+
+    /**
+     * Return the recipe for the current state, if one exists. Don't forget to fire
+     * the OnCasting event!
+     */
+    protected abstract ICastingRecipe findRecipe(ItemStack cast, Fluid fluid);
+
+    protected ICastingRecipe findRecipe(Fluid fluid) {
+        ICastingRecipe recipeFind = findRecipe(getStackInSlot(0), fluid);
+        if (TinkerCastingEvent.OnCasting.fire(recipeFind, this)) {
+            return recipeFind;
+        }
+        // event was cancelled
+        return null;
     }
 
     @Override
@@ -437,10 +500,10 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
 
         if (tags.getBoolean("Initialized")) this.capacity = tags.getInteger("Capacity");
         else this.capacity = updateCapacity();
-        this.castingDelay = tags.getInteger("castingDelay");
-        this.maxCastingDelay = tags.getInteger("maxCastingDelay");
         this.renderOffset = tags.getInteger("RenderOffset");
-        this.direction = tags.getByte("Direction");
+        this.timer = tags.getInteger("timer");
+
+        this.updateFluidTo(this.liquid);
     }
 
     @Override
@@ -456,12 +519,9 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
             liquid.writeToNBT(nbt);
             tags.setTag("Fluid", nbt);
         }
-        tags.setBoolean("Initialized", init);
         tags.setInteger("Capacity", capacity);
-        tags.setInteger("castingDelay", castingDelay);
-        tags.setInteger("maxCastingDelay", maxCastingDelay);
         tags.setInteger("RenderOffset", renderOffset);
-        tags.setByte("Direction", direction);
+        tags.setInteger("timer", timer);
     }
 
     /* Packets */
@@ -478,12 +538,42 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
     }
 
-    public int getProgress() {
-        if (castingDelay == 0 || maxCastingDelay == 0) {
-            return 0;
+    /** Resets the current state completely */
+    public void reset() {
+        this.timer = 0;
+        this.recipe = null;
+        this.capacity = 0;
+        this.liquid = null;
+        this.renderOffset = 0;
+
+        if (this.worldObj != null && !this.worldObj.isRemote && this.worldObj instanceof WorldServer world) {
+            TinkerNetwork.sendToClients(world, this.getBlockPos(), new FluidUpdatePacket(this.getBlockPos(), null));
+        }
+    }
+
+    // called clientside to sync with the server and on load
+    public void updateFluidTo(FluidStack fluid) {
+        int oldAmount = this.liquid != null ? this.liquid.amount : 0;
+        this.liquid = fluid;
+
+        if (fluid == null) {
+            reset();
+            return;
+        } else if (recipe == null) {
+            recipe = findRecipe(fluid.getFluid());
+            if (recipe != null) {
+                this.capacity = recipe.getFluidAmount();
+            }
         }
 
-        return (int) (((maxCastingDelay - castingDelay) / (double) maxCastingDelay) * 100);
+        this.renderOffset += this.liquid.amount - oldAmount;
+    }
+
+    public float getProgress() {
+        if (recipe == null || this.liquid.amount == 0) {
+            return 0f;
+        }
+        return Math.min(1f, (float) timer / (float) recipe.getTime());
     }
 
 }
