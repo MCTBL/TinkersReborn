@@ -396,6 +396,8 @@ modifier.fortify.desc=§oHarder, better, faster, stronger!§r\nMining level incr
 
 
 // GUI
+tinkersreborn.gui.general.temperature.celsius=%s°C
+tinkersreborn.gui.general.temperature.kelvin=%sK
 tinkersreborn.gui.error=ERROR
 tinkersreborn.gui.warning=WARNING
 
@@ -409,3 +411,23 @@ tinkersreborn.gui.partcrafter.desc=Here you can craft tool parts to fulfill your
 tinkersreborn.gui.partbuilder.material_value=Material Value: %s
 tinkersreborn.gui.partbuilder.material_cant_make=Material %s can't make %s
 
+tinkersreborn.multi.smeltery.name=Smeltery
+tinkersreborn.gui.smeltery.fuel=Fuel
+tinkersreborn.gui.smeltery.fuel.empty=No fuel found
+tinkersreborn.gui.smeltery.fuel.invalid=§4%s is not a valid smeltery fuel!
+tinkersreborn.gui.smeltery.fuel.heat=Temperature: %d
+tinkersreborn.gui.smeltery.capacity=Capacity:
+tinkersreborn.gui.smeltery.capacity_available=Free:
+tinkersreborn.gui.smeltery.capacity_used=Used:
+tinkersreborn.gui.smeltery.liquid.kilobucket=kb
+tinkersreborn.gui.smeltery.liquid.bucket=b
+tinkersreborn.gui.smeltery.liquid.millibucket=mb
+tinkersreborn.gui.smeltery.liquid.ingot=Ingots
+tinkersreborn.gui.smeltery.liquid.nugget=Nuggets
+tinkersreborn.gui.smeltery.liquid.block=Blocks
+tinkersreborn.gui.smeltery.liquid.gem=Gems
+
+tinkersreborn.gui.smeltery.progress.no_recipe=Item can't be molten
+tinkersreborn.gui.smeltery.progress.no_fuel=No valid fuel in smeltery
+tinkersreborn.gui.smeltery.progress.no_heat=Not enough heat to melt this item
+tinkersreborn.gui.smeltery.progress.no_space=Not enough free space in the smeltery

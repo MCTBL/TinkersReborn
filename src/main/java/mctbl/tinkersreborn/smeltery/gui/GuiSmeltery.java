@@ -26,6 +26,7 @@ import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
 import mctbl.tinkersreborn.smeltery.network.SmelteryFluidClicked;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiquidTank {
 
@@ -178,15 +179,15 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
             if (hovered == null) {
                 int usedCap = tank.getFluidAmount();
                 int maxCap = tank.getCapacity();
-                text.add(EnumChatFormatting.WHITE + TinkersRebornUtils.translate("gui.smeltery.capacity"));
+                text.add(EnumChatFormatting.WHITE + TinkersStr.smtleteryCapacity.toString());
                 stringFn.accept(maxCap);
-                text.add(TinkersRebornUtils.translate("gui.smeltery.capacity_available"));
+                text.add(TinkersStr.smtleteryCapacityAvailable.toString());
                 stringFn.accept(maxCap - usedCap);
-                text.add(TinkersRebornUtils.translate("gui.smeltery.capacity_used"));
+                text.add(TinkersStr.smtleteryCapacityUsed.toString());
                 stringFn.accept(usedCap);
                 if (!TinkersRebornUtils.isShiftKeyDown()) {
                     text.add("");
-                    text.add(TinkersRebornUtils.translate("tooltip.tank.holdShift"));
+                    text.add(TinkersStr.holdShift.toString());
                 }
             } else {
                 text.add(EnumChatFormatting.WHITE + hovered.getLocalizedName());
@@ -237,7 +238,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
 
                 float h = (float) liquid.amount / (float) capacity;
                 totalFluidAmount += liquid.amount;
-                fluidHeights[i] = Math.max(min, (int) Math.ceil(h * (float) height));
+                fluidHeights[i] = Math.max(min, (int) Math.ceil(h * 1.0F * height));
             }
 
             // if not completely full, leave a few pixels for the empty tank display
@@ -282,24 +283,16 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
      * @param text   Text to add information to.
      */
     public void amountToString(int amount, List<String> text) {
-        amount = calcLiquidText(
-            amount,
-            1000000,
-            String.format(TinkersRebornUtils.translate("gui.smeltery.liquid.kilobucket")),
-            text);
-        amount = calcLiquidText(
-            amount,
-            1000,
-            String.format(TinkersRebornUtils.translate("gui.smeltery.liquid.bucket")),
-            text);
-        calcLiquidText(amount, 1, String.format(TinkersRebornUtils.translate("gui.smeltery.liquid.millibucket")), text);
+        amount = calcLiquidText(amount, 1000000, TinkersStr.smtleteryLiquidKB.toString(), text);
+        amount = calcLiquidText(amount, 1000, TinkersStr.smtleteryLiquidB.toString(), text);
+        calcLiquidText(amount, 1, TinkersStr.smtleteryLiquidmB.toString(), text);
     }
 
     public void amountToIngotString(int amount, List<String> text) {
         amount = calcLiquidText(
             amount,
             TinkersRebornMaterial.VALUE_Ingot,
-            TinkersRebornUtils.translate("gui.smeltery.liquid.ingot"),
+            TinkersStr.smtleteryLiquidIngot.toString(),
             text);
         amountToString(amount, text);
     }

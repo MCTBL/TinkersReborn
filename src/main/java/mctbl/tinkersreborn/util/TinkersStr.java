@@ -32,6 +32,8 @@ public enum TinkersStr {
     errorTitle("gui.error"),
     warningTitle("gui.warning"),
     partCrafterTitle("gui.partcrafter.title"),
+    guiCelsius("gui.general.temperature.celsius"),
+    guiKelvin("gui.general.temperature.kelvin"),
 
     toolStationRepairTitle("gui.toolstation.repair.title"),
     toolStationRepairDesc("gui.toolstation.repair.desc"),
@@ -44,6 +46,20 @@ public enum TinkersStr {
 
     smelteryFuelHeat("gui.smeltery.fuel.heat"),
     smelteryFuelEmpty("gui.smeltery.fuel.empty"),
+
+    smtleteryLiquidmB("gui.smeltery.liquid.millibucket"),
+    smtleteryLiquidB("gui.smeltery.liquid.bucket"),
+    smtleteryLiquidKB("gui.smeltery.liquid.kilobucket"),
+    smtleteryLiquidIngot("gui.smeltery.liquid.ingot"),
+
+    smtleteryNoRecipe("gui.smeltery.progress.no_recipe"),
+    smtleteryNoFuel("gui.smeltery.progress.no_fuel"),
+    smtleteryNoHeat("gui.smeltery.progress.no_heat"),
+    smtleteryNoSpace("gui.smeltery.progress.no_space"),
+
+    smtleteryCapacity("gui.smeltery.capacity"),
+    smtleteryCapacityAvailable("gui.smeltery.capacity_available"),
+    smtleteryCapacityUsed("gui.smeltery.capacity_used"),
 
     // general
     durability("durability"),

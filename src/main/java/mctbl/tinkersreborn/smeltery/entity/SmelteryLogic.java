@@ -52,7 +52,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public int currentMoltenMetalAmount;
 
     public SmelteryLogic() {
-        super("Smeltery");
+        super("smeltery");
         this.drains = new ArrayList<>();
     }
 

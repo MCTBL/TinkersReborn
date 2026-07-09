@@ -193,11 +193,9 @@ public class TinkersRebornUtils {
      */
     public static String temperatureString(int temperature, boolean celsius) {
         if (celsius) {
-            return String.format(
-                translate("tinkersreborn.gui.general.temperature.celsius"),
-                df.format(transferKelvinToCelsius(temperature)));
+            return String.format(TinkersStr.guiCelsius.toString(), df.format(transferKelvinToCelsius(temperature)));
         }
-        return String.format(translate("tinkersreborn.gui.general.temperature.kelvin"), temperature);
+        return String.format(TinkersStr.guiKelvin.toString(), temperature);
     }
 
     public static float transferKelvinToCelsius(int kelvin) {
