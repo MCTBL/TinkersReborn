@@ -3,10 +3,13 @@ package mctbl.tinkersreborn.smeltery.entity;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
@@ -15,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -25,9 +29,12 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.crafting.AlloyRecipe;
 import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
 import mctbl.tinkersreborn.library.event.TinkerSmelteryEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
@@ -41,8 +48,11 @@ import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic implements IFluidTank {
 
+    public static final DamageSource smelteryDamage = new DamageSource("smeltery").setFireDamage();
+
     private static final int MAX_SMELTERY_SIZE = 7;
     public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
+    protected static final int ALLOYING_PER_TICK = 10; // how much liquid can be created per tick to make alloys
     public static final String MOLTEN_METAL_LIST = "MoltenMetal";
 
     protected final List<BlockPos> drains;
@@ -74,7 +84,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             // This way fuel is only consumed if it's actually needed
             if (tickCounter % TinkersRebornConfig.heatItemsTickrateSmeltery == 0) {
                 heatItems();
-                // alloyAlloys();
+                alloyAlloys();
             }
 
             if (this.needsFuel) {
@@ -109,7 +119,87 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             maxPos.getZ() + 1);
         List<Entity> entitiesInsideSmeltery = this.worldObj.getEntitiesWithinAABB(Entity.class, bb);
         for (Entity entity : entitiesInsideSmeltery) {
+            // item?
+            if (entity instanceof EntityItem entityItem) {
+                if (TinkersRebornRegistry.getMelting(entityItem.getEntityItem()) != null) {
+                    ItemStack stack = entityItem.getEntityItem();
+                    // pick it up if we can melt it
+                    for (int i = 0; i < this.getSizeInventory(); i++) {
+                        if (!isStackInSlot(i)) {
+                            // remove 1 from the stack and add it to the smeltery
+                            ItemStack invStack = stack.copy();
+                            stack.stackSize -= 1;
+                            invStack.stackSize = 1;
+                            this.setInventorySlotContents(i, invStack);
+                        }
+                        if (stack.stackSize == 0) {
+                            // picked up whole stack
+                            entity.setDead();
+                            break;
+                        }
+                    }
+                }
+            } else
+                if (entity instanceof EntityLivingBase && entity.isEntityAlive() && this.currentMoltenMetalAmount > 0) {
+                    // we only melt living entities
+                    FluidStack meltingForEntity = TinkersRebornRegistry.getMeltingForEntity(entity);
+                    // no custom melting, there will be blood
+                    if (meltingForEntity == null) {
+                        meltingForEntity = new FluidStack(TinkersRebornGeneral.bloodFluid, 20);
+                    }
+                    // hurt it
+                    if (entity.attackEntityFrom(smelteryDamage, 2f)) {
+                        // spill the blood
+                        this.fill(meltingForEntity.copy(), true);
+                    }
+                }
+        }
+    }
 
+    // check for alloys and create them
+    protected void alloyAlloys() {
+        if (this.currentMoltenMetalAmount > this.maxMoltenMetalAmount) {
+            return;
+        }
+        for (AlloyRecipe recipe : TinkersRebornRegistry.getAlloys()) {
+            if (!recipe.isValid()) {
+                continue;
+            }
+            // find out how often we can apply the recipe
+            int matched = recipe.matches(this.moltenMetal);
+            if (matched > ALLOYING_PER_TICK) {
+                matched = ALLOYING_PER_TICK;
+            }
+            while (matched > 0) {
+                // remove all liquids from the tank
+                for (FluidStack liquid : recipe.getFluids()) {
+                    FluidStack toDrain = liquid.copy();
+                    FluidStack drained = this.drain(toDrain, true);
+                    if (!drained.isFluidEqual(toDrain) || drained.amount != toDrain.amount) {
+                        TinkersReborn.LOG.error(
+                            "Smeltery alloy creation drained incorrect amount: was {}:{}, should be {}:{}",
+                            drained.getUnlocalizedName(),
+                            drained.amount,
+                            toDrain.getUnlocalizedName(),
+                            toDrain.amount);
+                    }
+                }
+
+                // and insert the alloy
+                FluidStack toFill = recipe.getResult()
+                    .copy();
+                int filled = this.fill(toFill, true);
+                if (filled != recipe.getResult().amount) {
+                    TinkersReborn.LOG.error(
+                        "Smeltery alloy creation filled incorrect amount: was {}, should be {} ({})",
+                        filled,
+                        recipe.getResult().amount * matched,
+                        recipe.getResult()
+                            .getUnlocalizedName());
+                    break;
+                }
+                matched -= filled;
+            }
         }
     }
 
@@ -167,6 +257,32 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         }
 
         return canFill;
+    }
+
+    public FluidStack drain(FluidStack resource, boolean doDrain) {
+        // search for the resource
+        ListIterator<FluidStack> iter = this.moltenMetal.listIterator();
+        while (iter.hasNext()) {
+            FluidStack liquid = iter.next();
+            if (liquid.isFluidEqual(resource)) {
+                int drainable = Math.min(resource.amount, liquid.amount);
+                if (doDrain) {
+                    liquid.amount -= drainable;
+                    if (liquid.amount <= 0) {
+                        iter.remove();
+                    }
+                    this.onTankChanged(this.moltenMetal);
+                }
+
+                // return drained amount
+                resource = resource.copy();
+                resource.amount = drainable;
+                return resource;
+            }
+        }
+
+        // nothing drained
+        return null;
     }
 
     @Override

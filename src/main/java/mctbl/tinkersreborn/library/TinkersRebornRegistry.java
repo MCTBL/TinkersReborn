@@ -7,14 +7,18 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -25,6 +29,7 @@ import com.google.common.collect.ImmutableSet;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.library.crafting.AlloyRecipe;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
@@ -78,6 +83,7 @@ public class TinkersRebornRegistry {
     protected static final List<ICastingRecipe> basinCastRegistry = new ArrayList<>();
 
     protected static final Map<String, FluidStack> entityMeltingRegistry = new HashMap<>();
+    private static List<AlloyRecipe> alloyRegistry = new ArrayList<>();
     protected static final List<MaterialIntegration> materialIntegrations = new ArrayList<>();
     protected static final List<ItemStack> meltingBlacklist = new ArrayList<>();
 
@@ -305,9 +311,11 @@ public class TinkersRebornRegistry {
         // meltingRegistry.add(recipe);
         // } else {
         // try {
-        // String input = recipe.input.getInputs().stream().findFirst().map(ItemStack::getUnlocalizedName)
+        // String input =
+        // recipe.input.getInputs().stream().findFirst().map(ItemStack::getUnlocalizedName)
         // .orElse("?");
-        // log.debug("Registration of melting recipe for " + recipe.getResult().getUnlocalizedName() + " from "
+        // log.debug("Registration of melting recipe for " +
+        // recipe.getResult().getUnlocalizedName() + " from "
         // + input + " has been cancelled by event");
         // } catch (Exception e) {
         // log.error("Error when logging melting event", e);
@@ -336,7 +344,8 @@ public class TinkersRebornRegistry {
         // try {
         // String output = Optional.ofNullable(recipe.getResult(ItemStack.EMPTY,
         // FluidRegistry.WATER)).map(ItemStack::getUnlocalizedName).orElse("Unknown");
-        // log.debug("Registration of table casting recipe for " + output + " has been cancelled by event");
+        // log.debug("Registration of table casting recipe for " + output + " has been
+        // cancelled by event");
         // } catch(Exception e) {
         // log.error("Error when logging table casting event", e);
         // }
@@ -364,7 +373,8 @@ public class TinkersRebornRegistry {
         // try {
         // String output = Optional.ofNullable(recipe.getResult(ItemStack.EMPTY,
         // FluidRegistry.WATER)).map(ItemStack::getUnlocalizedName).orElse("Unknown");
-        // log.debug("Registration of basin casting recipe for " + output + " has been cancelled by event");
+        // log.debug("Registration of basin casting recipe for " + output + " has been
+        // cancelled by event");
         // } catch(Exception e) {
         // log.error("Error when logging basin casting event", e);
         // }
@@ -500,11 +510,13 @@ public class TinkersRebornRegistry {
                 blockOre.getRight()));
 
         // plate casting
-        // registerTableCasting(new PreferenceCastingRecipe(plateOre.getLeft(), RecipeMatch.ofNBT(castPlate), fluid,
+        // registerTableCasting(new PreferenceCastingRecipe(plateOre.getLeft(),
+        // RecipeMatch.ofNBT(castPlate), fluid,
         // plateOre.getRight()));
         // gear casting
         // registerTableCasting(
-        // new PreferenceCastingRecipe(gearOre.getLeft(), RecipeMatch.ofNBT(castGear), fluid, gearOre.getRight()));
+        // new PreferenceCastingRecipe(gearOre.getLeft(), RecipeMatch.ofNBT(castGear),
+        // fluid, gearOre.getRight()));
 
         // and also cast creation!
         for (FluidStack fs : fluidForCast) {
@@ -512,8 +524,10 @@ public class TinkersRebornRegistry {
                 new CastingRecipe(TinkersRebornTools.castIngot, RecipeMatch.of(ingotOre.getLeft()), fs, true, true));
             registerTableCasting(
                 new CastingRecipe(TinkersRebornTools.castNugget, RecipeMatch.of(nuggetOre.getLeft()), fs, true, true));
-            // registerTableCasting(new CastingRecipe(castPlate, RecipeMatch.of(plateOre.getLeft()), fs, true, true));
-            // registerTableCasting(new CastingRecipe(castGear, RecipeMatch.of(gearOre.getLeft()), fs, true, true));
+            // registerTableCasting(new CastingRecipe(castPlate,
+            // RecipeMatch.of(plateOre.getLeft()), fs, true, true));
+            // registerTableCasting(new CastingRecipe(castGear,
+            // RecipeMatch.of(gearOre.getLeft()), fs, true, true));
         }
     }
 
@@ -579,5 +593,146 @@ public class TinkersRebornRegistry {
 
     public static void addFluidForCast() {
         fluidForCast.add(new FluidStack(TinkersRebornTools.goldFluid, TinkersRebornMaterial.VALUE_Ingot * 2));
+    }
+
+    /**
+     * Register all entities (and optionally subtypes) from config to melt into the
+     * specified fluidstack
+     */
+    public static void registerEntityMelting() {
+        for (String entry : TinkersRebornConfig.entityMelting) {
+            String[] parts = entry.split(";");
+            if (parts.length != 4) {
+                TinkersReborn.LOG.error("Invalid entity melting entry: {}", entry);
+                continue;
+            }
+            String entityRL = parts[0];
+            String subtypes = parts[1];
+            String fluidName = parts[2];
+            int amount;
+            try {
+                amount = Integer.parseInt(parts[3]);
+            } catch (NumberFormatException e) {
+                TinkersReborn.LOG.error("Invalid fluid amount in entity melting entry: {}", entry);
+                continue;
+            }
+
+            Class<? extends Entity> entityEntry = EntityList.stringToClassMapping.get(entityRL);
+            if (entityEntry == null) {
+                TinkersReborn.LOG.error("Entity not found for melting: {}", entityRL);
+                continue;
+            }
+            Fluid fluid = FluidRegistry.getFluid(fluidName);
+            if (fluid == null) {
+                TinkersReborn.LOG.error("Fluid not found for entity melting: {}", fluidName);
+                continue;
+            }
+
+            FluidStack fluidStack = new FluidStack(fluid, amount);
+            if (subtypes.equals("true")) {
+                TinkersRebornRegistry.registerEntityMeltingForAll(entityEntry, fluidStack);
+            } else {
+                TinkersRebornRegistry.registerEntityMelting(entityEntry, fluidStack);
+            }
+        }
+    }
+
+    /**
+     * Register all entities that extend the given class to melt into the specified
+     * fluidstack
+     */
+    public static void registerEntityMeltingForAll(Class<? extends Entity> clazz, FluidStack liquid) {
+        for (Class<? extends Entity> entityClass : EntityList.stringToClassMapping.values()) {
+            if (clazz.isAssignableFrom(entityClass)) {
+                registerEntityMelting(entityClass, liquid);
+            }
+        }
+    }
+
+    /**
+     * Register an entity to melt into the given fluidstack. The fluidstack is
+     * returned for 1 heart damage
+     */
+    public static void registerEntityMelting(Class<? extends Entity> clazz, FluidStack liquid) {
+        String name = EntityList.classToStringMapping.get(clazz);
+
+        if (name == null) {
+            TinkersReborn.LOG
+                .fatal("Entity Melting: Entity {} is not registered in the EntityList", clazz.getSimpleName());
+            return;
+        }
+        entityMeltingRegistry.put(name, liquid);
+        TinkersReborn.LOG.info(
+            "Registered entity melting for {} into {} mB of {}",
+            clazz.getSimpleName(),
+            liquid.amount,
+            liquid.getLocalizedName());
+    }
+
+    public static FluidStack getMeltingForEntity(Entity entity) {
+        String name = EntityList.classToStringMapping.get(entity.getClass());
+        FluidStack fluidStack = entityMeltingRegistry.get(name);
+        // check if the fluid is the correct one to use
+        return Optional.ofNullable(fluidStack)
+            .orElse(null);
+    }
+
+    public static void registerAlloy(FluidStack result, FluidStack... inputs) {
+        if (result.amount < 1) {
+            TinkersReborn.LOG.fatal(
+                "Alloy Recipe: Resulting alloy {} has to have an amount ({})",
+                result.getLocalizedName(),
+                result.amount);
+            return;
+        }
+        if (inputs.length < 2) {
+            TinkersReborn.LOG
+                .fatal("Alloy Recipe: Alloy for {} must consist of at least 2 liquids", result.getLocalizedName());
+            return;
+        }
+
+        registerAlloy(new AlloyRecipe(result, inputs));
+    }
+
+    public static void registerAlloy(AlloyRecipe recipe) {
+        // if(new TinkerRegisterEvent.AlloyRegisterEvent(recipe).fire()) {
+        alloyRegistry.add(recipe);
+        // }
+        // else {
+        // try {
+        // String input = recipe.getFluids().stream().map(FluidStack::getUnlocalizedName).collect(Collectors.joining(",
+        // "));
+        // String output = recipe.getResult().getUnlocalizedName();
+        // log.debug("Registration of alloy recipe for " + output + " from [" + input + "] has been cancelled by
+        // event");
+        // } catch(Exception e) {
+        // log.error("Error when logging alloy event", e);
+        // }
+        // }
+    }
+
+    public static boolean isIntegrated(Fluid fluid) {
+        String name = FluidRegistry.getFluidName(fluid);
+        if (name != null) {
+            for (MaterialIntegration integration : getMaterialIntegrations()) {
+                if (integration.isIntegrated() && integration.fluid != null
+                    && name.equals(integration.fluid.getName())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isIntegrated(Fluid... fluids) {
+        return Arrays.asList(fluids)
+            .stream()
+            .map(TinkersRebornRegistry::isIntegrated)
+            .allMatch(Boolean::booleanValue);
+    }
+
+    public static List<AlloyRecipe> getAlloys() {
+        return alloyRegistry;
     }
 }

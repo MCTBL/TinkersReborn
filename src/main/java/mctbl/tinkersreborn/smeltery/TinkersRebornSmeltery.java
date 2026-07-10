@@ -15,6 +15,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
@@ -117,6 +118,8 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     @Override
     public void postInit(FMLPostInitializationEvent e) {
 
+        TinkersRebornRegistry.registerEntityMelting();
+        this.registerAlloys();
     }
 
     private void craftingTableRecipes() {
@@ -201,5 +204,54 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             .registerMelting(Blocks.detector_rail, TinkersRebornTools.ironFluid, TinkersRebornMaterial.VALUE_Ingot);
         // TinkersRebornRegistry.registerMelting(Blocks.golden_rail, TinkersRebornTools.goldFluid,
         // TinkersRebornMaterial.VALUE_Ingot);
+    }
+
+    /**
+     * Called by Tinkers Integration to register allows, some are conditional on integrations being loaded
+     */
+    public void registerAlloys() {
+        // 1 bucket lava + 1 bucket water = 2 ingots = 1 block obsidian
+        // 1000 + 1000 = 288
+        // 125 + 125 = 36
+        TinkersRebornRegistry.registerAlloy(
+            new FluidStack(TinkersRebornTools.obsidianFluid, 36),
+            new FluidStack(FluidRegistry.WATER, 125),
+            new FluidStack(FluidRegistry.LAVA, 125));
+
+        // 1 iron ingot + 80mB blood + 640mB emerald = 1 pigiron
+        TinkersRebornRegistry.registerAlloy(
+            new FluidStack(TinkersRebornTools.pigIronFluid, 144),
+            new FluidStack(TinkersRebornTools.ironFluid, 144),
+            new FluidStack(TinkersRebornGeneral.bloodFluid, 80),
+            new FluidStack(TinkersRebornTools.emeraldFluid, 640));
+
+        // 2 ingot cobalt + 2 ingot ardite = 2 ingot manyullyn!
+        // 144 + 144 = 144
+        TinkersRebornRegistry.registerAlloy(
+            new FluidStack(TinkersRebornTools.manyullynFluid, 2),
+            new FluidStack(TinkersRebornTools.cobaltFluid, 2),
+            new FluidStack(TinkersRebornTools.arditeFluid, 2));
+
+        // 3 ingots copper + 1 ingot tin = 4 ingots bronze
+        if (TinkersRebornRegistry.isIntegrated(
+            TinkersRebornTools.bronzeFluid,
+            TinkersRebornTools.copperFluid,
+            TinkersRebornTools.tinFluid)) {
+            TinkersRebornRegistry.registerAlloy(
+                new FluidStack(TinkersRebornTools.bronzeFluid, 4),
+                new FluidStack(TinkersRebornTools.copperFluid, 3),
+                new FluidStack(TinkersRebornTools.tinFluid, 1));
+        }
+
+        if (TinkersRebornRegistry.isIntegrated(
+            TinkersRebornTools.alumiteFluid,
+            TinkersRebornTools.aluminumFluid,
+            TinkersRebornTools.ironFluid)) {
+            TinkersRebornRegistry.registerAlloy(
+                new FluidStack(TinkersRebornTools.alumiteFluid, 144),
+                new FluidStack(TinkersRebornTools.aluminumFluid, 144),
+                new FluidStack(TinkersRebornTools.ironFluid, 144),
+                new FluidStack(TinkersRebornTools.obsidianFluid, 288));
+        }
     }
 }

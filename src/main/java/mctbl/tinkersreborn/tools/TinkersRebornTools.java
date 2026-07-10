@@ -746,7 +746,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         goldFluid = TinkersRebornFluid.createMolten("gold", 0xFFD700, "gold", 532);
         tinFluid = TinkersRebornFluid.createMolten("tin", 0xE6E6FA, "tin", 350);
-        emeraldFluid = TinkersRebornFluid.createMolten("emerald", 0x00AA2C, "emerald", 500);
+        emeraldFluid = TinkersRebornFluid.createMolten("emerald", 0x17DD62, "emerald", 500);
         aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xCCCCCC, "aluminum", 330);
 
         this.registerBaseMaterialsStats();

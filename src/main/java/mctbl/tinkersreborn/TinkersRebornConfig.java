@@ -52,6 +52,8 @@ public class TinkersRebornConfig {
 
     public static String[] fluidIgnore;
 
+    public static String[] entityMelting;
+
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
@@ -163,6 +165,15 @@ public class TinkersRebornConfig {
             4,
             "The tickrate at which items are heated and alloys are created in the smeltery. Defaults to every 4th tick.")
             .getInt();
+
+        entityMelting = config
+            .get(
+                "Smeltery",
+                "entityMelting",
+                new String[] { "SnowMan;true;water;100", "Villager;true;molten_emerald;6",
+                    "VillagerGolem;true;molten_iron;18", "PigZombie;true;molten_gold;10", },
+                "List of entity melting entries in the format 'entity;subtypes;fluid;amount'.")
+            .getStringList();
     }
 
 }
