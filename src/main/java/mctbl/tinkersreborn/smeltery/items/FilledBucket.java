@@ -108,19 +108,10 @@ public class FilledBucket extends ItemBucket {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        String bucketName;
-        String fluidUnName = TinkersRebornRegistry.getFluidByIdentifier(this.readNBT(stack))
-            .getUnlocalizedName();
-        if (fluidUnName.startsWith("molten_")) {
-            bucketName = TinkersRebornUtils.translate("tinkersreborn.moltenBucket");
-            fluidUnName = TinkersRebornRegistry.getMaterialByIdentifier(fluidUnName.replace("molten_", ""))
-                .localizedName();
-        } else {
-            bucketName = TinkersRebornUtils.translate("tinkersreborn.bucket");
-            fluidUnName = TinkersRebornUtils.translate("fluid." + fluidUnName);
-        }
-
-        return bucketName.replace("%%material", fluidUnName);
+        String bucketName = TinkersRebornUtils.translate("tinkersreborn.bucket");
+        String fluidName = TinkersRebornRegistry.getFluidByIdentifier(this.readNBT(stack))
+            .getLocalizedName();
+        return bucketName.replace("%%material", fluidName);
     }
 
     @Override

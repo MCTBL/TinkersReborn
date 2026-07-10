@@ -69,8 +69,14 @@ tinkersreborn.SearedBlock.Basin.name=Casting Basin
 
 tinkersreborn.moltenBucket=Molten %%material Bucket
 tinkersreborn.bucket=%%material Bucket
+tinkersreborn.moltenFluid=Molten %%material
 
 fluid.blue_slime=Blue Slime
+fluid.blood=Blood
+fluid.molten_gold=Gold
+fluid.molten_emerald=Emerald
+fluid.molten_tin=Tin
+fluid.molten_aluminum=Aluminum
 
 
 tinkersreborn.material.Mossball.name=Ball of Moss

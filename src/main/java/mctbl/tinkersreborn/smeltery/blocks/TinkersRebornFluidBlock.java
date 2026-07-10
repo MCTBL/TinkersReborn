@@ -15,7 +15,6 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
 
     public IIcon stillIcon;
     public IIcon flowIcon;
-    boolean overwriteFluidIcons = true;
     private TinkersRebornFluid fluid = null;
     String unlocalizedName;
 
@@ -30,6 +29,11 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
     @Override
     public String getUnlocalizedName() {
         return this.unlocalizedName;
+    }
+
+    @Override
+    public String getLocalizedName() {
+        return this.fluid.getLocalizedName();
     }
 
     @Override

@@ -2,6 +2,10 @@ package mctbl.tinkersreborn.smeltery.blocks;
 
 import net.minecraftforge.fluids.Fluid;
 
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+
 public class TinkersRebornFluid extends Fluid {
 
     public final int color;
@@ -29,6 +33,19 @@ public class TinkersRebornFluid extends Fluid {
             .setTemperature(temperature)
             .setLuminosity(12);
         return f;
+    }
+
+    @Override
+    public String getLocalizedName() {
+        TinkersRebornMaterial material = TinkersRebornRegistry.getMaterialByIdentifier(identifier);
+        String name = material != TinkersRebornMaterial.UNKNOWN ? material.localizedName()
+            : TinkersRebornUtils.translate(this.getUnlocalizedName());
+
+        if (getTemperature() > 300) {
+            name = TinkersRebornUtils.translate("tinkersreborn.moltenFluid")
+                .replace("%%material", name);
+        }
+        return name;
     }
 
     @Override
