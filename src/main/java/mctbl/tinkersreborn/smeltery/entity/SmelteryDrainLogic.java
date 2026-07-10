@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -75,19 +77,18 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
                 }
             }
         }
-        // return from == getForgeDirection().getOpposite() && containsFluid;
         return containsFluid;
     }
 
     @Override
+    @Nullable
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        // if (hasValidMaster() && (from == getForgeDirection() || from == getForgeDirection().getOpposite()
-        // || from == ForgeDirection.UNKNOWN)) {
-        // SmelteryLogic smeltery = (SmelteryLogic) worldObj
-        // .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
-        // return smeltery.getMultiTankInfo();
-        // // return new FluidTankInfo[] { smeltery.getInfo() };
-        // }
+        if (hasValidMaster() && (from == getForgeDirection() || from == getForgeDirection().getOpposite()
+            || from == ForgeDirection.UNKNOWN)) {
+            SmelteryLogic smeltery = (SmelteryLogic) worldObj
+                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
+            return smeltery.getMultiTankInfo();
+        }
         return null;
     }
 
@@ -134,7 +135,7 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public void setFacedDirection(EntityLivingBase player) {
-        int facing = player != null ? MathHelper.floor_double((double) (player.rotationYaw / 90F) + 0.5D) & 3 : 0;
+        int facing = player != null ? MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3 : 0;
         switch (facing) {
             case 0 -> this.faceDirection = ForgeDirection.NORTH;
             case 1 -> this.faceDirection = ForgeDirection.EAST;

@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -27,7 +29,8 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
 
     public boolean activateFaucet() {
         if (liquid == null && active) {
-            int x = xCoord - getForgeDirection().offsetX, z = zCoord - getForgeDirection().offsetZ;
+            int x = xCoord - getForgeDirection().offsetX;
+            int z = zCoord - getForgeDirection().offsetZ;
 
             TileEntity drainte = worldObj.getTileEntity(x, yCoord, z);
             TileEntity tankte = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
@@ -149,6 +152,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     }
 
     @Override
+    @Nullable
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
         return null;
     }

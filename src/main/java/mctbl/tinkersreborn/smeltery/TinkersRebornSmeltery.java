@@ -243,6 +243,8 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
                 new FluidStack(TinkersRebornTools.tinFluid, 1));
         }
 
+        // 1 ingot aluminum + 1 ingot iron + 1 obsidian = 1 alumite
+        // 144 + 144 + 288 = 144
         if (TinkersRebornRegistry.isIntegrated(
             TinkersRebornTools.alumiteFluid,
             TinkersRebornTools.aluminumFluid,

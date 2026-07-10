@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -683,5 +684,13 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         tags.setInteger("CurrentMoltenMetalAmount", this.currentMoltenMetalAmount);
         tags.setInteger("BlocksPerLayer", this.blocksPerLayer);
         tags.setInteger("MultiLayers", this.multiLayers);
+    }
+
+    public FluidTankInfo[] getMultiTankInfo() {
+        List<FluidTankInfo> collect = this.moltenMetal.stream()
+            .map(fluidStack -> new FluidTankInfo(fluidStack.copy(), fluidStack.amount))
+            .collect(Collectors.toList());
+        collect.add(new FluidTankInfo(null, this.maxMoltenMetalAmount - this.currentMoltenMetalAmount));
+        return collect.toArray(new FluidTankInfo[] {});
     }
 }
