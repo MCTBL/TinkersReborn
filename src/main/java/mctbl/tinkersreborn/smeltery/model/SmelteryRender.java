@@ -2,13 +2,16 @@ package mctbl.tinkersreborn.smeltery.model;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.FluidStack;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.library.utils.BlockSkinRenderHelper;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.util.ItemHelper;
@@ -28,23 +31,22 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
     public boolean renderWorldBlock(IBlockAccess world, int x, int y, int z, Block block, int modelID,
         RenderBlocks renderer) {
         if (modelID == smelteryModel && world.getBlock(x, y, z) == TinkersRebornSmeltery.smelteryController)
-            return renderSmeltery(world, x, y, z, block, modelID, renderer);
+            return renderSmeltery(world, x, y, z, block, renderer);
         return false;
     }
 
-    public boolean renderSmeltery(IBlockAccess world, int x, int y, int z, Block block, int modelID,
-        RenderBlocks renderer) {
+    public boolean renderSmeltery(IBlockAccess world, int x, int y, int z, Block block, RenderBlocks renderer) {
         boolean ret = renderer.renderStandardBlock(block, x, y, z);
         final SmelteryLogic logic = (SmelteryLogic) world.getTileEntity(x, y, z);
-        if (logic != null && logic.validStructure) {
+        if (logic != null && logic.getActive()) {
             BlockPos from = logic.minPos;
             BlockPos to = logic.maxPos;
 
             // Melting
             if (logic.getSizeInventory() > 0) {
-                // for (int i = 0; i < logic.layers; i++) {
-                // renderLayer(logic, i * logic.getBlocksPerLayer(), from, to, from.y + i, renderer, world);
-                // }
+                for (int i = 0; i < logic.multiLayers; i++) {
+                    renderLayer(logic, i * logic.blocksPerLayer, from, to, from.y + i, renderer, world);
+                }
             }
 
             // Liquids
@@ -71,14 +73,16 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
                     //
                     // renderer.setRenderBounds(0, renderBase, 0, 1, renderHeight, 1);
                     // Fluid fluid = liquid.getFluid();
-                    // for (int xi = from.x; xi <= to.x; xi++) for (int zi = from.z; zi <= to.z; zi++) {
+                    // for (int xi = from.x; xi <= to.x; xi++) for (int zi = from.z; zi <= to.z;
+                    // zi++) {
                     // float minX = xi == from.x ? -0.001F : 0F;
                     // float minZ = zi == from.z ? -0.001F : 0F;
                     // float maxX = xi == to.x ? 1.001F : 1F;
                     // float maxZ = zi == to.z ? 1.001F : 1F;
                     // renderer.setRenderBounds(minX, renderBase, minZ, maxX, renderHeight, maxZ);
                     // if (fluid.canBePlacedInWorld()) BlockSkinRenderHelper
-                    // .renderMetadataBlock(fluid.getBlock(), 0, xi, from.y + yBase, zi, renderer, world);
+                    // .renderMetadataBlock(fluid.getBlock(), 0, xi, from.y + yBase, zi, renderer,
+                    // world);
                     // else BlockSkinRenderHelper.renderLiquidBlock(
                     // fluid.getStillIcon(),
                     // fluid.getFlowingIcon(),
@@ -112,23 +116,24 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
             // safety because of changes.
             if (i > logic.getSizeInventory()) return;
             ItemStack input = logic.getStackInSlot(i);
-            // if (input != null && logic.getTempForSlot(i) > 20) {
-            // ItemStack blockToRender = Smeltery.getRenderIndex(input);
-            // if (blockToRender != null) {
-            // float blockHeight = input.stackSize / (float) blockToRender.stackSize;
-            // renderer.setRenderBounds(
-            // 0.0F,
-            // 0.0F,
-            // 0.0F,
-            // 1.0F,
-            // MathHelper.clamp_float(blockHeight, 0.01F, 1.0F),
-            // 1.0F);
-            //
-            // Block liquidBlock = Block.getBlockFromItem(blockToRender.getItem());
-            // BlockSkinRenderHelper
-            // .renderMetadataBlock(liquidBlock, blockToRender.getItemDamage(), x, posY, z, renderer, world);
-            // }
-            // }
+            if (input != null && logic.getTempRequired(i) > 20 && input.getItem() instanceof ItemBlock) {
+                ItemStack blockToRender = input;
+                // ItemStack blockToRender = Smeltery.getRenderIndex(input);
+                if (blockToRender != null) {
+                    float blockHeight = input.stackSize / (float) blockToRender.stackSize;
+                    renderer.setRenderBounds(
+                        0.0F,
+                        0.0F,
+                        0.0F,
+                        1.0F,
+                        MathHelper.clamp_float(blockHeight, 0.01F, 1.0F),
+                        1.0F);
+
+                    Block liquidBlock = Block.getBlockFromItem(blockToRender.getItem());
+                    BlockSkinRenderHelper
+                        .renderMetadataBlock(liquidBlock, blockToRender.getItemDamage(), x, posY, z, renderer, world);
+                }
+            }
             i++;
         }
     }

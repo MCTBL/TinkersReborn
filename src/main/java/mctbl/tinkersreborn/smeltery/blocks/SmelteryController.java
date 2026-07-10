@@ -45,8 +45,8 @@ public class SmelteryController extends TinkersRebornMultiBlock {
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
         TileEntity logic = world.getTileEntity(x, y, z);
-        ForgeDirection faceingDirection = (logic instanceof ITinkersRebornIFacingLogic)
-            ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
+        ForgeDirection faceingDirection = (logic instanceof ITinkersRebornIFacingLogic facingLogic)
+            ? facingLogic.getForgeDirection()
             : ForgeDirection.NORTH;
 
         // smeltry or furnace
@@ -71,8 +71,7 @@ public class SmelteryController extends TinkersRebornMultiBlock {
         if (isActive(world, x, y, z)) {
             TileEntity logic = world.getTileEntity(x, y, z);
             ForgeDirection face = ForgeDirection.NORTH;
-            if (logic instanceof ITinkersRebornIFacingLogic)
-                face = ((ITinkersRebornIFacingLogic) logic).getForgeDirection();
+            if (logic instanceof ITinkersRebornIFacingLogic facingLogic) face = facingLogic.getForgeDirection();
 
             world.spawnParticle(
                 "smoke",

@@ -50,6 +50,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public final List<FluidStack> moltenMetal = new ArrayList<>();
     public int maxMoltenMetalAmount;
     public int currentMoltenMetalAmount;
+    public int blocksPerLayer;
+    public int multiLayers;
 
     public SmelteryLogic() {
         super("smeltery");
@@ -326,6 +328,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
                         .equals(masterPos))
                     servant.removeMaster();
             }
+            this.blocksPerLayer = 0;
+            this.multiLayers = 0;
         }
 
         worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
@@ -389,8 +393,9 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     }
 
     protected void adjustLayers() {
-        int innerBlockCount = (this.maxPos.x - this.minPos.x + 1) * (this.maxPos.y - this.minPos.y + 1)
-            * (this.maxPos.z - this.minPos.z + 1);
+        this.blocksPerLayer = (this.maxPos.x - this.minPos.x + 1) * (this.maxPos.z - this.minPos.z + 1);
+        this.multiLayers = (this.maxPos.y - this.minPos.y + 1);
+        int innerBlockCount = this.blocksPerLayer * multiLayers;
         this.resizeInventory(innerBlockCount);
         this.resizeTemperatures(innerBlockCount);
         this.maxMoltenMetalAmount = MB_PER_BLOCK_CAPACITY * innerBlockCount;
@@ -530,6 +535,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         }
         this.maxMoltenMetalAmount = tags.getInteger("MaxMoltenMetalAmount");
         this.currentMoltenMetalAmount = tags.getInteger("CurrentMoltenMetalAmount");
+        this.blocksPerLayer = tags.getInteger("BlocksPerLayer");
+        this.multiLayers = tags.getInteger("MultiLayers");
     }
 
     @Override
@@ -548,5 +555,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
         tags.setTag(MOLTEN_METAL_LIST, fluidList);
         tags.setInteger("MaxMoltenMetalAmount", this.maxMoltenMetalAmount);
         tags.setInteger("CurrentMoltenMetalAmount", this.currentMoltenMetalAmount);
+        tags.setInteger("BlocksPerLayer", this.blocksPerLayer);
+        tags.setInteger("MultiLayers", this.multiLayers);
     }
 }
