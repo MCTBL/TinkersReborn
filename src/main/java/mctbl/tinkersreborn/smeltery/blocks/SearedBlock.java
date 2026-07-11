@@ -61,9 +61,8 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
         // casting table or basin
         if (md == 0 || md == 2) {
             return activateCastingBlock(world, x, y, z, player);
-        }
-        // faucet
-        else if (md == 1) {
+        } else if (md == 1) {
+            // faucet
             if (player.isSneaking()) return false;
 
             if (!world.isRemote) {

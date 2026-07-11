@@ -20,6 +20,8 @@ import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 
 public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogic, IActiveLogic, IFluidHandler {
+    
+    public static final String TAG_ACTIVE = "active";
 
     public ForgeDirection faceDirection;
 
@@ -57,7 +59,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     @Override
     public void updateEntity() {
         if (liquid != null) {
-            liquid.amount -= TinkersRebornMaterial.VALUE_Ingot;
+            liquid.amount -= 6;
             if (liquid.amount <= 0) {
                 liquid = null;
                 if (!activateFaucet()) {
@@ -79,6 +81,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
         if (tags.getBoolean("hasLiquid")) {
             this.liquid = FluidStack.loadFluidStackFromNBT(tags.getCompoundTag("Fluid"));
         } else this.liquid = null;
+        this.active = tags.getBoolean(TAG_ACTIVE);
     }
 
     @Override
@@ -95,6 +98,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
             liquid.writeToNBT(nbt);
             tags.setTag("Fluid", nbt);
         }
+        tags.setBoolean(TAG_ACTIVE, this.active);
     }
 
     /* Packets */
@@ -163,7 +167,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     }
 
     @Override
-    public void setFrogeDirection(ForgeDirection direction) {
+    public void setForgeDirection(ForgeDirection direction) {
         this.faceDirection = direction;
     }
 
