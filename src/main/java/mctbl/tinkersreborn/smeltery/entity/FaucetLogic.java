@@ -163,7 +163,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
 
     @Override
     public ForgeDirection getForgeDirection() {
-        return this.faceDirection;
+        return this.faceDirection != null ? this.faceDirection : ForgeDirection.UNKNOWN;
     }
 
     @Override

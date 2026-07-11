@@ -10,9 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -138,18 +136,16 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
             TileEntity te = this.worldObj
                 .getTileEntity(this.activeLavaTank.x, this.activeLavaTank.y, this.activeLavaTank.z);
             if (te instanceof LavaTankLogic tankLogic) {
-                IFluidTank tank = tankLogic.tank;
-
-                FluidStack liquid = tank.getFluid();
+                FluidStack liquid = tankLogic.getFluid();
                 if (liquid != null) {
                     FluidStack in = liquid.copy();
                     int bonusFuel = TinkersRebornRegistry.consumeSmelteryFuel(in);
                     int amount = liquid.amount - in.amount;
-                    FluidStack drained = tank.drain(amount, false);
+                    FluidStack drained = tankLogic.drain(null, amount, false);
 
                     // we can drain. actually drain and add the fuel
                     if (drained != null && drained.amount == amount) {
-                        tank.drain(amount, true);
+                        tankLogic.drain(null, amount, true);
                         this.currentFuel = drained.copy();
                         this.fuelReleaseTicks = bonusFuel;
                         this.addFuel(
@@ -219,7 +215,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
 
     // checks if the given location has a fluid tank that contains fuel
     private boolean hasTankWithFuel(BlockPos pos) {
-        IFluidTank tank = getTankAt(pos);
+        LavaTankLogic tank = getTankAt(pos);
         if (tank != null && tank.getFluid() != null) {
             if (tank.getFluidAmount() > 0 && TinkersRebornRegistry.isSmelteryFuel(tank.getFluid())) {
                 // if we have a preference, only use that
@@ -237,10 +233,10 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
      * Grabs the tank at the given location (if present)
      */
     @Nullable
-    private IFluidTank getTankAt(BlockPos pos) {
+    private LavaTankLogic getTankAt(BlockPos pos) {
         TileEntity te = this.worldObj.getTileEntity(pos.x, pos.y, pos.z);
         if (te instanceof LavaTankLogic logic) {
-            return logic.tank;
+            return logic;
         }
 
         return null;
@@ -462,26 +458,12 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     public FuelInfo getFuelDisplay() {
         FuelInfo info = new FuelInfo();
 
-        // we still have leftover fuel
-        if (this.fuelReleaseTicks > 0) {
-            // if the current fuel is null, something in the fluid registry changed
-            // just replace it with lava and ignore for now, it will fix next time we
-            // consume fuel
-            if (currentFuel == null) {
-                info.fluid = new FluidStack(FluidRegistry.LAVA, 0);
-                info.maxCap = 1;
-            } else {
-                info.fluid = currentFuel.copy();
-                info.fluid.amount = 0;
-                info.maxCap = currentFuel.amount;
-            }
-            info.heat = this.temperature + 273;
-        } else if (this.activeLavaTank != null && hasTankWithFuel(activeLavaTank)) {
+        if (this.activeLavaTank != null && hasTankWithFuel(activeLavaTank)) {
             // we need to consume fuel, check the current tank
-            IFluidTank tank = getTankAt(activeLavaTank);
+            LavaTankLogic tank = getTankAt(activeLavaTank);
             if (tank != null) {
                 FluidStack tankFluid = tank.getFluid();
-                assert tankFluid != null;
+
                 info.fluid = tankFluid.copy();
                 info.heat = temperature + 273;
                 info.maxCap = tank.getCapacity();
@@ -491,14 +473,14 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         // check all other tanks (except the current one that we already checked) for
         // more fuel
         for (BlockPos pos : this.lavaTanks) {
-            if (pos == activeLavaTank) {
+            if (pos.equals(activeLavaTank)) {
                 continue;
             }
 
-            IFluidTank tank = getTankAt(pos);
+            LavaTankLogic tank = getTankAt(pos);
             // tank exists and has something in it
             if (tank != null && tank.getFluidAmount() > 0) {
-                assert tank.getFluid() != null;
+
                 // we don't have fuel yet, use this
                 if (info.fluid == null) {
                     info.fluid = tank.getFluid()

@@ -147,7 +147,7 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public ForgeDirection getForgeDirection() {
-        return this.faceDirection;
+        return this.faceDirection != null ? this.faceDirection : ForgeDirection.UNKNOWN;
     }
 
     @Override

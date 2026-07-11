@@ -36,6 +36,10 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
         return amount;
     }
 
+    public FluidStack getFluid() {
+        return tank.getFluid();
+    }
+
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
         FluidStack amount = tank.drain(maxDrain, doDrain);
@@ -77,10 +81,13 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
         return new FluidTankInfo[] { new FluidTankInfo(fluid, tank.getCapacity()) };
     }
 
-    /*
-     * @Override public IFluidTank[] getTanks (ForgeDirection direction) { return new IFluidTank[] { tank }; }
-     * @Override public IFluidTank getTank (ForgeDirection direction, FluidStack type) { return tank; }
-     */
+    public int getFluidAmount() {
+        return tank.getFluidAmount();
+    }
+
+    public int getCapacity() {
+        return tank.getCapacity();
+    }
 
     public float getFluidAmountScaled() {
         return (float) (tank.getFluid().amount - renderOffset) / (tank.getCapacity() * 1.01F);
