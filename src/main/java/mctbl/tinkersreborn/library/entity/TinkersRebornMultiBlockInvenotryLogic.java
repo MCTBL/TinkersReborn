@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -234,6 +236,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     /**
      * Grabs the tank at the given location (if present)
      */
+    @Nullable
     private IFluidTank getTankAt(BlockPos pos) {
         TileEntity te = this.worldObj.getTileEntity(pos.x, pos.y, pos.z);
         if (te instanceof LavaTankLogic logic) {
@@ -518,6 +521,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
 
     protected void heatItems() {
         boolean heatedItem = false;
+        boolean triedRefuel = false;
         for (int i = 0; i < getSizeInventory(); i++) {
             ItemStack stack = getStackInSlot(i);
             if (!TinkersRebornUtils.isStackEmpty(stack)) {
@@ -540,9 +544,21 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                                 heatedItem = true;
                             }
                         }
-                    } else {
-                        // can't heat. no fuel. abort and try to get fuel for next tick
+                    } else if (!triedRefuel) {
+                        // out of fuel, try to consume more right now
+                        // so we don't miss this tick's heating
                         this.needsFuel = true;
+                        this.consumeFuel();
+                        triedRefuel = true;
+                        if (fuelReleaseTicks > 0) {
+                            // fuel acquired, retry this slot
+                            i--;
+                            continue;
+                        }
+                        // truly out of fuel, nothing more we can do
+                        break;
+                    } else {
+                        // already tried refueling this tick and failed, give up
                         break;
                     }
                 }
