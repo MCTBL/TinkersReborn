@@ -112,7 +112,7 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
      * @return
      */
     private int fillInternal(FluidStack resource, boolean doFill) {
-        if (!this.liquid.isFluidEqual(resource)) {
+        if (this.liquid != null && !this.liquid.isFluidEqual(resource)) {
             return 0;
         }
 

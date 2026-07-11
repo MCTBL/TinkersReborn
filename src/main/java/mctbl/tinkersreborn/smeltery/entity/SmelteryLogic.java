@@ -139,6 +139,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
                             break;
                         }
                     }
+                    this.markDirty();
                 }
             } else
                 if (entity instanceof EntityLivingBase && entity.isEntityAlive() && this.currentMoltenMetalAmount > 0) {
@@ -242,7 +243,6 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             for (FluidStack s : this.moltenMetal) {
                 if (s.isFluidEqual(resource)) {
                     s.amount += canFill;
-                    resource.amount -= canFill;
                     isAdded = true;
                     break;
                 }
@@ -269,6 +269,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
                 int drainable = Math.min(resource.amount, liquid.amount);
                 if (doDrain) {
                     liquid.amount -= drainable;
+                    this.currentMoltenMetalAmount -= drainable;
                     if (liquid.amount <= 0) {
                         iter.remove();
                     }

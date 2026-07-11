@@ -53,6 +53,7 @@ public class TinkersRebornConfig {
     public static String[] fluidIgnore;
 
     public static String[] entityMelting;
+    public static int smelteryDrainEachTick;
 
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
@@ -174,6 +175,9 @@ public class TinkersRebornConfig {
                     "VillagerGolem;true;molten_iron;18", "PigZombie;true;molten_gold;10", },
                 "List of entity melting entries in the format 'entity;subtypes;fluid;amount'.")
             .getStringList();
+
+        smelteryDrainEachTick = config.get("Smeltery", "smelteryDrainEachTick", 6)
+            .getInt();
     }
 
 }

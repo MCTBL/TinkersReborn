@@ -201,10 +201,11 @@ public class LavaTankBlock extends BlockContainer {
     }
 
     /* Updates */
+    @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block nBlockID) {
         TileEntity logic = world.getTileEntity(x, y, z);
-        if (logic instanceof IServantLogic) {
-            ((IServantLogic) logic).notifyMasterOfChange();
+        if (logic instanceof IServantLogic servant) {
+            servant.notifyMasterOfChange();
         }
     }
 

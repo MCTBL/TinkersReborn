@@ -15,12 +15,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.blocks.IActiveLogic;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 
 public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogic, IActiveLogic, IFluidHandler {
-    
+
     public static final String TAG_ACTIVE = "active";
 
     public ForgeDirection faceDirection;
@@ -39,7 +39,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
 
             if (drainte instanceof IFluidHandler && tankte instanceof IFluidHandler) {
                 FluidStack templiquid = ((IFluidHandler) drainte)
-                    .drain(getForgeDirection(), TinkersRebornMaterial.VALUE_Ingot, false);
+                    .drain(getForgeDirection(), TinkersRebornConfig.smelteryDrainEachTick, false);
                 if (templiquid != null) {
                     int drained = ((IFluidHandler) tankte).fill(ForgeDirection.UP, templiquid, false);
                     if (drained > 0) {
@@ -59,7 +59,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     @Override
     public void updateEntity() {
         if (liquid != null) {
-            liquid.amount -= 6;
+            liquid.amount -= TinkersRebornConfig.smelteryDrainEachTick;
             if (liquid.amount <= 0) {
                 liquid = null;
                 if (!activateFaucet()) {

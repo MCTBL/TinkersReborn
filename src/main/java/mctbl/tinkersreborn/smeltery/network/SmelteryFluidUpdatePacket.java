@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.smeltery.network;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,7 +29,9 @@ public class SmelteryFluidUpdatePacket extends AbstractPacketThreadsafe {
 
     public SmelteryFluidUpdatePacket(BlockPos pos, List<FluidStack> liquids) {
         this.pos = pos;
-        this.liquids = liquids;
+        this.liquids = liquids.stream()
+            .map(FluidStack::copy)
+            .collect(Collectors.toList());
     }
 
     @Override

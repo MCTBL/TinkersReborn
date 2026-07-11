@@ -137,7 +137,7 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
             float zMin = 0.25F;
             float zMax = 0.75F;
 
-            if (te instanceof FaucetLogic logic) {
+            if (te instanceof FaucetLogic logic && logic.getForgeDirection() != null) {
                 switch (logic.getForgeDirection()) {
                     case SOUTH:
                         zMax = 0.375F;
