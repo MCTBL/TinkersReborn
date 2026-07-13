@@ -441,7 +441,7 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
                     // comparator update
                     this.worldObj
                         .notifyBlocksOfNeighborChange(this.xCoord, this.yCoord, this.zCoord, this.getBlockType());
-
+                    this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
                 }
             } else if (this.worldObj.rand.nextFloat() > 0.9f) {
                 this.worldObj.spawnParticle(

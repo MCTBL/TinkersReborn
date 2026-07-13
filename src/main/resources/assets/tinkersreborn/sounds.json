@@ -1,81 +1,8 @@
 {
-   "frypan_hit": {
-     "category": "player",
-     "sounds": [
-       "tinkersreborn:frypan_hit"
-     ]
-   },
-   "toy_squeak": {
-     "category": "player",
-     "sounds": [
-       "tinkersreborn:toy_squeak"
-     ]
-   },
    "little_saw": {
      "category": "player",
      "sounds": [
        "tinkersreborn:little_saw"
-     ]
-   },
-   "slimesling": {
-    "category": "player",
-    "sounds": [
-      "tinkersreborn:slimesling"
-    ]
-   },
-   "wood_hit": {
-     "category": "block",
-     "sounds": [
-       "tinkersreborn:wood_hit1",
-	   "tinkersreborn:wood_hit2",
-	   "tinkersreborn:wood_hit3",
-	   "tinkersreborn:wood_hit4",
-	   "tinkersreborn:wood_hit5"
-     ]
-   },
-   "stone_hit": {
-     "category": "block",
-     "sounds": [
-       "tinkersreborn:stone_hit1",
-	   "tinkersreborn:stone_hit2",
-	   "tinkersreborn:stone_hit3"
-     ]
-   },
-   "crossbow_reload": {
-	"category": "player",
-	"sounds": [
-		"tinkersreborn:crossbow_reload"
-	]
-   },
-   "charged": {
-    "category": "player",
-	"sounds": [
-		"tinkersreborn:charged"
-	]
-   },
-   "discharge": {
-    "category": "player",
-	"sounds": [
-		"tinkersreborn:discharge"
-	]
-   },
-   "faucet_pour_loop": {
-     "category": "block",
-     "sounds": [
-       "tinkersreborn:faucet_pour_loop"
-     ]
-   },
-   "faucet_trigger": {
-     "category": "block",
-     "sounds": [
-       "tinkersreborn:faucet_trigger1",
-       "tinkersreborn:faucet_trigger2"
-     ]
-   },
-   "smeltery_loop": {
-     "category": "block",
-     "sounds": [
-       "tinkersreborn:smeltery_loop"
      ]
    },
   "sizzle": {
