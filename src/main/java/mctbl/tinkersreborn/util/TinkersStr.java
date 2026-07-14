@@ -70,6 +70,8 @@ public enum TinkersStr {
     attackDesc("attack.desc"),
     harvestLevel("harvestlevel"),
     harvestLevelDesc("harvestlevel.desc"),
+    mattockAxeHarvestLevelDesc("mattock.axelevel"),
+    mattockShovelHarvestLevelDesc("mattock.shovellevel"),
 
     ;
 

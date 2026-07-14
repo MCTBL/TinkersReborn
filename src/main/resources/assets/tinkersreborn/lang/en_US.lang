@@ -168,13 +168,14 @@ material.slimeleaf_blue.name=Blue Slimeleaf
 
 // tools
 tinkersreborn.tooltip.nameformat=%s %s
-tinkersreborn.tooltip.nameformat=%s %s
 tinkersreborn.tooltip.pattern=Material Cost: %d
 tinkersreborn.tooltip.modifiers=Modifiers
 tinkersreborn.tooltip.holdShift=Hold §e§oShift§r§7 for more info
 
 tinkersreborn.tool.pickaxe=Pickaxe
 tinkersreborn.tool.shovel=Shovel
+tinkersreborn.tool.hatchet=Hatchet
+tinkersreborn.tool.mattock=Mattock
 
 tinkersreborn.toolpart.ToolRod=Tool Rod
 tinkersreborn.toolpart.PickaxeHead=Pickaxe Head
@@ -222,7 +223,8 @@ tinkersreborn.attack=Attack
 tinkersreborn.attack.desc=Base value for attack calculations.\nThe end result depends on the tool itself and the other components used.
 tinkersreborn.harvestlevel=Mining Level
 tinkersreborn.harvestlevel.desc=What range of blocks a tool with a tool head of this material can mine.
-
+tinkersreborn.mattock.axelevel=Axe Level
+tinkersreborn.mattock.shovellevel=Shovel Level
 
 tinkersreborn.stat.handle.name=Handle
 tinkersreborn.stat.handle.modifier.name=Modifier
@@ -233,9 +235,6 @@ tinkersreborn.stat.handle.durability.desc=How well the material can be held.\nTo
 tinkersreborn.stat.extra.name=Extra
 tinkersreborn.stat.extra.durability.name=Durability
 tinkersreborn.stat.extra.durability.desc=How much durability this part contributes when used as an accessory.
-
-//stat.mattock.axelevel.name=Axe Level
-//stat.mattock.shovellevel.name=Shovel Level
 
 tinkersreborn.stat.bow.name=Bow
 tinkersreborn.stat.bow.drawspeed.name=Drawspeed

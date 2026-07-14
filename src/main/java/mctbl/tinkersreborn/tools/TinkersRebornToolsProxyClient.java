@@ -4,6 +4,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.tools.model.ChestRender;
 import mctbl.tinkersreborn.tools.model.TableRender;
@@ -23,7 +24,7 @@ public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon
         RenderingRegistry.registerBlockHandler(new ChestRender());
 
         ToolRender render = new ToolRender();
-        MinecraftForgeClient.registerItemRenderer(TinkersRebornTools.pickaxe, render);
-        MinecraftForgeClient.registerItemRenderer(TinkersRebornTools.shovel, render);
+        TinkersRebornRegistry.getAllTools()
+            .forEach(t -> MinecraftForgeClient.registerItemRenderer(t, render));
     }
 }

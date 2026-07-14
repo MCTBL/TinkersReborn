@@ -75,5 +75,4 @@ public class Shovel extends HarvestTool {
         }
         return this.toolBuildGuiInfo;
     }
-
 }

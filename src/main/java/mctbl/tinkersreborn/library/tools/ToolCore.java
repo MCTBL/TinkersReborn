@@ -946,7 +946,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         increase *= mods;
 
         int repair = ToolTagsHelper.getRepairCount(tool);
-        float repairDimishingReturns = (100 - repair / 2) / 100f;
+        float repairDimishingReturns = (100 - repair / 2f) / 100f;
         if (repairDimishingReturns < 0.5f) {
             repairDimishingReturns = 0.5f;
         }
