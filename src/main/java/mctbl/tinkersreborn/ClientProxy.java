@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.common.particle.ParticleAttackHammer;
 import mctbl.tinkersreborn.common.particle.ParticleAttackHatchet;
 import mctbl.tinkersreborn.common.particle.Particles;
 import mctbl.tinkersreborn.common.particle.TinkersRebornParticle;
@@ -50,8 +51,8 @@ public class ClientProxy extends CommonProxy {
             // return new ParticleAttackLumberAxe(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
             // case FRYPAN_ATTACK:
             // return new ParticleAttackFrypan(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
-            // case HAMMER_ATTACK:
-            // return new ParticleAttackHammer(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
+            case HAMMER_ATTACK:
+                return new ParticleAttackHammer(world, x, y, z, xSpeed, ySpeed, zSpeed);
             // effects
             case EFFECT:
                 return new TinkersRebornParticle(data[1], world, x, y, z, xSpeed, ySpeed, zSpeed);

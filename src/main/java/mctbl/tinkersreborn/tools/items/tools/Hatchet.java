@@ -1,6 +1,5 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -25,8 +23,8 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class Hatchet extends HarvestTool {
 
-    public final Set<Material> effectiveMaterials = new HashSet<>();
-    public final Set<Block> hatchetEffective = new HashSet<>();
+    public final Set<Material> axeEffectiveMaterials = new HashSet<>();
+    public final Set<Block> axeEffectiveBlocks = new HashSet<>();
 
     public Hatchet() {
         super("Hatchet", 2);
@@ -36,35 +34,11 @@ public class Hatchet extends HarvestTool {
 
         this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.axeHead, MaterialStatusType.HEAD, "_axe_head"));
         this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.rod, MaterialStatusType.HANDLE, "_axe_handle"));
-
-        this.initEffectiveMaterial();
-        this.getItemAxeEffect();
-    }
-
-    void initEffectiveMaterial() {
-        effectiveMaterials.add(Material.wood);
-        effectiveMaterials.add(Material.vine);
-        effectiveMaterials.add(Material.plants);
-        effectiveMaterials.add(Material.gourd);
-        effectiveMaterials.add(Material.cactus);
-    }
-
-    void getItemAxeEffect() {
-        try {
-            Field effectSetField = ItemAxe.class.getDeclaredField("field_150917_c");
-            effectSetField.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            Set<Block> blockSet = (Set<Block>) effectSetField.get(null);
-            hatchetEffective.addAll(blockSet);
-        } catch (Exception e) {
-            e.printStackTrace();
-            TinkersReborn.LOG.warn("Tinkers Hatchet get error when try to get vanila axe's effective block list");
-        }
     }
 
     @Override
     public boolean isEffective(Block block) {
-        return effectiveMaterials.contains(block.getMaterial()) || hatchetEffective.contains(block);
+        return axeEffectiveMaterials.contains(block.getMaterial()) || axeEffectiveBlocks.contains(block);
     }
 
     @Override

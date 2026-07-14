@@ -15,13 +15,19 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.potion.Potion;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
-
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.world.BlockEvent;
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.IModifier;
@@ -29,6 +35,7 @@ import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.TinkerToolEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.Category;
 
 public class ToolTagsHelper {
@@ -988,5 +995,240 @@ public class ToolTagsHelper {
             return core.hasCategory(category);
         }
         return false;
+    }
+
+    public static List<BlockPos> calcAOEBlocks(ItemStack stack, World world, EntityPlayer player, BlockPos origin,
+        int width, int height, int depth, int distance) {
+        List<BlockPos> list = new ArrayList<>();
+        // only works with toolcore because we need the raytrace call
+        if (TinkersRebornUtils.isStackEmpty(stack) || !(stack.getItem() instanceof ToolCore)) {
+            return list;
+        }
+
+        // find out where the player is hitting the block
+        Block targetBlock = world.getBlock(origin.x, origin.y, origin.z);
+        int targetBlockMeta = world.getBlockMetadata(origin.x, origin.y, origin.z);
+        if (!isToolEffective(stack, targetBlock, targetBlockMeta)) {
+            return list;
+        }
+
+        // raytrace to get the side, but has to result in the same block
+        MovingObjectPosition mop = ((ToolCore) stack.getItem()).getMovingObjectPositionFromPlayer(world, player, true);
+        if (mop == null || !origin.equals(mop.blockX, mop.blockY, mop.blockZ)) {
+            mop = ((ToolCore) stack.getItem()).getMovingObjectPositionFromPlayer(world, player, false);
+        }
+
+        int facing = MathHelper.floor_double((player.rotationYaw / 90D) + 0.5D) & 3;
+        ForgeDirection sideHit;
+        ForgeDirection playerFacing = switch (facing) {
+            case 0 -> ForgeDirection.NORTH;
+            case 1 -> ForgeDirection.EAST;
+            case 2 -> ForgeDirection.SOUTH;
+            case 3 -> ForgeDirection.WEST;
+            default -> ForgeDirection.NORTH;
+        };
+
+        if (mop != null && origin.equals(mop.blockX, mop.blockY, mop.blockZ)) {
+            sideHit = ForgeDirection.getOrientation(mop.sideHit);
+        } else {
+            // derive facing from player rotation as fallback for edge cases like very fast
+            // mining
+            sideHit = playerFacing.getOpposite();
+        }
+
+        // fire event
+        TinkerToolEvent.ExtraBlockBreak event = TinkerToolEvent.ExtraBlockBreak
+            .fireEvent(stack, player, targetBlock, width, height, depth, distance);
+
+        if (event.isCanceled()) {
+            return list;
+        }
+        width = event.width;
+        height = event.height;
+        depth = event.depth;
+        distance = event.distance;
+
+        // we know the block and we know which side of the block we're hitting. time to
+        // calculate the depth along the different axes
+        int x;
+        int y;
+        int z;
+        BlockPos start = origin;
+        boolean mopValid = mop != null && origin.equals(mop.blockX, mop.blockY, mop.blockZ);
+        switch (sideHit) {
+            case DOWN:
+            case UP:
+                // x y depends on the angle we look?
+                x = playerFacing.offsetX * height + playerFacing.offsetZ * width;
+                y = sideHit == ForgeDirection.UP ? -depth : depth;
+                z = playerFacing.offsetX * width + playerFacing.offsetZ * height;
+                start = start.add(-x / 2, 0, -z / 2);
+                if (x % 2 == 0) {
+                    double hitX = mopValid ? mop.hitVec.xCoord - mop.blockX : 0.5d;
+                    if (x > 0 && hitX > 0.5d) start = start.add(1, 0, 0);
+                    else if (x < 0 && hitX < 0.5d) start = start.add(-1, 0, 0);
+                }
+                if (z % 2 == 0) {
+                    double hitZ = mopValid ? mop.hitVec.zCoord - mop.blockZ : 0.5d;
+                    if (z > 0 && hitZ > 0.5d) start = start.add(0, 0, 1);
+                    else if (z < 0 && hitZ < 0.5d) start = start.add(0, 0, -1);
+                }
+                break;
+            case NORTH:
+            case SOUTH:
+                x = width;
+                y = height;
+                z = sideHit == ForgeDirection.SOUTH ? -depth : depth;
+                start = start.add(-x / 2, -y / 2, 0);
+                if (x % 2 == 0 && mopValid && mop.hitVec.xCoord - mop.blockX > 0.5d) {
+                    start = start.add(1, 0, 0);
+                }
+                if (y % 2 == 0 && mopValid && mop.hitVec.yCoord - mop.blockY > 0.5d) {
+                    start = start.add(0, 1, 0);
+                }
+                break;
+            case WEST:
+            case EAST:
+                x = sideHit == ForgeDirection.EAST ? -depth : depth;
+                y = height;
+                z = width;
+                start = start.add(0, -y / 2, -z / 2);
+                if (y % 2 == 0 && mopValid && mop.hitVec.yCoord - mop.blockY > 0.5d) {
+                    start = start.add(0, 1, 0);
+                }
+                if (z % 2 == 0 && mopValid && mop.hitVec.zCoord - mop.blockZ > 0.5d) {
+                    start = start.add(0, 0, 1);
+                }
+                break;
+            default:
+                x = y = z = 0;
+        }
+
+        for (int xp = start.getX(); xp != start.getX() + x; xp += x / MathHelper.abs(x)) {
+            for (int yp = start.getY(); yp != start.getY() + y; yp += y / MathHelper.abs(y)) {
+                for (int zp = start.getZ(); zp != start.getZ() + z; zp += z / MathHelper.abs(z)) {
+                    // don't add the origin block
+                    if (xp == origin.getX() && yp == origin.getY() && zp == origin.getZ()) {
+                        continue;
+                    }
+                    if (distance > 0 && MathHelper.abs(xp - origin.getX()) + MathHelper.abs(yp - origin.getY())
+                        + MathHelper.abs(zp - origin.getZ()) > distance) {
+                        continue;
+                    }
+                    BlockPos pos = new BlockPos(xp, yp, zp);
+                    if (isToolEffective(
+                        stack,
+                        world.getBlock(pos.x, pos.y, pos.z),
+                        world.getBlockMetadata(pos.x, pos.y, pos.z))) {
+                        list.add(pos);
+                    }
+                }
+            }
+        }
+
+        return list;
+    }
+
+    public static void breakExtraBlock(ItemStack stack, World world, EntityPlayer player, BlockPos pos,
+        BlockPos refPos) {
+        if (!canBreakExtraBlock(stack, world, player, pos, refPos)) {
+            return;
+        }
+
+        Block block = world.getBlock(pos.x, pos.y, pos.z);
+        int blockMeta = world.getBlockMetadata(pos.x, pos.y, pos.z);
+
+        // callback to the tool the player uses. Called on both sides. This damages the
+        // tool n stuff.
+        stack.func_150999_a(world, block, pos.x, pos.y, pos.z, player);
+
+        // server sided handling
+        if (!world.isRemote) {
+            // send the blockbreak event
+            BlockEvent.BreakEvent event = ForgeHooks
+                .onBlockBreakEvent(
+                    world,
+                    ((EntityPlayerMP) player).theItemInWorldManager.getGameType(),
+                    (EntityPlayerMP) player,
+                    pos.x,
+                    pos.y,
+                    pos.z);
+            if(event.isCanceled()) {
+        	return;
+            }
+            int xp = event.getExpToDrop();
+
+            block.onBlockHarvested(world, pos.x, pos.y, pos.z, blockMeta, player);
+            // ItemInWorldManager.removeBlock
+            if (block.removedByPlayer(world, player, pos.x, pos.y, pos.z, true)) { // boolean is if block can be
+                                                                                   // harvested,
+                // checked above
+                block.onBlockDestroyedByPlayer(world, pos.x, pos.y, pos.z, blockMeta);
+                block.harvestBlock(world, player, pos.x, pos.y, pos.z, blockMeta);
+                block.dropXpOnBlockBreak(world, pos.x, pos.y, pos.z, xp);
+            }
+
+            // always send block update to client
+            TinkerNetwork.sendPacket(player, new S23PacketBlockChange(pos.x, pos.y, pos.z, world));
+        }
+    }
+
+    /**
+     * Preconditions for
+     * {@link #breakExtraBlock(ItemStack, World, EntityPlayer, BlockPos, BlockPos)}
+     * and
+     * {@link #shearExtraBlock(ItemStack, World, EntityPlayer, BlockPos, BlockPos)}
+     * 
+     * @param stack
+     * @param world
+     * @param player
+     * @param pos
+     * @param refPos
+     * @return true if the extra block can be broken
+     */
+    private static boolean canBreakExtraBlock(ItemStack stack, World world, EntityPlayer player, BlockPos pos,
+        BlockPos refPos) {
+        // prevent calling that stuff for air blocks, could lead to unexpected behaviour
+        // since it fires events
+        if (world.isAirBlock(pos.x, pos.y, pos.z)) {
+            return false;
+        }
+
+        // check if the block can be broken, since extra block breaks shouldn't
+        // instantly break stuff like obsidian
+        // or precious ores you can't harvest while mining stone
+        Block block = world.getBlock(pos.x, pos.y, pos.z);
+        int blockMeta = world.getBlockMetadata(pos.x, pos.y, pos.z);
+
+        // only effective materials
+        if (!isToolEffective(stack, block, blockMeta)) {
+            return false;
+        }
+
+        Block refBlock = world.getBlock(refPos.x, refPos.y, refPos.z);
+
+        float refStrength = ForgeHooks.blockStrength(refBlock, player, world, refPos.x, refPos.y, refPos.z);
+        float strength = ForgeHooks.blockStrength(block, player, world, pos.x, pos.y, pos.z);
+
+        // only harvestable blocks that aren't impossibly slow to harvest
+        if (!ForgeHooks.canHarvestBlock(block, player, blockMeta) || refStrength / strength > 10f) {
+            return false;
+        }
+
+        // From this point on it's clear that the player CAN break the block
+
+        if (player.capabilities.isCreativeMode) {
+            block.onBlockHarvested(world, pos.x, pos.y, pos.z, blockMeta, player);
+            if (block.removedByPlayer(world, player, pos.x, pos.y, pos.z, false)) {
+                block.onBlockDestroyedByPlayer(world, pos.x, pos.y, pos.z, blockMeta);
+            }
+
+            // send update to client
+            if (!world.isRemote) {
+                TinkerNetwork.sendPacket(player, new S23PacketBlockChange(pos.x, pos.y, pos.z, world));
+            }
+            return false;
+        }
+        return true;
     }
 }

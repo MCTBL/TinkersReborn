@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Multimap;
@@ -620,13 +621,13 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
-        // if(!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool &&
-        // ((IAoeTool) this).isAoeHarvestTool()) {
-        // for(BlockPos extraPos : ((IAoeTool) this).getAOEBlocks(itemstack,
-        // player.getEntityWorld(), player, pos)) {
-        // breakExtraBlock(itemstack, player.getEntityWorld(), player, extraPos, pos);
-        // }
-        // }
+        if (!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool) {
+            BlockPos blockPos = BlockPos.of(x, y, z);
+            for (BlockPos extraPos : ((IAoeTool) this)
+                .getAOEBlocks(itemstack, player.getEntityWorld(), player, blockPos)) {
+                ToolTagsHelper.breakExtraBlock(itemstack, player.getEntityWorld(), player, extraPos, blockPos);
+            }
+        }
         return breakBlock(itemstack, x, y, z, player);
     }
 
@@ -995,6 +996,12 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public abstract ToolBuildGuiInfo getToolBuildGuiInfo();
+
+    @Override
+    public MovingObjectPosition getMovingObjectPositionFromPlayer(World worldIn, EntityPlayer player,
+        boolean useLiquids) {
+        return super.getMovingObjectPositionFromPlayer(worldIn, player, useLiquids);
+    }
 
     @Override
     public Multimap<String, AttributeModifier> getAttributeModifiers(ItemStack stack) {

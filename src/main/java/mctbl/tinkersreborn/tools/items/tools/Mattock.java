@@ -1,25 +1,18 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemSpade;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
@@ -36,12 +29,6 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class Mattock extends HarvestTool {
 
-    public final Set<Material> axeEffectiveMaterials = new HashSet<>();
-    public final Set<Material> shovelEffectiveMaterials = new HashSet<>();
-
-    public final Set<Block> axeEffective = new HashSet<>();
-    public final Set<Block> shovelEffective = new HashSet<>();
-
     public Mattock() {
         super("Mattock", 3);
 
@@ -55,57 +42,14 @@ public class Mattock extends HarvestTool {
             .add(new ToolPartRecord(TinkersRebornTools.shovelHead, MaterialStatusType.HEAD, "_mattock_back"));
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.rod, MaterialStatusType.HANDLE, "_mattock_handle"));
-
-        this.initEffectiveMaterial();
-        this.getItemShovelEffect();
-    }
-
-    void initEffectiveMaterial() {
-        axeEffectiveMaterials.add(Material.wood);
-        axeEffectiveMaterials.add(Material.vine);
-        axeEffectiveMaterials.add(Material.plants);
-        axeEffectiveMaterials.add(Material.gourd);
-        axeEffectiveMaterials.add(Material.cactus);
-
-        shovelEffectiveMaterials.add(Material.grass);
-        shovelEffectiveMaterials.add(Material.ground);
-        shovelEffectiveMaterials.add(Material.sand);
-        shovelEffectiveMaterials.add(Material.snow);
-        shovelEffectiveMaterials.add(Material.craftedSnow);
-        shovelEffectiveMaterials.add(Material.clay);
-        shovelEffectiveMaterials.add(Material.cake);
-    }
-
-    void getItemShovelEffect() {
-        try {
-            Field effectSetField = ItemSpade.class.getDeclaredField("field_150916_c");
-            effectSetField.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            Set<Block> blockSet = (Set<Block>) effectSetField.get(null);
-            shovelEffective.addAll(blockSet);
-        } catch (Exception e) {
-            e.printStackTrace();
-            TinkersReborn.LOG.warn("Tinkers Mattock get error when try to get vanila shovel's effective block list");
-        }
-
-        try {
-            Field effectSetField = ItemAxe.class.getDeclaredField("field_150917_c");
-            effectSetField.setAccessible(true);
-            @SuppressWarnings("unchecked")
-            Set<Block> blockSet = (Set<Block>) effectSetField.get(null);
-            axeEffective.addAll(blockSet);
-        } catch (Exception e) {
-            e.printStackTrace();
-            TinkersReborn.LOG.warn("Tinkers Mattock get error when try to get vanila axe's effective block list");
-        }
     }
 
     @Override
     public boolean isEffective(Block block) {
         return axeEffectiveMaterials.contains(block.getMaterial())
             || shovelEffectiveMaterials.contains(block.getMaterial())
-            || axeEffective.contains(block)
-            || shovelEffective.contains(block);
+            || axeEffectiveBlocks.contains(block)
+            || shovelEffectiveBlocks.contains(block);
     }
 
     @Override
