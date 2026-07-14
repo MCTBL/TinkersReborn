@@ -26,7 +26,7 @@ public abstract class GuiModule extends GuiContainer {
     public int yOffset = 0;
     public int xOffset = 0;
 
-    public GuiModule(GuiMultiModule parent, Container container, boolean right, boolean bottom) {
+    protected GuiModule(GuiMultiModule parent, Container container, boolean right, boolean bottom) {
         super(container);
 
         this.width = Minecraft.getMinecraft().displayWidth;
