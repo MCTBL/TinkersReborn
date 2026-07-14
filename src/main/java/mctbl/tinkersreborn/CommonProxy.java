@@ -2,6 +2,7 @@ package mctbl.tinkersreborn;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -89,5 +90,9 @@ public class CommonProxy implements IGuiHandler {
         NetworkRegistry.TargetPoint point = new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, 32);
         AbstractPacket packet = new SpawnParticlePacket(particleType, x, y, z, xSpeed, ySpeed, zSpeed, data);
         TinkerNetwork.sendToAllAround(packet, point);
+    }
+
+    public void preventPlayerSlowdown(Entity player, float originalSpeed, Item item) {
+        // clientside only
     }
 }

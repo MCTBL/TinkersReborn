@@ -97,6 +97,7 @@ import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.tools.items.tools.BroadSword;
 import mctbl.tinkersreborn.tools.items.tools.Hammer;
 import mctbl.tinkersreborn.tools.items.tools.Hatchet;
+import mctbl.tinkersreborn.tools.items.tools.LongSword;
 import mctbl.tinkersreborn.tools.items.tools.Mattock;
 import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
 import mctbl.tinkersreborn.tools.items.tools.Shovel;
@@ -171,6 +172,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore hammer;
 
     public static ToolCore broadSword;
+    public static ToolCore longSword;
 
     // other items
     public static Item paperStack;
@@ -444,6 +446,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(broadSword, broadSword.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(broadSword);
         TinkersRebornRegistry.registerToolCrafting(broadSword);
+
+        longSword = new LongSword();
+        GameRegistry.registerItem(longSword, longSword.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(longSword);
+        TinkersRebornRegistry.registerToolCrafting(longSword);
 
         hammer = new Hammer();
         GameRegistry.registerItem(hammer, hammer.getUnlocalizedName());

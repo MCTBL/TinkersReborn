@@ -1,13 +1,20 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
+import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
 
+import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.particle.Particles;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.SwordCore;
+import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
@@ -59,10 +66,11 @@ public class BroadSword extends SwordCore {
                 }
 
                 // player.worldObj.playSound(null, player.posX, player.posY, player.posZ,
-                // SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0F, 1.0F);
-                // if (player instanceof EntityPlayer) {
-                // ((EntityPlayer) player).spawnSweepParticles();
-                // }
+                // SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0F,
+                // 1.0F);
+                if (player instanceof EntityPlayer) {
+                    TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
+                }
             }
         }
 
@@ -77,6 +85,17 @@ public class BroadSword extends SwordCore {
     @Override
     public float damagePotential() {
         return 1.0F;
+    }
+
+    @Override
+    public ToolNBT buildToolTag(List<TinkersRebornMaterial> materials) {
+        ToolNBT data = super.buildToolTag(materials);
+
+        // 2 base damage, like vanilla swords
+        data.attack += 1f;
+        data.durability *= DURABILITY_MODIFIER;
+
+        return data;
     }
 
     @Override
