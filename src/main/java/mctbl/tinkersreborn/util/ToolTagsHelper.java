@@ -26,6 +26,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.world.BlockEvent;
+
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -1145,16 +1146,15 @@ public class ToolTagsHelper {
         // server sided handling
         if (!world.isRemote) {
             // send the blockbreak event
-            BlockEvent.BreakEvent event = ForgeHooks
-                .onBlockBreakEvent(
-                    world,
-                    ((EntityPlayerMP) player).theItemInWorldManager.getGameType(),
-                    (EntityPlayerMP) player,
-                    pos.x,
-                    pos.y,
-                    pos.z);
-            if(event.isCanceled()) {
-        	return;
+            BlockEvent.BreakEvent event = ForgeHooks.onBlockBreakEvent(
+                world,
+                ((EntityPlayerMP) player).theItemInWorldManager.getGameType(),
+                (EntityPlayerMP) player,
+                pos.x,
+                pos.y,
+                pos.z);
+            if (event.isCanceled()) {
+                return;
             }
             int xp = event.getExpToDrop();
 
