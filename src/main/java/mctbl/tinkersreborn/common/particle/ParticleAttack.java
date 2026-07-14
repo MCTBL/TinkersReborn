@@ -1,9 +1,9 @@
 package mctbl.tinkersreborn.common.particle;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -16,7 +16,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public abstract class ParticleAttack extends EntityFX {
 
-    protected TextureManager textureManager;
     protected int life;
 
     protected int lifeTime;
@@ -26,10 +25,9 @@ public abstract class ParticleAttack extends EntityFX {
     protected int animPhases;
     protected int animPerRow;
 
-    public ParticleAttack(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn,
-        double ySpeedIn, double zSpeedIn, TextureManager textureManager) {
+    protected ParticleAttack(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn,
+        double ySpeedIn, double zSpeedIn) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
-        this.textureManager = textureManager;
 
         this.life = 0;
         init();
@@ -54,7 +52,7 @@ public abstract class ParticleAttack extends EntityFX {
         int rows = MathHelper.ceiling_float_int((float) animPhases / (float) animPerRow);
 
         if (i < animPhases) {
-            this.textureManager.bindTexture(getTexture());
+            Minecraft.getMinecraft().renderEngine.bindTexture(getTexture());
             float f = (float) (i % animPerRow) / (float) animPerRow;
             float f1 = f + 1f / animPerRow - 0.005f;
             float f2 = (float) (i / animPerRow) / (float) rows;

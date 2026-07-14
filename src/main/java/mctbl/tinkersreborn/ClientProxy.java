@@ -45,7 +45,7 @@ public class ClientProxy extends CommonProxy {
             // case RAPIER_ATTACK:
             // return new ParticleAttackRapier(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
             case HATCHET_ATTACK:
-                return new ParticleAttackHatchet(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
+                return new ParticleAttackHatchet(world, x, y, z, xSpeed, ySpeed, zSpeed);
             // case LUMBERAXE_ATTACK:
             // return new ParticleAttackLumberAxe(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
             // case FRYPAN_ATTACK:

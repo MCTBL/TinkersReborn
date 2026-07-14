@@ -1,6 +1,5 @@
 package mctbl.tinkersreborn.common.particle;
 
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -16,8 +15,8 @@ public class ParticleAttackHatchet extends ParticleAttack {
         "textures/particle/slash_axe.png");
 
     public ParticleAttackHatchet(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn,
-        double ySpeedIn, double zSpeedIn, TextureManager textureManager) {
-        super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn, textureManager);
+        double ySpeedIn, double zSpeedIn) {
+        super(worldIn, xCoordIn, yCoordIn, zCoordIn, xSpeedIn, ySpeedIn, zSpeedIn);
     }
 
     @Override
