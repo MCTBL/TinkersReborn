@@ -31,7 +31,7 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 public class TinkersRebornToolsEventsHandler {
 
     /** Line width for AOE selection boxes. Vanilla uses 2.0F; adjust to taste. */
-    private static final float AOE_BOX_LINE_WIDTH = 2.5F;
+    private static final float AOE_BOX_LINE_WIDTH = 2.0F;
 
     @SubscribeEvent
     public void tinkersToolTooltipEvent(ItemTooltipEvent e) {
