@@ -68,20 +68,18 @@ public class Kama extends HarvestTool {
     }
 
     @Override
-    protected void breakExtraBlock(ItemStack stack, World world, EntityPlayer player, BlockPos pos, BlockPos refPos) {
-        ToolTagsHelper.shearExtraBlock(stack, world, player, pos, refPos);
-    }
-
-    @Override
     public boolean onItemUse(ItemStack itemStackIn, EntityPlayer player, World worldIn, int x, int y, int z, int side,
         float hitX, float hitY, float hitZ) {
+        if (worldIn.isRemote) {
+            return true;
+        }
         MovingObjectPosition mop = ((ToolCore) itemStackIn.getItem())
             .getMovingObjectPositionFromPlayer(worldIn, player, true);
         if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemStackIn);
-
             BlockPos origin = BlockPos.of(mop.blockX, mop.blockY, mop.blockZ);
             if (harvestCrop(itemStackIn, worldIn, player, origin, fortune)) {
+                Sounds.playSoundForAll(player, Sounds.sweep, 1.0F, 1.0F);
                 TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
                 player.swingItem();
             }
@@ -233,10 +231,9 @@ public class Kama extends HarvestTool {
         // only run AOE on shearable entities
         if (target instanceof IShearable) {
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack);
-            if (shearEntity(stack, player.getEntityWorld(), player, target, fortune)) {
-                Sounds.playSoundForAll(player, Sounds.sweep, 1.0F, 1.0F);
-                TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
+            if (shearEntity(stack, player.getEntityWorld(), player, target, fortune) && !player.worldObj.isRemote) {
                 player.swingItem();
+                TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
                 return true;
             }
         }

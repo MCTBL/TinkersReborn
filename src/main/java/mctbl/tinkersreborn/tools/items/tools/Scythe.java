@@ -1,10 +1,8 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
@@ -80,19 +78,28 @@ public class Scythe extends AoeHarvestTool {
     @Override
     public boolean onItemUse(ItemStack itemStackIn, EntityPlayer player, World worldIn, int x, int y, int z, int side,
         float hitX, float hitY, float hitZ) {
+        if (worldIn.isRemote) {
+            return true;
+        }
         MovingObjectPosition mop = ((ToolCore) itemStackIn.getItem())
             .getMovingObjectPositionFromPlayer(worldIn, player, true);
         if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemStackIn);
-
             BlockPos origin = BlockPos.of(mop.blockX, mop.blockY, mop.blockZ);
+
+            // AOE crop harvest: 3x3x3 area, skips origin on first pass
             boolean harvestedSomething = false;
-
-            for (BlockPos pos : this.getAOEBlocks(itemStackIn, worldIn, player, origin)) {
-                harvestedSomething |= harvestCrop(itemStackIn, worldIn, player, pos, fortune);
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (dx == 0 && dz == 0) continue;
+                    harvestedSomething |= harvestCrop(itemStackIn, worldIn, player, origin.offset(dx, 0, dz), fortune);
+                }
             }
+            // also harvest the origin block itself
+            harvestedSomething |= harvestCrop(itemStackIn, worldIn, player, origin, fortune);
 
-            if (harvestedSomething || harvestCrop(itemStackIn, worldIn, player, origin, fortune)) {
+            if (harvestedSomething) {
+                Sounds.playSoundForAll(player, Sounds.sweep, 1.0F, 1.0F);
                 TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
                 player.swingItem();
             }
@@ -210,7 +217,8 @@ public class Scythe extends AoeHarvestTool {
     @Override
     protected boolean breakBlock(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
         // only allow shears with silktouch :D
-        return isSilkTouch(itemstack) && super.breakBlock(itemstack, x, y, z, player);
+        return isSilkTouch(itemstack) && (!ToolTagsHelper.isBroken(itemstack)
+            && ToolTagsHelper.shearBlock(itemstack, player.worldObj, player, BlockPos.of(x, y, z)));
     }
 
     @Override
@@ -223,16 +231,6 @@ public class Scythe extends AoeHarvestTool {
 
         // can't be sheared or no silktouch. break it
         ToolTagsHelper.breakExtraBlock(tool, world, player, pos, refPos);
-    }
-
-    @Override
-    public Set<String> getToolClasses(ItemStack stack) {
-        // probably should have two lists here if we ever add a tool class apart from
-        // shears
-        if (!isSilkTouch(stack)) {
-            return new HashSet<>();
-        }
-        return super.getToolClasses(stack);
     }
 
     @Override
