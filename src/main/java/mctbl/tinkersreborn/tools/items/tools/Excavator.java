@@ -43,7 +43,7 @@ public class Excavator extends AoeHarvestTool {
 
     @Override
     public float miningSpeedModifier() {
-        return 0.28f; // a bit faster than hammers to make terraforming easier
+        return 0.28f;
     }
 
     @Override

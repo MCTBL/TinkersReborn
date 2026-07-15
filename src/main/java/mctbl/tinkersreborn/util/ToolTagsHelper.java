@@ -1002,7 +1002,7 @@ public class ToolTagsHelper {
         int width, int height, int depth, int distance) {
         List<BlockPos> list = new ArrayList<>();
         // only works with toolcore because we need the raytrace call
-        if (TinkersRebornUtils.isStackEmpty(stack) || !(stack.getItem() instanceof ToolCore)) {
+        if (TinkersRebornUtils.isStackEmpty(stack) || !(stack.getItem() instanceof ToolCore) || player.isSneaking()) {
             return list;
         }
 

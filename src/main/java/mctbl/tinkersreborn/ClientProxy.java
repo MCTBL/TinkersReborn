@@ -12,6 +12,7 @@ import mctbl.tinkersreborn.common.particle.ParticleAttackBroadsword;
 import mctbl.tinkersreborn.common.particle.ParticleAttackHammer;
 import mctbl.tinkersreborn.common.particle.ParticleAttackHatchet;
 import mctbl.tinkersreborn.common.particle.ParticleAttackLongsword;
+import mctbl.tinkersreborn.common.particle.ParticleAttackLumberAxe;
 import mctbl.tinkersreborn.common.particle.ParticleAttackRapier;
 import mctbl.tinkersreborn.common.particle.Particles;
 import mctbl.tinkersreborn.common.particle.TinkersRebornParticle;
@@ -57,8 +58,8 @@ public class ClientProxy extends CommonProxy {
                 return new ParticleAttackRapier(world, x, y, z, xSpeed, ySpeed, zSpeed);
             case HATCHET_ATTACK:
                 return new ParticleAttackHatchet(world, x, y, z, xSpeed, ySpeed, zSpeed);
-            // case LUMBERAXE_ATTACK:
-            // return new ParticleAttackLumberAxe(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
+            case LUMBERAXE_ATTACK:
+                return new ParticleAttackLumberAxe(world, x, y, z, xSpeed, ySpeed, zSpeed);
             // case FRYPAN_ATTACK:
             // return new ParticleAttackFrypan(world, x, y, z, xSpeed, ySpeed, zSpeed, mc.getTextureManager());
             case HAMMER_ATTACK:

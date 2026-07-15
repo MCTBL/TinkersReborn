@@ -99,6 +99,7 @@ import mctbl.tinkersreborn.tools.items.tools.Excavator;
 import mctbl.tinkersreborn.tools.items.tools.Hammer;
 import mctbl.tinkersreborn.tools.items.tools.Hatchet;
 import mctbl.tinkersreborn.tools.items.tools.LongSword;
+import mctbl.tinkersreborn.tools.items.tools.LumberAxe;
 import mctbl.tinkersreborn.tools.items.tools.Mattock;
 import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
 import mctbl.tinkersreborn.tools.items.tools.Rapier;
@@ -173,6 +174,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore mattock;
     public static ToolCore hammer;
     public static ToolCore excavator;
+    public static ToolCore lumberAxe;
 
     public static ToolCore broadSword;
     public static ToolCore longSword;
@@ -470,6 +472,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(excavator, excavator.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(excavator);
         TinkersRebornRegistry.registerToolForgeCrafting(excavator);
+
+        lumberAxe = new LumberAxe();
+        GameRegistry.registerItem(lumberAxe, lumberAxe.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(lumberAxe);
+        TinkersRebornRegistry.registerToolForgeCrafting(lumberAxe);
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");

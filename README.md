@@ -391,6 +391,28 @@ flowchart TB
 
   use hammer head's material fix can get 2.5x durability, large plate's material can fix 1.5x
 
+### Excavator
+
+  mining speed * 0.28
+
+  damage * 1.25
+
+  Durability * 1.75
+
+  use excavator head's material fix can get 1.75x durability, large plate's material can fix 1.3125x
+
+### LumberAxe
+
+  mining speed * 0.35
+
+  damage * 1.2
+
+  knock back * 1.5
+
+  base damage + 2
+
+  chop the whole tree
+
 ### BroadSword
 
   Durability * 1.5
