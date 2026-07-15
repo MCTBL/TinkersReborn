@@ -346,3 +346,79 @@ flowchart TB
 - [ ] furnace
 - [ ] smeltery
 - [ ] harvest level function
+
+## TOOL and WEAPON
+
+### Pickaxe
+
+  not special
+
+### Shovel
+
+  damage * 0.9
+
+### Hatchet
+
+  knock back * 1.3
+
+  damage * 1.1
+
+  base damage + 0.5
+
+  breaking leaves does not reduce durability
+
+### Mattock
+
+  mining speed * 0.95
+
+  damage * 0.9
+
+  knock back * 1.1
+
+  base damage + 3
+  
+  use like hoe
+
+### Hammer
+
+  mining speed * 0.4
+
+  damage * 1.2
+
+  extra [3,7) damage to UNDEAD
+
+  Durability * 2.5
+
+  use hammer head's material fix can get 2.5x durability, large plate's material can fix 1.5x
+
+### BroadSword
+
+  Durability * 1.5
+
+  sweep damage to entity near by target
+
+  base damage + 1
+
+### LongSword
+
+  Durability * 1.05
+
+  damage cutoff over 18
+
+  damage * 1.1
+
+  base damage + 0.5
+
+  rush
+
+### Rapier
+
+  Durability * 0.8
+
+  damage * 0.55
+
+  damage cutoff over 13
+
+  knock back * 0.6
+
+  half damage will by pass armor

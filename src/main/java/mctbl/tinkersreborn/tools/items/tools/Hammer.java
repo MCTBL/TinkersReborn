@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.tools.items.tools;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
@@ -38,6 +39,11 @@ public class Hammer extends AoeHarvestTool {
             .add(new ToolPartRecord(TinkersRebornTools.largeplate, MaterialStatusType.HEAD, "_hammer_back"));
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.toughrod, MaterialStatusType.HANDLE, "_hammer_handle"));
+    }
+
+    @Override
+    public boolean isEffective(Block block) {
+        return pickaxeEffectiveBlocks.contains(block) || pickaxeEffectiveMaterials.contains(block.getMaterial());
     }
 
     @Override
