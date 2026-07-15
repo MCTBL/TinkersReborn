@@ -10,5 +10,17 @@
     "sounds": [
       "tinkersreborn:sizzle"
     ]
+  },
+  "sweep": {
+    "category": "player",
+    "sounds": [
+      "tinkersreborn:sweep1",
+	  "tinkersreborn:sweep2",
+	  "tinkersreborn:sweep3",
+	  "tinkersreborn:sweep4",
+	  "tinkersreborn:sweep5",
+	  "tinkersreborn:sweep6",
+	  "tinkersreborn:sweep7"
+    ]
   }
 }

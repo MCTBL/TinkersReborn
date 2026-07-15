@@ -1,8 +1,10 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
@@ -15,6 +17,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
@@ -28,9 +31,11 @@ import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.particle.Particles;
 import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
-import mctbl.tinkersreborn.library.tools.HarvestTool;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.tools.AoeHarvestTool;
 import mctbl.tinkersreborn.library.tools.TinkerToolEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
@@ -38,22 +43,24 @@ import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
-public class Kama extends HarvestTool {
+public class Scythe extends AoeHarvestTool {
 
-    public Kama() {
-        super("Kama", 3);
+    public static final float DURABILITY_MODIFIER = 2.2f;
 
-        this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.kamaHead, MaterialStatusType.HEAD, "_head"));
-        this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.rod, MaterialStatusType.HANDLE, "_handle"));
-        this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.binding, MaterialStatusType.EXTRA, "_binding"));
+    public Scythe() {
+        super("Scythe", 4);
+
+        this.componentsParts
+            .add(new ToolPartRecord(TinkersRebornTools.scytheHead, MaterialStatusType.HEAD, "_scythe_head"));
+        this.componentsParts
+            .add(new ToolPartRecord(TinkersRebornTools.toughrod, MaterialStatusType.HANDLE, "_scythe_handle"));
+        this.componentsParts
+            .add(new ToolPartRecord(TinkersRebornTools.toughrod, MaterialStatusType.HANDLE, "_scythe_accessory"));
+        this.componentsParts
+            .add(new ToolPartRecord(TinkersRebornTools.toughbind, MaterialStatusType.EXTRA, "_scythe_binding"));
 
         this.setHarvestLevel("shears", 0);
         this.categoryTags.add(Category.WEAPON);
-    }
-
-    @Override
-    public float damagePotential() {
-        return 1.0F;
     }
 
     @Override
@@ -61,15 +68,13 @@ public class Kama extends HarvestTool {
         return kamaEffectiveMaterials.contains(block.getMaterial());
     }
 
-    @Override
-    protected boolean breakBlock(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
-        return !ToolTagsHelper.isBroken(itemstack)
-            && ToolTagsHelper.shearBlock(itemstack, player.worldObj, player, BlockPos.of(x, y, z));
+    private static boolean isSilkTouch(ItemStack stack) {
+        return EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0;
     }
 
     @Override
-    protected void breakExtraBlock(ItemStack stack, World world, EntityPlayer player, BlockPos pos, BlockPos refPos) {
-        ToolTagsHelper.shearExtraBlock(stack, world, player, pos, refPos);
+    public float damagePotential() {
+        return 0.75F;
     }
 
     @Override
@@ -81,7 +86,13 @@ public class Kama extends HarvestTool {
             int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, itemStackIn);
 
             BlockPos origin = BlockPos.of(mop.blockX, mop.blockY, mop.blockZ);
-            if (harvestCrop(itemStackIn, worldIn, player, origin, fortune)) {
+            boolean harvestedSomething = false;
+
+            for (BlockPos pos : this.getAOEBlocks(itemStackIn, worldIn, player, origin)) {
+                harvestedSomething |= harvestCrop(itemStackIn, worldIn, player, pos, fortune);
+            }
+
+            if (harvestedSomething || harvestCrop(itemStackIn, worldIn, player, origin, fortune)) {
                 TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
                 player.swingItem();
             }
@@ -196,6 +207,132 @@ public class Kama extends HarvestTool {
         }
     }
 
+    @Override
+    protected boolean breakBlock(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
+        // only allow shears with silktouch :D
+        return isSilkTouch(itemstack) && super.breakBlock(itemstack, x, y, z, player);
+    }
+
+    @Override
+    protected void breakExtraBlock(ItemStack tool, World world, EntityPlayer player, BlockPos pos, BlockPos refPos) {
+        // only allow shears with silktouch :D
+        if (isSilkTouch(tool)) {
+            ToolTagsHelper.shearExtraBlock(tool, world, player, pos, refPos);
+            return;
+        }
+
+        // can't be sheared or no silktouch. break it
+        ToolTagsHelper.breakExtraBlock(tool, world, player, pos, refPos);
+    }
+
+    @Override
+    public Set<String> getToolClasses(ItemStack stack) {
+        // probably should have two lists here if we ever add a tool class apart from
+        // shears
+        if (!isSilkTouch(stack)) {
+            return new HashSet<>();
+        }
+        return super.getToolClasses(stack);
+    }
+
+    @Override
+    public int getHarvestLevel(ItemStack stack, String toolClass) {
+        if ("shears".equals(toolClass) && !isSilkTouch(stack)) {
+            return -1;
+        }
+
+        return super.getHarvestLevel(stack, toolClass);
+    }
+
+    @Override
+    public List<BlockPos> getAOEBlocks(ItemStack stack, World world, EntityPlayer player, BlockPos origin) {
+        return ToolTagsHelper.calcAOEBlocks(stack, world, player, origin, 3, 3, 3, -1);
+    }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity target) {
+        // increase the size based on the AOE stuffs
+        TinkerToolEvent.ExtraBlockBreak event = TinkerToolEvent.ExtraBlockBreak.fireEvent(
+            stack,
+            player,
+            player.getEntityWorld()
+                .getBlock((int) target.posX, (int) target.posY, (int) target.posZ),
+            3,
+            3,
+            3,
+            -1);
+        if (event.isCanceled()) {
+            return false;
+        }
+
+        // AOE attack!
+        Sounds.playSoundForAll(player, Sounds.sweep, 1.0F, 1.0F);
+        if (!player.worldObj.isRemote) {
+            TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
+        }
+
+        int distance = event.distance;
+        boolean hit = false;
+        // we cache the cooldown here since it resets as soon as the first entity is hit
+        for (Entity entity : getAoeEntities(player, target, event)) {
+            if (distance < 0 || entity.getDistanceToEntity(target) <= distance) {
+                hit |= ToolTagsHelper.attackEntity(stack, this, player, entity, null);
+            }
+        }
+
+        // subtract the default box and then half as this number is the amount to
+        // increase the box by
+        return hit;
+    }
+
+    private List<Entity> getAoeEntities(EntityPlayer player, Entity target, TinkerToolEvent.ExtraBlockBreak event) {
+        int width = (event.width - 1) / 2;
+        int height = (event.height - 1) / 2;
+        AxisAlignedBB box = target.boundingBox.addCoord(width, height, width);
+
+        return player.getEntityWorld()
+            .getEntitiesWithinAABBExcludingEntity(player, box);
+    }
+
+    @Override
+    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target) {
+        // only run AOE on shearable entities
+        if (!(target instanceof IShearable)) {
+            return false;
+        }
+
+        // increase the size based on the AOE stuffs
+        TinkerToolEvent.ExtraBlockBreak event = TinkerToolEvent.ExtraBlockBreak.fireEvent(
+            stack,
+            player,
+            player.getEntityWorld()
+                .getBlock((int) target.posX, (int) target.posY, (int) target.posZ),
+            3,
+            3,
+            3,
+            -1);
+        if (event.isCanceled()) {
+            return false;
+        }
+
+        int distance = event.distance;
+        boolean shorn = false;
+
+        int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack);
+        for (Entity entity : getAoeEntities(player, target, event)) {
+            if (distance < 0 || entity.getDistanceToEntity(target) <= distance) {
+                shorn |= shearEntity(stack, player.getEntityWorld(), player, entity, fortune);
+            }
+        }
+
+        if (shorn && !player.worldObj.isRemote) {
+            player.swingItem();
+            TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
+        }
+
+        return shorn;
+    }
+
     public boolean shearEntity(ItemStack stack, World world, EntityPlayer player, Entity entity, int fortune) {
         if (!(entity instanceof IShearable)) {
             return false;
@@ -224,32 +361,25 @@ public class Kama extends HarvestTool {
         return false;
     }
 
-    /**
-     * Returns true if the item can be used on the given entity, e.g. shears on
-     * sheep.
-     */
     @Override
-    public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer player, EntityLivingBase target) {
-        // only run AOE on shearable entities
-        if (target instanceof IShearable) {
-            int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack);
-            if (shearEntity(stack, player.getEntityWorld(), player, target, fortune)) {
-                Sounds.playSoundForAll(player, Sounds.sweep, 1.0F, 1.0F);
-                TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
-                player.swingItem();
-                return true;
-            }
-        }
+    public float getRepairModifierForPart(int index) {
+        return DURABILITY_MODIFIER;
+    }
 
-        return false;
+    @Override
+    public ToolNBT buildToolTag(List<TinkersRebornMaterial> materials) {
+        ToolNBT toolTag = super.buildToolTag(materials);
+        toolTag.durability *= DURABILITY_MODIFIER;
+        return toolTag;
     }
 
     @Override
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
         if (this.toolBuildGuiInfo == null) {
-            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(33 - 2, 42 - 20) // head
-                .addSlotPosition(33 - 11, 42 + 11) // rod
-                .addSlotPosition(33 + 18, 42 - 8); // binding
+            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(33 + 3, 42 - 23) // head
+                .addSlotPosition(33 - 16, 42 + 12) // handle
+                .addSlotPosition(33 - 12 + 16, 42 + 5) // handle2
+                .addSlotPosition(33 + 7 + 16, 42 - 23 + 10); // binding
         }
         return this.toolBuildGuiInfo;
     }

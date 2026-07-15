@@ -11,6 +11,7 @@ import net.minecraft.util.MathHelper;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.particle.Particles;
+import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.SwordCore;
@@ -65,9 +66,7 @@ public class BroadSword extends SwordCore {
                     }
                 }
 
-                // player.worldObj.playSound(null, player.posX, player.posY, player.posZ,
-                // SoundEvents.ENTITY_PLAYER_ATTACK_SWEEP, player.getSoundCategory(), 1.0F,
-                // 1.0F);
+                Sounds.playSoundForAll(player, Sounds.sweep, 1.0F, 1.0F);
                 if (player instanceof EntityPlayer) {
                     TinkersReborn.proxy.spawnAttackParticle(Particles.BROADSWORD_ATTACK, player, 0.7d);
                 }
