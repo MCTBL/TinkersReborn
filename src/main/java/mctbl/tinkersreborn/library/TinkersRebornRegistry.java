@@ -39,9 +39,9 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMateria
 import mctbl.tinkersreborn.library.smeltery.CastingRecipe;
 import mctbl.tinkersreborn.library.smeltery.ICastingRecipe;
 import mctbl.tinkersreborn.library.smeltery.PreferenceCastingRecipe;
-import mctbl.tinkersreborn.library.tools.HeadDropCallback;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.utils.HeadDropCallback;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.utils.MaterialIntegration;

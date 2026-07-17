@@ -1,4 +1,4 @@
-package mctbl.tinkersreborn.library.tools;
+package mctbl.tinkersreborn.library.utils;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;

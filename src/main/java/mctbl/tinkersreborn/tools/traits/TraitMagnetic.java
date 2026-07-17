@@ -37,7 +37,7 @@ public class TraitMagnetic extends AbstractTraitLeveled {
         if (!player.worldObj.isRemote) {
             ModifierNBT data = new ModifierNBT(ToolTagsHelper.getModifierTag(tool, identifier));
             TinkersEntityProperties.getProps(player)
-                .apply(MAGNETIC_KEY, 40, data.level);
+                .apply(MAGNETIC_KEY, 60, data.level);
         }
     }
 
@@ -47,7 +47,7 @@ public class TraitMagnetic extends AbstractTraitLeveled {
         if (!player.worldObj.isRemote) {
             ModifierNBT data = new ModifierNBT(ToolTagsHelper.getModifierTag(tool, identifier));
             TinkersEntityProperties.getProps(player)
-                .apply(MAGNETIC_KEY, 40, data.level);
+                .apply(MAGNETIC_KEY, 60, data.level);
         }
     }
 
@@ -56,23 +56,19 @@ public class TraitMagnetic extends AbstractTraitLeveled {
         if (!event.entityLiving.worldObj.isRemote) {
             TinkersEntityProperties props = TinkersEntityProperties.getProps(event.entityLiving);
             if (props.isActive(MAGNETIC_KEY)) {
-                // TinkersReborn.LOG.info(
-                // "Magnetic {} remaining {} ticks",
-                // props.getLevel(MAGNETIC_KEY),
-                // props.getRemainingTicks(MAGNETIC_KEY));
                 performMagneticAttraction(event.entityLiving, props.getLevel(MAGNETIC_KEY));
             }
         }
     }
 
-    public void performMagneticAttraction(@Nonnull EntityLivingBase entity, int id) {
+    public void performMagneticAttraction(@Nonnull EntityLivingBase entity, int level) {
         // super magnetic - inspired by botanias code
         double x = entity.posX;
         double y = entity.posY;
         double z = entity.posZ;
-        double range = 1.8d;
+        double range = 2.0d;
 
-        range += id * 0.5f;
+        range += level * 0.5f;
 
         List<EntityItem> items = entity.worldObj.getEntitiesWithinAABB(
             EntityItem.class,
