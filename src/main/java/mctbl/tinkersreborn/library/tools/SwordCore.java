@@ -47,5 +47,4 @@ public abstract class SwordCore extends ToolCore {
     public float miningSpeedModifier() {
         return 0.5F;
     }
-
 }

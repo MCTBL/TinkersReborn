@@ -162,6 +162,11 @@ public class ModBeheading extends ToolModifier {
             .anyMatch(drop -> ItemStack.areItemStacksEqual(drop, head));
     }
 
+    @Override
+    public String getTooltip(NBTTagCompound modifierTag, boolean detailed) {
+        return getLeveledTooltip(modifierTag, detailed);
+    }
+
     private static class ModBeheadingCleaver extends ModBeheading {
 
         public ModBeheadingCleaver() {
@@ -182,5 +187,6 @@ public class ModBeheading extends ToolModifier {
         public String getLocalizedName() {
             return TinkersRebornUtils.translate(String.format(LOC_Name, BEHEADING_ID));
         }
+
     }
 }

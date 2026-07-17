@@ -189,7 +189,6 @@ public class TinkersRebornRegistry {
 
     /** Adds a tool to the Crafting UI of the Tool Station */
     public static void registerToolStationCrafting(ToolCore tool) {
-        // TODO add event?
         toolStationCrafting.add(tool);
     }
 

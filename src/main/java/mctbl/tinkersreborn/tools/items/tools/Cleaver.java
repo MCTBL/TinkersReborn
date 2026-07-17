@@ -27,9 +27,9 @@ public class Cleaver extends SwordCore {
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.largeSwordBlade, MaterialStatusType.HEAD, "_cleaver_head"));
         this.componentsParts
-            .add(new ToolPartRecord(TinkersRebornTools.largeplate, MaterialStatusType.HEAD, "_cleaver_shield"));
-        this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.toughrod, MaterialStatusType.HANDLE, "_cleaver_handle"));
+        this.componentsParts
+            .add(new ToolPartRecord(TinkersRebornTools.largeplate, MaterialStatusType.HEAD, "_cleaver_shield"));
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.toughrod, MaterialStatusType.EXTRA, "_cleaver_guard"));
     }
@@ -86,8 +86,8 @@ public class Cleaver extends SwordCore {
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
         if (this.toolBuildGuiInfo == null) {
             this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(33 - 8, 42 - 10 + 4) // head
-                .addSlotPosition(33 + 14, 42 - 10 - 2) // plate/shield
                 .addSlotPosition(33 - 10 - 14, 42 + 10 + 12) // handle
+                .addSlotPosition(33 + 14, 42 - 10 - 2) // plate/shield
                 .addSlotPosition(33 + 10 - 10, 42 + 10 + 6); // guard
         }
         return this.toolBuildGuiInfo;
