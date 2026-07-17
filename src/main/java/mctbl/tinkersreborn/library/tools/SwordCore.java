@@ -1,6 +1,5 @@
 package mctbl.tinkersreborn.library.tools;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import net.minecraft.block.Block;
@@ -8,19 +7,14 @@ import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 
+import com.google.common.collect.ImmutableSet;
+
 import mctbl.tinkersreborn.tools.Category;
 
 public abstract class SwordCore extends ToolCore {
 
-    protected static final Set<Material> swordEffectiveMaterials = new HashSet<>();
-
-    static {
-        swordEffectiveMaterials.add(Material.web);
-        swordEffectiveMaterials.add(Material.vine);
-        swordEffectiveMaterials.add(Material.coral);
-        swordEffectiveMaterials.add(Material.gourd);
-        swordEffectiveMaterials.add(Material.leaves);
-    }
+    protected static final Set<Material> swordEffectiveMaterials = ImmutableSet
+        .of(Material.web, Material.vine, Material.coral, Material.gourd, Material.leaves);
 
     protected SwordCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);

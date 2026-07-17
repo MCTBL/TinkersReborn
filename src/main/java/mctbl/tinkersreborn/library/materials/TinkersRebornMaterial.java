@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,6 +17,11 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
@@ -105,8 +109,8 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     // * A Map so we can obtain the stats we want quickly
     // * the linked map to ensure the order when iterating
     public final Map<MaterialStatusType, IMaterialStats> statsMap;
-    /** Stat-ID -> Traits */
-    public final Map<MaterialStatusType, List<ITrait>> traits;
+    /** Stat-ID -> Traits, one stat type can have multiple traits */
+    public final Multimap<MaterialStatusType, ITrait> traits;
 
     public static int VALUE_Ore() {
         return (int) (VALUE_Ingot * TinkersRebornConfig.oreToIngotRatio);
@@ -143,7 +147,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
 
         this.materialTextColor = color;
         this.statsMap = new LinkedHashMap<>();
-        this.traits = new LinkedHashMap<>();
+        this.traits = LinkedHashMultimap.create();
     }
 
     public TinkersRebornMaterial addStats(IMaterialStats m) {
@@ -172,11 +176,11 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public Set<Entry<MaterialStatusType, IMaterialStats>> getAlltatusType() {
-        return this.statsMap.entrySet();
+        return ImmutableSet.copyOf(this.statsMap.entrySet());
     }
 
     public Collection<? extends IMaterialStats> getAllStats() {
-        return this.statsMap.values();
+        return ImmutableList.copyOf(this.statsMap.values());
     }
 
     public boolean hasStats(MaterialStatusType t) {
@@ -279,14 +283,6 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     /**
-     * Obtains the list of traits for the given stat, creates it if it doesn't exist
-     * yet.
-     */
-    protected List<ITrait> getStatTraits(MaterialStatusType stats) {
-        return this.traits.computeIfAbsent(stats, k -> new LinkedList<>());
-    }
-
-    /**
      * Returns whether the material has a trait with that identifier.
      */
     public boolean hasTrait(String identifier, MaterialStatusType stats) {
@@ -304,11 +300,8 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public List<ITrait> getAllTraitsForStats(MaterialStatusType staus) {
-        List<ITrait> list = new ArrayList<>();
-        if (this.traits.containsKey(staus)) {
-            list.addAll(this.traits.get(staus));
-        }
-        if (this.traits.containsKey(null)) {
+        List<ITrait> list = new ArrayList<>(this.traits.get(staus));
+        if (staus != null) {
             list.addAll(this.traits.get(null));
         }
         return list;
@@ -327,7 +320,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
      */
     public TinkersRebornMaterial addTrait(IModifier materialTrait, MaterialStatusType staus) {
         if (TinkersRebornRegistry.checkMaterialTrait(this, materialTrait, staus)) {
-            getStatTraits(staus).add((ITrait) materialTrait);
+            this.traits.put(staus, (ITrait) materialTrait);
         }
         return this;
     }

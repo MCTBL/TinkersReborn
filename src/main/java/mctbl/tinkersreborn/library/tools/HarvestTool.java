@@ -10,83 +10,91 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemSpade;
 
+import com.google.common.collect.ImmutableSet;
+
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.tools.Category;
 
 public abstract class HarvestTool extends ToolCore {
 
-    protected static final Set<Material> pickaxeEffectiveMaterials = new HashSet<>();
-    protected static final Set<Block> pickaxeEffectiveBlocks = new HashSet<>();
+    // Materials are known at compile time, can use ImmutableSet.of()
+    protected static final Set<Material> pickaxeEffectiveMaterials = ImmutableSet.of(
+        Material.rock,
+        Material.iron,
+        Material.ice,
+        Material.glass,
+        Material.piston,
+        Material.anvil,
+        Material.packedIce);
 
-    protected static final Set<Material> shovelEffectiveMaterials = new HashSet<>();
-    protected static final Set<Block> shovelEffectiveBlocks = new HashSet<>();
+    // Blocks require reflection to match vanilla, built via temp set then frozen
+    protected static final Set<Block> pickaxeEffectiveBlocks;
 
-    protected static final Set<Material> axeEffectiveMaterials = new HashSet<>();
-    protected static final Set<Block> axeEffectiveBlocks = new HashSet<>();
+    protected static final Set<Material> shovelEffectiveMaterials = ImmutableSet.of(
+        Material.grass,
+        Material.ground,
+        Material.sand,
+        Material.snow,
+        Material.craftedSnow,
+        Material.clay,
+        Material.cake);
 
-    protected static final Set<Material> kamaEffectiveMaterials = new HashSet<>();
+    protected static final Set<Block> shovelEffectiveBlocks;
+
+    protected static final Set<Material> axeEffectiveMaterials = ImmutableSet
+        .of(Material.wood, Material.vine, Material.plants, Material.gourd, Material.cactus);
+
+    protected static final Set<Block> axeEffectiveBlocks;
+
+    protected static final Set<Material> kamaEffectiveMaterials = ImmutableSet.of(
+        Material.web,
+        Material.leaves,
+        Material.plants,
+        Material.vine,
+        Material.gourd,
+        Material.cactus,
+        Material.cloth,
+        Material.sponge);
 
     static {
-        pickaxeEffectiveMaterials.add(Material.rock);
-        pickaxeEffectiveMaterials.add(Material.iron);
-        pickaxeEffectiveMaterials.add(Material.ice);
-        pickaxeEffectiveMaterials.add(Material.glass);
-        pickaxeEffectiveMaterials.add(Material.piston);
-        pickaxeEffectiveMaterials.add(Material.anvil);
-        pickaxeEffectiveMaterials.add(Material.packedIce);
-
+        // Pickaxe effective blocks (via reflection from vanilla)
+        Set<Block> pickBlocks = new HashSet<>();
         try {
             Field effectSetField = ItemPickaxe.class.getDeclaredField("field_150915_c");
             effectSetField.setAccessible(true);
             @SuppressWarnings("unchecked")
             Set<Block> blockSet = (Set<Block>) effectSetField.get(null);
-            pickaxeEffectiveBlocks.addAll(blockSet);
+            pickBlocks.addAll(blockSet);
         } catch (Exception e) {
             TinkersReborn.LOG.warn("Tinkers Pickaxe get error when try to get vanila pickaxe's effective block list");
         }
+        pickaxeEffectiveBlocks = ImmutableSet.copyOf(pickBlocks);
 
-        shovelEffectiveMaterials.add(Material.grass);
-        shovelEffectiveMaterials.add(Material.ground);
-        shovelEffectiveMaterials.add(Material.sand);
-        shovelEffectiveMaterials.add(Material.snow);
-        shovelEffectiveMaterials.add(Material.craftedSnow);
-        shovelEffectiveMaterials.add(Material.clay);
-        shovelEffectiveMaterials.add(Material.cake);
-
+        // Shovel effective blocks
+        Set<Block> shovelBlocks = new HashSet<>();
         try {
             Field effectSetField = ItemSpade.class.getDeclaredField("field_150916_c");
             effectSetField.setAccessible(true);
             @SuppressWarnings("unchecked")
             Set<Block> blockSet = (Set<Block>) effectSetField.get(null);
-            shovelEffectiveBlocks.addAll(blockSet);
+            shovelBlocks.addAll(blockSet);
         } catch (Exception e) {
             TinkersReborn.LOG.warn("Tinkers Shovel get error when try to get vanila shovel's effective block list");
         }
+        shovelEffectiveBlocks = ImmutableSet.copyOf(shovelBlocks);
 
-        axeEffectiveMaterials.add(Material.wood);
-        axeEffectiveMaterials.add(Material.vine);
-        axeEffectiveMaterials.add(Material.plants);
-        axeEffectiveMaterials.add(Material.gourd);
-        axeEffectiveMaterials.add(Material.cactus);
-
+        // Axe effective blocks
+        Set<Block> axeBlocks = new HashSet<>();
         try {
             Field effectSetField = ItemAxe.class.getDeclaredField("field_150917_c");
             effectSetField.setAccessible(true);
             @SuppressWarnings("unchecked")
             Set<Block> blockSet = (Set<Block>) effectSetField.get(null);
-            axeEffectiveBlocks.addAll(blockSet);
+            axeBlocks.addAll(blockSet);
         } catch (Exception e) {
             TinkersReborn.LOG.warn("Tinkers Hatchet get error when try to get vanila axe's effective block list");
         }
-
-        kamaEffectiveMaterials.add(Material.web);
-        kamaEffectiveMaterials.add(Material.leaves);
-        kamaEffectiveMaterials.add(Material.plants);
-        kamaEffectiveMaterials.add(Material.vine);
-        kamaEffectiveMaterials.add(Material.gourd);
-        kamaEffectiveMaterials.add(Material.cactus);
-        kamaEffectiveMaterials.add(Material.cloth);
-        kamaEffectiveMaterials.add(Material.sponge);
+        axeEffectiveBlocks = ImmutableSet.copyOf(axeBlocks);
     }
 
     protected HarvestTool(String toolTypeName, int partAmount) {

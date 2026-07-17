@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
@@ -162,7 +163,7 @@ public class TinkersRebornRegistry {
     }
 
     public static Collection<IModifier> getAllModifier() {
-        return modifierAndTraitIdentifierMaps.values();
+        return ImmutableList.copyOf(modifierAndTraitIdentifierMaps.values());
     }
 
     public static void registerTool(ToolCore tool) {
@@ -171,7 +172,7 @@ public class TinkersRebornRegistry {
     }
 
     public static List<ToolCore> getAllTools() {
-        return tools;
+        return ImmutableList.copyOf(tools);
     }
 
     public static void registerToolPart(TinkersRebornToolPart part) {
@@ -592,7 +593,7 @@ public class TinkersRebornRegistry {
     }
 
     public static List<TinkersRebornMaterial> getAllMaterialList() {
-        return allMaterialsList;
+        return ImmutableList.copyOf(allMaterialsList);
     }
 
     public static RenderMaterial getRenderMaterial(String identifier) {
@@ -600,19 +601,19 @@ public class TinkersRebornRegistry {
     }
 
     public static Map<String, RenderMaterial> getRenderMaterialMap() {
-        return renderMaterials;
+        return ImmutableMap.copyOf(renderMaterials);
     }
 
     public static Map<String, TinkersRebornFluid> getAllFluidMap() {
-        return allTinkersFluidMap;
+        return ImmutableMap.copyOf(allTinkersFluidMap);
     }
 
     public static List<ToolCore> getToolForgeCraftingList() {
-        return toolForgeCrafting;
+        return ImmutableList.copyOf(toolForgeCrafting);
     }
 
     public static List<ToolCore> getToolStationCraftingList() {
-        return toolStationCrafting;
+        return ImmutableList.copyOf(toolStationCrafting);
     }
 
     public static ICastingRecipe getTableCasting(ItemStack cast, Fluid fluid) {
@@ -775,6 +776,6 @@ public class TinkersRebornRegistry {
     }
 
     public static List<AlloyRecipe> getAlloys() {
-        return alloyRegistry;
+        return ImmutableList.copyOf(alloyRegistry);
     }
 }

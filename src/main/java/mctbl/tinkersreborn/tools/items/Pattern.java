@@ -13,6 +13,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 
+import com.google.common.collect.ImmutableList;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -171,7 +173,7 @@ public class Pattern extends Item implements IPattern {
     }
 
     public List<String> getAllPatternType() {
-        return this.patternType;
+        return ImmutableList.copyOf(this.patternType);
     }
 
     // NBT

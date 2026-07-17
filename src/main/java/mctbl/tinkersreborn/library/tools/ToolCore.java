@@ -37,6 +37,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
@@ -264,7 +266,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public Set<Category> getCategory() {
-        return this.categoryTags;
+        return ImmutableSet.copyOf(this.categoryTags);
     }
 
     public boolean hasCategory(Category tag) {
@@ -272,7 +274,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public List<ToolPartRecord> getToolComponentsParts() {
-        return this.componentsParts;
+        return ImmutableList.copyOf(this.componentsParts);
     }
 
     public String getUnlocalizedToolName() {
