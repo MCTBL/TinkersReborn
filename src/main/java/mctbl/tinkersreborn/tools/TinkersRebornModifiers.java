@@ -4,9 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySnowman;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -166,9 +176,8 @@ public class TinkersRebornModifiers {
     }
 
     public void postInit(FMLPostInitializationEvent e) {
-        // registerMobHeadDrops(); // TODO
+        registerMobHeadDrops();
         registerFortifyModifiers();
-        // registerFortifyModifiers(); // TODO
     }
 
     private void registerFortifyModifiers() {
@@ -178,5 +187,46 @@ public class TinkersRebornModifiers {
                 fortifyMods.add(new ModFortify(mat));
             }
         }
+    }
+
+    private void registerMobHeadDrops() {
+        // === Skeleton (normal = skull:0, wither = skull:1) ===
+        // 1.7.10 uses getSkeletonType() to differentiate: 0 = normal, 1 = wither
+        TinkersRebornRegistry.registerHeadDrop(EntitySkeleton.class, entity -> {
+            if (entity instanceof EntitySkeleton) {
+                int type = ((EntitySkeleton) entity).getSkeletonType();
+                return new ItemStack(Items.skull, 1, type == 1 ? 1 : 0);
+            }
+            return new ItemStack(Items.skull, 1, 0);
+        });
+
+        // === Zombie → zombie head (skull:2) ===
+        TinkersRebornRegistry.registerHeadDrop(EntityZombie.class, new ItemStack(Items.skull, 1, 2));
+
+        // === Zombie Pigman → also zombie head (skull:2) ===
+        TinkersRebornRegistry.registerHeadDrop(EntityPigZombie.class, new ItemStack(Items.skull, 1, 2));
+
+        // === Creeper → creeper head (skull:4) ===
+        TinkersRebornRegistry.registerHeadDrop(EntityCreeper.class, new ItemStack(Items.skull, 1, 4));
+
+        // === Player → player head (skull:3, writes SkullOwner NBT for player identity) ===
+        TinkersRebornRegistry.registerHeadDrop(EntityPlayerMP.class, entity -> {
+            ItemStack stack = new ItemStack(Items.skull, 1, 3);
+            if (entity instanceof EntityPlayer) {
+                NBTTagCompound ownerTag = new NBTTagCompound();
+                ownerTag.setString("Name", ((EntityPlayer) entity).getDisplayName());
+                stack.setTagInfo("SkullOwner", ownerTag);
+            }
+            return stack;
+        });
+
+        // === Ender Dragon → dragon head (skull:5) ===
+        TinkersRebornRegistry.registerHeadDrop(EntityDragon.class, new ItemStack(Items.skull, 1, 5));
+
+        // === Snow Golem → pumpkin ===
+        TinkersRebornRegistry.registerHeadDrop(EntitySnowman.class, new ItemStack(Blocks.pumpkin, 1, 0));
+
+        // === Iron Golem → pumpkin ===
+        TinkersRebornRegistry.registerHeadDrop(EntityIronGolem.class, new ItemStack(Blocks.pumpkin, 1, 0));
     }
 }

@@ -24,8 +24,10 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
@@ -36,6 +38,7 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMateria
 import mctbl.tinkersreborn.library.smeltery.CastingRecipe;
 import mctbl.tinkersreborn.library.smeltery.ICastingRecipe;
 import mctbl.tinkersreborn.library.smeltery.PreferenceCastingRecipe;
+import mctbl.tinkersreborn.library.tools.HeadDropCallback;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
@@ -77,7 +80,8 @@ public class TinkersRebornRegistry {
     protected static final Map<Fluid, TinkersRebornFuelRecord> allAllowFuel = new LinkedHashMap<>();
     protected static final List<FluidStack> fluidForCast = new ArrayList<>();
 
-    protected static final Map<Class<? extends EntityLivingBase>, ItemStack> headDrops = new HashMap<>();
+    protected static final Multimap<Class<? extends EntityLivingBase>, HeadDropCallback> headDrops = ArrayListMultimap
+        .create();
     protected static final List<MeltingRecipe> meltingRegistry = new ArrayList<>();
     protected static final List<ICastingRecipe> tableCastRegistry = new ArrayList<>();
     protected static final List<ICastingRecipe> basinCastRegistry = new ArrayList<>();
@@ -199,26 +203,65 @@ public class TinkersRebornRegistry {
 
     /**
      * Registers a beheading head drop for an entity
-     * 
+     *
      * @param clazz Entity class
      * @param head  Head that drops from that entity
      */
     public static void registerHeadDrop(Class<? extends EntityLivingBase> clazz, ItemStack head) {
-        headDrops.put(clazz, head);
+        registerHeadDrop(clazz, e -> head.copy());
     }
 
     /**
-     * Gets the heads that would be dropped by an entity
-     * 
+     * Registers a beheading head drop for an entity with a callback.
+     * Use this when the dropped ItemStack depends on the entity instance,
+     * e.g. player heads that need a GameProfile written to NBT.
+     *
+     * @param clazz    Entity class
+     * @param callback Function that produces the head ItemStack from the entity
+     */
+    public static void registerHeadDrop(Class<? extends EntityLivingBase> clazz, HeadDropCallback callback) {
+        headDrops.put(clazz, callback);
+        TinkersReborn.LOG.info("Registered head drop for {}", clazz.getSimpleName());
+    }
+
+    /**
+     * Registers a beheading head drop for all entities that extend the given class.
+     * Iterates EntityList.stringToClassMapping to find all registered subclasses.
+     *
+     * @param clazz Parent entity class
+     * @param head  Head that drops from matching entities
+     */
+    @SuppressWarnings("unchecked")
+    public static void registerHeadDropForAll(Class<? extends EntityLivingBase> clazz, ItemStack head) {
+        for (Class<? extends Entity> obj : EntityList.stringToClassMapping.values()) {
+            if (clazz.isAssignableFrom(obj) && EntityLivingBase.class.isAssignableFrom(obj)) {
+                registerHeadDrop((Class<? extends EntityLivingBase>) obj, head);
+            }
+        }
+    }
+
+    /**
+     * Gets the heads that would be dropped by an entity.
+     * Checks all registered head drops using isAssignableFrom for inheritance matching.
+     * Each matching callback is invoked with the entity to produce the ItemStack.
+     *
      * @param entity Entity to check
-     * @return A collection of the entity's head drops
+     * @return A collection of the entity's head drops (may contain multiple entries)
      */
     public static Collection<ItemStack> getHeadDrops(EntityLivingBase entity) {
         Collection<ItemStack> drops = new ArrayList<>();
-        for (Map.Entry<Class<? extends EntityLivingBase>, ItemStack> entry : headDrops.entrySet()) {
+        for (HeadDropCallback callback : headDrops.get(entity.getClass())) {
+            ItemStack stack = callback.getHeadDrop(entity);
+            if (!TinkersRebornUtils.isStackEmpty(stack)) {
+                drops.add(stack.copy());
+            }
+        }
+        // Also check parent classes for registered drops (isAssignableFrom)
+        for (Map.Entry<Class<? extends EntityLivingBase>, HeadDropCallback> entry : headDrops.entries()) {
             if (entry.getKey()
-                .isAssignableFrom(entity.getClass())) {
-                ItemStack stack = entry.getValue();
+                .isAssignableFrom(entity.getClass()) && entry.getKey() != entity.getClass()) {
+                ItemStack stack = entry.getValue()
+                    .getHeadDrop(entity);
                 if (!TinkersRebornUtils.isStackEmpty(stack)) {
                     drops.add(stack.copy());
                 }
