@@ -27,13 +27,15 @@ public class Hatchet extends HarvestTool {
     public final Set<Block> axeEffectiveBlocks = new HashSet<>();
 
     public Hatchet() {
-        super("Hatchet", 2);
+        super("Hatchet", 3);
 
         // set the toolclass, actual harvestlevel is done by the overridden callback
         this.setHarvestLevel("axe", 0);
 
         this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.axeHead, MaterialStatusType.HEAD, "_axe_head"));
         this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.rod, MaterialStatusType.HANDLE, "_axe_handle"));
+        this.componentsParts
+            .add(new ToolPartRecord(TinkersRebornTools.binding, MaterialStatusType.EXTRA, "_axe_accessory"));
     }
 
     @Override
@@ -90,8 +92,9 @@ public class Hatchet extends HarvestTool {
     @Override
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
         if (this.toolBuildGuiInfo == null) {
-            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(25 + 20, 53 - 20) // hatchet head
-                .addSlotPosition(25, 53); // rod
+            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(18 + 10, 60 - 35) // hatchet head
+                .addSlotPosition(18, 60) // rod
+                .addSlotPosition(18 + 28, 60 - 20); // binding
         }
         return this.toolBuildGuiInfo;
     }

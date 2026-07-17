@@ -244,9 +244,9 @@ public class Kama extends HarvestTool {
     @Override
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
         if (this.toolBuildGuiInfo == null) {
-            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(33 - 2, 42 - 20) // head
-                .addSlotPosition(33 - 11, 42 + 11) // rod
-                .addSlotPosition(33 + 18, 42 - 8); // binding
+            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(18 + 10, 60 - 35) // kama head
+                .addSlotPosition(18, 60) // rod
+                .addSlotPosition(18 + 28, 60 - 20); // binding
         }
         return this.toolBuildGuiInfo;
     }

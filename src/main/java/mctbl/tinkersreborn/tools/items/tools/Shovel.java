@@ -17,7 +17,7 @@ public class Shovel extends HarvestTool {
     public final Set<Block> shovelEffectiveBlocks = new HashSet<>();
 
     public Shovel() {
-        super("Shovel", 2);
+        super("Shovel", 3);
 
         // set the toolclass, actual harvestlevel is done by the overridden callback
         this.setHarvestLevel("shovel", 0);
@@ -26,6 +26,8 @@ public class Shovel extends HarvestTool {
             .add(new ToolPartRecord(TinkersRebornTools.shovelHead, MaterialStatusType.HEAD, "_shovel_head"));
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.rod, MaterialStatusType.HANDLE, "_shovel_handle"));
+        this.componentsParts
+            .add(new ToolPartRecord(TinkersRebornTools.binding, MaterialStatusType.EXTRA, "_shovel_accessory"));
 
     }
 
@@ -42,8 +44,9 @@ public class Shovel extends HarvestTool {
     @Override
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
         if (this.toolBuildGuiInfo == null) {
-            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(25 + 20, 53 - 20) // shovel head
-                .addSlotPosition(25, 53); // rod
+            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(33 + 18, 45 - 18) // shovel head
+                .addSlotPosition(33, 45) // rod
+                .addSlotPosition(33 - 18, 45 + 18); // binding
         }
         return this.toolBuildGuiInfo;
     }
