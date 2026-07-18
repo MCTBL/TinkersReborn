@@ -233,4 +233,13 @@ public class BlockPos extends Vector3i implements Comparable<BlockPos> {
             return this.getY() - o.getY();
         }
     }
+
+    @Override
+    public BlockPos add(int x, int y, int z) {
+        BlockPos newPos = new BlockPos(this.x, this.y, this.z);
+        newPos.x += x;
+        newPos.y += y;
+        newPos.z += z;
+        return newPos;
+    }
 }

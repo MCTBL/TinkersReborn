@@ -28,6 +28,7 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
         int amount = tank.fill(resource, doFill);
         if (amount > 0 && doFill) {
             renderOffset += amount;
+            this.markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
         }
@@ -35,11 +36,16 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
         return amount;
     }
 
+    public FluidStack getFluid() {
+        return tank.getFluid();
+    }
+
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
         FluidStack amount = tank.drain(maxDrain, doDrain);
         if (amount != null && doDrain) {
             renderOffset = -amount.amount;
+            this.markDirty();
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, this.getBlockType());
         }
@@ -75,10 +81,13 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
         return new FluidTankInfo[] { new FluidTankInfo(fluid, tank.getCapacity()) };
     }
 
-    /*
-     * @Override public IFluidTank[] getTanks (ForgeDirection direction) { return new IFluidTank[] { tank }; }
-     * @Override public IFluidTank getTank (ForgeDirection direction, FluidStack type) { return tank; }
-     */
+    public int getFluidAmount() {
+        return tank.getFluidAmount();
+    }
+
+    public int getCapacity() {
+        return tank.getCapacity();
+    }
 
     public float getFluidAmountScaled() {
         return (float) (tank.getFluid().amount - renderOffset) / (tank.getCapacity() * 1.01F);
@@ -111,6 +120,7 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
 
     @Override
     public void readCustomNBT(NBTTagCompound tags) {
+        super.readCustomNBT(tags);
         if (tags.getBoolean("hasFluid")) {
             tank.setFluid(FluidRegistry.getFluidStack(tags.getString("fluidName"), tags.getInteger("amount")));
         } else tank.setFluid(null);
@@ -120,6 +130,7 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
 
     @Override
     public void writeCustomNBT(NBTTagCompound tags) {
+        super.writeCustomNBT(tags);
         FluidStack liquid = tank.getFluid();
         tags.setBoolean("hasFluid", liquid != null);
         if (liquid != null) {
@@ -142,6 +153,7 @@ public class LavaTankLogic extends MultiServantLogic implements IFluidHandler {
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        super.onDataPacket(net, packet);
         readCustomNBT(packet.func_148857_g());
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
     }

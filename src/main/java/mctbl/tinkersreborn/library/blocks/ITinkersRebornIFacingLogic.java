@@ -7,7 +7,7 @@ public interface ITinkersRebornIFacingLogic {
 
     public ForgeDirection getForgeDirection();
 
-    public void setFrogeDirection(ForgeDirection direction);
+    public void setForgeDirection(ForgeDirection direction);
 
     public void setFacedDirection(EntityLivingBase player);
 }

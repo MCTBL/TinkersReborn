@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -13,11 +15,13 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.blocks.IActiveLogic;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 
 public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogic, IActiveLogic, IFluidHandler {
+
+    public static final String TAG_ACTIVE = "active";
 
     public ForgeDirection faceDirection;
 
@@ -27,19 +31,20 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
 
     public boolean activateFaucet() {
         if (liquid == null && active) {
-            int x = xCoord - getForgeDirection().offsetX, z = zCoord - getForgeDirection().offsetZ;
+            int x = xCoord - getForgeDirection().offsetX;
+            int z = zCoord - getForgeDirection().offsetZ;
 
             TileEntity drainte = worldObj.getTileEntity(x, yCoord, z);
             TileEntity tankte = worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
 
-            if (drainte instanceof IFluidHandler && tankte instanceof IFluidHandler) {
-                FluidStack templiquid = ((IFluidHandler) drainte)
-                    .drain(getForgeDirection(), TinkersRebornMaterial.VALUE_Ingot, false);
+            if (drainte instanceof IFluidHandler sourceTile && tankte instanceof IFluidHandler targetTile) {
+                FluidStack templiquid = sourceTile
+                    .drain(getForgeDirection(), TinkersRebornConfig.smelteryDrainEachTick, false);
                 if (templiquid != null) {
-                    int drained = ((IFluidHandler) tankte).fill(ForgeDirection.UP, templiquid, false);
+                    int drained = targetTile.fill(ForgeDirection.UP, templiquid, false);
                     if (drained > 0) {
-                        liquid = ((IFluidHandler) drainte).drain(getForgeDirection(), drained, true);
-                        ((IFluidHandler) tankte).fill(ForgeDirection.UP, liquid, true);
+                        liquid = sourceTile.drain(getForgeDirection(), drained, true);
+                        targetTile.fill(ForgeDirection.UP, liquid, true);
                         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
                         return true;
                     } else {
@@ -54,7 +59,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     @Override
     public void updateEntity() {
         if (liquid != null) {
-            liquid.amount -= TinkersRebornMaterial.VALUE_Ingot;
+            liquid.amount -= TinkersRebornConfig.smelteryDrainEachTick;
             if (liquid.amount <= 0) {
                 liquid = null;
                 if (!activateFaucet()) {
@@ -76,6 +81,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
         if (tags.getBoolean("hasLiquid")) {
             this.liquid = FluidStack.loadFluidStackFromNBT(tags.getCompoundTag("Fluid"));
         } else this.liquid = null;
+        this.active = tags.getBoolean(TAG_ACTIVE);
     }
 
     @Override
@@ -92,6 +98,7 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
             liquid.writeToNBT(nbt);
             tags.setTag("Fluid", nbt);
         }
+        tags.setBoolean(TAG_ACTIVE, this.active);
     }
 
     /* Packets */
@@ -149,17 +156,18 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     }
 
     @Override
+    @Nullable
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
         return null;
     }
 
     @Override
     public ForgeDirection getForgeDirection() {
-        return this.faceDirection;
+        return this.faceDirection != null ? this.faceDirection : ForgeDirection.UNKNOWN;
     }
 
     @Override
-    public void setFrogeDirection(ForgeDirection direction) {
+    public void setForgeDirection(ForgeDirection direction) {
         this.faceDirection = direction;
     }
 

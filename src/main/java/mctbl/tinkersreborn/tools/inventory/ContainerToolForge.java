@@ -19,11 +19,11 @@ public class ContainerToolForge extends ContainerToolStation {
 
     @Override
     public List<ToolCore> getBuildableTools() {
-        return TinkersRebornRegistry.toolForgeCrafting;
+        return TinkersRebornRegistry.getToolForgeCraftingList();
     }
 
     @Override
     protected void playCraftSound(EntityPlayer player) {
-        Sounds.playSoundForAll(player, "block.anvil.use", 0.9f, 0.95f + 0.2f * TinkersReborn.random.nextFloat());
+        Sounds.playSoundForAll(player, "random.anvil_use", 0.9f, 0.9f + 0.2f * TinkersReborn.random.nextFloat());
     }
 }

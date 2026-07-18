@@ -62,6 +62,12 @@ public class GuiButtonItem<T> extends GuiButton {
     @SideOnly(Side.CLIENT)
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        // Reset GL state that may have been polluted by renderItemIntoGUI
+        // (it enables GL_LIGHTING, disables GL_BLEND, and enables GL_CULL_FACE)
+        GL11.glDisable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_CULL_FACE);
         mc.getTextureManager()
             .bindTexture(locBackground);
 

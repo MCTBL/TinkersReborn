@@ -47,6 +47,16 @@ public class TinkersRebornConfig {
     public static boolean autoSmeltWithLapis;
     public static boolean celsiusPref;
 
+    public static double oreToIngotRatio;
+    public static int heatItemsTickrateSmeltery;
+
+    public static String[] fluidIgnore;
+
+    public static String[] entityMelting;
+    public static int smelteryDrainEachTick;
+    public static int vineHammerMaxOreMine;
+    public static int vineHammerMineEachTick;
+
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
@@ -55,7 +65,7 @@ public class TinkersRebornConfig {
 
         gravelOreTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum" };
 
-        Configuration config = new Configuration(new File(location + "/TinkersReborn"));
+        Configuration config = new Configuration(new File(location + "/TinkersReborn.cfg"));
 
         disableAllRecipes = config
             .get(
@@ -135,6 +145,47 @@ public class TinkersRebornConfig {
 
         celsiusPref = config.get("General", "Temperature Unit Pref", true, "true is Celsius and false is kelvin")
             .getBoolean();
+
+        oreToIngotRatio = config.get(
+            "General",
+            "oreToIngotRatio",
+            2.0F,
+            "Determines the ratio of ore to ingot, or in other words how many ingots you get out of an ore. This ratio applies to all ores (including poor and dense). The ratio can be any decimal, including 1.5 and the like, but can't go below 1. THIS ALSO AFFECTS MELTING TEMPERATURE!")
+            .setMinValue(1)
+            .getDouble();
+
+        fluidIgnore = config
+            .get(
+                "General",
+                "fluidIgnore",
+                new String[] {},
+                "List of fluids to ignore, effectively preventing registration of melting and casting recipes.")
+            .getStringList();
+
+        heatItemsTickrateSmeltery = config.get(
+            "Smeltery",
+            "heatItemsTickrateSmeltery",
+            4,
+            "The tickrate at which items are heated and alloys are created in the smeltery. Defaults to every 4th tick.")
+            .getInt();
+
+        entityMelting = config
+            .get(
+                "Smeltery",
+                "entityMelting",
+                new String[] { "SnowMan;true;water;100", "Villager;true;molten_emerald;6",
+                    "VillagerGolem;true;molten_iron;18", "PigZombie;true;molten_gold;10", },
+                "List of entity melting entries in the format 'entity;subtypes;fluid;amount'.")
+            .getStringList();
+
+        smelteryDrainEachTick = config.get("Smeltery", "smelteryDrainEachTick", 6)
+            .getInt();
+
+        vineHammerMaxOreMine = config.get("Tools", "Vine Hammer can mine ores each time", 25)
+            .getInt();
+        // does this really need?
+        vineHammerMineEachTick = config.get("Tools", "Vine Hammer each tick can mine howmany ore block", 25)
+            .getInt();
     }
 
 }

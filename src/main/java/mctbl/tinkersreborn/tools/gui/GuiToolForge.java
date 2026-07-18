@@ -23,6 +23,6 @@ public class GuiToolForge extends GuiToolStation {
 
     @Override
     public List<ToolCore> getBuildableItems() {
-        return TinkersRebornRegistry.toolForgeCrafting;
+        return TinkersRebornRegistry.getToolForgeCraftingList();
     }
 }

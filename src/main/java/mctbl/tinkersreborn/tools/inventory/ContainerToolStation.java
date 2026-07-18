@@ -355,7 +355,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
     }
 
     public List<ToolCore> getBuildableTools() {
-        return TinkersRebornRegistry.toolStationCrafting;
+        return TinkersRebornRegistry.getToolStationCraftingList();
     }
 
     private ItemStack getToolStack() {

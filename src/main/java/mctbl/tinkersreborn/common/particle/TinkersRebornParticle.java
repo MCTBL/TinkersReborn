@@ -95,7 +95,6 @@ public class TinkersRebornParticle extends EntityFX {
         float f = ((float) this.particleAge + partialTicks) / (float) this.particleMaxAge * 32.0F;
         f = MathHelper.clamp_float(f, 0.0F, 1.0F);
 
-        // TinkersReborn.LOG.info("renderParticle f={} particleAge={} particleAge={}", f, particleAge, partialTicks);
         this.particleScale = this.oSize * f;
 
         float scale = this.particleScale;

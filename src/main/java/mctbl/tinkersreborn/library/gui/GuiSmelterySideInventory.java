@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class GuiSmelterySideInventory extends GuiSideInventory {
 
@@ -73,28 +73,28 @@ public class GuiSmelterySideInventory extends GuiSideInventory {
         // draw the "heat" bars for each slot
         for (Slot slot : inventorySlots.inventorySlots) {
             if (slot.getHasStack() && shouldDrawSlot(slot)) {
-                float progress = smeltery.getTemperature(slot.getSlotIndex());
+                float progress = smeltery.getHeatingProgress(slot.getSlotIndex());
                 String tooltip = null;
                 GuiElement bar = progressBar;
 
                 if (Float.isNaN(progress)) {
                     progress = 1f;
                     bar = noMeltBar;
-                    tooltip = "gui.smeltery.progress.no_recipe";
+                    tooltip = TinkersStr.smtleteryNoRecipe.toString();
                 } else if (smeltery.fuelReleaseTicks == 0) {
                     bar = unprogressBar;
                     progress = MathHelper.clamp_float(progress, 0, 1);
-                    tooltip = "gui.smeltery.progress.no_fuel";
+                    tooltip = TinkersStr.smtleteryNoFuel.toString();
                 } else if (progress < 0) {
                     bar = unprogressBar;
                     progress = 1f;
-                    tooltip = "gui.smeltery.progress.no_heat";
+                    tooltip = TinkersStr.smtleteryNoHeat.toString();
                 } else if ((progress > 1f && progress < 2f) || progress == Float.POSITIVE_INFINITY) {
                     progress = 1f;
                 } else if (progress > 2f) {
                     bar = uberHeatBar;
                     progress = 1f;
-                    tooltip = "gui.smeltery.progress.no_space";
+                    tooltip = TinkersStr.smtleteryNoSpace.toString();
                 }
 
                 int height = 1 + Math.round(progress * (bar.h - 1));
@@ -108,13 +108,13 @@ public class GuiSmelterySideInventory extends GuiSideInventory {
                     tooltipText = tooltip;
                 }
 
-                drawTexturedModalRect(x, y + bar.h - height, bar.x, bar.y, bar.w, bar.h);
+                drawTexturedModalRect(x, y + bar.h - height, bar.x, bar.y, bar.w, height);
             }
         }
 
         if (tooltipText != null) {
             drawHoveringText(
-                this.fontRendererObj.listFormattedStringToWidth(TinkersRebornUtils.translate(tooltipText), 100),
+                this.fontRendererObj.listFormattedStringToWidth(tooltipText, 100),
                 mouseX - guiLeft,
                 mouseY - guiTop,
                 this.fontRendererObj);

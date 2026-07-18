@@ -260,11 +260,11 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
 
     @Override
     public ForgeDirection getForgeDirection() {
-        return this.faceDirection;
+        return this.faceDirection != null ? this.faceDirection : ForgeDirection.UNKNOWN;
     }
 
     @Override
-    public void setFrogeDirection(ForgeDirection direction) {
+    public void setForgeDirection(ForgeDirection direction) {
         this.faceDirection = direction;
     }
 

@@ -1,88 +1,55 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class TinkersRebornFluid extends Fluid {
 
-    private Integer color;
-    public String identifier;
-    String unlocalizedName;
-
-    public TinkersRebornFluid(String fluidName, int color, boolean initFluid, boolean needFluidBlock) {
-        super(fluidName);
-        this.unlocalizedName = fluidName;
-        this.identifier = fluidName;
-        this.color = color;
-        if (initFluid) {
-            FluidRegistry.registerFluid(this);
-            FluidContainerRegistry.registerFluidContainer(
-                new FluidContainerData(
-                    new FluidStack(this, 1000),
-                    new ItemStack(TinkersRebornGeneral.tinkersBucket, 1, TinkersRebornRegistry.allTinkersFluid.size()),
-                    new ItemStack(Items.bucket)));
-            TinkersRebornRegistry.allTinkersFluid.add(this);
-        }
-
-        if (needFluidBlock) {
-            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.water, this.unlocalizedName);
-            GameRegistry.registerBlock(fluidBlock, fluidBlock.getUnlocalizedName());
-        }
-    }
+    public final int color;
+    public final String identifier;
 
     /**
-     * 
-     * @param m         TinkersRebornMaterial
-     * @param initFluid true if need auto register fluid and add to material
+     * @param fluidName  iron.molten / blood
+     * @param color      0xFFC1C1C1
+     * @param identifier texture name like molten_iron / liquid_blood
      */
-    public TinkersRebornFluid(TinkersRebornMaterial m, boolean initFluid) {
-        super("molten_" + m.identifier);
-        this.unlocalizedName = "molten_" + m.identifier;
-        this.setDensity(3000)
+    public TinkersRebornFluid(String fluidName, int color, String identifier) {
+        super(fluidName);
+        this.color = color;
+        this.identifier = identifier;
+    }
+
+    public static TinkersRebornFluid createMolten(String name, int color, String identifier) {
+        return createMolten(name, color, identifier, 300);
+    }
+
+    public static TinkersRebornFluid createMolten(String name, int color, String identifier, int temperature) {
+        TinkersRebornFluid f = new TinkersRebornFluid("molten_" + name, color, identifier);
+        f.setDensity(3000)
             .setViscosity(6000)
-            .setTemperature(1300)
+            .setTemperature(temperature)
             .setLuminosity(12);
-        this.identifier = m.identifier;
-        if (initFluid) {
-            FluidRegistry.registerFluid(this);
-            m.setFluidAndCastable(this);
-
-            Block fluidBlock = new TinkersRebornFluidBlock(this, Material.lava, this.unlocalizedName);
-            GameRegistry.registerBlock(fluidBlock, fluidBlock.getUnlocalizedName());
-
-            FluidContainerRegistry.registerFluidContainer(
-                new FluidContainerData(
-                    new FluidStack(this, 1000),
-                    new ItemStack(TinkersRebornGeneral.tinkersBucket, 1, TinkersRebornRegistry.allTinkersFluid.size()),
-                    new ItemStack(Items.bucket)));
-            TinkersRebornRegistry.allTinkersFluid.add(this);
-        }
-
+        return f;
     }
 
     @Override
-    public String getUnlocalizedName() {
-        return this.unlocalizedName;
+    public String getLocalizedName() {
+        TinkersRebornMaterial material = TinkersRebornRegistry.getMaterialByIdentifier(identifier);
+        String name = material != TinkersRebornMaterial.UNKNOWN ? material.localizedName()
+            : TinkersRebornUtils.translate(this.getUnlocalizedName());
+
+        if (getTemperature() > 300) {
+            name = TinkersRebornUtils.translate("tinkersreborn.moltenFluid")
+                .replace("%%material", name);
+        }
+        return name;
     }
 
     @Override
     public int getColor() {
-        if (this.color != null) {
-            return this.color;
-        }
-        return TinkersRebornRegistry.getMaterialByIdentifier(identifier).materialTextColor;
-
+        return this.color;
     }
 }

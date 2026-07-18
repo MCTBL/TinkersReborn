@@ -83,7 +83,7 @@ public class GuiButtonsToolStation extends GuiSideButtons {
     protected void actionPerformed(GuiButton button) {
         TinkersReborn.LOG.info(String.format("GuiButtonsToolStation click %s", button.displayString));
 
-        for (Object o : buttonList) {
+        for (GuiButton o : buttonList) {
             if (o instanceof GuiButtonItem) {
                 ((GuiButtonItem<ToolBuildGuiInfo>) o).pressed = false;
             }
@@ -98,7 +98,7 @@ public class GuiButtonsToolStation extends GuiSideButtons {
 
     @SuppressWarnings("unchecked")
     public void wood() {
-        for (Object o : buttonList) {
+        for (GuiButton o : buttonList) {
             shiftButton((GuiButtonItem<ToolBuildGuiInfo>) o, 0, -36);
         }
 
@@ -107,7 +107,7 @@ public class GuiButtonsToolStation extends GuiSideButtons {
 
     @SuppressWarnings("unchecked")
     public void metal() {
-        for (Object o : buttonList) {
+        for (GuiButton o : buttonList) {
             shiftButton((GuiButtonItem<ToolBuildGuiInfo>) o, 0, -18);
         }
 

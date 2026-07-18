@@ -16,7 +16,6 @@ import mctbl.tinkersreborn.library.tools.ToolCore;
  */
 public class ToolBuildGuiInfo {
 
-    @Nonnull
     public final ItemStack tool;
     // the positions where the slots are located
     public final List<Point> positions = new ArrayList<>();

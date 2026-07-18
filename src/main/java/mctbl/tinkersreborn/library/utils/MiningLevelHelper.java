@@ -8,6 +8,9 @@ import java.util.Map;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.util.ColorUtil;
 
@@ -51,6 +54,9 @@ public final class MiningLevelHelper {
                 idx++;
             }
         }
+        // Freeze after initialization
+        nameToLevel = ImmutableMap.copyOf(nameToLevel);
+        levelList = ImmutableList.copyOf(levelList);
     }
 
     public static MiningLevel getMiningLevel(int level) {

@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -40,6 +40,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     public static final String TAG_ITEM_TEMPERATURES = "itemTemperatures";
     public static final String TAG_ITEM_TEMP_REQUIRED = "itemTempRequired";
     public static final String TAG_IS_HEATING = "isHeating";
+
+    protected static final int TIME_FACTOR = 8;
 
     public static final BlockPos DEFAULT_POS = BlockPos.of(0, 0, 0);
 
@@ -93,7 +95,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         this.itemTemperatures = new int[0];
         this.itemTempRequired = new int[0];
         this.lavaTanks = new ArrayList<>();
-        this.name = "tinkersreborn.multi." + name;
+        this.name = "tinkersreborn.gui." + name;
     }
 
     @Override
@@ -133,25 +135,23 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
             // consume fuel!
             TileEntity te = this.worldObj
                 .getTileEntity(this.activeLavaTank.x, this.activeLavaTank.y, this.activeLavaTank.z);
-            if (te instanceof LavaTankLogic) {
-                IFluidTank tank = ((LavaTankLogic) te).tank;
-
-                FluidStack liquid = tank.getFluid();
+            if (te instanceof LavaTankLogic tankLogic) {
+                FluidStack liquid = tankLogic.getFluid();
                 if (liquid != null) {
                     FluidStack in = liquid.copy();
                     int bonusFuel = TinkersRebornRegistry.consumeSmelteryFuel(in);
                     int amount = liquid.amount - in.amount;
-                    FluidStack drained = tank.drain(amount, false);
+                    FluidStack drained = tankLogic.drain(null, amount, false);
 
                     // we can drain. actually drain and add the fuel
                     if (drained != null && drained.amount == amount) {
-                        tank.drain(amount, true);
+                        tankLogic.drain(null, amount, true);
                         this.currentFuel = drained.copy();
                         this.fuelReleaseTicks = bonusFuel;
                         this.addFuel(
                             bonusFuel,
                             Math.round(
-                                TinkersRebornUtils.transferFahrenheitToCelsius(
+                                TinkersRebornUtils.transferKelvinToCelsius(
                                     drained.getFluid()
                                         .getTemperature())));
                         // convert to degree celcius
@@ -215,7 +215,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
 
     // checks if the given location has a fluid tank that contains fuel
     private boolean hasTankWithFuel(BlockPos pos) {
-        IFluidTank tank = getTankAt(pos);
+        LavaTankLogic tank = getTankAt(pos);
         if (tank != null && tank.getFluid() != null) {
             if (tank.getFluidAmount() > 0 && TinkersRebornRegistry.isSmelteryFuel(tank.getFluid())) {
                 // if we have a preference, only use that
@@ -232,10 +232,11 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     /**
      * Grabs the tank at the given location (if present)
      */
-    private IFluidTank getTankAt(BlockPos pos) {
+    @Nullable
+    private LavaTankLogic getTankAt(BlockPos pos) {
         TileEntity te = this.worldObj.getTileEntity(pos.x, pos.y, pos.z);
-        if (te instanceof LavaTankLogic) {
-            return ((LavaTankLogic) te).tank;
+        if (te instanceof LavaTankLogic logic) {
+            return logic;
         }
 
         return null;
@@ -244,7 +245,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     /**
      * Calculate the heat required for the given slot
      */
-    protected abstract void updateHeatRequired(int index);
+    protected abstract void updateTempRequired(int index);
 
     @Override
     public void writeToNBT(NBTTagCompound tags) {
@@ -301,7 +302,6 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         }
         currentFuel = FluidStack.loadFluidStackFromNBT(tags.getCompoundTag(TAG_CURRENT_FUEL));
 
-        // needsUpdate = !worldObj.isRemote;
         needsUpdate = true;
     }
 
@@ -354,6 +354,12 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         }
     }
 
+    protected void setTempRequiredForSlot(int index, int heat) {
+        if (index < itemTempRequired.length) {
+            itemTempRequired[index] = heat * TIME_FACTOR;
+        }
+    }
+
     public int getTemperature(int i) {
         if (i < 0 || i >= this.itemTemperatures.length) {
             return 0;
@@ -365,8 +371,54 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         if (i < 0 || i >= this.itemTempRequired.length) {
             return 0;
         }
-        return this.itemTempRequired[i];
+        return this.itemTempRequired[i] / TIME_FACTOR;
     }
+
+    public float getHeatingProgress(int index) {
+        if (index < 0 || index > getSizeInventory() - 1) {
+            return -1f;
+        }
+
+        if (!canHeat(index)) {
+            return -1f;
+        }
+
+        return getProgress(index);
+    }
+
+    public boolean canHeat(int index) {
+        return temperature >= getTempRequired(index);
+    }
+
+    protected int heatSlot(int i) {
+        return temperature / 100; // if your heater has <100 heat then it deserves to not create any heat .
+    }
+
+    public float getProgress(int index) {
+        if (index >= itemTemperatures.length) {
+            return 0f;
+        }
+        return (float) itemTemperatures[index] / (float) itemTempRequired[index];
+    }
+
+    @Override
+    public void setInventorySlotContents(int slot, ItemStack itemstack) {
+        // reset heat if set to null or a different item
+        if (TinkersRebornUtils.isStackEmpty(itemstack) || (!TinkersRebornUtils.isStackEmpty(getStackInSlot(slot))
+            && !ItemStack.areItemStacksEqual(itemstack, getStackInSlot(slot)))) {
+            itemTemperatures[slot] = 0;
+        }
+        super.setInventorySlotContents(slot, itemstack);
+
+        // when an item gets added, check for its heat required
+        updateTempRequired(slot);
+    }
+
+    /**
+     * Called when an item finished heating up. Return true if the processing was
+     * successful, then the heating data will be cleared.
+     */
+    protected abstract boolean onItemFinishedHeating(ItemStack stack, int slot);
 
     @SideOnly(Side.CLIENT)
     public void updateFuelTemperatureFromPacket(HeatingStructureFuelUpdatePacket packet) {
@@ -406,29 +458,14 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     public FuelInfo getFuelDisplay() {
         FuelInfo info = new FuelInfo();
 
-        // we still have leftover fuel
-        if (this.fuelReleaseTicks > 0) {
-            // if the current fuel is null, something in the fluid registry changed
-            // just replace it with lava and ignore for now, it will fix next time we
-            // consume fuel
-            if (currentFuel == null) {
-                info.fluid = new FluidStack(FluidRegistry.LAVA, 0);
-                info.maxCap = 1;
-            } else {
-                info.fluid = currentFuel.copy();
-                info.fluid.amount = 0;
-                info.maxCap = currentFuel.amount;
-            }
-            info.heat = this.temperature + 300;
-        } else if (this.activeLavaTank != null) {
+        if (this.activeLavaTank != null && hasTankWithFuel(activeLavaTank)) {
             // we need to consume fuel, check the current tank
-            if (hasTankWithFuel(activeLavaTank)) {
-                IFluidTank tank = getTankAt(activeLavaTank);
-                assert tank != null;
+            LavaTankLogic tank = getTankAt(activeLavaTank);
+            if (tank != null) {
                 FluidStack tankFluid = tank.getFluid();
-                assert tankFluid != null;
+
                 info.fluid = tankFluid.copy();
-                info.heat = temperature + 300;
+                info.heat = temperature + 273;
                 info.maxCap = tank.getCapacity();
             }
         }
@@ -436,14 +473,14 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         // check all other tanks (except the current one that we already checked) for
         // more fuel
         for (BlockPos pos : this.lavaTanks) {
-            if (pos == activeLavaTank) {
+            if (pos.equals(activeLavaTank)) {
                 continue;
             }
 
-            IFluidTank tank = getTankAt(pos);
+            LavaTankLogic tank = getTankAt(pos);
             // tank exists and has something in it
             if (tank != null && tank.getFluidAmount() > 0) {
-                assert tank.getFluid() != null;
+
                 // we don't have fuel yet, use this
                 if (info.fluid == null) {
                     info.fluid = tank.getFluid()
@@ -462,5 +499,65 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         }
 
         return info;
+    }
+
+    protected void heatItems() {
+        boolean heatedItem = false;
+        boolean triedRefuel = false;
+        for (int i = 0; i < getSizeInventory(); i++) {
+            ItemStack stack = getStackInSlot(i);
+            if (!TinkersRebornUtils.isStackEmpty(stack)) {
+                // heat item if possible
+                if (itemTempRequired[i] > 0) {
+                    // fuel is present, turn up the heat
+                    if (fuelReleaseTicks > 0) {
+                        // if the temperature is high enough for the slot
+                        if (canHeat(i)) {
+                            // are we done heating?
+                            if (itemTemperatures[i] >= itemTempRequired[i]) {
+                                if (onItemFinishedHeating(stack, i)) {
+                                    itemTemperatures[i] = 0;
+                                    itemTempRequired[i] = 0;
+                                }
+                            }
+                            // otherwise turn up the heat
+                            else {
+                                itemTemperatures[i] += heatSlot(i);
+                                heatedItem = true;
+                            }
+                        }
+                    } else if (!triedRefuel) {
+                        // out of fuel, try to consume more right now
+                        // so we don't miss this tick's heating
+                        this.needsFuel = true;
+                        this.consumeFuel();
+                        triedRefuel = true;
+                        if (fuelReleaseTicks > 0) {
+                            // fuel acquired, retry this slot
+                            i--;
+                            continue;
+                        }
+                        // truly out of fuel, nothing more we can do
+                        break;
+                    } else {
+                        // already tried refueling this tick and failed, give up
+                        break;
+                    }
+                }
+            } else {
+                itemTemperatures[i] = 0;
+            }
+        }
+
+        if (heatedItem) {
+            fuelReleaseTicks--;
+        }
+        updateIfChanged(heatedItem);
+    }
+
+    protected void updateIfChanged(boolean heatedItem) {
+        if (heatedItem != isHeating) {
+            isHeating = heatedItem;
+        }
     }
 }

@@ -106,7 +106,7 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
         List<ItemStack> materialInputList = Arrays.asList(materialStack);
 
         if (materialStack != null) {
-            for (TinkersRebornMaterial m : TinkersRebornRegistry.allMaterialsList) {
+            for (TinkersRebornMaterial m : TinkersRebornRegistry.getAllMaterialList()) {
                 Optional<Match> matches = m.matchesRecursively(materialInputList);
                 if (matches.isPresent() && matches.get().amount > 0) {
                     material = m;

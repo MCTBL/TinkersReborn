@@ -56,7 +56,7 @@ public class ToolRender implements IItemRenderer {
 
         // IIcon[] parts = new IIcon[toolIcons];
         List<IIcon> parts = new ArrayList<>();
-        int iconParts = getIcons(item, type, ent, parts);
+        int iconParts = getIcons(item, ent, parts);
 
         // drawing the inventory is a simple procedure
         if (type == ItemRenderType.INVENTORY) {
@@ -254,7 +254,7 @@ public class ToolRender implements IItemRenderer {
         GL11.glPopMatrix();
     }
 
-    public int getIcons(ItemStack item, ItemRenderType type, Entity ent, List<IIcon> parts) {
+    public int getIcons(ItemStack item, Entity ent, List<IIcon> parts) {
         if (item.getItem() instanceof ToolCore tool) {
             int idx = tool.partAmount + ToolTagsHelper.getModifiersList(item)
                 .size();

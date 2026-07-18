@@ -34,8 +34,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
@@ -75,14 +78,14 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     public Random random = TinkersReborn.random;
 
-    public static final String toolNameFormatter = TinkersStr.tooNamePattern.toString();
+    public static final String TOOLNAMEFORMATTER = TinkersStr.tooNamePattern.toString();
 
     /**
      * first one is main part and has broken icon, but it will render second second
      * will render first then other will render in order
      */
     protected final List<ToolPartRecord> componentsParts = new ArrayList<>(4);
-    public final List<Map<Integer, IIcon>> allIcons = new ArrayList<>();
+    public final List<Map<String, IIcon>> allIcons = new ArrayList<>();
     public final Map<String, IIcon> effectIcons = new HashMap<>();
 
     public final Set<Category> categoryTags = new HashSet<>();
@@ -108,7 +111,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         this.setNoRepair();
         this.toolTypeName = toolTypeName.toLowerCase();
 
-        this.toolModifierEffect = "_" + this.toolTypeName + "_effect";
+        this.toolModifierEffect = "_effect";
 
         // extra 2 map for broken
         for (int i = 0; i < this.partAmount + 1; i++) {
@@ -161,30 +164,30 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             if (this.componentsParts.get(i) != null) {
                 MaterialStatusType type = this.componentsParts.get(i)
                     .statusType();
-                for (TinkersRebornMaterial material : TinkersRebornRegistry.allMaterialsList) {
+                for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
                     if (material.hasStats(type)) {
                         String path = basePath + material.identifier + this.componentsParts.get(i).texturePostfix;
                         if (TextureHelper.itemTextureExists(path)) {
                             this.allIcons.get(i)
-                                .put(material.materialId, register.registerIcon(path));
+                                .put(material.identifier, register.registerIcon(path));
                         }
                         if (i == 0) {
                             // broken
                             path += "_broken";
                             if (TextureHelper.itemTextureExists(path)) {
                                 this.allIcons.get(this.partAmount)
-                                    .put(material.materialId, register.registerIcon(path));
+                                    .put(material.identifier, register.registerIcon(path));
                             }
                         }
                     }
                 }
                 // standard
                 this.allIcons.get(i)
-                    .put(-1, register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix));
+                    .put(null, register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix));
                 if (i == 0) {
                     this.allIcons.get(this.partAmount)
                         .put(
-                            -1,
+                            null,
                             register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix + "_broken"));
 
                 }
@@ -209,8 +212,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         if (renderMaterials.size() != 0) {
             if (renderPass < this.partAmount) {
                 int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.partAmount : renderPass;
-                int materialId = renderMaterials.get(renderPass) == null ? -1
-                    : renderMaterials.get(renderPass).materialId;
+                String materialId = renderMaterials.get(renderPass) == null ? null
+                    : renderMaterials.get(renderPass).identifier;
                 return getCorrectIcon(this.allIcons.get(iconsIdx), materialId);
             }
             // Effects
@@ -224,10 +227,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return emptyIcon;
     }
 
-    protected IIcon getCorrectIcon(Map<Integer, IIcon> icons, Integer id) {
+    protected IIcon getCorrectIcon(Map<String, IIcon> icons, String id) {
         if (icons.containsKey(id)) return icons.get(id);
         // default icon
-        return icons.get(-1);
+        return icons.get(null);
     }
 
     @Override
@@ -245,14 +248,14 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return super.getColorFromItemStack(stack, renderPass);
     }
 
-    protected int getCorrectColor(Map<Integer, IIcon> icons, String materialIdentifier) {
+    protected int getCorrectColor(Map<String, IIcon> icons, String materialIdentifier) {
         TinkersRebornMaterial material = null;
         if (materialIdentifier.startsWith("_internal_render")) {
-            material = TinkersRebornRegistry.renderMaterials.get(materialIdentifier);
+            material = TinkersRebornRegistry.getRenderMaterial(materialIdentifier);
             return material.materialTextColor;
         } else {
             material = TinkersRebornRegistry.getMaterialByIdentifier(materialIdentifier);
-            if (material != null && !icons.containsKey(material.materialId)) return material.materialTextColor;
+            if (material != null && !icons.containsKey(material.identifier)) return material.materialTextColor;
         }
 
         return TinkersRebornMaterial.UNKNOWN.materialTextColor;
@@ -263,7 +266,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public Set<Category> getCategory() {
-        return this.categoryTags;
+        return ImmutableSet.copyOf(this.categoryTags);
     }
 
     public boolean hasCategory(Category tag) {
@@ -271,7 +274,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public List<ToolPartRecord> getToolComponentsParts() {
-        return this.componentsParts;
+        return ImmutableList.copyOf(this.componentsParts);
     }
 
     public String getUnlocalizedToolName() {
@@ -366,6 +369,16 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return false;
     }
 
+    @Override
+    public boolean onItemUse(ItemStack toolStack, EntityPlayer player, World world, int x, int y, int z, int side,
+        float hitX, float hitY, float hitZ) {
+        if (world.isRemote) {
+            return true;
+        }
+
+        return super.onItemUse(toolStack, player, world, x, y, z, side, hitX, hitY, hitZ);
+    }
+
     /**
      * Actually deal damage to the entity we hit. Can be overridden for special
      * behaviour
@@ -399,7 +412,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
-        for (TinkersRebornMaterial material : TinkersRebornRegistry.allMaterialsList) {
+        for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
             ItemStack tool = buildTool(material, null);
             if (tool != null) list.add(tool);
         }
@@ -610,14 +623,27 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
-        // if(!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool &&
-        // ((IAoeTool) this).isAoeHarvestTool()) {
-        // for(BlockPos extraPos : ((IAoeTool) this).getAOEBlocks(itemstack,
-        // player.getEntityWorld(), player, pos)) {
-        // breakExtraBlock(itemstack, player.getEntityWorld(), player, extraPos, pos);
-        // }
-        // }
+        if (!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool) {
+            BlockPos blockPos = BlockPos.of(x, y, z);
+            for (BlockPos extraPos : ((IAoeTool) this)
+                .getAOEBlocks(itemstack, player.getEntityWorld(), player, blockPos)) {
+                this.breakExtraBlock(itemstack, player.worldObj, player, extraPos, blockPos);
+            }
+        }
         return breakBlock(itemstack, x, y, z, player);
+    }
+
+    /**
+     * Called when an AOE block is broken by the tool. Use to oveerride the block breaking logic
+     * 
+     * @param tool   Tool ItemStack
+     * @param world  World instance
+     * @param player Player instance
+     * @param pos    Current position
+     * @param refPos Base position
+     */
+    protected void breakExtraBlock(ItemStack tool, World world, EntityPlayer player, BlockPos pos, BlockPos refPos) {
+        ToolTagsHelper.breakExtraBlock(tool, world, player, pos, refPos);
     }
 
     /**
@@ -678,7 +704,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             .get(0)
             .localizedPrefix();
 
-        return String.format(toolNameFormatter, materialName, toolBaseName);
+        return String.format(TOOLNAMEFORMATTER, materialName, toolBaseName);
     }
 
     @Override
@@ -801,9 +827,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     @SideOnly(Side.CLIENT)
     private RenderMaterial getMaterialForPartForGuiRendering(int idx) {
-        int correctId = idx % TinkersRebornRegistry.renderMaterials.size() + 1;
+        int correctId = idx % TinkersRebornRegistry.getRenderMaterialMap()
+            .size() + 1;
         String renderMaterialName = ToolTags.INTERNALPREFIX + correctId;
-        return TinkersRebornRegistry.renderMaterials.get(renderMaterialName);
+        return TinkersRebornRegistry.getRenderMaterial(renderMaterialName);
     }
 
     @Nonnull
@@ -945,7 +972,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         increase *= mods;
 
         int repair = ToolTagsHelper.getRepairCount(tool);
-        float repairDimishingReturns = (100 - repair / 2) / 100f;
+        float repairDimishingReturns = (100 - repair / 2f) / 100f;
         if (repairDimishingReturns < 0.5f) {
             repairDimishingReturns = 0.5f;
         }
@@ -984,6 +1011,12 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public abstract ToolBuildGuiInfo getToolBuildGuiInfo();
+
+    @Override
+    public MovingObjectPosition getMovingObjectPositionFromPlayer(World worldIn, EntityPlayer player,
+        boolean useLiquids) {
+        return super.getMovingObjectPositionFromPlayer(worldIn, player, useLiquids);
+    }
 
     @Override
     public Multimap<String, AttributeModifier> getAttributeModifiers(ItemStack stack) {

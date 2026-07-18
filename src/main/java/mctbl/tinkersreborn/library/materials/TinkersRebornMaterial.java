@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,12 +18,26 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
+import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
+import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
+import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
+import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
+import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
+import mctbl.tinkersreborn.tools.materials.ProjectileMaterialStats;
+import mctbl.tinkersreborn.tools.materials.ShaftMaterialStats;
+import mctbl.tinkersreborn.tools.materials.StringMaterialStats;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
@@ -89,30 +102,38 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
      */
     private ItemStack shardItem = null;
 
-    public final int materialId;
+    // public final int materialId;
     public int materialTextColor = 0xffffff; // used in tooltips and other text. Saved in NBT.
 
     // we use a specific map for 2 reasons:
     // * A Map so we can obtain the stats we want quickly
     // * the linked map to ensure the order when iterating
     public final Map<MaterialStatusType, IMaterialStats> statsMap;
-    /** Stat-ID -> Traits */
-    public final Map<MaterialStatusType, List<ITrait>> traits;
+    /** Stat-ID -> Traits, one stat type can have multiple traits */
+    public final Multimap<MaterialStatusType, ITrait> traits;
 
-    public static final TinkersRebornMaterial UNKNOWN = new TinkersRebornMaterial(
-        -1,
-        "unknown",
-        EnumChatFormatting.WHITE);
+    public static int VALUE_Ore() {
+        return (int) (VALUE_Ingot * TinkersRebornConfig.oreToIngotRatio);
+    }
+
+    public static final TinkersRebornMaterial UNKNOWN = new TinkersRebornMaterial("unknown", EnumChatFormatting.WHITE);
     static {
-        // UNKNOWN.set
+        UNKNOWN.addStats(new HeadMaterialStats(1, 1, 1, 0));
+        UNKNOWN.addStats(new HandleMaterialStats(1f, 0));
+        UNKNOWN.addStats(new ExtraMaterialStats(0));
+        UNKNOWN.addStats(new BowMaterialStats(1f, 1f, 0f));
+        UNKNOWN.addStats(new StringMaterialStats(1f));
+        UNKNOWN.addStats(new ShaftMaterialStats(1f, 0));
+        UNKNOWN.addStats(new FletchingMaterialStats(1f, 1f));
+        UNKNOWN.addStats(new ProjectileMaterialStats());
     }
 
-    public TinkersRebornMaterial(int id, String identifier, EnumChatFormatting textColor) {
-        this(id, identifier, ColorUtil.enumChatFormattingToColor(textColor));
+    public TinkersRebornMaterial(String identifier, EnumChatFormatting textColor) {
+        this(identifier, ColorUtil.enumChatFormattingToColor(textColor));
     }
 
-    public TinkersRebornMaterial(int id, String identifier, int color) {
-        this.materialId = id;
+    public TinkersRebornMaterial(String identifier, int color) {
+        // this.materialId = id;
         this.identifier = TinkersRebornUtils.sanitizeLocalizationString(identifier); // lowercases and removes
         this.localizationIdentifier = String.format(LOC_Name, this.identifier);
 
@@ -126,7 +147,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
 
         this.materialTextColor = color;
         this.statsMap = new LinkedHashMap<>();
-        this.traits = new LinkedHashMap<>();
+        this.traits = LinkedHashMultimap.create();
     }
 
     public TinkersRebornMaterial addStats(IMaterialStats m) {
@@ -155,11 +176,11 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public Set<Entry<MaterialStatusType, IMaterialStats>> getAlltatusType() {
-        return this.statsMap.entrySet();
+        return ImmutableSet.copyOf(this.statsMap.entrySet());
     }
 
     public Collection<? extends IMaterialStats> getAllStats() {
-        return this.statsMap.values();
+        return ImmutableList.copyOf(this.statsMap.values());
     }
 
     public boolean hasStats(MaterialStatusType t) {
@@ -232,6 +253,10 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         return shardItem;
     }
 
+    public void setRepresentativeItem(String representativeOre) {
+        this.representativeOre = representativeOre;
+    }
+
     public void setRepresentativeItem(Item representativeItem) {
         this.setRepresentativeItem(new ItemStack(representativeItem));
     }
@@ -258,14 +283,6 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     /**
-     * Obtains the list of traits for the given stat, creates it if it doesn't exist
-     * yet.
-     */
-    protected List<ITrait> getStatTraits(MaterialStatusType stats) {
-        return this.traits.computeIfAbsent(stats, k -> new LinkedList<>());
-    }
-
-    /**
      * Returns whether the material has a trait with that identifier.
      */
     public boolean hasTrait(String identifier, MaterialStatusType stats) {
@@ -283,11 +300,8 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public List<ITrait> getAllTraitsForStats(MaterialStatusType staus) {
-        List<ITrait> list = new ArrayList<>();
-        if (this.traits.containsKey(staus)) {
-            list.addAll(this.traits.get(staus));
-        }
-        if (this.traits.containsKey(null)) {
+        List<ITrait> list = new ArrayList<>(this.traits.get(staus));
+        if (staus != null) {
             list.addAll(this.traits.get(null));
         }
         return list;
@@ -306,7 +320,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
      */
     public TinkersRebornMaterial addTrait(IModifier materialTrait, MaterialStatusType staus) {
         if (TinkersRebornRegistry.checkMaterialTrait(this, materialTrait, staus)) {
-            getStatTraits(staus).add((ITrait) materialTrait);
+            this.traits.put(staus, (ITrait) materialTrait);
         }
         return this;
     }
@@ -334,7 +348,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     public static final class RenderMaterial extends TinkersRebornMaterial {
 
         public RenderMaterial(String identifier, int color) {
-            super(-1, identifier, color);
+            super(identifier, color);
         }
     }
 }

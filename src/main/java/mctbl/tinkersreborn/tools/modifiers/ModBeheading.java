@@ -26,7 +26,7 @@ public class ModBeheading extends ToolModifier {
 
     private static String BEHEADING_ID = "beheading";
     private static String CLEAVER_MODIFIER_ID = BEHEADING_ID + "_cleaver";
-    private static int BEHEADING_COLOR = 0x10574b;
+    private static int BEHEADING_COLOR = 0x10574B;
 
     public static ModBeheading CLEAVER_BEHEADING_MOD = new ModBeheadingCleaver();
 
@@ -162,6 +162,11 @@ public class ModBeheading extends ToolModifier {
             .anyMatch(drop -> ItemStack.areItemStacksEqual(drop, head));
     }
 
+    @Override
+    public String getTooltip(NBTTagCompound modifierTag, boolean detailed) {
+        return getLeveledTooltip(modifierTag, detailed);
+    }
+
     private static class ModBeheadingCleaver extends ModBeheading {
 
         public ModBeheadingCleaver() {
@@ -175,12 +180,13 @@ public class ModBeheading extends ToolModifier {
 
         @Override
         public String getLocalizedDesc() {
-            return TinkersRebornUtils.translate(LOC_Desc, BEHEADING_ID);
+            return TinkersRebornUtils.translate(String.format(LOC_Desc, BEHEADING_ID));
         }
 
         @Override
         public String getLocalizedName() {
-            return TinkersRebornUtils.translate(LOC_Name, BEHEADING_ID);
+            return TinkersRebornUtils.translate(String.format(LOC_Name, BEHEADING_ID));
         }
+
     }
 }
