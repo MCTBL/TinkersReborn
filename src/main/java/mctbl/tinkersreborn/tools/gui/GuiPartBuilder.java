@@ -3,9 +3,9 @@ package mctbl.tinkersreborn.tools.gui;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -13,7 +13,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.gui.GuiDynButtons;
 import mctbl.tinkersreborn.library.gui.GuiElement;
 import mctbl.tinkersreborn.library.materials.IMaterialStats;
@@ -55,12 +54,7 @@ public class GuiPartBuilder extends GuiTinkerStation {
         this.addModule(materialInfo);
         materialInfo.ySizeBias(83);
 
-        partSelector = new GuiDynButtons(
-            this,
-            TinkersRebornTools.patternAndCast.getAllPatternType()
-                .stream()
-                .map(TinkersRebornRegistry::getToolPartByPartName)
-                .collect(Collectors.toList()));
+        partSelector = new GuiDynButtons(this);
 
         this.addModuleFirst(partSelector);
     }
@@ -105,14 +99,25 @@ public class GuiPartBuilder extends GuiTinkerStation {
     @Override
     public void updateDisplay() {
         ContainerPartBuilder container = (ContainerPartBuilder) inventorySlots;
-        TinkersRebornMaterial inputMaterial = container.material;
+        ItemStack patterinIn = container.patternIn;
 
-        if (inputMaterial != null) {
+        if (TinkersRebornTools.patternAndCast.isCast(patterinIn)) {
+            partSelector.resetButtonsVisible(TinkersRebornTools.patternAndCast.getToolPart(patterinIn));
+            partSelector.updateButtons();
+        } else if (patterinIn != null) {
+            partSelector.resetButtonsVisible();
+            partSelector.updateButtons();
+        }
+
+        TinkersRebornMaterial inputMaterial = container.material;
+        TinkersRebornToolPart selectedPart = container.part;
+
+        if (inputMaterial != null && selectedPart != null) {
             String materialEncodeColor = ColorUtil.encodeColor(inputMaterial.materialTextColor);
             List<String> materialInfoText = new ArrayList<>();
             List<String> materialInfoTooltips = new ArrayList<>();
 
-            float cost = container.part.getCost() / (float) TinkersRebornMaterial.VALUE_Ingot;
+            float cost = selectedPart.getCost() / (float) TinkersRebornMaterial.VALUE_Ingot;
             float materialValue = container.materialCount / (float) TinkersRebornMaterial.VALUE_Ingot;
 
             materialInfoText

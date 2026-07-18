@@ -32,6 +32,7 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
     public TinkersRebornMaterial material;
     public int materialCount = 0;
     protected int lastMaterialCount = 0;
+    public ItemStack patternIn;
 
     public ContainerPartBuilder(InventoryPlayer inventoryplayer, PartBuilderLogic tile) {
         super(tile);
@@ -56,7 +57,9 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
         ItemStack materialStack = tile.getStackInSlot(1);
         List<ItemStack> materialInputList = Arrays.asList(materialStack);
 
-        tile.decrStackSize(0, 1);
+        if (!TinkersRebornTools.patternAndCast.isCast(tile.getStackInSlot(0))) {
+            tile.decrStackSize(0, 1);
+        }
 
         tryBuildToolPart(materialInputList, true);
 
@@ -85,6 +88,7 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
 
     @Override
     public void onCraftMatrixChanged(IInventory inventoryIn) {
+        this.part = null;
         this.updateMaterialAndCount();
 
         // sync output with other open containers on the server
@@ -127,7 +131,11 @@ public class ContainerPartBuilder extends ContainerTinkerStation<PartBuilderLogi
         // have pattern or cast
         if (tile.getStackInSlot(0) != null && tile.getStackInSlot(0)
             .getItem() instanceof IPattern) {
+            patternIn = tile.getStackInSlot(0);
             out.inventory.setInventorySlotContents(0, tryBuildToolPart(materialInputList, false));
+        } else {
+            patternIn = null;
+            out.inventory.setInventorySlotContents(0, null);
         }
     }
 

@@ -176,6 +176,11 @@ public class Pattern extends Item implements IPattern {
         return ImmutableList.copyOf(this.patternType);
     }
 
+    public boolean isCast(ItemStack stack) {
+        return !this.getIdentifier(stack)
+            .equals("pattern_blank");
+    }
+
     // NBT
     public TinkersRebornToolPart getToolPart(ItemStack stack) {
         return TinkersRebornRegistry.getToolPartByPartName(this.getIdentifier(stack));

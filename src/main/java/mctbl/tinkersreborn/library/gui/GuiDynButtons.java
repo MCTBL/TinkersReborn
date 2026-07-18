@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.library.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
@@ -9,6 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.gui.GuiGeneric;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.GuiPartBuilder;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
@@ -51,7 +53,7 @@ public class GuiDynButtons extends GuiModule {
 
     private GuiButtonItem<?> clickedButton;
 
-    public GuiDynButtons(GuiMultiModule parent, List<TinkersRebornToolPart> list) {
+    public GuiDynButtons(GuiMultiModule parent) {
         super(parent, null, false, false);
 
         this.xOffset = 52;
@@ -60,6 +62,11 @@ public class GuiDynButtons extends GuiModule {
         this.ySize = 54;
 
         this.buttonList = new ArrayList<>();
+
+        List<TinkersRebornToolPart> list = TinkersRebornTools.patternAndCast.getAllPatternType()
+            .stream()
+            .map(TinkersRebornRegistry::getToolPartByPartName)
+            .collect(Collectors.toList());
         for (int idx = 0; idx < list.size(); idx++) {
             TinkersRebornToolPart toolPart = list.get(idx);
             if (toolPart == TinkersRebornTools.boltCore || toolPart == TinkersRebornTools.shard) {
@@ -79,12 +86,22 @@ public class GuiDynButtons extends GuiModule {
                         ButtonBackGroundPredded,
                         BACKGROUND));
         }
-
+        this.resetButtonsVisible();
         this.buttonCount = buttonList.size();
         this.firstButtonId = 0;
         this.lastButtonId = this.buttonCount;
+    }
 
-        this.actionPerformed(this.buttonList.get(0));
+    public void resetButtonsVisible(TinkersRebornToolPart part) {
+        for (GuiButtonItem<?> b : this.buttonList) {
+            b.visible = b.data.equals(part);
+        }
+    }
+
+    public void resetButtonsVisible() {
+        for (GuiButtonItem<?> b : this.buttonList) {
+            b.visible = true;
+        }
     }
 
     @Override
@@ -210,4 +227,7 @@ public class GuiDynButtons extends GuiModule {
         }
     }
 
+    public int getButtonCount() {
+        return buttonCount;
+    }
 }
