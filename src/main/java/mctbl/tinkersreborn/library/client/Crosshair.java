@@ -1,6 +1,11 @@
 package mctbl.tinkersreborn.library.client;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL14;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,17 +27,17 @@ public class Crosshair implements ICrosshair {
 
     @Override
     public void render(float charge, float width, float height, float partialTicks) {
-        // Minecraft mc = Minecraft.getMinecraft();
-        //
-        // mc.getTextureManager().bindTexture(texture);
-        // GlStateManager.enableBlend();
-        // GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR,
-        // GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE,
-        // GlStateManager.DestFactor.ZERO);
-        // GlStateManager.enableAlpha();
-        // float spread = (1.0f - charge) * 25f;
-        //
-        // drawCrosshair(spread, width, height, partialTicks);
+        Minecraft.getMinecraft()
+            .getTextureManager()
+            .bindTexture(texture);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL14.glBlendFuncSeparate(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR, GL11.GL_ONE, GL11.GL_ZERO);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        float spread = (1.0f - charge) * 25f;
+
+        drawCrosshair(spread, width, height, partialTicks);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
     }
 
     protected void drawCrosshair(float spread, float width, float height, float partialTicks) {
@@ -77,13 +82,12 @@ public class Crosshair implements ICrosshair {
         double u2 = u1 + 0.5;
         double v2 = v1 + 0.5;
 
-        // Tessellator tessellator = Tessellator.getInstance();
-        // BufferBuilder vb = tessellator.getBuffer();
-        // vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        // vb.pos(x - s, y - s, z).tex(u1, v1).endVertex();
-        // vb.pos(x - s, y + s, z).tex(u1, v2).endVertex();
-        // vb.pos(x + s, y + s, z).tex(u2, v2).endVertex();
-        // vb.pos(x + s, y - s, z).tex(u2, v1).endVertex();
-        // tessellator.draw();
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x - s, y - s, z, u1, v1);
+        tessellator.addVertexWithUV(x - s, y + s, z, u1, v2);
+        tessellator.addVertexWithUV(x + s, y + s, z, u2, v2);
+        tessellator.addVertexWithUV(x + s, y - s, z, u2, v1);
+        tessellator.draw();
     }
 }

@@ -312,6 +312,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             .bus()
             .register(tre);
 
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornCrosshairRenderEvents());
+
         toolStation = new ToolStationBlock();
         GameRegistry.registerBlock(toolStation, ToolStationItemBlock.class, toolStation.getUnlocalizedName());
         GameRegistry.registerTileEntity(ToolStationLogic.class, toolStation.getUnlocalizedName());
