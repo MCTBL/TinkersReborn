@@ -20,6 +20,9 @@ public class Sounds {
     public static final String sizzle = sound("sizzle");
     public static final String sweep = sound("sweep");
 
+    public static final String stone_hit = sound("stone_hit");
+    public static final String wood_hit = sound("wood_hit");
+
     private static String sound(String name) {
         String soundName = TinkersReborn.MODID + ":" + name;
         sounds.add(soundName);

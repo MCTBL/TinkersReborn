@@ -829,7 +829,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         iceMaterial.addTrait(freezing);
 
         featherMaterial = new TinkersRebornMaterial("Feather", 0xEEEEEE);
-        featherMaterial.addItem("feather", 1, VALUE_Ingot);
+        featherMaterial.addItem(Items.feather, 1, VALUE_Ingot);
         featherMaterial.setRepresentativeItem(Items.feather);
 
         leafMaterial = new TinkersRebornMaterial("Leaf", 0x1D730C);

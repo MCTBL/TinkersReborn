@@ -35,10 +35,10 @@ import net.minecraftforge.event.world.BlockEvent;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
-import mctbl.tinkersreborn.library.tools.TinkerToolEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.utils.BlockPos;
@@ -114,6 +114,16 @@ public class ToolTagsHelper {
     public static void setToolBaseNBTSafe(ItemStack stack, NBTTagCompound tags) {
 
         if (tags != getToolBaseNBTSafe(stack)) getTagSafe(stack).setTag(ToolTags.TOOLBASETAG, tags);
+    }
+
+    public static void setResetFlag(ItemStack stack, boolean active) {
+        NBTTagCompound root = getToolBaseNBTSafe(stack);
+        root.setBoolean(ToolTags.RESET_FLAG, active);
+        setToolBaseNBTSafe(stack, root);
+    }
+
+    public static boolean getResetFlag(ItemStack stack) {
+        return getToolBaseNBTSafe(stack).getBoolean(ToolTags.RESET_FLAG);
     }
 
     /**

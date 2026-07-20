@@ -49,6 +49,7 @@ import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneralProxyClient;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
+import mctbl.tinkersreborn.library.event.TinkersRebornEvent;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
@@ -102,7 +103,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     // use getToolBuildGuiInfo instanced
     protected ToolBuildGuiInfo toolBuildGuiInfo;
 
-    public ToolCore(String toolTypeName, int partAmount) {
+    protected ToolCore(String toolTypeName, int partAmount) {
         super();
         this.partAmount = partAmount;
         this.maxStackSize = 1;
@@ -1032,6 +1033,38 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             .forEach(trait -> trait.getAttributeModifiers(stack, multimap));
 
         return multimap;
+    }
+
+    public static boolean isEqualTinkersItem(ItemStack item1, ItemStack item2) {
+        if (item1 == null || item2 == null
+            || item1.getItem() != item2.getItem()
+            || !(item1.getItem() instanceof ToolCore)) {
+            return false;
+        }
+        NBTTagCompound tag1 = ToolTagsHelper.getTagSafe(item1);
+        NBTTagCompound tag2 = ToolTagsHelper.getTagSafe(item2);
+
+        NBTTagList mods1 = ToolTagsHelper.getModifiersTagList(tag1);
+        NBTTagList mods2 = ToolTagsHelper.getModifiersTagList(tag2);
+
+        if (mods1.tagCount() != mods1.tagCount()) {
+            return false;
+        }
+        // check modifiers
+        for (int i = 0; i < mods1.tagCount(); i++) {
+            NBTTagCompound tag = mods1.getCompoundTagAt(i);
+            ModifierNBT data = ModifierNBT.readTag(tag);
+            IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(data.identifier);
+            if (modifier != null && !modifier.equalModifier(tag, mods2.getCompoundTagAt(i))) {
+                return false;
+            }
+        }
+        return ToolTagsHelper.getToolBaseMaterialsNBTSafe(item1)
+            .equals(ToolTagsHelper.getToolBaseMaterialsNBTSafe(item2)) && // materials used
+        // ToolTagsHelper.getBaseModifiersUsed(tag1) == ToolTagsHelper.getBaseModifiersUsed(tag2) && // number of free
+        // modifiers used
+            ToolTagsHelper.getToolOriginDataNBTSafe(item1)
+                .equals(ToolTagsHelper.getToolOriginDataNBTSafe(item2)); // unmodified base stats
     }
 
     public final class ToolPartRecord {

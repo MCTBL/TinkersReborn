@@ -1,4 +1,4 @@
-package mctbl.tinkersreborn.library.tools;
+package mctbl.tinkersreborn.library.event;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.tools.ToolCore;
 
 public abstract class TinkersRebornEvent extends Event {
 
