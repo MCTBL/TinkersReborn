@@ -1,5 +1,8 @@
 package mctbl.tinkersreborn.library.tools;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -12,13 +15,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Multimap;
 
 import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
+import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.tools.TinkersRebornTraits;
 import mctbl.tinkersreborn.tools.traits.TraitEnderference;
+import mctbl.tinkersreborn.util.ColorUtil;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 /**
@@ -138,4 +146,47 @@ public abstract class AmmoCore extends ToolCore {
         ToolTagsHelper.unbreakTool(reference);
         return reference;
     }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+        return false;
+    }
+
+    @Override
+    public boolean hitEntity(ItemStack stack, EntityLivingBase p_77644_2_, EntityLivingBase p_77644_3_) {
+        return false;
+    }
+
+    @Override
+    public List<String> getInformation(ItemStack stack, EntityPlayer player, boolean isTooltip) {
+        List<String> list = new LinkedList<>();
+
+        if (stack.getItem() instanceof AmmoCore ammoItem) {
+            if (ToolTagsHelper.isBroken(stack) && !isTooltip) {
+                list.add(
+                    String.format(
+                        "%s: %s%s%s",
+                        TinkersStr.ammoName,
+                        EnumChatFormatting.DARK_RED,
+                        EnumChatFormatting.BOLD,
+                        TinkersStr.empty));
+            } else {
+                list.add(formatAmmo(ammoItem.getCurrentAmmo(stack), ammoItem.getMaxAmmo(stack)));
+            }
+        }
+
+        return list;
+    }
+
+    public static String formatAmmo(int durability, int ref) {
+        return String.format(
+            "%s: %s%s%s/%s%s",
+            TinkersStr.ammoName,
+            ColorUtil.valueToColorCode((float) durability / (float) ref),
+            TinkersRebornUtils.df.format(durability),
+            EnumChatFormatting.GRAY.toString(),
+            AbstractMaterialStats.COLOR_Durability,
+            TinkersRebornUtils.df.format(ref)) + EnumChatFormatting.RESET;
+    }
+
 }

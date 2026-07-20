@@ -171,6 +171,8 @@ tinkersreborn.tooltip.nameformat=%s %s
 tinkersreborn.tooltip.pattern=Material Cost: %d
 tinkersreborn.tooltip.modifiers=Modifiers
 tinkersreborn.tooltip.holdShift=Hold §e§oShift§r§7 for more info
+tinkersreborn.tooltip.broken=Broken
+tinkersreborn.tooltip.empty=Empty
 
 tinkersreborn.tool.pickaxe=Pickaxe
 tinkersreborn.tool.shovel=Shovel
@@ -265,6 +267,8 @@ tinkersreborn.stat.shaft.modifier.name=Modifier
 tinkersreborn.stat.shaft.modifier.desc=Each arrow needs a suiting core. It determines how well it lasts.\nThe total ammo count of the tool will be multiplied by this.
 tinkersreborn.stat.shaft.ammo.name=Bonus-Ammo
 tinkersreborn.stat.shaft.ammo.desc=How many arrows you can get out of it.\nThis much flat ammo will be added.
+
+tinkersreborn.stat.ammo.name=Ammo
 
 tinkersreborn.stat.fletching.name=Fletching
 tinkersreborn.stat.fletching.accuracy.name=Accuracy

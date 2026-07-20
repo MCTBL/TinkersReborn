@@ -388,8 +388,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
      *         {@link Entity#attackEntityFrom(DamageSource, float)}
      */
     public boolean dealDamage(ItemStack stack, EntityLivingBase player, Entity entity, float damage) {
-        if (player instanceof EntityPlayer) {
-            return entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) player), damage);
+        if (player instanceof EntityPlayer p) {
+            return entity.attackEntityFrom(DamageSource.causePlayerDamage(p), damage);
         }
         return entity.attackEntityFrom(DamageSource.causeMobDamage(player), damage);
     }

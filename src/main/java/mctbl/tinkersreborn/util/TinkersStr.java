@@ -9,6 +9,7 @@ public enum TinkersStr {
     // tooltips
     holdShift("tooltip.holdShift"),
     broken("tooltip.broken"),
+    empty("tooltip.empty"),
     tooNamePattern("tooltip.nameformat"),
     goldenHeadToolToip1("goldenhead.tooltip1"),
     goldenHeadToolToip2("goldenhead.tooltip2"),
@@ -27,6 +28,7 @@ public enum TinkersStr {
     projectileStatsName("stat.projectile.name"),
     shaftStatsName("stat.shaft.name"),
     stringStatsName("stat.string.name"),
+    ammoName("stat.ammo.name"),
 
     // gui
     errorTitle("gui.error"),

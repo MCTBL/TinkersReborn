@@ -10,7 +10,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -37,6 +36,7 @@ import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.tools.AmmoCore;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
@@ -758,15 +758,13 @@ public class ToolTagsHelper {
         boolean isProjectile = projectileEntity != null;
         EntityLivingBase target = null;
         EntityPlayer player = null;
-        if (targetEntity instanceof EntityLivingBase) {
-            target = (EntityLivingBase) targetEntity;
+        if (targetEntity instanceof EntityLivingBase liv) {
+            target = liv;
         }
         if (attacker instanceof EntityPlayer p) {
             player = p;
-            if (target instanceof EntityPlayer t) {
-                if (!player.canAttackPlayer(t)) {
-                    return false;
-                }
+            if (target instanceof EntityPlayer t && !player.canAttackPlayer(t)) {
+                return false;
             }
         }
 
@@ -846,9 +844,8 @@ public class ToolTagsHelper {
         }
 
         boolean hit = false;
-        if (isProjectile && tool instanceof IProjectile) {
-            // hit = ((IProjectile) tool).dealDamageRanged(stack, projectileEntity,
-            // attacker, targetEntity, damage);
+        if (isProjectile && tool instanceof AmmoCore ammo) {
+            hit = ammo.dealDamageRanged(stack, projectileEntity, attacker, projectileEntity, damage);
         } else {
             hit = tool.dealDamage(stack, attacker, targetEntity, damage);
         }
