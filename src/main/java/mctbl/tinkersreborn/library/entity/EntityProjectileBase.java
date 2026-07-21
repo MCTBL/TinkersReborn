@@ -98,7 +98,8 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
 
         this.shootingEntity = player;
 
-        this.canBePickedUp = 1;
+        // 1 allow / 2 only creative
+        this.canBePickedUp = player.capabilities.isCreativeMode ? 2 : 1;
 
         // stuff from the arrow
         this.setLocationAndAngles(
@@ -638,6 +639,42 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
 
     public ItemStack getEntityItem() {
         return this.ammoStack;
+    }
+
+    /**
+     * Called by a player entity when they collide with an entity
+     */
+    @Override
+    public void onCollideWithPlayer(EntityPlayer player) {
+        if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
+            boolean pickedUp = this.canBePickedUp == 1 || this.canBePickedUp == 2 && player.capabilities.isCreativeMode;
+
+            if (pickedUp) {
+                pickedUp = pickup(player, this.canBePickedUp != 1);
+            }
+
+            if (pickedUp) {
+                this.playSound(
+                    "random.pop",
+                    0.2F,
+                    ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                player.onItemPickup(this, 1);
+                this.setDead();
+            }
+        }
+    }
+
+    public boolean pickup(EntityLivingBase entity, boolean simulate) {
+        ItemStack stack = AmmoHelper.getMatchingItemstackFromInventory(ammoStack, entity, true);
+        if (stack.getItem() instanceof AmmoCore ammoCore) {
+            if (!simulate && ammoCore.getCurrentAmmo(ammoStack) > 0) {
+                ToolTagsHelper.unbreakTool(stack);
+                ammoCore.addAmmo(stack, entity);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     @Override
