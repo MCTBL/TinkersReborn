@@ -7,26 +7,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-
 import com.google.common.collect.Multimap;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -46,6 +26,25 @@ import mctbl.tinkersreborn.tools.modifiers.ModReinforced;
 import mctbl.tinkersreborn.util.AmmoHelper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 // have to base this on EntityArrow, otherwise minecraft does derp things because everything is handled based on class.
 public class EntityProjectileBase extends EntityArrow implements IEntityAdditionalSpawnData {
@@ -72,6 +71,10 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
 
     public Block inTile;
     public byte inData;
+    
+    public int xTile;
+    public int yTile;
+    public int zTile;
 
     public int ticksInGround;
     public int ticksInAir;
@@ -110,6 +113,11 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
             * MathHelper.cos(this.rotationPitch / 180.0F * (float) Math.PI);
         this.motionY = -MathHelper.sin(this.rotationPitch / 180.0F * (float) Math.PI);
         this.setThrowableHeading(this.motionX, this.motionY, this.motionZ, speed, inaccuracy);
+
+//        TinkersReborn.LOG.info("[DEBUG-ARROW] spawn: playerRot=({},{}), speed={}, inaccuracy={}, power={}",
+//            player.rotationYaw, player.rotationPitch, speed, inaccuracy, power);
+//        TinkersReborn.LOG.info("[DEBUG-ARROW] spawn: motion after setThrowableHeading=({}, {}, {})",
+//            this.motionX, this.motionY, this.motionZ);
 
         // our stuff
         this.ammoStack = stack;
@@ -182,6 +190,13 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
     public void onHitBlock(MovingObjectPosition mop) {
         Block block = this.worldObj.getBlock(mop.blockX, mop.blockY, mop.blockZ);
         int meta = this.worldObj.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ);
+        
+        this.xTile = mop.blockX;
+        this.yTile = mop.blockY;
+        this.zTile = mop.blockZ;
+        this.inTile = block;
+        this.inData = (byte) meta;
+        
         this.motionX = ((float) (mop.hitVec.xCoord - this.posX));
         this.motionY = ((float) (mop.hitVec.yCoord - this.posY));
         this.motionZ = ((float) (mop.hitVec.zCoord - this.posZ));
@@ -191,6 +206,10 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         this.posZ -= this.motionZ / speed * 0.05000000074505806D;
 
         playHitBlockSound(speed, block);
+
+//        TinkersReborn.LOG.info("[DEBUG-ARROW] onHitBlock: block={}:{} at ({},{},{}), inGround was={}, inTile was={}, inData was={}, side={}",
+//            Block.getIdFromBlock(block), meta, mop.blockX, mop.blockY, mop.blockZ,
+//            this.inGround, this.inTile, this.inData, mop.sideHit);
 
         ProjectileEvent.OnHitBlock.fireEvent(this, speed, BlockPos.of(mop.blockX, mop.blockY, mop.blockZ), block, meta);
 
@@ -363,12 +382,12 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         }
 
         // we previously hit something. Check if the block is still there.
-        Block hitBlock = this.worldObj.getBlock((int) this.posX, (int) this.posY, (int) this.posZ);
-        int hitMeta = this.worldObj.getBlockMetadata((int) this.posX, (int) this.posY, (int) this.posZ);
+        Block hitBlock = this.worldObj.getBlock(this.xTile, this.yTile, this.zTile);
+        int hitMeta = this.worldObj.getBlockMetadata(this.xTile, this.yTile, this.zTile);
         if (hitBlock.getMaterial() != Material.air) {
             AxisAlignedBB axisalignedbb = hitBlock
-                .getCollisionBoundingBoxFromPool(this.worldObj, (int) this.posX, (int) this.posY, (int) this.posZ);
-            if (axisalignedbb != null && axisalignedbb.offset((int) this.posX, (int) this.posY, (int) this.posZ)
+                .getCollisionBoundingBoxFromPool(this.worldObj, this.xTile, this.yTile, this.zTile);
+            if (axisalignedbb != null && axisalignedbb.offset(this.xTile, this.yTile, this.zTile)
                 .isVecInside(Vec3.createVectorHelper(this.posX, this.posY, this.posZ))) {
                 this.inGround = true;
             }
@@ -388,8 +407,9 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         // another hitbox
         // second part prevents it from falling when the block changes but the hitbox
         // does nots
-        if ((block == this.inTile && meta == this.inData)
-            || this.worldObj.checkBlockCollision(ON_BLOCK_AABB.offset(this.posX, this.posY, this.posZ))) {
+        boolean sameBlock = (block == this.inTile && meta == this.inData);
+        boolean collides = this.worldObj.checkBlockCollision(ON_BLOCK_AABB.offset(this.posX, this.posY, this.posZ));
+        if (sameBlock || collides) {
             ++this.ticksInGround;
 
             int despawnTicks = ToolTagsHelper.getToolBaseNBTSafe(this.ammoStack)
@@ -398,6 +418,11 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
                 this.setDead();
             }
         } else {
+//            TinkersReborn.LOG.info("[DEBUG-ARROW] updateInGround: fell out of block! block={}:{}, inTile={}:{}, sameBlock={}, collides={}, pos=({},{},{})",
+//                Block.getIdFromBlock(block), meta, Block.getIdFromBlock(this.inTile), this.inData,
+//                (block == this.inTile && meta == this.inData),
+//                this.worldObj.checkBlockCollision(ON_BLOCK_AABB.offset(this.posX, this.posY, this.posZ)),
+//                this.posX, this.posY, this.posZ);
             this.inGround = false;
             this.motionX *= this.rand.nextFloat() * 0.2F;
             this.motionY *= this.rand.nextFloat() * 0.2F;
@@ -627,6 +652,10 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         tag.setByte("inData", this.inData);
         tag.setShort("life", (short) this.ticksInGround);
         tag.setBoolean("noGravity", this.noGravity);
+        
+        tag.setInteger("xTile", this.xTile);
+        tag.setInteger("yTile", this.yTile);
+        tag.setInteger("zTile", this.zTile);
 
         tags.setTag("item", tag);
 
@@ -649,6 +678,10 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         this.inData = nbt.getByte("inData");
         this.ticksInGround = nbt.getShort("life");
         this.noGravity = nbt.getBoolean("noGravity");
+        
+        this.xTile = nbt.getInteger("xTile");
+        this.yTile = nbt.getInteger("yTile");
+        this.zTile = nbt.getInteger("zTile");
     }
 
     @Override
