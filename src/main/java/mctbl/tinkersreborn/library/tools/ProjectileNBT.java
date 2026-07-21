@@ -78,6 +78,6 @@ public class ProjectileNBT extends ToolNBT {
     }
 
     public static ProjectileNBT from(ItemStack itemStack) {
-        return new ProjectileNBT(ToolTagsHelper.getToolBaseNBTSafe(itemStack));
+        return new ProjectileNBT(ToolTagsHelper.getToolDataNBTSafe(itemStack));
     }
 }
