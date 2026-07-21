@@ -30,14 +30,13 @@ public class Crosshair implements ICrosshair {
         Minecraft.getMinecraft()
             .getTextureManager()
             .bindTexture(texture);
+
         GL11.glEnable(GL11.GL_BLEND);
         GL14.glBlendFuncSeparate(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR, GL11.GL_ONE, GL11.GL_ZERO);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         float spread = (1.0f - charge) * 25f;
 
         drawCrosshair(spread, width, height, partialTicks);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
     }
 
     protected void drawCrosshair(float spread, float width, float height, float partialTicks) {

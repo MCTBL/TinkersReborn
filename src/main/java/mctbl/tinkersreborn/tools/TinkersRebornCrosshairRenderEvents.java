@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import org.lwjgl.opengl.GL11;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -39,8 +41,11 @@ public final class TinkersRebornCrosshairRenderEvents {
 
         float width = event.resolution.getScaledWidth();
         float height = event.resolution.getScaledHeight();
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
         crosshair
             .render(customCrosshairUser.getCrosshairState(itemStack, entityPlayer), width, height, event.partialTicks);
+        GL11.glPopAttrib();
 
         event.setCanceled(true);
         // restore gui texture for following draw calls
