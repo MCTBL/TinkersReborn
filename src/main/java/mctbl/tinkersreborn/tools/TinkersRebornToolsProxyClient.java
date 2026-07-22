@@ -8,7 +8,9 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.library.tools.BowCore;
 import mctbl.tinkersreborn.tools.entity.EntityArrow;
+import mctbl.tinkersreborn.tools.model.BowRenderer;
 import mctbl.tinkersreborn.tools.model.ChestRender;
 import mctbl.tinkersreborn.tools.model.EntityArrowRenderer;
 import mctbl.tinkersreborn.tools.model.TableRender;
@@ -28,8 +30,9 @@ public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon
         RenderingRegistry.registerBlockHandler(new ChestRender());
 
         ToolRender render = new ToolRender();
+        BowRenderer bowRender = new BowRenderer();
         TinkersRebornRegistry.getAllTools()
-            .forEach(t -> MinecraftForgeClient.registerItemRenderer(t, render));
+            .forEach(t -> MinecraftForgeClient.registerItemRenderer(t, (t instanceof BowCore) ? bowRender : render));
 
         EntityRegistry.registerModEntity(EntityArrow.class, "arrow", 10, TinkersReborn.instance, 64, 1, false);
         // EntityRegistry.registerModEntity(EntityBolt.class, "bolt", 11, TinkersReborn.instance, 64, 1, false);

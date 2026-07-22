@@ -641,6 +641,10 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         return this.ammoStack;
     }
 
+    public void setEntityItem(ItemStack ammoStack) {
+        this.ammoStack = ammoStack;
+    }
+
     /**
      * Called by a player entity when they collide with an entity
      */

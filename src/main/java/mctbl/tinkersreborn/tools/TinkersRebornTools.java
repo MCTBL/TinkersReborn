@@ -193,6 +193,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore rapier;
 
     public static ToolCore shortBow;
+    public static ToolCore longBow;
     public static ToolCore arrow;
 
     // other items

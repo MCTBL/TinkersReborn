@@ -210,7 +210,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int renderPass) {
         List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
-        if (renderMaterials.size() != 0) {
+        if (!renderMaterials.isEmpty()) {
             if (renderPass < this.partAmount) {
                 int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.partAmount : renderPass;
                 String materialId = renderMaterials.get(renderPass) == null ? null
@@ -228,10 +228,25 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return emptyIcon;
     }
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
+        return this.getIcon(stack, renderPass);
+    }
+
     protected IIcon getCorrectIcon(Map<String, IIcon> icons, String id) {
         if (icons.containsKey(id)) return icons.get(id);
         // default icon
         return icons.get(null);
+    }
+
+    protected IIcon getCorrectAnimationIcon(Map<String, IIcon> icons, String id, float progress) {
+        // 3 step at all
+        int step = Math.round(progress * 3);
+        step = Math.max(0, step);
+
+        String tempKey = id + (step != 0 ? "_" + step : "");
+        return icons.getOrDefault(tempKey, this.getCorrectIcon(icons, id));
     }
 
     @Override
@@ -239,11 +254,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         NBTTagCompound tags = ToolTagsHelper.getToolBaseNBTSafe(stack);
         if (tags != null && !tags.hasNoTags()) {
             NBTTagList renderMaterials = ToolTagsHelper.getStringTagListSafe(tags, ToolTags.RENDERMATERIALS);
-            if (renderMaterials.tagCount() != 0) {
-                if (renderPass < this.partAmount) {
-                    return this
-                        .getCorrectColor(this.allIcons.get(renderPass), renderMaterials.getStringTagAt(renderPass));
-                }
+            if (renderMaterials.tagCount() != 0 && renderPass < this.partAmount) {
+                return this.getCorrectColor(this.allIcons.get(renderPass), renderMaterials.getStringTagAt(renderPass));
             }
         }
         return super.getColorFromItemStack(stack, renderPass);
@@ -635,7 +647,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     /**
-     * Called when an AOE block is broken by the tool. Use to oveerride the block breaking logic
+     * Called when an AOE block is broken by the tool. Use to oveerride the block
+     * breaking logic
      * 
      * @param tool   Tool ItemStack
      * @param world  World instance
@@ -1063,10 +1076,13 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         }
         return ToolTagsHelper.getToolBaseMaterialsNBTSafe(item1)
             .equals(ToolTagsHelper.getToolBaseMaterialsNBTSafe(item2)) && // materials used
-        // ToolTagsHelper.getBaseModifiersUsed(tag1) == ToolTagsHelper.getBaseModifiersUsed(tag2) && // number of free
+        // ToolTagsHelper.getBaseModifiersUsed(tag1) ==
+        // ToolTagsHelper.getBaseModifiersUsed(tag2) && // number of free
         // modifiers used
             ToolTagsHelper.getToolOriginDataNBTSafe(item1)
-                .equals(ToolTagsHelper.getToolOriginDataNBTSafe(item2)); // unmodified base stats
+                .equals(ToolTagsHelper.getToolOriginDataNBTSafe(item2)); // unmodified
+        // base
+        // stats
     }
 
     protected void preventSlowDown(Entity entityIn, float originalSpeed) {
@@ -1075,9 +1091,9 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     public final class ToolPartRecord {
 
-        private final TinkersRebornToolPart toolPart;
-        private final MaterialStatusType statusType;
-        private final String texturePostfix;
+        protected final TinkersRebornToolPart toolPart;
+        protected final MaterialStatusType statusType;
+        protected final String texturePostfix;
 
         public ToolPartRecord(TinkersRebornToolPart toolPart, MaterialStatusType statusType, String texturePostfix) {
             this.toolPart = toolPart;

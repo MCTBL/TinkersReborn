@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
@@ -259,7 +260,12 @@ public class ToolRender implements IItemRenderer {
             int idx = tool.partAmount + ToolTagsHelper.getModifiersList(item)
                 .size();
             for (int i = 0; i < idx; i++) {
-                IIcon icon = tool.getIcon(item, i);
+                IIcon icon;
+                if (ent instanceof EntityPlayer player && player.getItemInUse() != null) {
+                    icon = tool.getIcon(item, i, player, player.getItemInUse(), player.getItemInUseCount());
+                } else {
+                    icon = tool.getIcon(item, i);
+                }
                 if (icon != null) parts.add(icon);
             }
             return parts.size();

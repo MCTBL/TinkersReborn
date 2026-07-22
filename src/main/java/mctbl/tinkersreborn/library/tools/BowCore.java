@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -15,7 +16,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,12 +27,18 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 import com.google.common.collect.Multimap;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.event.ProjectileEvent;
 import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
+import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.util.AmmoHelper;
+import mctbl.tinkersreborn.util.TextureHelper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -41,6 +50,104 @@ public abstract class BowCore extends ToolCore {
     protected BowCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
         this.categoryTags.add(Category.LAUNCHER);
+    }
+
+    /**
+     * return true if the current renderpass should use animations. 0 == handle 1 ==
+     * head 2 == accessory 3 == extra
+     */
+    protected boolean animateLayer(int renderPass) {
+        return false;
+    }
+
+    @Override
+    public void registerIcons(IIconRegister register) {
+        String basePath = "tinkersreborn:tools/" + this.toolTypeName + "/";
+        // exclude effect for now
+        for (int i = 0; i < this.partAmount; i++) {
+            if (this.componentsParts.get(i) != null) {
+                MaterialStatusType type = this.componentsParts.get(i)
+                    .statusType();
+                for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
+                    if (material.hasStats(type)) {
+                        String path = basePath + material.identifier + this.componentsParts.get(i).texturePostfix;
+
+                        this.allIcons.get(i)
+                            .put(material.identifier, register.registerIcon(path));
+                        for (int idx = 1; idx <= 3; idx++) {
+                            if (TextureHelper.itemTextureExists(path + "_" + idx)) {
+                                this.allIcons.get(i)
+                                    .put(material.identifier + "_" + idx, register.registerIcon(path + "_" + idx));
+                            }
+                        }
+                        if (i == 0) {
+                            // broken
+                            path += "_broken";
+                            if (TextureHelper.itemTextureExists(path)) {
+                                this.allIcons.get(this.partAmount)
+                                    .put(material.identifier, register.registerIcon(path));
+                            }
+                        }
+                    }
+                }
+                // standard
+                this.allIcons.get(i)
+                    .put(null, register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix));
+                if (i == 0) {
+                    this.allIcons.get(this.partAmount)
+                        .put(
+                            null,
+                            register.registerIcon(basePath + this.componentsParts.get(i).texturePostfix + "_broken"));
+
+                }
+            }
+        }
+
+        for (IModifier m : TinkersRebornRegistry.getAllModifier()) {
+            String tempPath = basePath + m.getIdentifier() + this.toolModifierEffect;
+            if (TextureHelper.itemTextureExists(tempPath)) {
+                this.effectIcons.put(m.getIdentifier(), register.registerIcon(tempPath));
+            }
+        }
+
+        emptyIcon = register.registerIcon("tinkersreborn:blankface");
+        blankSprite = register.registerIcon("tinkersreborn:blanksprite");
+    }
+
+    @Override
+    public IIcon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
+        if (animateLayer(renderPass) && usingItem != null && stack == usingItem && !ToolTagsHelper.isBroken(stack)) {
+            List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
+            String materialId = renderMaterials.get(renderPass) == null ? null
+                : renderMaterials.get(renderPass).identifier;
+            return this.getCorrectAnimationIcon(
+                this.allIcons.get(renderPass),
+                materialId,
+                this.getDrawbackProgress(stack, player));
+        }
+        return this.getIcon(stack, renderPass);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIcon(ItemStack stack, int renderPass) {
+        List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
+        if (!renderMaterials.isEmpty()) {
+            if (renderPass < this.partAmount) {
+                int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.partAmount : renderPass;
+                String materialId = renderMaterials.get(renderPass) == null ? null
+                    : renderMaterials.get(renderPass).identifier;
+                return getCorrectIcon(this.allIcons.get(iconsIdx), materialId);
+            }
+            // Effects
+            else {
+                List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(stack);
+                ModifierNBT tag = ModifierNBT.readTag(modifiersList.get(renderPass - this.partAmount));
+                return this.effectIcons.get(tag.identifier);
+            }
+
+        }
+        return emptyIcon;
     }
 
     protected ProjectileLauncherNBT getData(ItemStack stack) {
