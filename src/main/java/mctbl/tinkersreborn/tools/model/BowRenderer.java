@@ -41,8 +41,19 @@ public class BowRenderer extends ToolRender {
             && item.getItem() instanceof BowCore bow) {
             float progress = bow.getDrawbackProgress(item, player);
 
+            // GL11.glScalef(1.2f, 1.2f, 1.2f);
+            GL11.glRotatef(-18.0F, 0.0F, 0.0F, 1.0F); // tilts the bow forward a bit
+            GL11.glRotatef(-6.0F, 0.0F, 1.0F, 0.0F); // rotates the bow so it faces more forward
+            GL11.glRotatef(8.0F, 1.0F, 0.0F, 0.0F); // rotates the bow forward
+            GL11.glTranslatef(-0.9F, 0.2F, -1.0F);
+
+            // this does the "zoom closer to the bow" thing
+            GL11.glTranslatef(progress * -0.1f, progress * -0.125f, 0.0F);
+
             // we're crazy, so.. render the arrow =D
-            ItemStack ammo = bow.findAmmo(item, player);
+            ItemStack ammo = bow.findAmmo(item, player); // we know it's a
+                                                         // projectile weapon, it's
+                                                         // a bow!
             if (ammo != null) {
                 if (ammo.getItem() == Items.arrow) dummy.setEntityItem(vanillaArrow);
                 else dummy.setEntityItem(ammo);
@@ -67,7 +78,9 @@ public class BowRenderer extends ToolRender {
             }
         } else if (type == ItemRenderType.EQUIPPED && player.isUsingItem() && item.getItem() instanceof BowCore bow) {
             // we're crazy, so.. render the arrow =D
-            ItemStack ammo = bow.findAmmo(item, player);
+            ItemStack ammo = bow.findAmmo(item, player); // we know it's a
+                                                         // projectile weapon, it's
+                                                         // a bow!
             if (ammo != null) {
                 if (ammo.getItem() == Items.arrow || !(ammo.getItem() instanceof AmmoCore))
                     dummy.setEntityItem(vanillaArrow);

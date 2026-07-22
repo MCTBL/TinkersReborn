@@ -186,7 +186,7 @@ public abstract class BowCore extends ToolCore {
 
     @Override
     public EnumAction getItemUseAction(ItemStack stack) {
-        return EnumAction.bow;
+        return EnumAction.none;
     }
 
     @Override
