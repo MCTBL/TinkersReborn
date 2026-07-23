@@ -44,7 +44,7 @@ public class LongBow extends ShortBow {
 
     @Override
     protected float baseInaccuracy() {
-        return 1.2f;
+        return 0.8f;
     }
 
     @Override

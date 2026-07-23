@@ -359,6 +359,8 @@ modifier.holy.desc=§oRadiant!§r\nDeal bonus damage to undead enemies.
 modifier.holy.extra=Vs Undead: +%s
 modifier.freezing.name=Freezing
 modifier.freezing.desc=§oWinter is Coming§r\nSuccessful hits slow your target more and more.
+modifier.hovering.name=Hovering
+modifier.hovering.desc=§oFree like the wind§r\nProjectiles move slower but don't mind gravity as much.
 modifier.breakable.name=Breakable
 modifier.breakable.desc=§oThis side up!§r\nProjectiles have a 50% chance to break on impact.
 

@@ -23,6 +23,7 @@ import static mctbl.tinkersreborn.tools.TinkersRebornTraits.freezing;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.heavy;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.hellish;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.holy;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.hovering;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.insatiable;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.lightweight;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.magnetic;
@@ -847,7 +848,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         blazeMaterial = new TinkersRebornMaterial("Blaze", 0xFFC100).setCraftable(true);
         blazeMaterial.addItem(Items.blaze_rod, 1, VALUE_Ingot);
         blazeMaterial.setRepresentativeItem(Items.blaze_rod);
-        // blazeMaterial.addTrait(hovering);
+        blazeMaterial.addTrait(hovering);
 
         reedMaterial = new TinkersRebornMaterial("Reed", 0xAADB74).setCraftable(true);
         reedMaterial.addItem(Items.reeds, 1, VALUE_Ingot);

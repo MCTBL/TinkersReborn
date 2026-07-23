@@ -22,6 +22,7 @@ import mctbl.tinkersreborn.tools.traits.TraitFreezing;
 import mctbl.tinkersreborn.tools.traits.TraitHeavy;
 import mctbl.tinkersreborn.tools.traits.TraitHellish;
 import mctbl.tinkersreborn.tools.traits.TraitHoly;
+import mctbl.tinkersreborn.tools.traits.TraitHovering;
 import mctbl.tinkersreborn.tools.traits.TraitInsatiable;
 import mctbl.tinkersreborn.tools.traits.TraitLightweight;
 import mctbl.tinkersreborn.tools.traits.TraitMagnetic;
@@ -96,7 +97,7 @@ public class TinkersRebornTraits {
     public static final AbstractTrait breakable = new TraitBreakable();
     // public static final AbstractTrait endspeed = new TraitEndspeed();
     public static final AbstractTrait freezing = new TraitFreezing();
-    // public static final AbstractTrait hovering = new TraitHovering();
+    public static final AbstractTrait hovering = new TraitHovering();
     public static final AbstractTrait splitting = new TraitSplitting();
 
 }

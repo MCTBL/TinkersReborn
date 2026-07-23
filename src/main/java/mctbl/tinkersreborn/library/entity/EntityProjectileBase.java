@@ -19,7 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
@@ -45,6 +44,7 @@ import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.modifiers.ModReinforced;
 import mctbl.tinkersreborn.util.AmmoHelper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 // have to base this on EntityArrow, otherwise minecraft does derp things because everything is handled based on class.
@@ -123,7 +123,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         this.launcherStack = launchingStack;
         this.power = power;
 
-        for (IProjectileTrait trait : getLauncherTraits()) {
+        for (IProjectileTrait trait : this.getAmmoTraits()) {
             trait.onLaunch(this, world, player);
         }
     }
@@ -140,14 +140,16 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         this.defused = true;
     }
 
-    protected List<IProjectileTrait> getLauncherTraits() {
+    protected List<IProjectileTrait> getAmmoTraits() {
         List<IProjectileTrait> projectileTraitList = new ArrayList<>();
-        if (launcherStack != null) {
-            NBTTagList list = ToolTagsHelper.getModifiersTagList(launcherStack);
-            for (int i = 0; i < list.tagCount(); i++) {
-                IModifier trait = TinkersRebornRegistry.getModifierAndTrait(list.getStringTagAt(i));
-                if (trait instanceof IProjectileTrait) {
-                    projectileTraitList.add((IProjectileTrait) trait);
+        if (ammoStack != null) {
+            List<NBTTagCompound> list = ToolTagsHelper.getModifiersList(ammoStack);
+            for (int i = 0; i < list.size(); i++) {
+                IModifier trait = TinkersRebornRegistry.getModifierAndTrait(
+                    list.get(i)
+                        .getString(ToolTags.IDENTIFIER));
+                if (trait instanceof IProjectileTrait pt) {
+                    projectileTraitList.add(pt);
                 }
             }
         }
@@ -270,7 +272,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
                     this.motionX * this.motionX + this.motionY * this.motionY + this.motionZ * this.motionZ);
                 bounceOff = !dealDamage(speed, inventoryItem, attacker, entityHit);
                 if (!bounceOff) {
-                    for (IProjectileTrait trait : this.getLauncherTraits()) {
+                    for (IProjectileTrait trait : this.getAmmoTraits()) {
                         trait.afterHit(this, this.worldObj, inventoryItem, attacker, entityHit, speed);
                     }
 
@@ -358,7 +360,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         // luckily we can call this directly and take the arrow-code, since we'd have to
         // call super.onUpdate otherwise. Which would not work.
         this.onEntityUpdate();
-        for (IProjectileTrait trait : this.getLauncherTraits()) {
+        for (IProjectileTrait trait : this.getAmmoTraits()) {
             trait.onProjectileUpdate(this, this.worldObj, launcherStack);
         }
 
@@ -514,7 +516,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         if (!this.noGravity) {
             this.motionY -= getGravity();
         }
-        for (IProjectileTrait trait : this.getLauncherTraits()) {
+        for (IProjectileTrait trait : this.getAmmoTraits()) {
             trait.onMovement(this, this.worldObj, slowdown);
         }
         this.setPosition(this.posX, this.posY, this.posZ);
@@ -651,12 +653,8 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
     @Override
     public void onCollideWithPlayer(EntityPlayer player) {
         if (!this.worldObj.isRemote && this.inGround && this.arrowShake <= 0) {
-            boolean pickedUp = this.canBePickedUp == 1 || this.canBePickedUp == 2 && player.capabilities.isCreativeMode;
-
-            if (pickedUp) {
-                pickedUp = pickup(player, this.canBePickedUp != 1);
-            }
-
+            boolean pickedUp = (this.canBePickedUp == 2 && player.capabilities.isCreativeMode)
+                || (this.canBePickedUp == 1 && pickup(player, this.canBePickedUp != 1));
             if (pickedUp) {
                 this.playSound(
                     "random.pop",
@@ -670,7 +668,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
 
     public boolean pickup(EntityLivingBase entity, boolean simulate) {
         ItemStack stack = AmmoHelper.getMatchingItemstackFromInventory(ammoStack, entity, true);
-        if (stack.getItem() instanceof AmmoCore ammoCore) {
+        if (stack != null && stack.getItem() instanceof AmmoCore ammoCore) {
             if (!simulate && ammoCore.getCurrentAmmo(ammoStack) > 0) {
                 ToolTagsHelper.unbreakTool(stack);
                 ammoCore.addAmmo(stack, entity);
