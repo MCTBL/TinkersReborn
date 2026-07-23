@@ -3,7 +3,6 @@ package mctbl.tinkersreborn.smeltery.utils;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -16,12 +15,13 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluidBlock;
+import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class MaterialIntegration {
 
     public TinkersRebornMaterial material;
-    public Fluid fluid;
+    public TinkersRebornFluid fluid;
     public String oreSuffix; // oredict suffix, e.g. "Iron" -> "ingotIron", "blockIron",...
     public String[] oreRequirement; // required oredict entry for this integration
     public String representativeItem; // oredict entry for the representative item
@@ -33,19 +33,20 @@ public class MaterialIntegration {
         this(material, null);
     }
 
-    public MaterialIntegration(TinkersRebornMaterial material, Fluid fluid) {
+    public MaterialIntegration(TinkersRebornMaterial material, TinkersRebornFluid fluid) {
         this(null, material, fluid, null);
     }
 
-    public MaterialIntegration(TinkersRebornMaterial material, Fluid fluid, String oreSuffix) {
+    public MaterialIntegration(TinkersRebornMaterial material, TinkersRebornFluid fluid, String oreSuffix) {
         this("ingot" + oreSuffix, material, fluid, oreSuffix);
     }
 
-    public MaterialIntegration(String oreRequirement, TinkersRebornMaterial material, Fluid fluid, String oreSuffix) {
+    public MaterialIntegration(String oreRequirement, TinkersRebornMaterial material, TinkersRebornFluid fluid,
+        String oreSuffix) {
         this(material, fluid, oreSuffix, oreRequirement);
     }
 
-    public MaterialIntegration(TinkersRebornMaterial material, Fluid fluid, String oreSuffix,
+    public MaterialIntegration(TinkersRebornMaterial material, TinkersRebornFluid fluid, String oreSuffix,
         String... oreRequirement) {
         this.material = material;
         this.fluid = fluid;
@@ -83,15 +84,14 @@ public class MaterialIntegration {
         // fluid first.
         if (fluid != null) {
             FluidRegistry.registerFluid(fluid);
+
             FluidContainerRegistry.registerFluidContainer(
                 new FluidContainerData(
                     new FluidStack(fluid, 1000),
-                    new ItemStack(TinkersRebornGeneral.tinkersBucket, 1),
+                    ((FilledBucket) TinkersRebornGeneral.tinkersBucket).getNewFluidBucketWithMaterial(fluid.identifier),
                     new ItemStack(Items.bucket)));
             this.registerFluidBlock();
-            if (fluid instanceof TinkersRebornFluid trf) {
-                TinkersRebornRegistry.registerFluid(trf);
-            }
+            TinkersRebornRegistry.registerFluid(fluid);
         }
 
         // register material
@@ -148,12 +148,12 @@ public class MaterialIntegration {
 
     public void registerFluidBlock() {
         // ensure the fluid block is not already registered
-        if (!addedFluidBlock && fluid != null && fluid.getBlock() == null && fluid instanceof TinkersRebornFluid trf) {
+        if (!addedFluidBlock && fluid != null && fluid.getBlock() == null) {
             addedFluidBlock = true;
             TinkersRebornFluidBlock tinkersRebornFluidBlock = new TinkersRebornFluidBlock(
-                trf,
-                trf.getTemperature() > 300 ? Material.lava : Material.water,
-                trf.getUnlocalizedName());
+                fluid,
+                fluid.getTemperature() > 300 ? Material.lava : Material.water,
+                fluid.getUnlocalizedName());
             GameRegistry.registerBlock(tinkersRebornFluidBlock, tinkersRebornFluidBlock.getUnlocalizedName());
         }
     }

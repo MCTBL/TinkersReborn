@@ -176,12 +176,16 @@ public class FilledBucket extends ItemBucket {
                 clickX,
                 clickY,
                 clickZ,
-                TinkersRebornRegistry.getFluidByIdentifier(this.readNBT(stack))
+                this.getFluidStackInBucket(stack)
                     .getBlock(),
                 0,
                 3);
             return true;
         }
+    }
+
+    public TinkersRebornFluid getFluidStackInBucket(ItemStack stack) {
+        return TinkersRebornRegistry.getFluidByIdentifier(this.readNBT(stack));
     }
 
     public ItemStack getNewFluidBucketWithMaterial(String identifier) {

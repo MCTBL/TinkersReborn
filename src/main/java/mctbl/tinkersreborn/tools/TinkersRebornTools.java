@@ -51,7 +51,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -244,22 +243,22 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static Pattern patternAndCast;
     public static Item creativeModifier; // TODO
 
-    public static Fluid ironFluid;
-    public static Fluid obsidianFluid;
-    public static Fluid cobaltFluid;
-    public static Fluid arditeFluid;
-    public static Fluid manyullynFluid;
-    public static Fluid copperFluid;
-    public static Fluid bronzeFluid;
-    public static Fluid alumiteFluid;
-    public static Fluid steelFluid;
-    public static Fluid pigIronFluid;
-    public static Fluid goldFluid;
-    public static Fluid tinFluid;
-    public static Fluid silverFluid;
-    public static Fluid leadFluid;
-    public static Fluid emeraldFluid;
-    public static Fluid aluminumFluid;
+    public static TinkersRebornFluid ironFluid;
+    public static TinkersRebornFluid obsidianFluid;
+    public static TinkersRebornFluid cobaltFluid;
+    public static TinkersRebornFluid arditeFluid;
+    public static TinkersRebornFluid manyullynFluid;
+    public static TinkersRebornFluid copperFluid;
+    public static TinkersRebornFluid bronzeFluid;
+    public static TinkersRebornFluid alumiteFluid;
+    public static TinkersRebornFluid steelFluid;
+    public static TinkersRebornFluid pigIronFluid;
+    public static TinkersRebornFluid goldFluid;
+    public static TinkersRebornFluid tinFluid;
+    public static TinkersRebornFluid silverFluid;
+    public static TinkersRebornFluid leadFluid;
+    public static TinkersRebornFluid emeraldFluid;
+    public static TinkersRebornFluid aluminumFluid;
 
     public static TinkersRebornMaterial woodMaterial;
     public static TinkersRebornMaterial stoneMaterial;
