@@ -11,7 +11,7 @@ import mctbl.tinkersreborn.library.tools.traits.AbstractProjectileTrait;
 public class TraitHovering extends AbstractProjectileTrait {
 
     public TraitHovering() {
-        super("hovering", 0xffffff);
+        super("hovering", 0xFFC100);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class TraitBreakable extends AbstractTrait {
     private static final float BREAKCHANCE = 0.5f;
 
     public TraitBreakable() {
-        super("breakable", 0xffffff);
+        super("breakable", 0xAADB74);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

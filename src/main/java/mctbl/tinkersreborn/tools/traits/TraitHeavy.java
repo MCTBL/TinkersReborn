@@ -15,7 +15,7 @@ public class TraitHeavy extends AbstractTrait {
     protected static final UUID KNOCKBACK_MODIFIER = UUID.fromString("cca17597-84ae-44fe-bf98-ca08a9047079");
 
     public TraitHeavy() {
-        super("heavy", 0xFFFFFF);
+        super("heavy", 0x4D4968);
     }
 
     @Override

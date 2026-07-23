@@ -12,7 +12,7 @@ public class TraitSplitting extends AbstractTrait {
     private static final float DOUBLESHOT_CHANCE = 0.5f;
 
     public TraitSplitting() {
-        super("splitting", 0xffffff);
+        super("splitting", 0xEDEBCA);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
