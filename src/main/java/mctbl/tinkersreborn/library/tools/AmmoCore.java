@@ -23,6 +23,8 @@ import com.google.common.collect.Multimap;
 import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.tools.TinkersRebornTraits;
+import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
+import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
 import mctbl.tinkersreborn.tools.traits.TraitEnderference;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -173,6 +175,19 @@ public abstract class AmmoCore extends ToolCore {
             } else {
                 list.add(formatAmmo(ammoItem.getCurrentAmmo(stack), ammoItem.getMaxAmmo(stack)));
             }
+        }
+
+        float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
+        list.add(HeadMaterialStats.formatAttack(attack));
+        list.add(FletchingMaterialStats.formatAccuracy(ProjectileNBT.from(stack).accuracy));
+
+        int freeModifier = ToolTagsHelper.getModifierSlots(stack) + ToolTagsHelper.getExtraModifier(stack)
+            - ToolTagsHelper.getUsedModifiers(stack);
+        if (freeModifier > 0) {
+            list.add(String.format("%s: %d", TinkersStr.modifierToolTip.toString(), freeModifier));
+        }
+        if (!isTooltip) {
+            list.addAll(getModifierInfo(stack));
         }
 
         return list;

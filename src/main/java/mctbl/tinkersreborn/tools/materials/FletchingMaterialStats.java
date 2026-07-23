@@ -23,7 +23,7 @@ public class FletchingMaterialStats extends AbstractMaterialStats {
      * @param modifier
      * @param accuracy
      */
-    public FletchingMaterialStats(float modifier, float accuracy) {
+    public FletchingMaterialStats(float accuracy, float modifier) {
         this.modifier = modifier;
         this.accuracy = accuracy;
     }
@@ -63,7 +63,7 @@ public class FletchingMaterialStats extends AbstractMaterialStats {
     }
 
     public static String formatAccuracy(float accuracy) {
-        return format(LOC_Accuracy, COLOR_Accuracy, accuracy);
+        return formatNumberPercent(LOC_Accuracy, COLOR_Accuracy, accuracy);
     }
 
 }

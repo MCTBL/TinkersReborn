@@ -61,6 +61,7 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
+import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
@@ -776,6 +777,18 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         if (hasCategory(Category.HARVEST)) {
             list.add(HeadMaterialStats.formatHarvestLevel(ToolTagsHelper.getHarvestLevelStat(stack)));
             list.add(HeadMaterialStats.formatMiningSpeed(ToolTagsHelper.getMiningSpeedStat(stack)));
+        }
+
+        if (hasCategory(Category.LAUNCHER)) {
+            ProjectileLauncherNBT launcher = ProjectileLauncherNBT.from(stack);
+            float speed = launcher.drawSpeed;
+            // convert speed per tick to seconds drawtime
+            if (stack.getItem() instanceof BowCore bowCore) {
+                speed = bowCore.getDrawTime() * 1.0F / (20f * speed);
+            }
+            list.add(BowMaterialStats.formatDrawspeed(speed));
+            list.add(BowMaterialStats.formatRange(launcher.range));
+            list.add(BowMaterialStats.formatDamage(launcher.bonusDamage));
         }
         float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
         list.add(HeadMaterialStats.formatAttack(attack));
