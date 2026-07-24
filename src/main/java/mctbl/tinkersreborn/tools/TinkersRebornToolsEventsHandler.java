@@ -21,8 +21,8 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mctbl.tinkersreborn.library.entity.TinkersEntityProperties;
+import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.tools.IAoeTool;
-import mctbl.tinkersreborn.library.tools.TinkerToolEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;

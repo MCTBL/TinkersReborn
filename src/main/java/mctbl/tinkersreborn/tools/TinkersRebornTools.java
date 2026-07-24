@@ -23,6 +23,7 @@ import static mctbl.tinkersreborn.tools.TinkersRebornTraits.freezing;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.heavy;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.hellish;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.holy;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.hovering;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.insatiable;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.lightweight;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.magnetic;
@@ -51,7 +52,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.oredict.OreDictionary;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -94,20 +94,26 @@ import mctbl.tinkersreborn.tools.items.MaterialItem;
 import mctbl.tinkersreborn.tools.items.Pattern;
 import mctbl.tinkersreborn.tools.items.SharpeningKit;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
+import mctbl.tinkersreborn.tools.items.tools.Arrow;
+import mctbl.tinkersreborn.tools.items.tools.Bolt;
 import mctbl.tinkersreborn.tools.items.tools.BroadSword;
 import mctbl.tinkersreborn.tools.items.tools.Cleaver;
+import mctbl.tinkersreborn.tools.items.tools.CrossBow;
 import mctbl.tinkersreborn.tools.items.tools.Excavator;
 import mctbl.tinkersreborn.tools.items.tools.Hammer;
 import mctbl.tinkersreborn.tools.items.tools.Hatchet;
 import mctbl.tinkersreborn.tools.items.tools.Kama;
+import mctbl.tinkersreborn.tools.items.tools.LongBow;
 import mctbl.tinkersreborn.tools.items.tools.LongSword;
 import mctbl.tinkersreborn.tools.items.tools.LumberAxe;
 import mctbl.tinkersreborn.tools.items.tools.Mattock;
 import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
 import mctbl.tinkersreborn.tools.items.tools.Rapier;
 import mctbl.tinkersreborn.tools.items.tools.Scythe;
+import mctbl.tinkersreborn.tools.items.tools.ShortBow;
 import mctbl.tinkersreborn.tools.items.tools.Shovel;
 import mctbl.tinkersreborn.tools.items.tools.Vinehammer;
+import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
@@ -189,6 +195,12 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore longSword;
     public static ToolCore rapier;
 
+    public static ToolCore shortBow;
+    public static ToolCore longBow;
+    public static ToolCore arrow;
+    public static ToolCore bolt;
+    public static ToolCore crossBow;
+
     // other items
     public static Item paperStack;
     public static Item slimeCrystal;
@@ -236,22 +248,22 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static Pattern patternAndCast;
     public static Item creativeModifier; // TODO
 
-    public static Fluid ironFluid;
-    public static Fluid obsidianFluid;
-    public static Fluid cobaltFluid;
-    public static Fluid arditeFluid;
-    public static Fluid manyullynFluid;
-    public static Fluid copperFluid;
-    public static Fluid bronzeFluid;
-    public static Fluid alumiteFluid;
-    public static Fluid steelFluid;
-    public static Fluid pigIronFluid;
-    public static Fluid goldFluid;
-    public static Fluid tinFluid;
-    public static Fluid silverFluid;
-    public static Fluid leadFluid;
-    public static Fluid emeraldFluid;
-    public static Fluid aluminumFluid;
+    public static TinkersRebornFluid ironFluid;
+    public static TinkersRebornFluid obsidianFluid;
+    public static TinkersRebornFluid cobaltFluid;
+    public static TinkersRebornFluid arditeFluid;
+    public static TinkersRebornFluid manyullynFluid;
+    public static TinkersRebornFluid copperFluid;
+    public static TinkersRebornFluid bronzeFluid;
+    public static TinkersRebornFluid alumiteFluid;
+    public static TinkersRebornFluid steelFluid;
+    public static TinkersRebornFluid pigIronFluid;
+    public static TinkersRebornFluid goldFluid;
+    public static TinkersRebornFluid tinFluid;
+    public static TinkersRebornFluid silverFluid;
+    public static TinkersRebornFluid leadFluid;
+    public static TinkersRebornFluid emeraldFluid;
+    public static TinkersRebornFluid aluminumFluid;
 
     public static TinkersRebornMaterial woodMaterial;
     public static TinkersRebornMaterial stoneMaterial;
@@ -305,6 +317,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         FMLCommonHandler.instance()
             .bus()
             .register(tre);
+
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornProjectileRenderEvents());
 
         toolStation = new ToolStationBlock();
         GameRegistry.registerBlock(toolStation, ToolStationItemBlock.class, toolStation.getUnlocalizedName());
@@ -509,6 +523,31 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(vineHammer, vineHammer.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(vineHammer);
         TinkersRebornRegistry.registerToolForgeCrafting(vineHammer);
+
+        arrow = new Arrow();
+        GameRegistry.registerItem(arrow, arrow.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(arrow);
+        TinkersRebornRegistry.registerToolCrafting(arrow);
+
+        bolt = new Bolt();
+        GameRegistry.registerItem(bolt, bolt.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(bolt);
+        TinkersRebornRegistry.registerToolForgeCrafting(bolt);
+
+        crossBow = new CrossBow();
+        GameRegistry.registerItem(crossBow, crossBow.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(crossBow);
+        TinkersRebornRegistry.registerToolForgeCrafting(crossBow);
+
+        shortBow = new ShortBow();
+        GameRegistry.registerItem(shortBow, shortBow.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(shortBow);
+        TinkersRebornRegistry.registerToolCrafting(shortBow);
+
+        longBow = new LongBow();
+        GameRegistry.registerItem(longBow, longBow.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(longBow);
+        TinkersRebornRegistry.registerToolForgeCrafting(longBow);
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");
@@ -795,7 +834,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             .createMolten(silverMaterial.identifier, silverMaterial.materialTextColor, silverMaterial.identifier, 480);
         silverMaterial.addTrait(holy);
 
-        bloodBoneMaterial = new TinkersRebornMaterial("BloodBone", 0xC70000).setCastable(true);
+        bloodBoneMaterial = new TinkersRebornMaterial("BloodBone", 0xC70000).setCraftable(true);
         bloodBoneMaterial.addItem("boneBloodied", 1, VALUE_Ingot);
         // bloodBoneMaterial.setRepresentativeItem(TinkerCommons.matBloodyBone);
         bloodBoneMaterial.addTrait(raging2, MaterialStatusType.HEAD);
@@ -803,40 +842,40 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         bloodBoneMaterial.addTrait(raging);
         bloodBoneMaterial.addTrait(fractured);
 
-        stringMaterial = new TinkersRebornMaterial("String", 0xEEEEEE);
+        stringMaterial = new TinkersRebornMaterial("String", 0xEEEEEE).setCraftable(true);
         stringMaterial.addItem(Items.string, 1, VALUE_Ingot);
         stringMaterial.setRepresentativeItem(Items.string);
 
-        vineMaterial = new TinkersRebornMaterial("Vine", 0x40A10F);
+        vineMaterial = new TinkersRebornMaterial("Vine", 0x40A10F).setCraftable(true);
         vineMaterial.addItem("vine", 1, VALUE_Ingot);
         vineMaterial.setRepresentativeItem(Blocks.vine);
 
-        slimeVineMaterial = new TinkersRebornMaterial("SlimeVine", 0x74C8C7);
+        slimeVineMaterial = new TinkersRebornMaterial("SlimeVine", 0x74C8C7).setCraftable(true);
 
-        blazeMaterial = new TinkersRebornMaterial("Blaze", 0xFFC100);
+        blazeMaterial = new TinkersRebornMaterial("Blaze", 0xFFC100).setCraftable(true);
         blazeMaterial.addItem(Items.blaze_rod, 1, VALUE_Ingot);
         blazeMaterial.setRepresentativeItem(Items.blaze_rod);
-        // blazeMaterial.addTrait(hovering);
+        blazeMaterial.addTrait(hovering);
 
-        reedMaterial = new TinkersRebornMaterial("Reed", 0xAADB74);
+        reedMaterial = new TinkersRebornMaterial("Reed", 0xAADB74).setCraftable(true);
         reedMaterial.addItem(Items.reeds, 1, VALUE_Ingot);
         reedMaterial.setRepresentativeItem(Items.reeds);
         reedMaterial.addTrait(breakable);
 
-        iceMaterial = new TinkersRebornMaterial("Ice", 0x97D7E0);
+        iceMaterial = new TinkersRebornMaterial("Ice", 0x97D7E0).setCraftable(true);
         iceMaterial.addItem(Blocks.packed_ice, VALUE_Ingot);
         iceMaterial.setRepresentativeItem(Blocks.packed_ice);
         iceMaterial.addTrait(freezing);
 
-        featherMaterial = new TinkersRebornMaterial("Feather", 0xEEEEEE);
-        featherMaterial.addItem("feather", 1, VALUE_Ingot);
+        featherMaterial = new TinkersRebornMaterial("Feather", 0xEEEEEE).setCraftable(true);
+        featherMaterial.addItem(Items.feather, 1, VALUE_Ingot);
         featherMaterial.setRepresentativeItem(Items.feather);
 
-        leafMaterial = new TinkersRebornMaterial("Leaf", 0x1D730C);
+        leafMaterial = new TinkersRebornMaterial("Leaf", 0x1D730C).setCraftable(true);
         leafMaterial.addItem("treeLeaves", 1, VALUE_Shard);
         leafMaterial.setRepresentativeItem(Blocks.leaves);
 
-        slimeleafMaterial = new TinkersRebornMaterial("SlimeLeaf", 0x74C8C7);
+        slimeleafMaterial = new TinkersRebornMaterial("SlimeLeaf", 0x74C8C7).setCraftable(true);
         slimeleafMaterial.addItem(new ItemStack(TinkersRebornGeneral.slimeLeaves), 1, VALUE_Shard);
         slimeleafMaterial.setRepresentativeItem(TinkersRebornGeneral.slimeLeaves);
 
@@ -846,6 +885,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xCCCCCC, "aluminum", 330);
 
         this.registerBaseMaterialsStats();
+        this.registerBowMaterialsStats();
 
         this.registerMaterialIntegrations();
     }
@@ -959,6 +999,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         featherMaterial.addStats(new FletchingMaterialStats(1.0F, 1.0F));
         leafMaterial.addStats(new FletchingMaterialStats(0.5F, 1.5F));
         slimeleafMaterial.addStats(new FletchingMaterialStats(0.8F, 1.25F));
+    }
+
+    private void registerBowMaterialsStats() {
+        woodMaterial.addStats(new BowMaterialStats(1f, 1f, 0));
     }
 
     private void registerMaterialIntegrations() {

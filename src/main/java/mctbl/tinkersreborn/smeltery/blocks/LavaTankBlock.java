@@ -27,6 +27,7 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.IServantLogic;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
+import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.smeltery.model.TankRender;
 
 public class LavaTankBlock extends BlockContainer {
@@ -129,6 +130,10 @@ public class LavaTankBlock extends BlockContainer {
         ItemStack current = entityplayer.inventory.getCurrentItem();
         if (current != null) {
             FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(current);
+            if (current.getItem() instanceof FilledBucket bucket) {
+                liquid = new FluidStack(bucket.getFluidStackInBucket(current), FluidContainerRegistry.BUCKET_VOLUME);
+            }
+
             LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(i, j, k);
             // putting liquid into the tank
             if (liquid != null && !world.isRemote) {
@@ -145,9 +150,8 @@ public class LavaTankBlock extends BlockContainer {
                 }
 
                 return true;
-            }
-            // taking liquit out of the tank
-            else if (FluidContainerRegistry.isContainer(current)) {
+            } else if (FluidContainerRegistry.isContainer(current)) {
+                // taking liquit out of the tank
                 FluidTankInfo[] tanks = logic.getTankInfo(ForgeDirection.UNKNOWN);
                 FluidStack fillFluid = tanks[0].fluid; // getFluid();
                 if (!world.isRemote) {

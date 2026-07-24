@@ -59,6 +59,7 @@ public final class ToolTags {
 
     // modifier detail
     public static final String IDENTIFIER = "identifier";
+    public static final String HEADIDENTIFIER = "headIdentifier";// special for bolt
     public static final String TYPE = "type";
     public static final String COLOR = "color";
     public static final String LEVEL = "level";

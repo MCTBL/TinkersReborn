@@ -455,6 +455,9 @@ public class TinkersRebornRegistry {
         // melt ALL the toolparts n stuff. Also cast them.
         Fluid fluid = material.getFluid();
         for (TinkersRebornToolPart toolPart : TinkersRebornRegistry.toolPartNameMap.values()) {
+            if (toolPart == TinkersRebornTools.boltCore) {
+                continue;
+            }
 
             ItemStack stack = toolPart.getNewPartWithMaterial(material);
             ItemStack cast = Pattern.newStackWithToolPart(toolPart);

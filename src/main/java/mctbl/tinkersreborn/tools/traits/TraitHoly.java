@@ -19,7 +19,7 @@ public class TraitHoly extends AbstractTrait {
     private static float bonusDamage = 5f;
 
     public TraitHoly() {
-        super("holy", 0xffffff);
+        super("holy", 0xD1ECF6);
     }
 
     @Override

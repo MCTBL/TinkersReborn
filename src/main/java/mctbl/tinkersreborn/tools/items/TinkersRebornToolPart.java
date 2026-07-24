@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -16,6 +17,7 @@ import net.minecraft.util.IIcon;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.common.TinkersRebornGeneralProxyClient;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.items.CraftingItem;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
@@ -93,24 +95,30 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     @Override
     public void registerIcons(IIconRegister iconRegister) {
+        String basePath = "tinkersreborn:" + folder;
         List<TinkersRebornMaterial> statsList = TinkersRebornRegistry.getAllMaterialList()
             .stream()
             .filter(m -> m.statsMap.containsKey(this.allowType))
             .collect(Collectors.toList());
         this.iconMap = new HashMap<>();
         for (TinkersRebornMaterial m : statsList) {
-            String path = "tinkersreborn:" + folder + m.identifier + "_" + texture;
+            String path = basePath + m.identifier + "_" + texture;
             if (TextureHelper.itemTextureExists(path)) {
                 this.iconMap.put(m.identifier, iconRegister.registerIcon(path));
             }
         }
         // default texture
-        this.defaultIcon = iconRegister.registerIcon("tinkersreborn:" + folder + "_" + texture);
-        if (TextureHelper.itemTextureExists("tinkersreborn:" + folder + "outline_" + texture)) {
-            this.outlineIcon = iconRegister.registerIcon("tinkersreborn:" + folder + "outline_" + texture);
+        this.defaultIcon = iconRegister.registerIcon(basePath + "_" + texture);
+        if (TextureHelper.itemTextureExists(basePath + "outline_" + texture)) {
+            this.outlineIcon = iconRegister.registerIcon(basePath + "outline_" + texture);
         } else {
             this.outlineIcon = this.defaultIcon;
         }
+    }
+
+    @Override
+    public FontRenderer getFontRenderer(ItemStack stack) {
+        return TinkersRebornGeneralProxyClient.fontRender;
     }
 
     @Override
@@ -164,7 +172,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
         return stack;
     }
 
-    public NBTTagCompound getNewPartNBT(String identifier) {
+    private NBTTagCompound getNewPartNBT(String identifier) {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setString(ToolTags.IDENTIFIER, identifier);
         return nbt;

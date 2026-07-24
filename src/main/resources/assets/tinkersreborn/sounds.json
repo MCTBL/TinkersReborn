@@ -22,5 +22,11 @@
 	  "tinkersreborn:sweep6",
 	  "tinkersreborn:sweep7"
     ]
-  }
+  },
+   "crossbow_reload": {
+	"category": "player",
+	"sounds": [
+		"tinkersreborn:crossbow_reload"
+	]
+   }
 }

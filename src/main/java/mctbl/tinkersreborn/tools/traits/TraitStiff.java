@@ -9,7 +9,7 @@ import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 public class TraitStiff extends AbstractTrait {
 
     public TraitStiff() {
-        super("stiff", 0xffffff);
+        super("stiff", 0xA0A0A0);
     }
 
     @Override

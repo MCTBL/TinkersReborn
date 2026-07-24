@@ -27,18 +27,19 @@ import gnu.trove.map.hash.TIntIntHashMap;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.event.TinkersRebornEvent;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.IRepairable;
 import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.library.tools.ITrait;
-import mctbl.tinkersreborn.library.tools.TinkersRebornEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolCore.ToolPartRecord;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
+import mctbl.tinkersreborn.tools.items.BoltCore;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTags;
@@ -66,10 +67,10 @@ public class ToolBuilderHelper {
             return null;
         List<TinkersRebornMaterial> materials = new ArrayList<>();
         for (ItemStack stack : inputToolPartList) {
-            if (stack.getItem() instanceof TinkersRebornToolPart) {
-                TinkersRebornMaterial materialByIdentifier = TinkersRebornRegistry
-                    .getMaterialByIdentifier(TinkersRebornToolPart.readNBT(stack));
+            if (stack.getItem() instanceof TinkersRebornToolPart trtp) {
+                TinkersRebornMaterial materialByIdentifier = trtp.getMaterial(stack);
                 if (materialByIdentifier != TinkersRebornMaterial.UNKNOWN) materials.add(materialByIdentifier);
+                if (trtp instanceof BoltCore bolt) materials.add(bolt.getHeadMaterial(stack));
             }
         }
 

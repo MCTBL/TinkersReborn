@@ -6,12 +6,12 @@ import net.minecraft.util.ResourceLocation;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.client.TinersRebornFontRender;
+import mctbl.tinkersreborn.client.TinkersRebornFontRender;
 
 public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCommon {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
-    public static TinersRebornFontRender fontRender;
+    public static TinkersRebornFontRender fontRender;
 
     public void initialize() {
         registerRender();
@@ -23,7 +23,7 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
 
         IReloadableResourceManager resourceManager = (IReloadableResourceManager) mc.getResourceManager();
 
-        fontRender = new TinersRebornFontRender(
+        fontRender = new TinkersRebornFontRender(
             mc.gameSettings,
             new ResourceLocation("textures/font/ascii.png"),
             mc.renderEngine);

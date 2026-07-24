@@ -11,7 +11,7 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 public class TraitEstablished extends AbstractTrait {
 
     public TraitEstablished() {
-        super("established", 0xffffff);
+        super("established", 0xCC6410);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

@@ -40,6 +40,7 @@ import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryControllerItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryDrainItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryItemBlock;
+import mctbl.tinkersreborn.smeltery.utils.BoltCoreCastingRecipe;
 import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
@@ -120,6 +121,17 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
         TinkersRebornRegistry.registerEntityMelting();
         this.registerAlloys();
+        this.registerBoltCoreCasting();
+    }
+
+    /**
+     * Registers the special BoltCore casting recipe.
+     * BoltCore uses an arrowShaft as the cast (providing the shaft material)
+     * and the poured fluid provides the head material.
+     * The arrowShaft is consumed in the casting process.
+     */
+    private void registerBoltCoreCasting() {
+        TinkersRebornRegistry.registerTableCasting(BoltCoreCastingRecipe.INSTANCE);
     }
 
     private void craftingTableRecipes() {

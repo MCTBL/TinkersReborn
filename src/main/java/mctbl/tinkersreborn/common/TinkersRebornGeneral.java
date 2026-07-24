@@ -17,7 +17,6 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -86,7 +85,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
     // Slime
     public static SoundType slimeStep;
-    public static Fluid blueSlimeFluid;
+    public static TinkersRebornFluid blueSlimeFluid;
     public static Block slimePool;
     public static Block slimeGel;
     public static Block slimeGrass;
@@ -94,7 +93,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static SlimeLeaves slimeLeaves;
     public static SlimeSapling slimeSapling;
 
-    public static Fluid bloodFluid;
+    public static TinkersRebornFluid bloodFluid;
 
     // Ores
     public static Block oreSlag;

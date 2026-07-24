@@ -10,7 +10,7 @@ import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 public class TraitPoisonous extends AbstractTrait {
 
     public TraitPoisonous() {
-        super("poisonous", 0xffffff);
+        super("poisonous", 0x4D4968);
     }
 
     @Override

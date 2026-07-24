@@ -12,14 +12,14 @@ import net.minecraft.util.ResourceLocation;
 
 import mctbl.tinkersreborn.util.ColorUtil;
 
-public class TinersRebornFontRender extends FontRenderer {
+public class TinkersRebornFontRender extends FontRenderer {
 
     private int state = 0;
     private int red;
     private int green;
     private int blue;
 
-    public TinersRebornFontRender(GameSettings gameSettingsIn, ResourceLocation location,
+    public TinkersRebornFontRender(GameSettings gameSettingsIn, ResourceLocation location,
         TextureManager textureManagerIn) {
         super(gameSettingsIn, location, textureManagerIn, true);
     }
@@ -34,7 +34,7 @@ public class TinersRebornFontRender extends FontRenderer {
     @Override
     public int drawStringWithShadow(String text, int x, int y, int color) {
         // TODO now shadow render have error
-        return super.drawString(text, x, y, color);
+        return super.drawString(text, x, y, color, false);
     }
 
     @Override

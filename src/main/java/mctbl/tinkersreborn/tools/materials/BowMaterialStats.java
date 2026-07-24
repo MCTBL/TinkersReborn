@@ -35,7 +35,7 @@ public class BowMaterialStats extends AbstractMaterialStats {
      * @param drawspeed
      * @param range
      */
-    public BowMaterialStats(float bonusDamage, float drawspeed, float range) {
+    public BowMaterialStats(float drawspeed, float range, float bonusDamage) {
         this.bonusDamage = bonusDamage;
         this.drawspeed = drawspeed;
         this.range = range;

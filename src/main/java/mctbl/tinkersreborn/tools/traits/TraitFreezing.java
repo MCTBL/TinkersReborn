@@ -10,7 +10,7 @@ import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 public class TraitFreezing extends AbstractTrait {
 
     public TraitFreezing() {
-        super("freezing", 0xffffff);
+        super("freezing", 0x97D7E0);
     }
 
     @Override

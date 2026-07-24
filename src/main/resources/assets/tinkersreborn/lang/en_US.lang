@@ -171,6 +171,8 @@ tinkersreborn.tooltip.nameformat=%s %s
 tinkersreborn.tooltip.pattern=Material Cost: %d
 tinkersreborn.tooltip.modifiers=Modifiers
 tinkersreborn.tooltip.holdShift=Hold §e§oShift§r§7 for more info
+tinkersreborn.tooltip.broken=Broken
+tinkersreborn.tooltip.empty=Empty
 
 tinkersreborn.tool.pickaxe=Pickaxe
 tinkersreborn.tool.shovel=Shovel
@@ -186,6 +188,11 @@ tinkersreborn.tool.longsword=Longsword
 tinkersreborn.tool.rapier=Rapier
 tinkersreborn.tool.cleaver=Cleaver
 tinkersreborn.tool.vinehammer=Vine Hammer
+tinkersreborn.tool.arrow=Arrow
+tinkersreborn.tool.bolt=Bolt
+tinkersreborn.tool.shortbow=Shortbow
+tinkersreborn.tool.longbow=Longbow
+tinkersreborn.tool.crossbow=Crossbow
 
 tinkersreborn.toolpart.ToolRod=Tool Rod
 tinkersreborn.toolpart.PickaxeHead=Pickaxe Head
@@ -218,8 +225,8 @@ tinkersreborn.toolpart.Shuriken=Shuriken
 tinkersreborn.toolpart.CrossbowLimb=Crossbow Limb
 tinkersreborn.toolpart.CrossbowBody=Crossbow Body
 tinkersreborn.toolpart.BowLimb=Bow Limb
-tinkersreborn.toolpart.Bolt=Bolt
-tinkersreborn.toolpart.Shaft=Arrow Shaft
+tinkersreborn.toolpart.BoltCore=Bolt Core
+tinkersreborn.toolpart.ArrowShaft=Arrow Shaft
 tinkersreborn.toolpart.SharpeningKit=Sharpening Kit
 tinkersreborn.toolpart.SharpeningKit.tooltip=Combine with a flint\nUpgrades your tool to the material's mining level.
 
@@ -264,6 +271,8 @@ tinkersreborn.stat.shaft.modifier.name=Modifier
 tinkersreborn.stat.shaft.modifier.desc=Each arrow needs a suiting core. It determines how well it lasts.\nThe total ammo count of the tool will be multiplied by this.
 tinkersreborn.stat.shaft.ammo.name=Bonus-Ammo
 tinkersreborn.stat.shaft.ammo.desc=How many arrows you can get out of it.\nThis much flat ammo will be added.
+
+tinkersreborn.stat.ammo.name=Ammo
 
 tinkersreborn.stat.fletching.name=Fletching
 tinkersreborn.stat.fletching.accuracy.name=Accuracy
@@ -350,6 +359,8 @@ modifier.holy.desc=§oRadiant!§r\nDeal bonus damage to undead enemies.
 modifier.holy.extra=Vs Undead: +%s
 modifier.freezing.name=Freezing
 modifier.freezing.desc=§oWinter is Coming§r\nSuccessful hits slow your target more and more.
+modifier.hovering.name=Hovering
+modifier.hovering.desc=§oFree like the wind§r\nProjectiles move slower but don't mind gravity as much.
 modifier.breakable.name=Breakable
 modifier.breakable.desc=§oThis side up!§r\nProjectiles have a 50% chance to break on impact.
 

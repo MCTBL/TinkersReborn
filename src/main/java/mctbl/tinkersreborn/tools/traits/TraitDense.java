@@ -11,7 +11,7 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 public class TraitDense extends AbstractTrait {
 
     public TraitDense() {
-        super("dense", 0xffffff);
+        super("dense", 0xCA9956);
     }
 
     @Override

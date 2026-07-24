@@ -4,7 +4,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import mctbl.tinkersreborn.library.tools.TinkersRebornEvent;
+import mctbl.tinkersreborn.library.event.TinkersRebornEvent;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 

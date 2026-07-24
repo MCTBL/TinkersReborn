@@ -20,14 +20,14 @@ public class SharpeningKit extends TinkersRebornToolPart {
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean flagIn) {
-        tooltip.addAll(getTooltips(TinkersRebornUtils.translate("item.tconstruct.sharpening_kit.tooltip")));
+        tooltip
+            .addAll(getTooltips(TinkersRebornUtils.translate("tinkersreborn.toolpart." + this.partName + ".tooltip")));
 
-        TinkersRebornMaterial material = getMaterial(stack);
-        HeadMaterialStats stats = material.getStats(MaterialStatusType.HEAD);
+        HeadMaterialStats stats = this.getMaterial(stack)
+            .getStats(MaterialStatusType.HEAD);
         if (stats != null) {
             tooltip.add(HeadMaterialStats.formatHarvestLevel(stats.harvestLevel));
         }
-
     }
 
     public static List<String> getTooltips(String text) {

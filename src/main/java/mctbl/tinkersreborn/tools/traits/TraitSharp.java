@@ -18,7 +18,7 @@ public class TraitSharp extends AbstractTrait {
     public static final String SHARP_KEY = "sharp";
 
     public TraitSharp() {
-        super("sharp", 0xffffff);
+        super(SHARP_KEY, 0xA0A0A0);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

@@ -15,7 +15,6 @@ public class TraitEnderference extends AbstractTrait {
 
     public TraitEnderference() {
         super("enderference", EnumChatFormatting.DARK_AQUA);
-
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -47,6 +46,16 @@ public class TraitEnderference extends AbstractTrait {
         if (props != null && props.isActive(identifier)) {
             event.setCanceled(true);
         }
+    }
+
+    public boolean isActivate(EntityLivingBase target) {
+        if (!target.worldObj.isRemote) {
+            TinkersEntityProperties props = TinkersEntityProperties.getProps(target);
+            if (props != null) {
+                return props.isActive(identifier);
+            }
+        }
+        return false;
     }
 
 }
