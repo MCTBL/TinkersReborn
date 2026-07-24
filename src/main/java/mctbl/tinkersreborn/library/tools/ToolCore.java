@@ -176,7 +176,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                             this.allIcons.get(i)
                                 .put(material.identifier, register.registerIcon(path));
                         }
-                        if (i == 0) {
+                        if (i == this.brokenPartIdx()) {
                             // broken
                             path += "_broken";
                             if (TextureHelper.itemTextureExists(path)) {
@@ -189,7 +189,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                 // standard
                 this.allIcons.get(i)
                     .put(null, register.registerIcon(basePath + texturePostfix));
-                if (i == 0) {
+                if (i == this.brokenPartIdx()) {
                     this.allIcons.get(this.partAmount)
                         .put(null, register.registerIcon(basePath + texturePostfix + "_broken"));
 
@@ -208,13 +208,18 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         blankSprite = register.registerIcon("tinkersreborn:blanksprite");
     }
 
+    protected int brokenPartIdx() {
+        return 0;
+    }
+
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(ItemStack stack, int renderPass) {
         List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
         if (!renderMaterials.isEmpty()) {
             if (renderPass < this.getPartAmonuntForRender()) {
-                int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.getPartAmonuntForRender()
+                int iconsIdx = (renderPass == this.brokenPartIdx() && ToolTagsHelper.isBroken(stack))
+                    ? this.getPartAmonuntForRender()
                     : renderPass;
                 String materialId = renderMaterials.get(renderPass) == null ? null
                     : renderMaterials.get(renderPass).identifier;

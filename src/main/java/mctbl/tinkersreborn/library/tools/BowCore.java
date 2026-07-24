@@ -177,7 +177,7 @@ public abstract class BowCore extends ToolCore {
     }
 
     public float getDrawbackProgress(ItemStack itemstack, EntityPlayer entityIn) {
-        if (itemstack.getItem() == BowCore.this) {
+        if (itemstack.getItem() instanceof BowCore) {
             int timePassed = itemstack.getMaxItemUseDuration() - entityIn.getItemInUseCount();
             return getDrawbackProgress(itemstack, timePassed);
         } else {
@@ -202,13 +202,6 @@ public abstract class BowCore extends ToolCore {
 
     public ItemStack findAmmo(ItemStack weapon, EntityLivingBase player) {
         return AmmoHelper.findAmmoFromInventory(getAmmoItems(), player);
-    }
-
-    public ItemStack getAmmoToRender(ItemStack weapon, EntityLivingBase player) {
-        if (ToolTagsHelper.isBroken(weapon)) {
-            return null;
-        }
-        return findAmmo(weapon, player);
     }
 
     protected abstract List<Item> getAmmoItems();

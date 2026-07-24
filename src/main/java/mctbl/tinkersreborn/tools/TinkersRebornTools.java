@@ -98,6 +98,7 @@ import mctbl.tinkersreborn.tools.items.tools.Arrow;
 import mctbl.tinkersreborn.tools.items.tools.Bolt;
 import mctbl.tinkersreborn.tools.items.tools.BroadSword;
 import mctbl.tinkersreborn.tools.items.tools.Cleaver;
+import mctbl.tinkersreborn.tools.items.tools.CrossBow;
 import mctbl.tinkersreborn.tools.items.tools.Excavator;
 import mctbl.tinkersreborn.tools.items.tools.Hammer;
 import mctbl.tinkersreborn.tools.items.tools.Hatchet;
@@ -198,6 +199,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore longBow;
     public static ToolCore arrow;
     public static ToolCore bolt;
+    public static ToolCore crossBow;
 
     // other items
     public static Item paperStack;
@@ -531,6 +533,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(bolt, bolt.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(bolt);
         TinkersRebornRegistry.registerToolForgeCrafting(bolt);
+
+        crossBow = new CrossBow();
+        GameRegistry.registerItem(crossBow, crossBow.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(crossBow);
+        TinkersRebornRegistry.registerToolForgeCrafting(crossBow);
 
         shortBow = new ShortBow();
         GameRegistry.registerItem(shortBow, shortBow.getUnlocalizedName());

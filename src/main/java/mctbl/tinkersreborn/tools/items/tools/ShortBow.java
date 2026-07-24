@@ -28,6 +28,8 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ShortBow extends BowCore implements ICustomCrosshairUser {
 
+    private List<Item> allowAmmo;
+
     public ShortBow() {
         super("ShortBow", 3);
 
@@ -81,7 +83,10 @@ public class ShortBow extends BowCore implements ICustomCrosshairUser {
 
     @Override
     protected List<Item> getAmmoItems() {
-        return Arrays.asList(TinkersRebornTools.arrow, Items.arrow);
+        if (allowAmmo == null) {
+            allowAmmo = Arrays.asList(TinkersRebornTools.arrow, Items.arrow);
+        }
+        return allowAmmo;
     }
 
     @Override

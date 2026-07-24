@@ -33,6 +33,7 @@ import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.TinkersRebornTraits;
+import mctbl.tinkersreborn.tools.entity.EntityBolt;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
@@ -82,7 +83,7 @@ public class Bolt extends AmmoCore {
                         this.allIcons.get(i)
                             .put(material.identifier, register.registerIcon(path));
                     }
-                    if (i == 0) {
+                    if (i == this.brokenPartIdx()) {
                         // broken
                         path += "_broken";
                         if (TextureHelper.itemTextureExists(path)) {
@@ -95,7 +96,7 @@ public class Bolt extends AmmoCore {
             // standard
             this.allIcons.get(i)
                 .put(null, register.registerIcon(basePath + texturePostfix));
-            if (i == 0) {
+            if (i == this.brokenPartIdx()) {
                 this.allIcons.get(3)
                     .put(null, register.registerIcon(basePath + texturePostfix + "_broken"));
 
@@ -160,7 +161,8 @@ public class Bolt extends AmmoCore {
         List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
         if (!renderMaterials.isEmpty()) {
             if (renderPass < this.getPartAmonuntForRender()) {
-                int iconsIdx = (renderPass == 0 && ToolTagsHelper.isBroken(stack)) ? this.getPartAmonuntForRender()
+                int iconsIdx = (renderPass == this.brokenPartIdx() && ToolTagsHelper.isBroken(stack))
+                    ? this.getPartAmonuntForRender()
                     : renderPass;
                 String materialId = renderMaterials.get(renderPass) == null ? null
                     : renderMaterials.get(renderPass).identifier;
@@ -253,8 +255,15 @@ public class Bolt extends AmmoCore {
     @Override
     public EntityProjectileBase getProjectile(ItemStack stack, ItemStack launcher, World world, EntityPlayer player,
         float speed, float inaccuracy, float power, boolean usedAmmo) {
-        // TODO Auto-generated method stub
-        return null;
+        inaccuracy -= (1f - 1f / ProjectileNBT.from(stack).accuracy) * speed / 2f;
+        return new EntityBolt(
+            world,
+            player,
+            speed,
+            inaccuracy,
+            power,
+            getProjectileStack(stack, world, player, usedAmmo),
+            launcher);
     }
 
     @Override

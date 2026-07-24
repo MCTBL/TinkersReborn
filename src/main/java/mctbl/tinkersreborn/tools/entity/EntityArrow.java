@@ -13,7 +13,6 @@ import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 public class EntityArrow extends EntityProjectileBase {
 
     // animation
-    public int roll = 0;
     public int rollSpeed = 80;
 
     public EntityArrow(World world) {
