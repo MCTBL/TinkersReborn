@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.FontRenderer;
@@ -859,7 +860,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return TinkersRebornRegistry.getRenderMaterial(renderMaterialName);
     }
 
-    @Nonnull
+    @Nullable
     @Override
     public ItemStack repair(ItemStack repairable, List<ItemStack> repairItems) {
         if (repairable.getItemDamage() == 0 && !ToolTagsHelper.isBroken(repairable)) {
@@ -941,8 +942,9 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         float durability = 0f;
         // try to match each material once
         for (int index = 0; index < componentsParts.size(); index++) {
-            if (componentsParts.get(index)
-                .statusType() != MaterialStatusType.HEAD) continue;
+            MaterialStatusType statusType = componentsParts.get(index)
+                .statusType();
+	    if (statusType != MaterialStatusType.HEAD && statusType != MaterialStatusType.BOW) continue;
             TinkersRebornMaterial material = materials.get(index);
 
             if (materialsMatched.contains(material)) {
