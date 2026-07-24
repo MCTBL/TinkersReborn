@@ -55,7 +55,7 @@ public class CrossBow extends BowCore implements ICustomCrosshairUser {
 
     @Override
     protected boolean animateLayer(int renderPass) {
-        return renderPass < 2;
+        return renderPass < 3;
     }
 
     @Override
