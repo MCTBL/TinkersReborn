@@ -19,6 +19,12 @@ public class ProjectileLauncherNBT extends ToolNBT {
         range = 1f;
         bonusDamage = 0f;
     }
+    
+    public ProjectileLauncherNBT(ToolNBT parent) {
+        drawSpeed = 1f;
+        range = 1f;
+        bonusDamage = 0f;
+    }
 
     public ProjectileLauncherNBT(NBTTagCompound tag) {
         super(tag);

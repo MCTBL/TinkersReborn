@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierAspect;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.library.tools.modifiers.ToolModifier;
@@ -59,21 +60,15 @@ public class ModBeheading extends ToolModifier {
 
             // remove other tag
             ToolTagsHelper.removeModifiersTag(rootCompound, CLEAVER_MODIFIER_ID);
-
             // ToolTagsHelper.setModifiersTagList(rootCompound, tagList);
         }
     }
 
     private int getBeheadingLevel(DamageSource source) {
-        // TODO getTrueSource => getSourceOfDamage?
-        // Projectile or item in hand
-        // ItemStack item = CapabilityTinkerProjectile.getTinkerProjectile(source)
-        // .map(ITinkerProjectile::getItemStack)
-        // .orElse(((EntityLivingBase)source.getSourceOfDamage()).getHeldItem(EnumHand.MAIN_HAND));
-
-        // source.isProjectile()
         ItemStack item = null;
-        if (source.getSourceOfDamage() instanceof EntityPlayer player) {
+        if(source.isProjectile() && source.getSourceOfDamage() instanceof EntityProjectileBase tinkersProjectile) {
+            item = tinkersProjectile.getEntityItem();
+        }else if (source.getSourceOfDamage() instanceof EntityPlayer player) {
             item = player.getHeldItem();
         }
 
@@ -128,7 +123,7 @@ public class ModBeheading extends ToolModifier {
         // if keepInventory is true, players do not fire the living drops event
         EntityLivingBase entity = event.entityLiving;
         if (entity.worldObj.getGameRules()
-            .getGameRuleBooleanValue("keepInventory") && entity instanceof EntityPlayerMP) {
+            .getGameRuleBooleanValue("keepInventory") && entity instanceof EntityPlayerMP player) {
             int level = getBeheadingLevel(event.source);
 
             if (shouldDropHead(level)) {
@@ -140,7 +135,7 @@ public class ModBeheading extends ToolModifier {
                         head.stackSize = random.nextInt(head.stackSize) + 1;
                     }
                     if (!TinkersRebornUtils.isStackEmpty(head)) {
-                        ((EntityPlayerMP) entity).dropPlayerItemWithRandomChoice(head.copy(), true);
+                	player.dropPlayerItemWithRandomChoice(head.copy(), true);
                         LOG.debug("Dropped random head for player: {}", head);
                     }
                 }
