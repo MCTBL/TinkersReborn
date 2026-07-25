@@ -30,10 +30,7 @@ public class ToolRender implements IItemRenderer {
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
         if (!(item.getItem() instanceof ToolCore)) return false;
         switch (type) {
-            case ENTITY:
-            case EQUIPPED:
-            case EQUIPPED_FIRST_PERSON:
-            case INVENTORY:
+            case ENTITY, EQUIPPED, EQUIPPED_FIRST_PERSON, INVENTORY:
                 return true;
             case FIRST_PERSON_MAP:
             default:
@@ -46,7 +43,9 @@ public class ToolRender implements IItemRenderer {
         return handleRenderType(item, type) & helper.ordinal() < ItemRendererHelper.EQUIPPED_BLOCK.ordinal();
     }
 
-    protected void specialAnimation(ItemRenderType type, ItemStack item) {}
+    protected void specialAnimation(ItemRenderType type, ItemStack item) {
+        // for bow etc
+    }
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
@@ -55,7 +54,6 @@ public class ToolRender implements IItemRenderer {
         Entity ent = null;
         if (data.length > 1) ent = (Entity) data[1];
 
-        // IIcon[] parts = new IIcon[toolIcons];
         List<IIcon> parts = new ArrayList<>();
         int iconParts = getIcons(item, ent, parts);
 
