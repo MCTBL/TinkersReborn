@@ -11,7 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -229,7 +228,6 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         // deal damage if we have everything
         if (item.getItem() instanceof ToolCore && this.shootingEntity instanceof EntityLivingBase) {
             EntityLivingBase attacker = (EntityLivingBase) this.shootingEntity;
-            // EntityLivingBase target = (EntityLivingBase) raytraceResult.entityHit;
 
             // find the actual itemstack in the players inventory
             ItemStack inventoryItem = AmmoHelper.getMatchingItemstackFromInventory(item, attacker, false);
@@ -280,6 +278,8 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
                     if (this.isBurning() && !(entityHit instanceof EntityEnderman)) {
                         entityHit.setFire(5);
                     }
+
+                    // TODO should we play sound for shooter when hit?
                 }
                 if (brokenStateDiffers) {
                     toggleBroken(inventoryItem);
@@ -287,8 +287,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
 
                 // remove stats from projectile
                 // apply stats from projectile
-                if (item.getItem() instanceof IProjectile) {
-                    assert projectileAttributes != null;
+                if (item.getItem() instanceof AmmoCore) {
                     attacker.getAttributeMap()
                         .removeAttributeModifiers(projectileAttributes);
                 }

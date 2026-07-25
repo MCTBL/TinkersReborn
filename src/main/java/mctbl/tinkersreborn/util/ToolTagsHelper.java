@@ -33,7 +33,10 @@ import net.minecraftforge.event.world.BlockEvent;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
+import mctbl.tinkersreborn.common.particle.Particles;
+import mctbl.tinkersreborn.common.particle.TinkersRebornParticle.Type;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.AmmoCore;
@@ -888,7 +891,7 @@ public class ToolTagsHelper {
                 if (isCritical) {
                     player.onCriticalHit(target);
                     // not sure
-                    sound = "entity.player.attack.crit";
+                    sound = Sounds.crit_hit;
                 }
 
                 // "magical" critical damage? (aka caused by modifiers)
@@ -924,17 +927,17 @@ public class ToolTagsHelper {
                 player.addExhaustion(0.3f);
 
                 if (player.getEntityWorld() instanceof WorldServer world && damageDealt > 2f) {
-                    int k = (int) (damageDealt * 0.5);
-                    for (int i = 0; i < k; i++) {
-                        world.spawnParticle(
-                            "damageIndicator",
-                            targetEntity.posX + 0.5D - random.nextDouble(),
-                            targetEntity.posY + targetEntity.height * 0.5D * random.nextDouble(),
-                            targetEntity.posZ + 0.5D - random.nextDouble(),
-                            0.2D,
-                            0.2D,
-                            0.2D);
-                    }
+                    TinkersReborn.proxy.spawnParticle(
+                        Particles.EFFECT,
+                        world,
+                        targetEntity.posX + 0.5D - random.nextDouble(),
+                        targetEntity.posY + targetEntity.height * 0.5D * random.nextDouble(),
+                        targetEntity.posZ + 0.5D - random.nextDouble(),
+                        0.2D,
+                        0.2D,
+                        0.2D,
+                        Math.min((int) (damageDealt * 0.5), 5),
+                        Type.HEART.ordinal());
                 }
 
             } else if (!isProjectile) {
@@ -945,7 +948,7 @@ public class ToolTagsHelper {
         }
 
         if (player != null && sound != null && !player.worldObj.isRemote) {
-            player.playSound(sound, 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F);
+            Sounds.playSoundForPlayer(player, sound, 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F);
         }
 
         return true;

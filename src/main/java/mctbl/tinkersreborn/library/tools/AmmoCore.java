@@ -177,7 +177,7 @@ public abstract class AmmoCore extends ToolCore {
             }
         }
 
-        float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
+        float attack = ToolTagsHelper.calcCutoffDamage(ToolTagsHelper.getActualToolAttack(stack), this.damageCutoff());
         list.add(HeadMaterialStats.formatAttack(attack));
         list.add(FletchingMaterialStats.formatAccuracy(ProjectileNBT.from(stack).accuracy));
 

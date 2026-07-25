@@ -28,5 +28,13 @@
 	"sounds": [
 		"tinkersreborn:crossbow_reload"
 	]
+   },
+   "crit": {
+	"category": "player",
+	"sounds": [
+		"tinkersreborn:crit1",
+		"tinkersreborn:crit2",
+		"tinkersreborn:crit3"
+	]
    }
 }
