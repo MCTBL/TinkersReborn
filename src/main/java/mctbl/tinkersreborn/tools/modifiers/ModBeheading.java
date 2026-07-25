@@ -66,9 +66,9 @@ public class ModBeheading extends ToolModifier {
 
     private int getBeheadingLevel(DamageSource source) {
         ItemStack item = null;
-        if(source.isProjectile() && source.getSourceOfDamage() instanceof EntityProjectileBase tinkersProjectile) {
+        if (source.isProjectile() && source.getSourceOfDamage() instanceof EntityProjectileBase tinkersProjectile) {
             item = tinkersProjectile.getEntityItem();
-        }else if (source.getSourceOfDamage() instanceof EntityPlayer player) {
+        } else if (source.getSourceOfDamage() instanceof EntityPlayer player) {
             item = player.getHeldItem();
         }
 
@@ -135,7 +135,7 @@ public class ModBeheading extends ToolModifier {
                         head.stackSize = random.nextInt(head.stackSize) + 1;
                     }
                     if (!TinkersRebornUtils.isStackEmpty(head)) {
-                	player.dropPlayerItemWithRandomChoice(head.copy(), true);
+                        player.dropPlayerItemWithRandomChoice(head.copy(), true);
                         LOG.debug("Dropped random head for player: {}", head);
                     }
                 }

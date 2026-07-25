@@ -21,6 +21,7 @@ import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.BowCore;
 import mctbl.tinkersreborn.library.tools.ProjectileLauncherNBT;
+import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
@@ -115,11 +116,18 @@ public class CrossBow extends BowCore implements ICustomCrosshairUser {
 
     @Override
     public IIcon getIcon(ItemStack stack, int renderPass) {
-        if (isLoaded(stack) && this.animateLayer(renderPass) && !ToolTagsHelper.isBroken(stack)) {
-            List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
-            String materialId = renderMaterials.get(renderPass) == null ? null
-                : renderMaterials.get(renderPass).identifier;
-            return this.getCorrectAnimationIcon(this.allIcons.get(renderPass), materialId, 1.0F);
+        if (isLoaded(stack) && !ToolTagsHelper.isBroken(stack)) {
+            if (this.animateLayer(renderPass)) {
+                List<TinkersRebornMaterial> renderMaterials = ToolTagsHelper.getToolRenderMaterialsList(stack);
+                String materialId = renderMaterials.get(renderPass) == null ? null
+                    : renderMaterials.get(renderPass).identifier;
+                return this.getCorrectAnimationIcon(this.allIcons.get(renderPass), materialId, 1.0F);
+            } else if (renderPass > this.getPartAmonuntForRender()) {
+                // Effects
+                List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(stack);
+                ModifierNBT tag = ModifierNBT.readTag(modifiersList.get(renderPass - this.getPartAmonuntForRender()));
+                return this.effectIcons.getOrDefault(tag.identifier + "_3", this.effectIcons.get(tag.identifier));
+            }
         }
         return super.getIcon(stack, renderPass);
     }
