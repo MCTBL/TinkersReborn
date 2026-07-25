@@ -637,10 +637,9 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
-        if (!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool) {
+        if (!ToolTagsHelper.isBroken(itemstack) && this instanceof IAoeTool iAoeTool) {
             BlockPos blockPos = BlockPos.of(x, y, z);
-            for (BlockPos extraPos : ((IAoeTool) this)
-                .getAOEBlocks(itemstack, player.getEntityWorld(), player, blockPos)) {
+            for (BlockPos extraPos : iAoeTool.getAOEBlocks(itemstack, player.getEntityWorld(), player, blockPos)) {
                 this.breakExtraBlock(itemstack, player.worldObj, player, extraPos, blockPos);
             }
         }

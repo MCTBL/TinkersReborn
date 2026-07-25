@@ -91,12 +91,6 @@ public class Vinehammer extends AoeHarvestTool {
         return super.getAOEBlocks(stack, world, player, origin);
     }
 
-    @Override
-    public boolean onBlockStartBreak(ItemStack itemstack, int x, int y, int z, EntityPlayer player) {
-        // TODO Auto-generated method stub
-        return super.onBlockStartBreak(itemstack, x, y, z, player);
-    }
-
     private boolean isOreBlock(World world, BlockPos pos) {
         if (world == null) return false;
 

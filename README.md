@@ -472,3 +472,63 @@ flowchart TB
   (base damage * 1.3) + 3
 
   (ModBeheading have some issue wait to fix)
+
+### Vine Hammer
+
+  mining speed * 0.4
+
+  damage * 1.2
+
+  base damage + 3
+
+  Durability * 2.5
+
+  can mine connected ores (default up limit is 25 each time)
+
+### Arrow
+
+  base damage + 2
+
+### Short Bow
+
+  draw time 12
+
+  slow down 50%
+
+  damage = (arrow damage + 1) * 0.8 + bonusDamage
+
+  base accuracy 100%
+
+### Long Bow
+
+  draw time 30
+
+  slow down like vanilla bow
+
+  arrow speed 5.5x
+
+  damage = (arrow damage + 2.5) * 1.25 + bonusDamage
+
+  zoom in 60%
+
+  base accuracy 120%
+
+  durability * 1.4
+
+### Bolt
+
+  durability * 0.8
+
+  half damage will by pass armor
+
+### Cross Bow
+
+  draw time 45
+
+  slow down to 19.5%
+
+  arrow speed 7x
+  
+  bonusDamage * 1.5
+
+  damage = (arrow damage + 3) * 1.3 + bonusDamage

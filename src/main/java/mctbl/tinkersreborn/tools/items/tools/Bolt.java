@@ -67,7 +67,7 @@ public class Bolt extends AmmoCore {
     public void registerIcons(IIconRegister register) {
         String basePath = "tinkersreborn:tools/" + this.toolTypeName + "/";
         // exclude effect for now
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < this.getPartAmonuntForRender(); i++) {
             String texturePostfix = boltPart.get(i)
                 .texturePostfix();
             MaterialStatusType allowType = boltPart.get(i)
@@ -97,7 +97,7 @@ public class Bolt extends AmmoCore {
             this.allIcons.get(i)
                 .put(null, register.registerIcon(basePath + texturePostfix));
             if (i == this.brokenPartIdx()) {
-                this.allIcons.get(3)
+                this.allIcons.get(this.getPartAmonuntForRender())
                     .put(null, register.registerIcon(basePath + texturePostfix + "_broken"));
 
             }

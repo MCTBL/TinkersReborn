@@ -46,6 +46,7 @@ import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.Category;
+import mctbl.tinkersreborn.tools.network.ToolBreakAnimationPacket;
 
 public class ToolTagsHelper {
 
@@ -551,8 +552,8 @@ public class ToolTagsHelper {
 
     public static float getActualMiningSpeed(ItemStack stack) {
         float speed = getMiningSpeedStat(stack);
-        if (!TinkersRebornUtils.isStackEmpty(stack) && stack.getItem() instanceof ToolCore) {
-            speed *= ((ToolCore) stack.getItem()).miningSpeedModifier();
+        if (!TinkersRebornUtils.isStackEmpty(stack) && stack.getItem() instanceof ToolCore tool) {
+            speed *= tool.miningSpeedModifier();
         }
         return speed;
     }
@@ -564,15 +565,7 @@ public class ToolTagsHelper {
         tag.setBoolean(ToolTags.BROKEN, true);
 
         if (entity instanceof EntityPlayerMP player) {
-            // this
-            player.playSound("entity.item.break", 0.8F, 0.8F + entity.worldObj.rand.nextFloat() * 0.4F);
-
-            // or this
-            // player.worldObj.playSound(player.posX, player.posY, player.posZ,
-            // "entity.item.break", 0.8F,
-            // 0.8F + entity.worldObj.rand.nextFloat() * 0.4F, false);
-
-            player.renderBrokenItemStack(stack);
+            TinkerNetwork.sendTo(new ToolBreakAnimationPacket(stack), player);
         }
     }
 

@@ -95,6 +95,11 @@ public class LongBow extends ShortBow {
     }
 
     @Override
+    public float getRepairModifierForPart(int index) {
+        return DURABILITY_MODIFIER;
+    }
+
+    @Override
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
         if (this.toolBuildGuiInfo == null) {
             this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(32 + 6, 41 + 6) // center bowstring
