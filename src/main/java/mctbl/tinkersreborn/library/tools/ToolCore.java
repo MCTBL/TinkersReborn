@@ -944,7 +944,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         for (int index = 0; index < componentsParts.size(); index++) {
             MaterialStatusType statusType = componentsParts.get(index)
                 .statusType();
-	    if (statusType != MaterialStatusType.HEAD && statusType != MaterialStatusType.BOW) continue;
+            if (statusType != MaterialStatusType.HEAD && statusType != MaterialStatusType.BOW) continue;
             TinkersRebornMaterial material = materials.get(index);
 
             if (materialsMatched.contains(material)) {
