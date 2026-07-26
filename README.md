@@ -1,6 +1,7 @@
 # Tinkers Reborn
 
-    Make Tinker Great again
+    Make Tinkers Great again
+**Still WIP!** have many issues
 
 ## NBT
 
