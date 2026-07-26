@@ -75,8 +75,9 @@ no more **Stencil Table**, good
 
 ![part builder with cast](imgs/partbuilderwithcast.png)
 
-use pattern can craft every part but will cost patter
-with cast can only craft one part but will not cost the cast
+use pattern can craft every part but will consume pattern
+
+use cast can only craft specified parts and will not consume the cast
 
 ![tool station](imgs/toolstation.png)
 
