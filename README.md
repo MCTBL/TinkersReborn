@@ -2,279 +2,6 @@
 
     Make Tinker Great again
 
-```mermaid
-flowchart TB
-  subgraph Interface
-    ToolCore
-    WeaponCore
-    IToolPart
-  end
-
-  subgraph MultiBlock
-    Smeltery
-    LargeFurnace
-  end
-
-  subgraph Item
-    subgraph ToolPart
-      Shard
-      ToolRod
-      PickaxeHead
-      ShovelHead
-      AxeHead
-      SwordBlade
-      WideGuard
-      HandGuard
-      CrossBar
-      ToolBinding
-      Pan
-      WideBoard
-      KnifeBlade
-      ChiselHead
-      ToughRod
-      ToughBinding
-      LargePlate
-      BroadaxeHead
-      ScytheHead
-      ExcavatorHead
-      LargeBlade
-      HammerHead
-      FullGuard
-      BowSting
-      Fletching
-      ArrowHead
-      Shaft
-      ShurikenPart
-      CrossBowLimb
-      CrossBowBody
-      BowLimb
-      BoltCore
-    end
-    
-    subgraph Tool
-      Pickaxe
-      Hatchet
-      Shovel
-      Mattock
-      Chisel
-      LumberAxe
-      Excavator
-      Hammer
-
-      subgraph Weapon
-        BroadSword
-        LongSword
-        Rapier
-        FryingPan
-        BattleSign
-        Dagger
-        Scythe
-        Cleaver
-        BattleAxe
-        Shuriken
-        ThrowingKnife
-        Javelin
-        ShortBow
-        LongBow
-        CrossBow
-        Cutlass
-        Arrow
-        Bolt
-      end
-
-    end
-  end
-
-  subgraph Block
-    subgraph GeneralBlock
-      SlimeGrass
-      SlimeDirt
-      SlimeSoil
-      SlimyMud
-      Grout
-      GraveyardSoil
-      ConsecratedSoil
-      SearedBricks
-    end
-
-    subgraph WorkingBlock
-      ToolStation
-      ToolForge
-      PartBuilder
-      PatternChest
-      PartChest
-      StencilTable
-      CraftingStation
-      FurnaceController
-      SmelteryController
-      SmelteryDrain
-      SearedTank
-      SearedGlass
-      SearedWindow
-      CastingTable
-      SearedFaucet
-      CastingBasin
-      CastingChannel
-    end
-
-  end
-
-  subgraph WorldGen
-    Village
-    SlimeIsland
-    Ore
-  end
-
-  
-  Pickaxe --> ToolCore
-  Pickaxe --> PickaxeHead
-  Pickaxe --> ToolBinding
-  Pickaxe --> ToolRod
-
-  Hatchet --> ToolCore
-  Hatchet --> AxeHead
-  Hatchet --> ToolRod
-  
-  Shovel --> ToolCore
-  Shovel --> ShovelHead
-  Shovel --> ToolRod
-
-  Mattock --> ToolCore
-  Mattock --> ShovelHead
-  Mattock --> AxeHead
-  Mattock --> ToolRod
-
-  Chisel --> ToolCore
-  Chisel --> ChiselHead
-  Chisel --> ToolRod
-
-  LumberAxe --> ToolCore
-  LumberAxe --> BroadaxeHead
-  LumberAxe --> LargePlate
-  LumberAxe --> ToughRod
-  LumberAxe --> ToughBinding
-
-  Excavator --> ToolCore
-  Excavator --> ExcavatorHead
-  Excavator --> LargePlate
-  Excavator --> ToughRod
-  Excavator --> ToughBinding
-
-  Hammer --> ToolCore
-  Hammer --> HammerHead
-  Hammer --> LargePlate
-  Hammer --> ToughRod
-  Hammer --> ToughBinding
-
-  Scythe --> WeaponCore
-  Scythe --> ScytheHead
-  Scythe --> LargePlate
-  Scythe --> ToughRod
-  Scythe --> ToughBinding
-
-  WeaponCore --> ToolCore
-
-  BroadSword --> WeaponCore
-  BroadSword --> SwordBlade
-  BroadSword --> WideGuard
-  BroadSword --> ToolRod
-
-  LongSword --> WeaponCore
-  LongSword --> SwordBlade
-  LongSword --> HandGuard
-  LongSword --> ToolRod
-
-  Rapier --> WeaponCore
-  Rapier --> SwordBlade
-  Rapier --> CrossBar
-  Rapier --> ToolRod
-
-  FryingPan --> WeaponCore
-  FryingPan --> Pan
-  FryingPan --> ToolRod
-
-  BattleSign --> WeaponCore
-  BattleSign --> WideBoard
-  BattleSign --> ToolRod
-
-  Dagger --> WeaponCore
-  Dagger --> KnifeBlade
-  Dagger --> CrossBar
-  Dagger --> ToolRod
-
-  Cleaver --> WeaponCore
-  Cleaver --> LargeBlade
-  Cleaver --> LargePlate
-  Cleaver --> ToughRod
-
-  BattleAxe --> WeaponCore
-  BattleAxe --> BroadaxeHead
-  BattleAxe --> ToughRod
-  BattleAxe --> ToughBinding
-
-  Shuriken --> WeaponCore
-  Shuriken --> ShurikenPart
-
-  ThrowingKnife --> WeaponCore
-  ThrowingKnife --> KnifeBlade
-  ThrowingKnife --> ToolRod
-
-  Javelin --> WeaponCore
-  Javelin --> ArrowHead
-  Javelin --> ToughRod
-
-  ShortBow --> WeaponCore
-  ShortBow --> BowLimb
-  ShortBow --> BowSting
-
-  LongBow --> WeaponCore
-  LongBow --> BowLimb
-  LongBow --> BowSting
-  LongBow --> LargePlate
-
-  CrossBow --> WeaponCore
-  CrossBow --> CrossBowLimb
-  CrossBow --> CrossBowBody
-  CrossBow --> BowSting
-  CrossBow --> ToughBinding
-
-  Cutlass --> WeaponCore
-  Cutlass --> SwordBlade
-  Cutlass --> FullGuard
-  Cutlass --> ToolRod
-
-  Arrow --> WeaponCore
-  Arrow --> ArrowHead
-  Arrow --> Shaft
-  Arrow --> Fletching
-
-  Bolt --> WeaponCore
-  Bolt --> BoltCore
-  Bolt --> Fletching
-
-  SmelteryController --> Smeltery
-  SmelteryDrain --> Smeltery
-  SearedTank --> Smeltery
-  SearedGlass --> Smeltery
-  SearedWindow --> Smeltery
-  CastingTable --> Smeltery
-  SearedFaucet --> Smeltery
-  CastingBasin --> Smeltery
-  CastingChannel --> Smeltery
-  SearedBricks --> Smeltery
-
-  FurnaceController --> LargeFurnace
-  SearedTank --> LargeFurnace
-
-  Smeltery --> Village
-
-  SlimeGrass --> SlimeIsland
-  SlimeDirt --> SlimeIsland
-  SlimeSoil --> SlimeIsland
-  SlimyMud --> SlimeIsland
-
-```
-
 ## NBT
 
 ```json
@@ -338,14 +65,34 @@ flowchart TB
   "Unbreakable":1,
   "RepairCount":10
 }
-
 ```
 
-## TODO
+## Some features
 
-- [ ] furnace
-- [ ] smeltery
-- [ ] harvest level function
+![part builder](imgs/partbuilder.png)
+
+no more **Stencil Table**, good
+
+![part builder with cast](imgs/partbuilderwithcast.png)
+
+use pattern can craft every part but will cost patter
+with cast can only craft one part but will not cost the cast
+
+![tool station](imgs/toolstation.png)
+
+looks like TiC2, I like it
+
+![tool forge](imgs/toolforge.png)
+
+![tool forge](imgs/toolforge2.png)
+
+![render in world](imgs/renderinworld.png)
+
+these blocks will render the item stack inside it's container
+
+![render in world](imgs/vineminer.png)
+
+colorful tooltips and some new tools from higher version
 
 ## TOOL and WEAPON
 
