@@ -28,12 +28,12 @@ import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 
-public class Vinehammer extends AoeHarvestTool {
+public class Veinhammer extends AoeHarvestTool {
 
     public static final float DURABILITY_MODIFIER = 3f;
 
-    public Vinehammer() {
-        super("Vinehammer", 4);
+    public Veinhammer() {
+        super("Veinhammer", 4);
 
         // set the toolclass, actual harvestlevel is done by the overridden callback
         this.setHarvestLevel("pickaxe", 0);

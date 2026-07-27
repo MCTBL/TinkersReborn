@@ -67,6 +67,8 @@ public class TinkersRebornConfig {
 
         Configuration config = new Configuration(new File(location + "/TinkersReborn.cfg"));
 
+        config.load();
+
         disableAllRecipes = config
             .get(
                 "General",
@@ -181,11 +183,13 @@ public class TinkersRebornConfig {
         smelteryDrainEachTick = config.get("Smeltery", "smelteryDrainEachTick", 6)
             .getInt();
 
-        vineHammerMaxOreMine = config.get("Tools", "Vine Hammer can mine ores each time", 25)
+        vineHammerMaxOreMine = config.get("Tools", "Vein Hammer can mine ores each time", 25)
             .getInt();
         // does this really need?
-        vineHammerMineEachTick = config.get("Tools", "Vine Hammer each tick can mine howmany ore block", 25)
+        vineHammerMineEachTick = config.get("Tools", "Vein Hammer each tick can mine howmany ore block", 25)
             .getInt();
+
+        config.save();
     }
 
 }

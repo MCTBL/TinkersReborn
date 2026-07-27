@@ -113,7 +113,7 @@ import mctbl.tinkersreborn.tools.items.tools.Rapier;
 import mctbl.tinkersreborn.tools.items.tools.Scythe;
 import mctbl.tinkersreborn.tools.items.tools.ShortBow;
 import mctbl.tinkersreborn.tools.items.tools.Shovel;
-import mctbl.tinkersreborn.tools.items.tools.Vinehammer;
+import mctbl.tinkersreborn.tools.items.tools.Veinhammer;
 import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
@@ -190,7 +190,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore lumberAxe;
     public static ToolCore scythe;
     public static ToolCore cleaver;
-    public static ToolCore vineHammer;
+    public static ToolCore veinHammer;
 
     public static ToolCore broadSword;
     public static ToolCore longSword;
@@ -520,10 +520,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         TinkersRebornRegistry.registerTool(cleaver);
         TinkersRebornRegistry.registerToolForgeCrafting(cleaver);
 
-        vineHammer = new Vinehammer();
-        GameRegistry.registerItem(vineHammer, vineHammer.getUnlocalizedName());
-        TinkersRebornRegistry.registerTool(vineHammer);
-        TinkersRebornRegistry.registerToolForgeCrafting(vineHammer);
+        veinHammer = new Veinhammer();
+        GameRegistry.registerItem(veinHammer, veinHammer.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(veinHammer);
+        TinkersRebornRegistry.registerToolForgeCrafting(veinHammer);
 
         arrow = new Arrow();
         GameRegistry.registerItem(arrow, arrow.getUnlocalizedName());
