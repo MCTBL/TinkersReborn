@@ -53,6 +53,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.SidedProxy;
@@ -676,6 +677,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         }
         TinkersRebornRegistry.getMaterialIntegrations()
             .forEach(MaterialIntegration::integrate);
+
+        this.registerCraftingRecipes();
     }
 
     /**
@@ -1101,6 +1104,42 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         OreDictionary.registerOre("slimeball", new ItemStack(glueBall));
 
         OreDictionary.registerOre("boneWithered", new ItemStack(necroticBone));
+    }
+
+    private void registerCraftingRecipes() {
+        // CraftingManager instance = CraftingManager.getInstance();
+        ItemStack paper = new ItemStack(Items.paper);
+        ItemStack blank_pattern = Pattern.newStackWithIdentifier("pattern_blank");
+        ItemStack chest = new ItemStack(Blocks.chest);
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(blank_pattern, "Ss", "sS", 's', "plankWood", 'S', "stickWood"));
+
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                new ItemStack(castChest),
+                " p ",
+                "scs",
+                "   ",
+                'p',
+                blank_pattern,
+                'c',
+                chest,
+                's',
+                "stickWood"));
+        TinkersRebornRegistry.getAllToolParts()
+            .forEach(
+                p -> GameRegistry.addRecipe(
+                    new ShapedOreRecipe(
+                        new ItemStack(partChest),
+                        " p ",
+                        "scs",
+                        "   ",
+                        'p',
+                        p,
+                        'c',
+                        chest,
+                        's',
+                        "stickWood")));
     }
 
 }

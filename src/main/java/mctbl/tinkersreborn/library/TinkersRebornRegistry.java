@@ -183,6 +183,10 @@ public class TinkersRebornRegistry {
         return toolPartNameMap.getOrDefault(name, null);
     }
 
+    public static Collection<TinkersRebornToolPart> getAllToolParts() {
+        return toolPartNameMap.values();
+    }
+
     /**
      * Adds a tool to the Crafting UI of both the Tool Station as well as the Tool
      * Forge

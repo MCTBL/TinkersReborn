@@ -311,7 +311,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     /** Returns info about the Tool. Displayed in the tool stations etc. */
     public String getLocalizedDescription() {
-        return translate(this.getUnlocalizedName() + ".desc");
+        return translate(this.getUnlocalizedToolName() + ".desc");
     }
 
     @Override
