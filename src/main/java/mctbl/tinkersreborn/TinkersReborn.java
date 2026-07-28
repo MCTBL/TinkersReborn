@@ -8,17 +8,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.network.AbstractPacketThreadsafe;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.tools.leveling.CommandLevelUpTool;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
@@ -49,7 +52,7 @@ public class TinkersReborn {
         l.add(new TinkersRebornSmeltery());
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         TinkerNetwork.instance.setUp();
         TinkersRebornConfig.setupConfig(event.getModConfigurationDirectory());
@@ -60,15 +63,20 @@ public class TinkersReborn {
         l.forEach(m -> m.preInit(event));
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void init(FMLInitializationEvent event) {
 
         l.forEach(m -> m.init(event));
     }
 
-    @Mod.EventHandler
+    @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
 
         l.forEach(m -> m.postInit(event));
+    }
+
+    @EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        if (TinkersRebornConfig.toolLevelingEnable) event.registerServerCommand(new CommandLevelUpTool());
     }
 }

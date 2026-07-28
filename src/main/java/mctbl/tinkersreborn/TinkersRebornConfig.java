@@ -218,7 +218,7 @@ public class TinkersRebornConfig {
                 true,
                 "Can your skill with tools 'level up' as you use them?")
             .getBoolean();
-        maxToolLevel = config.get("ToolLeveling", "maxToolLevel", 6)
+        maxToolLevel = config.get("ToolLeveling", "maxToolLevel", 6, "", 1, 99)
             .getInt();
         pickaxeBoostRequired = config.get(
             "ToolLeveling",

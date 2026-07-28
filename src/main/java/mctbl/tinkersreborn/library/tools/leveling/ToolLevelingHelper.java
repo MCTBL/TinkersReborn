@@ -307,7 +307,12 @@ public class ToolLevelingHelper {
         World world = player.worldObj;
 
         // *ding* levelup!
-        int level = getLevel(tags) + 1;
+        int level = getLevel(tags);
+        if (level >= TinkersRebornConfig.maxToolLevel) {
+            return;
+        }
+
+        level++;
 
         // tell the player how awesome he is
         if (!world.isRemote) {
