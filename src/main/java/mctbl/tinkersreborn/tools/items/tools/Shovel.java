@@ -1,10 +1,6 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.tools.HarvestTool;
@@ -12,9 +8,6 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 
 public class Shovel extends HarvestTool {
-
-    public final Set<Material> shovelEffectiveMaterials = new HashSet<>();
-    public final Set<Block> shovelEffectiveBlocks = new HashSet<>();
 
     public Shovel() {
         super("Shovel", 3);

@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -20,11 +21,14 @@ import net.minecraftforge.event.world.BlockEvent;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.entity.TinkersEntityProperties;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.tools.IAoeTool;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.tools.traits.TraitSpiky;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -35,8 +39,9 @@ public class TinkersRebornToolsEventsHandler {
 
     @SubscribeEvent
     public void tinkersToolTooltipEvent(ItemTooltipEvent e) {
-        // use this to prevent vailnila durability display
-        if (e.itemStack.getItemDamage() != 0 && e.itemStack.getItem() instanceof ToolCore) {
+        if (e.itemStack.getItem() instanceof ToolCore && e.itemStack.getItemDamage() != 0) {
+            // use this to prevent vailnila durability display
+
             for (int idx = e.toolTip.size() - 1; idx >= 0; idx--) {
                 if (e.toolTip.get(idx)
                     .startsWith("Durability: ")) {
@@ -44,6 +49,7 @@ public class TinkersRebornToolsEventsHandler {
                     break;
                 }
             }
+
         }
     }
 
@@ -99,47 +105,37 @@ public class TinkersRebornToolsEventsHandler {
 
     /**
      * Handles the onBlock or the onPlayerHurt trait callback. Note that only one of the two is called!
+     * 
+     * And will calc tool leveling logic
      */
-    // @SubscribeEvent
-    // public void playerBlockOrHurtEvent(LivingHurtEvent event) {
-    // boolean isPlayerGettingDamaged = event.getEntityLiving() instanceof EntityPlayer;
-    // boolean isClient = event.getEntityLiving().getEntityWorld().isRemote;
-    // boolean isReflectedDamage = event.getSource() instanceof EntityDamageSource && ((EntityDamageSource)
-    // event.getSource()).getIsThornsDamage();
-    //
-    // if(!isPlayerGettingDamaged || isClient || isReflectedDamage) {
-    // return;
-    // }
-    // final EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-    // Entity attacker = event.getSource().getTrueSource();
-    //
-    // List<ItemStack> heldTools = new ArrayList<>();
-    // for(ItemStack tool : event.getEntity().getHeldEquipment()) {
-    // if(isTool(tool) && !ToolHelper.isBroken(tool)) {
-    // heldTools.add(tool);
-    // }
-    // }
-    //
-    // // first handle block
-    // if(player.isActiveItemStackBlocking()) {
-    // // we allow block traits to affect both main and offhand
-    // for(ItemStack tool : heldTools) {
-    // if(!event.isCanceled()) {
-    // TinkerUtil.getTraitsOrdered(tool).forEach(trait -> trait.onBlock(tool, player, event));
-    // }
-    // }
-    // }
-    // // else handle living hurt
-    // else if(attacker instanceof EntityLivingBase && !attacker.isDead) {
-    // // we allow block traits to affect both main and offhand
-    // for(ItemStack tool : heldTools) {
-    // if(!event.isCanceled()) {
-    // TinkerUtil.getTraitsOrdered(tool).forEach(trait -> trait.onPlayerHurt(tool, player, (EntityLivingBase) attacker,
-    // event));
-    // }
-    // }
-    // }
-    // }
+    @SubscribeEvent
+    public void playerBlockOrHurtEvent(LivingHurtEvent event) {
+        if (TinkersRebornConfig.toolLevelingEnable) {
+            ToolLevelingHelper.onHurt(event);
+        }
+
+        boolean isPlayerGettingDamaged = event.entityLiving instanceof EntityPlayer;
+        boolean isClient = event.entityLiving.worldObj.isRemote;
+        boolean isReflectedDamage = TraitSpiky.isThornsDamage(event.source);
+
+        if (!isPlayerGettingDamaged || isClient || isReflectedDamage) {
+            return;
+        }
+        final EntityPlayer player = (EntityPlayer) event.entityLiving;
+        Entity attacker = event.source.getSourceOfDamage();
+
+        ItemStack tool = player.getItemInUse();
+        if (isTool(tool) && !ToolTagsHelper.isBroken(tool)) {
+            if (player.isBlocking() && !event.isCanceled()) {
+                ToolTagsHelper.getTraitsOrdered(tool)
+                    .forEach(trait -> trait.onBlock(tool, player, event));
+            } else if (attacker instanceof EntityLivingBase attackerLiving && !attacker.isDead && !event.isCanceled()) {
+                // else handle living hurt
+                ToolTagsHelper.getTraitsOrdered(tool)
+                    .forEach(trait -> trait.onPlayerHurt(tool, player, attackerLiving, event));
+            }
+        }
+    }
 
     @SubscribeEvent
     public void onRepair(TinkerToolEvent.OnRepair event) {

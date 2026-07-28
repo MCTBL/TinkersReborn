@@ -8,14 +8,12 @@ import java.util.Queue;
 import java.util.Set;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockOre;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.oredict.OreDictionary;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
@@ -27,6 +25,7 @@ import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class Veinhammer extends AoeHarvestTool {
 
@@ -85,35 +84,10 @@ public class Veinhammer extends AoeHarvestTool {
 
     @Override
     public List<BlockPos> getAOEBlocks(ItemStack stack, World world, EntityPlayer player, BlockPos origin) {
-        if (this.isOreBlock(world, origin)) {
+        if (TinkersRebornUtils.isOreBlock(world, origin)) {
             return this.calcOreBlock(world, origin);
         }
         return super.getAOEBlocks(stack, world, player, origin);
-    }
-
-    private boolean isOreBlock(World world, BlockPos pos) {
-        if (world == null) return false;
-
-        Block block = world.getBlock(pos.x, pos.y, pos.z);
-        int meta = world.getBlockMetadata(pos.x, pos.y, pos.z);
-
-        if (block == null) return false;
-
-        ItemStack stack = new ItemStack(block, 1, meta);
-        if (stack.getItem() != null) {
-            for (int id : OreDictionary.getOreIDs(stack)) {
-                String name = OreDictionary.getOreName(id);
-                if (name.startsWith("ore")) {
-                    return true;
-                }
-            }
-        }
-
-        if (block instanceof BlockOre) return true;
-
-        String tool = block.getHarvestTool(meta);
-        int level = block.getHarvestLevel(meta);
-        return "pickaxe".equals(tool) && level >= 2;
     }
 
     private List<BlockPos> calcOreBlock(World world, BlockPos pos) {
@@ -140,7 +114,6 @@ public class Veinhammer extends AoeHarvestTool {
                 }
             }
             visited.add(nextBlockPos);
-
         }
 
         // remove origin pos

@@ -54,6 +54,8 @@ import mctbl.tinkersreborn.library.event.TinkersRebornEvent;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
+import mctbl.tinkersreborn.library.tools.leveling.LevelingTooltips;
+import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
@@ -62,6 +64,8 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
+import mctbl.tinkersreborn.tools.items.tools.Hammer;
+import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
 import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
@@ -448,7 +452,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     public boolean checkRecipeMatch(List<ItemStack> parts) {
         if (this.componentsParts.size() != parts.size()) return false;
         List<Item> inputToolPartList = parts.stream()
-            .map(stack -> stack.getItem())
+            .map(ItemStack::getItem)
             .collect(Collectors.toList());
         List<Item> toolPartList = this.componentsParts.stream()
             .map(record -> record.toolPart())
@@ -551,6 +555,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         // add traits
         addMaterialTraits(basetag, materials);
 
+        if (TinkersRebornConfig.toolLevelingEnable) {
+            ToolLevelingHelper.getLevelingTags(basetag, this);
+        }
+
         TinkersRebornEvent.OnItemBuilding.fireEvent(toolTag, materials, this);
 
         return basetag;
@@ -558,8 +566,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     public NBTTagList buildCategoryList() {
         NBTTagList list = new NBTTagList();
-        getCategory().stream()
-            .forEach(c -> list.appendTag(new NBTTagString(c.name)));
+        getCategory().forEach(c -> list.appendTag(new NBTTagString(c.name)));
         return list;
     }
 
@@ -690,9 +697,18 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     public void afterBlockBreak(ItemStack stack, World world, Block block, int x, int y, int z, EntityLivingBase player,
         int damage, boolean wasEffective) {
+        if (world.isRemote) return;
+        BlockPos blockPos = BlockPos.of(x, y, z);
         ToolTagsHelper.getTraitsOrdered(stack)
-            .forEach(trait -> trait.afterBlockBreak(stack, world, block, BlockPos.of(x, y, z), player, wasEffective));
+            .forEach(trait -> trait.afterBlockBreak(stack, world, block, blockPos, player, wasEffective));
         ToolTagsHelper.damageTool(stack, damage, player);
+
+        if (TinkersRebornConfig.toolLevelingEnable && wasEffective
+            && (this instanceof Hammer || this instanceof Pickaxe)) {
+            boolean blockIsOre = TinkersRebornUtils.isOreBlock(world, blockPos);
+            // bonus xp for mining ores!
+            ToolLevelingHelper.addXP(stack, (EntityPlayer) player, blockIsOre ? 2 : 1);
+        }
     }
 
     /**
@@ -730,6 +746,23 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
         list.add("");
         this.getTooltipDetailed(stack, player, list);
+
+        if (TinkersRebornConfig.toolLevelingEnable) {
+            NBTTagCompound toolLevelingNBTSafe = ToolTagsHelper.getToolLevelingNBTSafe(stack);
+            if (this instanceof Hammer || this instanceof Pickaxe) {
+                if (ToolLevelingHelper.canBoostMiningLevel(stack)) {
+                    list.add(LevelingTooltips.getBoostXpToolTip(stack, null));
+                } else if (ToolLevelingHelper.isBoosted(toolLevelingNBTSafe)) {
+                    list.add(LevelingTooltips.getBoostedTooltip());
+                }
+
+            }
+
+            list.add(LevelingTooltips.getLevelTooltip(ToolLevelingHelper.getLevel(toolLevelingNBTSafe)));
+            if (!ToolLevelingHelper.isMaxLevel(toolLevelingNBTSafe)) {
+                list.add(LevelingTooltips.getXpToolTip(stack, null));
+            }
+        }
 
         if (!shift) {
             list.add(TinkersStr.holdShift.toString());

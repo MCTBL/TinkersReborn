@@ -12,6 +12,7 @@ public class TinkersRebornConfig {
 
     public static boolean disableAllRecipes;
     public static String[] miningLevels;
+    public static int[] vanillaLevelMapping;
     public static String fluidUnit;
 
     public static int naturalSlimeSpawn;
@@ -57,6 +58,20 @@ public class TinkersRebornConfig {
     public static int vineHammerMaxOreMine;
     public static int vineHammerMineEachTick;
 
+    // leveling
+    public static boolean toolLevelingEnable;
+    public static int maxToolLevel;
+    public static boolean pickaxeBoostRequired;
+    public static boolean allowFakePlayerLeveling;
+    public static int xpRequiredToolsPercentage;
+    public static int xpRequiredWeaponsPercentage;
+    public static float xpPerLevelMultiplier;
+    public static float xpPerBoostLevelMultiplier;
+    public static int levelingPickaxeBoostXpPercentage;
+    public static int[] toolModifiersAtLevels;
+
+    public static boolean detailedXpTooltip;
+
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
@@ -84,6 +99,13 @@ public class TinkersRebornConfig {
                     "§9Cobalt", "§5Manyullyn" },
                 "Mining levels")
             .getStringList();
+        vanillaLevelMapping = config
+            .get(
+                "General",
+                "Vanilla Harvest Level Mapping",
+                new int[] { 0, 1, 1, 3 },
+                "Maps vanilla harvest levels (0=wood,1=stone,2=iron,3=diamond) to indices in the Mining Levels list")
+            .getIntList();
         fluidUnit = config.get("General", "Fluid unit", "mB", "Only for display")
             .getString();
 
@@ -188,6 +210,78 @@ public class TinkersRebornConfig {
         // does this really need?
         vineHammerMineEachTick = config.get("Tools", "Vein Hammer each tick can mine howmany ore block", 25)
             .getInt();
+
+        toolLevelingEnable = config
+            .get(
+                "ToolLeveling",
+                "Tool level system enable",
+                true,
+                "Can your skill with tools 'level up' as you use them?")
+            .getBoolean();
+        maxToolLevel = config.get("ToolLeveling", "maxToolLevel", 6)
+            .getInt();
+        pickaxeBoostRequired = config.get(
+            "ToolLeveling",
+            "pickaxeBoostRequired",
+            true,
+            "Every Pickaxes Mining Level is reduced by 1 and needs a mining levelup (separate from tool level) or, if enabled, a mob head modifier to advance")
+            .getBoolean();
+        allowFakePlayerLeveling = config
+            .get("ToolLeveling", "allowFakePlayerLeveling", true, "Allow tool leveling through fake players")
+            .getBoolean();
+        xpRequiredToolsPercentage = config
+            .get(
+                "ToolLeveling",
+                "xpRequiredToolsPercentage",
+                100,
+                "Change the XP required to level up tools in % (higher = more xp needed)",
+                1,
+                999)
+            .getInt();
+        xpRequiredWeaponsPercentage = config
+            .get(
+                "ToolLeveling",
+                "xpRequiredWeaponsPercentage",
+                100,
+                "Change the XP required to level up weapons in % (higher = more xp needed)",
+                1,
+                999)
+            .getInt();
+        levelingPickaxeBoostXpPercentage = config
+            .get(
+                "ToolLeveling",
+                "xpRequiredPickBoostPercentage",
+                100,
+                "Change the percentage of XP required to boost a pick (i.e. 200 means 2x normal boost xp required)",
+                1,
+                999)
+            .getInt();
+        detailedXpTooltip = config
+            .get("ToolLeveling", "detailedXpTooltip", true, "XP tooltip shows numbers, in addition to percentage")
+            .getBoolean();
+        toolModifiersAtLevels = config
+            .get(
+                "ToolLeveling",
+                "toolModifiersAtLevels",
+                new int[] { 2, 4, 6 },
+                "Adds an extra modifier on these levelups if 'ExtraModifiers' is enabled")
+            .getIntList();
+
+        // y can't get float??
+        xpPerLevelMultiplier = config.getFloat(
+            "xpPerLevelMultiplier",
+            "ToolLeveling",
+            1.15F,
+            1.0F,
+            9.99F,
+            "Change the XP required to level up weapons in % (higher = more xp needed)");
+        xpPerBoostLevelMultiplier = config.getFloat(
+            "xpPerBoostLevelMultiplier",
+            "ToolLeveling",
+            1.12f,
+            1.0f,
+            9.99f,
+            "Exponential multiplier for required boost xp per level");
 
         config.save();
     }

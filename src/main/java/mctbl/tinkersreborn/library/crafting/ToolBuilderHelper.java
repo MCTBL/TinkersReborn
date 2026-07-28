@@ -25,6 +25,7 @@ import com.google.common.collect.Sets;
 import gnu.trove.map.TIntIntMap;
 import gnu.trove.map.hash.TIntIntHashMap;
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.TinkerGuiException;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.event.TinkersRebornEvent;
@@ -37,10 +38,15 @@ import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolCore.ToolPartRecord;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
+import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.tools.items.BoltCore;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
+import mctbl.tinkersreborn.tools.items.tools.Hammer;
+import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
+import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
+import mctbl.tinkersreborn.tools.modifiers.ModFortify;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
@@ -237,11 +243,10 @@ public class ToolBuilderHelper {
         // we never modify the original. Caller can remove all of them if we return a
         // result
         List<ItemStack> inputItems = TinkersRebornUtils.copyItemStackList(toolPartsIn);
-        // TODO
-        // if(!TinkersRebornEvent.OnToolPartReplacement.fireEvent(inputItems, toolStack)) {
-        // // event cancelled
-        // return null;
-        // }
+        if (!TinkersRebornEvent.OnToolPartReplacement.fireEvent(inputItems, toolStack)) {
+            // event cancelled
+            return null;
+        }
         // technically we don't need a deep copy here, but meh. less code.
         final List<ItemStack> toolParts = TinkersRebornUtils.copyItemStackList(inputItems);
 
@@ -358,15 +363,14 @@ public class ToolBuilderHelper {
             IModifier mod = TinkersRebornRegistry.getModifierAndTrait(id);
             // if the new head's harvest level equals/exceeds the fortification level, it's
             // no longer beneficial. good riddance!
-            // TODO
-            // if (newHeadMaterial != null && mod instanceof ModFortify) {
-            // HeadMaterialStats newHeadStats = newHeadMaterial.getStats(MaterialTypes.HEAD);
-            // HeadMaterialStats fortifyStats = ((ModFortify) mod).material.getStats(MaterialTypes.HEAD);
-            // if (newHeadStats != null && fortifyStats != null
-            // && newHeadStats.harvestLevel >= fortifyStats.harvestLevel) {
-            // modifierList.removeTag(i);
-            // }
-            // }
+            if (newHeadMaterial != null && mod instanceof ModFortify fortiry) {
+                HeadMaterialStats newHeadStats = newHeadMaterial.getStats(MaterialStatusType.HEAD);
+                HeadMaterialStats fortifyStats = fortiry.material.getStats(MaterialStatusType.HEAD);
+                if (newHeadStats != null && fortifyStats != null
+                    && newHeadStats.harvestLevel >= fortifyStats.harvestLevel) {
+                    modifierList.removeTag(i);
+                }
+            }
         }
 
         ItemStack output = toolStack.copy();
@@ -442,7 +446,14 @@ public class ToolBuilderHelper {
             .removeTag("ench"); // and the enchantments tag
 
         // readd traits
-        tinkersItem.addMaterialTraits(ToolTagsHelper.getTagSafe(tool), materials);
+        NBTTagCompound baseTag = ToolTagsHelper.getTagSafe(tool);
+        tinkersItem.addMaterialTraits(baseTag, materials);
+
+        // reset harvest level
+        if (TinkersRebornConfig.toolLevelingEnable && TinkersRebornConfig.pickaxeBoostRequired
+            && (tinkersItem instanceof Pickaxe || tinkersItem instanceof Hammer)) {
+            ToolLevelingHelper.resetNewToolHarvestLevelStat(baseTag);
+        }
 
         // fire event
         TinkersRebornEvent.OnItemBuilding.fireEvent(tinkersTag, materials, tinkersItem);
@@ -462,10 +473,10 @@ public class ToolBuilderHelper {
                 TinkersReborn.LOG.debug("Missing modifier: {}", identifier);
                 continue;
             }
-            ToolTagsHelper.getModifiersTagList(tool.getTagCompound())
+            ToolTagsHelper.getModifiersTagList(baseTag)
                 .appendTag(modifiers);
 
-            modifier.applyEffect(tool.getTagCompound(), modifiers);
+            modifier.applyEffect(baseTag, modifiers);
 
         }
 

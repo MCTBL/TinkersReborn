@@ -36,5 +36,11 @@
 		"tinkersreborn:crit2",
 		"tinkersreborn:crit3"
 	]
+   },
+   "chime": {
+	"category": "player",
+	"sounds": [
+		"tinkersreborn:chime"
+	]
    }
 }

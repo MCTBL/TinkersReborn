@@ -58,8 +58,6 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
     private static final AxisAlignedBB ON_BLOCK_AABB = AxisAlignedBB
         .getBoundingBox(-0.05D, -0.05D, -0.05D, 0.05D, 0.05D, 0.05D);
 
-    // public TinkerProjectileHandler tinkerProjectile = new
-    // TinkerProjectileHandler();
     private ItemStack ammoStack = null; // parent
     private ItemStack launcherStack = null; // launcher
     private float power = 1f; // power

@@ -260,6 +260,28 @@ public class ToolTagsHelper {
         return new ToolNBT(getToolOriginDataNBTSafe(root));
     }
 
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Leveling
+     */
+    public static NBTTagCompound getToolLevelingNBTSafe(ItemStack tool) {
+        return getToolLevelingNBTSafe(getTagSafe(tool));
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Leveling
+     */
+    public static NBTTagCompound getToolLevelingNBTSafe(NBTTagCompound compound) {
+        return getTagSafe(getToolBaseNBTSafe(compound), ToolTags.TAG_LEVEL_BASE);
+    }
+
+    public static void setToolLevelingNBTSafe(NBTTagCompound baseCompound, NBTTagCompound levelingCompound) {
+        if (getToolLevelingNBTSafe(baseCompound) != levelingCompound) {
+            getToolBaseNBTSafe(baseCompound).setTag(ToolTags.TAG_LEVEL_BASE, levelingCompound);
+        }
+    }
+
     // stats
     /**
      * @param stack

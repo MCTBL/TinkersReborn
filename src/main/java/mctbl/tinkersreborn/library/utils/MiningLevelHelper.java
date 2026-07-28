@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 
 import com.google.common.collect.ImmutableList;
@@ -54,15 +55,18 @@ public final class MiningLevelHelper {
                 idx++;
             }
         }
+
         // Freeze after initialization
         nameToLevel = ImmutableMap.copyOf(nameToLevel);
         levelList = ImmutableList.copyOf(levelList);
     }
 
     public static MiningLevel getMiningLevel(int level) {
-        if (level < 0 || level > levelList.size()) return levelList.get(0);
+        return levelList.get(MathHelper.clamp_int(level, 0, levelList.size() - 1));
+    }
 
-        return levelList.get(level);
+    public static MiningLevel getLastMiningLevel() {
+        return getMiningLevel(levelList.size() - 1);
     }
 
     public static class MiningLevel {

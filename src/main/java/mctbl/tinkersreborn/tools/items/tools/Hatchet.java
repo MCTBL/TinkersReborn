@@ -1,8 +1,6 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -22,9 +20,6 @@ import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class Hatchet extends HarvestTool {
-
-    public final Set<Material> axeEffectiveMaterials = new HashSet<>();
-    public final Set<Block> axeEffectiveBlocks = new HashSet<>();
 
     public Hatchet() {
         super("Hatchet", 3);

@@ -75,6 +75,11 @@ public enum TinkersStr {
     mattockAxeHarvestLevelDesc("mattock.axelevel"),
     mattockShovelHarvestLevelDesc("mattock.shovellevel"),
 
+    tooltipMiningxp("tooltip.level.miningxp"),
+    tooltipBoosted("tooltip.level.boosted"),
+    tooltipSkillLevel("tooltip.level.skilllevel"),
+    tooltipSkillxp("tooltip.level.skillxp")
+
     ;
 
     static String modPrefix = TinkersReborn.MODID;
