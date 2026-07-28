@@ -86,14 +86,11 @@ public class ToolLevelingHelper {
         // and no xp :(
         nbt.setLong(ToolTags.TAG_EXP, 0);
 
+        ToolTagsHelper.setToolLevelingNBTSafe(baseTag, nbt);
         // mining level boost
-        int hlvl = ToolTagsHelper.getHarvestLevelStat(baseTag);
-        if (TinkersRebornConfig.pickaxeBoostRequired && hlvl != 0
-            && (toolcore instanceof Pickaxe || toolcore instanceof Hammer)) {
+        if (TinkersRebornConfig.pickaxeBoostRequired && (toolcore instanceof Pickaxe || toolcore instanceof Hammer)) {
             resetNewToolHarvestLevelStat(baseTag);
         }
-
-        ToolTagsHelper.setToolLevelingNBTSafe(baseTag, nbt);
     }
 
     public static void resetNewToolHarvestLevelStat(NBTTagCompound baseTag) {
