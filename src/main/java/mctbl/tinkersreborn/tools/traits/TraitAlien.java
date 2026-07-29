@@ -48,7 +48,7 @@ public class TraitAlien extends TraitProgressiveStats {
             return;
         }
 
-        NBTTagCompound root = ToolTagsHelper.getToolBaseNBTSafe(tool);
+        NBTTagCompound root = ToolTagsHelper.getTagSafe(tool);
         StatNBT pool = getPoolLazily(root);
         StatNBT distributed = getBonus(root);
 
