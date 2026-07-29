@@ -26,7 +26,7 @@ public class SharpeningKit extends TinkersRebornToolPart {
         HeadMaterialStats stats = this.getMaterial(stack)
             .getStats(MaterialStatusType.HEAD);
         if (stats != null) {
-            tooltip.add(HeadMaterialStats.formatHarvestLevel(stats.harvestLevel));
+            tooltip.add(HeadMaterialStats.formatHarvestLevel(stats.getHarvestLevel()));
         }
     }
 

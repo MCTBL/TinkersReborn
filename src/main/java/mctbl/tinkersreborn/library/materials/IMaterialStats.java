@@ -2,6 +2,8 @@ package mctbl.tinkersreborn.library.materials;
 
 import java.util.List;
 
+import net.minecraftforge.common.config.Configuration;
+
 /**
  * All material or special material need implement this interface
  * Author MCTBL
@@ -38,4 +40,13 @@ public interface IMaterialStats {
      */
     List<String> getLocalizedDesc();
 
+    default IMaterialStats readFromCfg(Configuration cfg, String categotry) {
+        return null;
+    }
+
+    default void writeToCfg(Configuration cfg, String categotry) {}
+
+    default IMaterialStats getNewStatsFromCfg(Configuration cfg, String categotry) {
+        return null;
+    }
 }

@@ -755,7 +755,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                 } else if (ToolLevelingHelper.isBoosted(toolLevelingNBTSafe)) {
                     list.add(LevelingTooltips.getBoostedTooltip());
                 }
-
             }
 
             list.add(LevelingTooltips.getLevelTooltip(ToolLevelingHelper.getLevel(toolLevelingNBTSafe)));
@@ -992,8 +991,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
                 HeadMaterialStats stats = material.getStats(MaterialStatusType.HEAD);
                 if (stats != null) {
                     materialsMatched.add(material);
-                    durability += ((float) stats.durability * (float) match.amount * getRepairModifierForPart(index))
-                        / 144f;
+                    durability += ((float) stats.getDurability() * (float) match.amount
+                        * getRepairModifierForPart(index)) / 144f;
                     RecipeMatch.removeMatch(repairItems, match);
                 }
             }
@@ -1067,7 +1066,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
         RecipeMatch.removeMatch(repairItems, match);
         HeadMaterialStats stats = material.getStats(MaterialStatusType.HEAD);
-        float durability = stats.durability * match.amount * TinkersRebornTools.sharpeningKit.getCost();
+        float durability = stats.getDurability() * match.amount * TinkersRebornTools.sharpeningKit.getCost();
         durability /= TinkersRebornMaterial.VALUE_Ingot;
         return (int) (durability);
     }

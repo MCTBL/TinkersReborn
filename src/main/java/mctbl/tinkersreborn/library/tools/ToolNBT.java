@@ -50,12 +50,12 @@ public class ToolNBT {
         // average all stats
         for (HeadMaterialStats head : heads) {
             if (head != null) {
-                durability += head.durability;
-                attack += head.attack;
-                speed += head.miningspeed;
+                durability += head.getDurability();
+                attack += head.getAttack();
+                speed += head.getMiningspeed();
 
                 // use highest harvestlevel
-                this.harvestLevel = Math.max(head.harvestLevel, this.harvestLevel);
+                this.harvestLevel = Math.max(head.getHarvestLevel(), this.harvestLevel);
             }
         }
 
@@ -75,7 +75,7 @@ public class ToolNBT {
         int dur = 0;
         for (ExtraMaterialStats extra : extras) {
             if (extra != null) {
-                dur += extra.extraDurability;
+                dur += extra.getExtraDurability();
             }
         }
         this.durability += Math.round((float) dur / (float) extras.length);
@@ -96,8 +96,8 @@ public class ToolNBT {
         float modifier = 0f;
         for (HandleMaterialStats handle : handles) {
             if (handle != null) {
-                dur += handle.durability;
-                modifier += handle.multiplier;
+                dur += handle.getDurability();
+                modifier += handle.getMultiplier();
             }
         }
 

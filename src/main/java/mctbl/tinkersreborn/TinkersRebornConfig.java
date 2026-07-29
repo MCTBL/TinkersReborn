@@ -80,7 +80,7 @@ public class TinkersRebornConfig {
 
         gravelOreTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum" };
 
-        Configuration config = new Configuration(new File(location + "/TinkersReborn.cfg"));
+        Configuration config = new Configuration(new File(location + "/Tinkersreborn/TinkersRebornGeneral.cfg"));
 
         config.load();
 

@@ -53,7 +53,7 @@ public class ModFortify extends ToolModifier {
     @Override
     public void applyEffect(NBTTagCompound rootCompound, NBTTagCompound modifierTag) {
         HeadMaterialStats stats = material.getStats(MaterialStatusType.HEAD);
-        ToolTagsHelper.setHarvestLevelStat(rootCompound, stats.harvestLevel);
+        ToolTagsHelper.setHarvestLevelStat(rootCompound, stats.getHarvestLevel());
 
         // Remove other fortify modifiers, only the last one applies
         NBTTagList tagList = ToolTagsHelper.getModifiersTagList(rootCompound);

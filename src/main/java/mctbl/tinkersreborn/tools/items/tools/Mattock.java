@@ -170,8 +170,10 @@ public class Mattock extends HarvestTool {
         data.modifierSlots = TinkersRebornConfig.defaultModifiers;
 
         // special harvest levels
-        data.axeLevel = heads.get(0).harvestLevel;
-        data.shovelLevel = heads.get(1).harvestLevel;
+        data.axeLevel = heads.get(0)
+            .getHarvestLevel();
+        data.shovelLevel = heads.get(1)
+            .getHarvestLevel();
 
         // base damage!
         data.attack += 3;

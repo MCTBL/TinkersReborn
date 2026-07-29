@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -46,6 +47,8 @@ public class TinkersReborn {
 
     public static final List<ITinkersRebornModule> l = new ArrayList<>();
 
+    public static File cfgDirectory;
+
     public TinkersReborn() {
         l.add(new TinkersRebornGeneral());
         l.add(new TinkersRebornTools());
@@ -54,8 +57,9 @@ public class TinkersReborn {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        cfgDirectory = event.getModConfigurationDirectory();
         TinkerNetwork.instance.setUp();
-        TinkersRebornConfig.setupConfig(event.getModConfigurationDirectory());
+        TinkersRebornConfig.setupConfig(cfgDirectory);
         TinkersRebornRegistry.instance.preInit();
         AbstractPacketThreadsafe.init();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
@@ -65,13 +69,11 @@ public class TinkersReborn {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-
         l.forEach(m -> m.init(event));
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-
         l.forEach(m -> m.postInit(event));
     }
 

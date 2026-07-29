@@ -3,7 +3,10 @@ package mctbl.tinkersreborn.tools.materials;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraftforge.common.config.Configuration;
+
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
+import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
@@ -18,8 +21,8 @@ public class ShaftMaterialStats extends AbstractMaterialStats {
 
     public final static String COLOR_Ammo = COLOR_Durability;
 
-    public final float modifier;
-    public final int bonusAmmo;
+    private float modifier;
+    private int bonusAmmo;
 
     /**
      * @param modifier
@@ -28,6 +31,14 @@ public class ShaftMaterialStats extends AbstractMaterialStats {
     public ShaftMaterialStats(float modifier, int bonusAmmo) {
         this.modifier = modifier;
         this.bonusAmmo = bonusAmmo;
+    }
+
+    public float getModifier() {
+        return modifier;
+    }
+
+    public int getBonusAmmo() {
+        return bonusAmmo;
     }
 
     @Override
@@ -68,4 +79,33 @@ public class ShaftMaterialStats extends AbstractMaterialStats {
         return format(LOC_Ammo, COLOR_Durability, bonusAmmo);
     }
 
+    @Override
+    public void writeToCfg(Configuration cfg, String categotry) {
+        String key = categotry + "."
+            + this.getIdentifier()
+                .toString()
+                .toLowerCase();
+        cfg.get(key, "modifier", this.modifier)
+            .getDouble();
+        cfg.get(key, "bonusAmmo", this.bonusAmmo)
+            .getInt();
+    }
+
+    @Override
+    public IMaterialStats readFromCfg(Configuration cfg, String categotry) {
+        String key = categotry + "."
+            + this.getIdentifier()
+                .toString()
+                .toLowerCase();
+        this.modifier = (float) cfg.get(key, "modifier", this.modifier)
+            .getDouble();
+        this.bonusAmmo = cfg.get(key, "bonusAmmo", this.bonusAmmo)
+            .getInt();
+        return this;
+    }
+
+    @Override
+    public IMaterialStats getNewStatsFromCfg(Configuration cfg, String categotry) {
+        return new ShaftMaterialStats(0, 0).readFromCfg(cfg, categotry);
+    }
 }

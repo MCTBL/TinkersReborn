@@ -679,6 +679,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             .forEach(MaterialIntegration::integrate);
 
         this.registerCraftingRecipes();
+
+        TinkersRebornMaterialConfig.initMaterialConfig();
     }
 
     /**
@@ -729,7 +731,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         endStoneMaterial.setRepresentativeItem(Blocks.end_stone);
         endStoneMaterial.addTrait(alien, MaterialStatusType.HEAD);
         endStoneMaterial.addTrait(enderference);
-        endStoneMaterial.addTrait(enderference, MaterialStatusType.PROJECTILE);
 
         boneMaterial = new TinkersRebornMaterial("Bone", 0xEDEBCA).setCraftable(true);
         boneMaterial.addItem("bone", 1, VALUE_Ingot);

@@ -367,7 +367,7 @@ public class ToolBuilderHelper {
                 HeadMaterialStats newHeadStats = newHeadMaterial.getStats(MaterialStatusType.HEAD);
                 HeadMaterialStats fortifyStats = fortiry.material.getStats(MaterialStatusType.HEAD);
                 if (newHeadStats != null && fortifyStats != null
-                    && newHeadStats.harvestLevel >= fortifyStats.harvestLevel) {
+                    && newHeadStats.getHarvestLevel() >= fortifyStats.getHarvestLevel()) {
                     modifierList.removeTag(i);
                 }
             }

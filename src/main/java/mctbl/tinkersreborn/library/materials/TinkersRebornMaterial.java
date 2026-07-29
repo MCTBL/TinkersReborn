@@ -35,7 +35,6 @@ import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
-import mctbl.tinkersreborn.tools.materials.ProjectileMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ShaftMaterialStats;
 import mctbl.tinkersreborn.tools.materials.StringMaterialStats;
 import mctbl.tinkersreborn.util.ColorUtil;
@@ -125,7 +124,6 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         UNKNOWN.addStats(new StringMaterialStats(1f));
         UNKNOWN.addStats(new ShaftMaterialStats(1f, 0));
         UNKNOWN.addStats(new FletchingMaterialStats(1f, 1f));
-        UNKNOWN.addStats(new ProjectileMaterialStats());
     }
 
     public TinkersRebornMaterial(String identifier, EnumChatFormatting textColor) {

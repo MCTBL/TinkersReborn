@@ -178,6 +178,18 @@ public class ColorUtil {
             ((char) (MARKER + (b & 0xFF))));
     }
 
+    public static String toHexString(int rgb) {
+        return String.format("0x%06X", rgb & 0x00FFFFFF);
+    }
+
+    public static int fromHexString(String str) {
+        return Integer.parseInt(
+            str.toLowerCase()
+                .replace("0x", "")
+                .replace("#", ""),
+            16);
+    }
+
     public static String formatPartialAmount(int value, int max) {
         return String.format(
             "%s%s" + EnumChatFormatting.GRAY.toString() + "/" + EnumChatFormatting.RESET.toString() + "%s%s",

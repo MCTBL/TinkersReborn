@@ -37,9 +37,9 @@ public class ProjectileLauncherNBT extends ToolNBT {
 
         for (BowMaterialStats limb : bowlimbs) {
             if (limb != null) {
-                drawSpeed += limb.drawspeed;
-                range += limb.range;
-                bonusDamage += limb.bonusDamage;
+                drawSpeed += limb.getDrawspeed();
+                range += limb.getRange();
+                bonusDamage += limb.getBonusDamage();
             }
         }
 
@@ -58,7 +58,7 @@ public class ProjectileLauncherNBT extends ToolNBT {
 
         for (StringMaterialStats bowstring : bowstrings) {
             if (bowstring != null) {
-                modifier += bowstring.modifier;
+                modifier += bowstring.getModifier();
             }
         }
 
