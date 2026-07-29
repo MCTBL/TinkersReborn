@@ -223,7 +223,7 @@ public class TinkersRebornConfig {
         pickaxeBoostRequired = config.get(
             "ToolLeveling",
             "pickaxeBoostRequired",
-            true,
+            false,
             "Every Pickaxes Mining Level is reduced by 1 and needs a mining levelup (separate from tool level) or, if enabled, a mob head modifier to advance")
             .getBoolean();
         allowFakePlayerLeveling = config
