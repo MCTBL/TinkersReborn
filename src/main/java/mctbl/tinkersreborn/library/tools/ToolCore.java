@@ -559,7 +559,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             ToolLevelingHelper.getLevelingTags(basetag, this);
         }
 
-        TinkersRebornEvent.OnItemBuilding.fireEvent(toolTag, materials, this);
+        TinkersRebornEvent.OnItemBuilding.fireEvent(basetag, materials, this);
 
         return basetag;
     }
@@ -749,7 +749,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
         if (TinkersRebornConfig.toolLevelingEnable) {
             NBTTagCompound toolLevelingNBTSafe = ToolTagsHelper.getToolLevelingNBTSafe(stack);
-            if (this instanceof Hammer || this instanceof Pickaxe) {
+            if ((this instanceof Hammer || this instanceof Pickaxe) && TinkersRebornConfig.pickaxeBoostRequired) {
                 if (ToolLevelingHelper.canBoostMiningLevel(stack)) {
                     list.add(LevelingTooltips.getBoostXpToolTip(stack, null));
                 } else if (ToolLevelingHelper.isBoosted(toolLevelingNBTSafe)) {
