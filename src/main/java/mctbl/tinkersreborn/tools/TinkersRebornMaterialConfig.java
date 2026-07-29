@@ -59,18 +59,26 @@ public class TinkersRebornMaterialConfig {
                     cfg.get(key, "castable", m.isCastable())
                         .getBoolean());
                 for (MaterialStatusType type : MaterialStatusType.values()) {
-                    IMaterialStats temp = m.getStats(type);
                     String typeName = type.toString()
                         .toLowerCase();
-                    if (cfg.hasCategory(key + "." + typeName)) {
-                        if (temp != null) {
-                            temp.readFromCfg(cfg, key);
-                        } else {
-                            m.addStats(
-                                TinkersRebornMaterial.UNKNOWN.getStats(type)
-                                    .getNewStatsFromCfg(cfg, key));
+                    // check if there has 'B:head=false' to ban some material
+                    if (!cfg.getBoolean(typeName, key, true, null)) {
+                        m.statsMap.remove(type);
+                    } else {
+                        IMaterialStats temp = m.getStats(type);
+                        if (cfg.hasCategory(key + "." + typeName)) {
+                            if (temp != null) {
+                                // change this stats for this material
+                                temp.readFromCfg(cfg, key);
+                            } else {
+                                // add new stats for this material
+                                m.addStats(
+                                    TinkersRebornMaterial.UNKNOWN.getStats(type)
+                                        .getNewStatsFromCfg(cfg, key));
+                            }
                         }
                     }
+
                 }
             }
         }
