@@ -9,6 +9,8 @@ public class TinkersRebornConfig {
     public static String[] metalTypes;
     public static String[] oreTypes;
     public static String[] gravelOreTypes;
+    
+    public static boolean exportMaterialDefaultConfig;
 
     public static boolean disableAllRecipes;
     public static String[] miningLevels;
@@ -163,6 +165,8 @@ public class TinkersRebornConfig {
 
         autoSmeltWithLapis = config.get("Tools", "Can Autosmelt modify work with fortune", false)
             .getBoolean();
+        
+        exportMaterialDefaultConfig = config.get("Tools", "Export Material Default Config", false).getBoolean();
 
         potionIdBias = config.get("General", "Potion effect start id", 500)
             .getInt();

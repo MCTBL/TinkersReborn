@@ -5,6 +5,7 @@ import java.io.File;
 import net.minecraftforge.common.config.Configuration;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
@@ -16,10 +17,12 @@ public class TinkersRebornMaterialConfig {
     private TinkersRebornMaterialConfig() {}
 
     public static void initMaterialConfig() {
-
-        saveDeafult(
-            new Configuration(
-                new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialDefault.cfg")));
+	
+	if(TinkersRebornConfig.exportMaterialDefaultConfig) {
+	    saveDeafult(
+		    new Configuration(
+			    new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialDefault.cfg")));	    
+	}
 
         readOverride(
             new Configuration(
