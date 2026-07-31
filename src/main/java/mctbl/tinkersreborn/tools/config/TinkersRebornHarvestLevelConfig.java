@@ -19,13 +19,16 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.oredict.OreDictionary;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.blocks.GravelOre;
 import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
+import mctbl.tinkersreborn.library.utils.MiningLevelHelper.MiningLevel;
 
 public class TinkersRebornHarvestLevelConfig {
 
@@ -44,9 +47,12 @@ public class TinkersRebornHarvestLevelConfig {
             saveDeafult();
         }
 
+        // vanllia block override
         harvestLevelOverride();
+        // ore dict block override
         oreDictOverride();
-        // tools part
+        // extra override
+        blockOverride();
     }
 
     private static void saveDeafult() {
@@ -75,7 +81,9 @@ public class TinkersRebornHarvestLevelConfig {
 
             // write it down
             for (Integer m : metas) {
-                cfg.get("blocks_" + block.getHarvestTool(m), key.toString() + ":" + m, block.getHarvestLevel(m));
+                String tool = block.getHarvestTool(m);
+                if (tool == null) continue;
+                cfg.get("blocks_" + tool, key.toString() + ":" + m, block.getHarvestLevel(m));
             }
         }
         cfg.save();
@@ -100,7 +108,14 @@ public class TinkersRebornHarvestLevelConfig {
         Configuration cfg = new Configuration(
             new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornOreDictHarvestLevelOverride.cfg"));
         cfg.load();
-        cfg.setCategoryComment("oreDictLevels", "write ore dict under here");
+
+        StringBuilder comment = new StringBuilder("write ore dict under here\n");
+        comment.append("Mining Levels:\n");
+        for (MiningLevel level : MiningLevelHelper.levelList) {
+            comment.append(String.format("  %d - %s%n", level.levelIdx, level.getLocalization()));
+        }
+        cfg.setCategoryComment("oreDictLevels", comment.toString());
+
         for (int level = 0; level < MiningLevelHelper.levelList.size(); level++) {
             oreDictLevels.add(
                 cfg.get("oreDictLevels", String.valueOf(level), new String[0])
@@ -115,6 +130,87 @@ public class TinkersRebornHarvestLevelConfig {
             for (String prefix : TinkersRebornConfig.oreDictPrefixes)
                 for (ItemStack oreStack : OreDictionary.getOres(prefix + materialName)) modifyBlock(oreStack, i);
         }
+    }
+
+    /**
+     * Exact per-block override via TinkersRebornHarvestLevelOverride.cfg.
+     * <p>
+     * Format: categories named {@code blocks_<toolclass>} containing properties
+     * {@code modid:name:metadata = harvestLevel}.
+     * <ul>
+     * <li>metadata = -1 → applies to all metas (wildcard)</li>
+     * <li>harvestLevel = -1 → removes tool effectiveness for this block</li>
+     * </ul>
+     */
+    private static void blockOverride() {
+        Configuration cfg = new Configuration(
+            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornHarvestLevelOverride.cfg"));
+        cfg.load();
+
+        // write help comment into the Info category
+        StringBuilder comment = new StringBuilder();
+        comment.append("Exact per-block harvest level overrides. Runs AFTER vanilla mapping and ore-dict mapping.\n");
+        comment.append("Copy entries from TinkersRebornHarvestLevelDefault.cfg, then change the number.\n\n");
+        comment.append("Format: <modid>:<name>:<metadata> = <harvestlevel>\n");
+        comment.append("  -1 as metadata = apply to ALL metas for this block\n");
+        comment.append("  -1 as harvest level = remove tool effectiveness for this block\n\n");
+        comment.append("Mining Levels:\n");
+        for (MiningLevel level : MiningLevelHelper.levelList) {
+            comment.append(String.format("  %d - %s%n", level.levelIdx, level.getLocalization()));
+        }
+        cfg.setCategoryComment("info", comment.toString());
+
+        for (String catName : cfg.getCategoryNames()) {
+            if (!catName.startsWith("blocks_")) continue;
+
+            String toolClass = catName.substring(7); // "blocks_pickaxe" → "pickaxe"
+            ConfigCategory cat = cfg.getCategory(catName);
+
+            for (Property prop : cat.values()) {
+                String key = prop.getName();
+                int lastColon = key.lastIndexOf(':');
+                if (lastColon < 0) continue;
+
+                String blockId = key.substring(0, lastColon);
+                String metaStr = key.substring(lastColon + 1);
+                int meta;
+                try {
+                    meta = Integer.parseInt(metaStr);
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+
+                int harvestLevel = prop.getInt();
+
+                if (!Block.blockRegistry.containsKey(blockId)) continue;
+                Block block = (Block) Block.blockRegistry.getObject(blockId);
+
+                if (meta == -1) {
+                    block.setHarvestLevel(toolClass, harvestLevel);
+                    if (TinkersRebornConfig.debug) {
+                        TinkersReborn.LOG.info(
+                            String.format(
+                                "Block Override: Changed Harvest Level of %s (all metas) to %d for tool %s",
+                                block.getUnlocalizedName(),
+                                harvestLevel,
+                                toolClass));
+                    }
+                } else {
+                    block.setHarvestLevel(toolClass, harvestLevel, meta);
+                    if (TinkersRebornConfig.debug) {
+                        TinkersReborn.LOG.info(
+                            String.format(
+                                "Block Override: Changed Harvest Level of %s:%d to %d for tool %s",
+                                block.getUnlocalizedName(),
+                                meta,
+                                harvestLevel,
+                                toolClass));
+                    }
+                }
+            }
+        }
+
+        cfg.save();
     }
 
     public static void modifyBlock(ItemStack stack, int harvestLevel) {

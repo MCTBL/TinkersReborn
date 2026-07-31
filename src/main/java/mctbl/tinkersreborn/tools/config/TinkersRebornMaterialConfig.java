@@ -10,6 +10,8 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
+import mctbl.tinkersreborn.library.utils.MiningLevelHelper.MiningLevel;
 import mctbl.tinkersreborn.util.ColorUtil;
 
 public class TinkersRebornMaterialConfig {
@@ -19,17 +21,16 @@ public class TinkersRebornMaterialConfig {
     public static void postInit() {
 
         if (TinkersRebornConfig.exportMaterialDefaultConfig) {
-            saveDeafult(
-                new Configuration(
-                    new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialDefault.cfg")));
+            saveDeafult();
         }
 
-        readOverride(
-            new Configuration(
-                new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialOverride.cfg")));
+        readOverride();
     }
 
-    private static void saveDeafult(Configuration cfg) {
+    private static void saveDeafult() {
+        Configuration cfg = new Configuration(
+            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialDefault.cfg"));
+
         cfg.addCustomCategoryComment("materials", "");
         for (TinkersRebornMaterial m : TinkersRebornRegistry.getAllMaterialList()) {
             String key = "materials." + m.identifier;
@@ -45,9 +46,18 @@ public class TinkersRebornMaterialConfig {
         cfg.save();
     }
 
-    private static void readOverride(Configuration cfg) {
+    private static void readOverride() {
+        Configuration cfg = new Configuration(
+            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialOverride.cfg"));
         cfg.load();
-        cfg.setCategoryComment("materials", "rewrite any thing you want under here");
+
+        StringBuilder comment = new StringBuilder("rewrite any thing you want under here\n");
+        comment.append("Mining Levels:\n");
+        for (MiningLevel level : MiningLevelHelper.levelList) {
+            comment.append(String.format("  %d - %s%n", level.levelIdx, level.getLocalization()));
+        }
+
+        cfg.setCategoryComment("materials", comment.toString());
         cfg.save();
         for (TinkersRebornMaterial m : TinkersRebornRegistry.getAllMaterialList()) {
             String key = "materials." + m.identifier;
