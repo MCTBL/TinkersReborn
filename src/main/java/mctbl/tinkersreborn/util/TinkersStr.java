@@ -78,9 +78,14 @@ public enum TinkersStr {
     tooltipMiningxp("tooltip.level.miningxp"),
     tooltipBoosted("tooltip.level.boosted"),
     tooltipSkillLevel("tooltip.level.skilllevel"),
-    tooltipSkillxp("tooltip.level.skillxp")
+    tooltipSkillxp("tooltip.level.skillxp"),
 
-    ;
+    // nerf vanilla
+    uselessTool1("tooltip.uselessTool1"),
+    uselessTool2("tooltip.uselessTool2"),
+    uselessBow1("tooltip.uselessBow1"),
+    uselessHoe1("tooltip.uselessHoe1"),
+    uselessWeapon1("tooltip.uselessWeapon1"),;
 
     static String modPrefix = TinkersReborn.MODID;
     String localization;

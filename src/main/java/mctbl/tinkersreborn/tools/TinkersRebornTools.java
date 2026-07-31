@@ -46,11 +46,20 @@ import static mctbl.tinkersreborn.tools.TinkersRebornTraits.tasty;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.writable;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.writable2;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -61,9 +70,11 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
@@ -77,12 +88,20 @@ import mctbl.tinkersreborn.tools.blocks.PartBuilderBlock;
 import mctbl.tinkersreborn.tools.blocks.PartChestBlock;
 import mctbl.tinkersreborn.tools.blocks.ToolForgeBlock;
 import mctbl.tinkersreborn.tools.blocks.ToolStationBlock;
+import mctbl.tinkersreborn.tools.config.TinkersRebornHarvestLevelConfig;
+import mctbl.tinkersreborn.tools.config.TinkersRebornMaterialConfig;
 import mctbl.tinkersreborn.tools.entity.CastChestLogic;
 import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
 import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
 import mctbl.tinkersreborn.tools.entity.ToolForgeLogic;
 import mctbl.tinkersreborn.tools.entity.ToolStationLogic;
+import mctbl.tinkersreborn.tools.events.TinkersRebornProjectileRenderEvents;
+import mctbl.tinkersreborn.tools.events.TinkersRebornToolsEventsHandler;
+import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaBowNerfHandler;
+import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaHoeNerfHandler;
+import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaSwordNerfHandler;
+import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaToolNerfEvent;
 import mctbl.tinkersreborn.tools.itemblocks.CastChestItemBlock;
 import mctbl.tinkersreborn.tools.itemblocks.PartBuilderItemBlock;
 import mctbl.tinkersreborn.tools.itemblocks.PartChestItemBlock;
@@ -129,6 +148,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         clientSide = "mctbl.tinkersreborn.tools.TinkersRebornToolsProxyClient",
         serverSide = "mctbl.tinkersreborn.tools.TinkersRebornToolsProxyCommon")
     public static TinkersRebornToolsProxyCommon proxy;
+
+    public static Set<Item> toolWhitelist = new HashSet<>();
 
     // Crafting blocks
     public static Block toolStation;
@@ -641,7 +662,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(patternAndCast, patternAndCast.getUnlocalizedName());
 
         this.oreDictRegistry();
-        MiningLevelHelper.init();
+        MiningLevelHelper.preInit();
 
         TinkersRebornModifiers.INSTANCE.preInit(e);
     }
@@ -680,7 +701,62 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         this.registerCraftingRecipes();
 
-        TinkersRebornMaterialConfig.initMaterialConfig();
+        TinkersRebornMaterialConfig.postInit();
+        TinkersRebornHarvestLevelConfig.postInit();
+        if (TinkersRebornConfig.nerfVanillaTools) {
+            findToolsFromConfig();
+
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaToolNerfEvent());
+
+            // replace vanilla tools with tinker tools in bonus chests
+            ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.wooden_pickaxe));
+            ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.wooden_axe));
+            ItemStack starterPick = ToolBuilderHelper.buildTool(
+                "Starter Pickaxe",
+                pickaxeHead.getNewPartWithMaterial("wood"),
+                binding.getNewPartWithMaterial("wood"),
+                rod.getNewPartWithMaterial("wood"));
+            ItemStack starterAxe = ToolBuilderHelper.buildTool(
+                "Starter Hatchet",
+                axeHead.getNewPartWithMaterial("wood"),
+                binding.getNewPartWithMaterial("wood"),
+                rod.getNewPartWithMaterial("wood"));
+            if (starterPick != null)
+                ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(starterPick, 1, 1, 5));
+            if (starterAxe != null)
+                ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(starterAxe, 1, 1, 5));
+
+            // same with stone tools
+            ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.stone_axe));
+            ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.stone_pickaxe));
+            ItemStack stonePick = ToolBuilderHelper.buildTool(
+                "Starter Pickaxe",
+                pickaxeHead.getNewPartWithMaterial("stone"),
+                binding.getNewPartWithMaterial("stone"),
+                rod.getNewPartWithMaterial("stone"));
+            ItemStack stoneAxe = ToolBuilderHelper.buildTool(
+                "Starter Hatchet",
+                axeHead.getNewPartWithMaterial("stone"),
+                binding.getNewPartWithMaterial("stone"),
+                rod.getNewPartWithMaterial("stone"));
+            if (stonePick != null)
+                ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(stonePick, 1, 1, 5));
+            if (stoneAxe != null)
+                ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(stoneAxe, 1, 1, 5));
+        }
+
+        // no hoes for you
+        if (TinkersRebornConfig.nerfVanillaHoes) {
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaHoeNerfHandler());
+        }
+
+        if (TinkersRebornConfig.nerfVanillaSwords) {
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaSwordNerfHandler());
+        }
+
+        if (TinkersRebornConfig.nerfVanillaBows) {
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaBowNerfHandler());
+        }
     }
 
     /**
@@ -1143,4 +1219,28 @@ public class TinkersRebornTools implements ITinkersRebornModule {
                         "stickWood")));
     }
 
+    private static void findToolsFromConfig() {
+        // cycle through all items
+        for (Object identifier : Item.itemRegistry.getKeys()) {
+            Object item = Item.itemRegistry.getObject(identifier);
+            // do we care about this item?
+            if (!(item instanceof ItemTool || item instanceof ItemHoe
+                || item instanceof ItemSword
+                || item instanceof ItemBow)) continue;
+
+            String mod = identifier.toString()
+                .split(":")[0]; // should always be non-null... I think
+
+            // whitelist
+            if (TinkersRebornConfig.excludedToolsIsWhitelist) {
+                // on the whitelist?
+                if (TinkersRebornConfig.excludedModTools.contains(mod)
+                    || TinkersRebornConfig.excludedTools.contains(identifier)) toolWhitelist.add((Item) item);
+            } else {
+                // blacklist
+                if (!TinkersRebornConfig.excludedModTools.contains(mod)
+                    && !TinkersRebornConfig.excludedTools.contains(identifier)) toolWhitelist.add((Item) item);
+            }
+        }
+    }
 }

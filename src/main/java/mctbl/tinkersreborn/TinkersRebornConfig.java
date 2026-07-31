@@ -1,20 +1,36 @@
 package mctbl.tinkersreborn;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraftforge.common.config.Configuration;
 
 public class TinkersRebornConfig {
 
+    public static boolean debug;
+
     public static String[] metalTypes;
     public static String[] oreTypes;
     public static String[] gravelOreTypes;
-    
+
     public static boolean exportMaterialDefaultConfig;
+
+    public static boolean exportHarvestLevelDefaultConfig;
+    public static int[] vanillaHarvestLevelMapping;
+    public static String[] oreDictPrefixes;
+    public static boolean nerfVanillaTools;
+    public static boolean nerfVanillaHoes;
+    public static boolean nerfVanillaSwords;
+    public static boolean nerfVanillaBows;
+    // allowed tools that should not be nerfed
+    public static boolean excludedToolsIsWhitelist;
+    public static Set<String> excludedTools = new HashSet<String>();
+    public static Set<String> excludedModTools = new HashSet<String>();
 
     public static boolean disableAllRecipes;
     public static String[] miningLevels;
-    public static int[] vanillaLevelMapping;
     public static String fluidUnit;
 
     public static int naturalSlimeSpawn;
@@ -44,8 +60,6 @@ public class TinkersRebornConfig {
     public static int islandRarity;
 
     public static int defaultModifiers;
-
-    public static int potionIdBias;
 
     public static boolean autoSmeltWithLapis;
     public static boolean celsiusPref;
@@ -86,6 +100,9 @@ public class TinkersRebornConfig {
 
         config.load();
 
+        debug = config.get("General", "debug", true, "debug mode")
+            .getBoolean();
+
         disableAllRecipes = config
             .get(
                 "General",
@@ -101,13 +118,6 @@ public class TinkersRebornConfig {
                     "§9Cobalt", "§5Manyullyn" },
                 "Mining levels")
             .getStringList();
-        vanillaLevelMapping = config
-            .get(
-                "General",
-                "Vanilla Harvest Level Mapping",
-                new int[] { 0, 1, 1, 3 },
-                "Maps vanilla harvest levels (0=wood,1=stone,2=iron,3=diamond) to indices in the Mining Levels list")
-            .getIntList();
         fluidUnit = config.get("General", "Fluid unit", "mB", "Only for display")
             .getString();
 
@@ -165,11 +175,119 @@ public class TinkersRebornConfig {
 
         autoSmeltWithLapis = config.get("Tools", "Can Autosmelt modify work with fortune", false)
             .getBoolean();
-        
-        exportMaterialDefaultConfig = config.get("Tools", "Export Material Default Config", false).getBoolean();
 
-        potionIdBias = config.get("General", "Potion effect start id", 500)
-            .getInt();
+        exportMaterialDefaultConfig = config
+            .get("General", "Export Material Default Config", false, "export TinkersRebornMaterialDefault.cfg or not")
+            .getBoolean();
+
+        exportHarvestLevelDefaultConfig = config
+            .get(
+                "General",
+                "Export Harvest Level Default Config",
+                false,
+                "export TinkersRebornHarvestLevelDefault.cfg or not")
+            .getBoolean();
+
+        vanillaHarvestLevelMapping = config.get(
+            "General",
+            "Vanilla Harvest Level Mapping",
+            new int[] { 0, 1, 2, 3 },
+            "Maps vanilla harvest levels (0=wood,1=stone,2=iron,3=diamond) to indices in the Mining Levels list, this mean 0 map to 0")
+            .getIntList();
+
+        oreDictPrefixes = config
+            .get(
+                "General",
+                "Override Ore Dict Prefixes",
+                new String[] { "ore", "denseore", "oreNether", "denseoreNether", "block", "stone", "brick", "orePoor" })
+            .getStringList();
+
+        nerfVanillaTools = config
+            .get("General", "disableRegularTools", true, "Makes all non-TConstruct tools mine nothing")
+            .getBoolean();
+        nerfVanillaHoes = config
+            .get(
+                "General",
+                "disableRegularHoes",
+                false,
+                "Makes all non-TConstruct hoes to not be able to hoe ground. Use the Mattock.")
+            .getBoolean();
+        nerfVanillaSwords = config
+            .get(
+                "General",
+                "disableRegularSwords",
+                false,
+                "Makes all non-TConstruct swords useless. Like whacking enemies with a stick.")
+            .getBoolean();
+        nerfVanillaBows = config
+            .get(
+                "General",
+                "disableRegularBows",
+                false,
+                "Makes all non-TConstruct bows useless. You suddenly forgot how to use a bow.")
+            .getBoolean();
+
+        String type = config.get(
+            "allowedtools",
+            "exclusionType",
+            "blacklist",
+            "Change the type of the exclusion.\n'blacklist' means the listed tools are made unusable.\n'whitelist' means ALL tools except the listed ones are unusable.",
+            new String[] { "whitelist", "blacklist" })
+            .getString();
+        excludedToolsIsWhitelist = "whitelist".equals(type);
+        String[] tools = config.get(
+            "allowedtools",
+            "tools",
+            new String[] {
+                // botania
+                "Botania:manasteelAxe", "Botania:manasteelPick", "Botania:manasteelShovel",
+                // Flaxbeards Steam Power
+                "Steamcraft:axeGildedGold", "Steamcraft:pickGildedGold", "Steamcraft:shovelGildedGold",
+                "Steamcraft:axeBrass", "Steamcraft:pickBrass", "Steamcraft:shovelBrass",
+                // IC2
+                "IC2:itemToolBronzeAxe", "IC2:itemToolBronzePickaxe", "IC2:itemToolBronzeSpade",
+                // Railcraft
+                "Railcraft:tool.steel.axe", "Railcraft:tool.steel.pickaxe", "Railcraft:tool.steel.shovel" },
+            "Tools that are excluded if the option to nerf non-tinkers tools is enabled.")
+            .getStringList();
+        String[] swords = config.get(
+            "allowedtools",
+            "swords",
+            new String[] { "Botania:manasteelSword", "Steamcraft:swordGildedGold", "Steamcraft:swordBrass",
+                "ThermalExpansion:tool.battleWrenchInvar", "IC2:itemToolBronzeSword", "Railcraft:tool.steel.sword" },
+            "Swords that are excluded if the option to nerf non-tinkers swords is enabled.")
+            .getStringList();
+        String[] bows = config
+            .get(
+                "allowedtools",
+                "bows",
+                new String[] {},
+                "Bows that are excluded if the option to nerf non-tinkers bows is enabled.")
+            .getStringList();
+        String[] hoes = config
+            .get(
+                "allowedtools",
+                "hoes",
+                new String[] { "Steamcraft:hoeGildedGold", "Steamcraft:hoeBrass", "IC2:itemToolBronzeHoe",
+                    "Railcraft:tool.steel.hoe" },
+                "Hoes that are excluded if the option to nerf non-tinkers hoes is enabled.")
+            .getStringList();
+
+        excludedModTools.addAll(
+            Arrays.asList(
+                config
+                    .get(
+                        "allowedtools",
+                        "mods",
+                        new String[] { "minecraft", "Metallurgy", "Natura", "BiomesOPlenty", "ProjRed|Exploration",
+                            "appliedenergistics2", "MekanismTool", "ThermalFoundation" },
+                        "Here you can exclude entire mods by adding their mod-id (the first part of the string).")
+                    .getStringList()));
+
+        if (nerfVanillaTools) excludedTools.addAll(Arrays.asList(tools));
+        if (nerfVanillaSwords) excludedTools.addAll(Arrays.asList(swords));
+        if (nerfVanillaBows) excludedTools.addAll(Arrays.asList(bows));
+        if (nerfVanillaHoes) excludedTools.addAll(Arrays.asList(hoes));
 
         celsiusPref = config.get("General", "Temperature Unit Pref", true, "true is Celsius and false is kelvin")
             .getBoolean();

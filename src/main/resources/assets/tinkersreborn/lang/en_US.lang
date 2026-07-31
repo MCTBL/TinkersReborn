@@ -624,3 +624,8 @@ tinkersreborn.tooltip.level.skill.97=97+Beggining of anything
 tinkersreborn.tooltip.level.skill.98=98+Something something
 tinkersreborn.tooltip.level.skill.99=9001 Hacker
 
+tinkersreborn.tooltip.uselessTool1=This tool cannot mine anything!
+tinkersreborn.tooltip.uselessTool2=It can only be used for crafting
+tinkersreborn.tooltip.uselessHoe1=This hoe cannot hoe anything!
+tinkersreborn.tooltip.uselessWeapon1=This weapon hits like a wet noodle!
+tinkersreborn.tooltip.uselessBow1=This bows bowstring snapped!

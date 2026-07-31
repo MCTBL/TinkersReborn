@@ -1,4 +1,4 @@
-package mctbl.tinkersreborn.tools;
+package mctbl.tinkersreborn.tools.config;
 
 import java.io.File;
 
@@ -16,13 +16,13 @@ public class TinkersRebornMaterialConfig {
 
     private TinkersRebornMaterialConfig() {}
 
-    public static void initMaterialConfig() {
-	
-	if(TinkersRebornConfig.exportMaterialDefaultConfig) {
-	    saveDeafult(
-		    new Configuration(
-			    new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialDefault.cfg")));	    
-	}
+    public static void postInit() {
+
+        if (TinkersRebornConfig.exportMaterialDefaultConfig) {
+            saveDeafult(
+                new Configuration(
+                    new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialDefault.cfg")));
+        }
 
         readOverride(
             new Configuration(

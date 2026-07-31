@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -163,6 +165,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     @SuppressWarnings("unchecked")
+    @Nullable
     public <T extends IMaterialStats> T getStats(MaterialStatusType t) {
         Class<? extends IMaterialStats> statusClass = t.getStatusClass();
         IMaterialStats obj = this.statsMap.get(t);

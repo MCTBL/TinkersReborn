@@ -1,4 +1,4 @@
-package mctbl.tinkersreborn.tools;
+package mctbl.tinkersreborn.tools.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

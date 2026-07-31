@@ -1,12 +1,14 @@
-package mctbl.tinkersreborn.tools;
+package mctbl.tinkersreborn.tools.events;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
@@ -28,6 +30,7 @@ import mctbl.tinkersreborn.library.tools.IAoeTool;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
 import mctbl.tinkersreborn.tools.traits.TraitSpiky;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
@@ -51,6 +54,16 @@ public class TinkersRebornToolsEventsHandler {
             }
 
         }
+
+        if (TinkersRebornConfig.debug) {
+            Block temp = Block.getBlockFromItem(e.itemStack.getItem());
+            if (temp != null) {
+                e.toolTip.add(
+                    "Harvest level "
+                        + MiningLevelHelper.getMiningLevel(temp.getHarvestLevel(e.itemStack.getItemDamage()))
+                            .getColoredLocalization());
+            }
+        }
     }
 
     @SubscribeEvent
@@ -72,7 +85,30 @@ public class TinkersRebornToolsEventsHandler {
 
     @SubscribeEvent
     public void mineSpeed(PlayerEvent.BreakSpeed event) {
-        ItemStack tool = event.entityPlayer.inventory.getCurrentItem();
+        if (event.entityPlayer == null) return;
+
+        if (event.block == null || event.block == Blocks.air) return;
+
+        // The tool does NOT require a tool, but has a harvest level for a tool set
+        // we now manually check if this requiremnet is fulfilled
+        String toolStr = event.block.getHarvestTool(event.metadata);
+        ItemStack tool = event.entityPlayer.getCurrentEquippedItem();
+
+        Block block = event.block;
+        int hlvl = event.block.getHarvestLevel(event.metadata);
+
+        // does the block require a tool?
+        // tool requires a harvest level, but does the material require a tool?
+        // if tool harvestlevel less then level needed
+        if (hlvl > 0 && block.getMaterial()
+            .isToolNotRequired()
+            && tool != null
+            && tool.getItem() != null
+            && tool.getItem()
+                .getHarvestLevel(tool, toolStr) < hlvl) {
+            event.setCanceled(true);
+            return;
+        }
 
         if (isTool(tool) && !ToolTagsHelper.isBroken(tool)) {
             ToolTagsHelper.getTraitsOrdered(tool)

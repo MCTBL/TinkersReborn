@@ -7,13 +7,13 @@ import java.util.Map;
 
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.util.ColorUtil;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public final class MiningLevelHelper {
 
@@ -24,7 +24,7 @@ public final class MiningLevelHelper {
     public static Map<String, MiningLevel> nameToLevel;
     public static List<MiningLevel> levelList;
 
-    public static void init() {
+    public static void preInit() {
         Map<String, EnumChatFormatting> charToFormatting = new HashMap<>();
         for (EnumChatFormatting e : EnumChatFormatting.values()) charToFormatting.put(e.toString(), e);
 
@@ -69,6 +69,18 @@ public final class MiningLevelHelper {
         return getMiningLevel(levelList.size() - 1);
     }
 
+    public static int getVanillaHarvestLevelMapping(int level) {
+        if (level >= TinkersRebornConfig.vanillaHarvestLevelMapping.length) {
+            // 0 2 5 7
+            // 0 1 2 3
+            // if last level 3 is map to 7, if trying to map level 4, it will get 4 + (7 - 3)
+            int sub = TinkersRebornConfig.vanillaHarvestLevelMapping[TinkersRebornConfig.vanillaHarvestLevelMapping.length
+                - 1] - (TinkersRebornConfig.vanillaHarvestLevelMapping.length - 1);
+            return level + sub;
+        }
+        return TinkersRebornConfig.vanillaHarvestLevelMapping[level];
+    }
+
     public static class MiningLevel {
 
         public int levelIdx;
@@ -88,12 +100,12 @@ public final class MiningLevelHelper {
         }
 
         public String getLocalization() {
-            return StatCollector.translateToLocal(this.localString);
+            return TinkersRebornUtils.translate(this.localString);
         }
 
-        public String getColorHex() {
-            return Integer.toHexString(this.color)
-                .toUpperCase();
+        public String getColoredLocalization() {
+            return ColorUtil.encodeColor(this.color) + TinkersRebornUtils.translate(this.localString);
         }
+
     }
 }
