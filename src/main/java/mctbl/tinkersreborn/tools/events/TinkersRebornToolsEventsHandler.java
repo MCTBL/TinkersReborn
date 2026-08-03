@@ -30,7 +30,6 @@ import mctbl.tinkersreborn.library.tools.IAoeTool;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
 import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
 import mctbl.tinkersreborn.tools.traits.TraitSpiky;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
@@ -53,16 +52,6 @@ public class TinkersRebornToolsEventsHandler {
                 }
             }
 
-        }
-
-        if (TinkersRebornConfig.debug) {
-            Block temp = Block.getBlockFromItem(e.itemStack.getItem());
-            if (temp != null) {
-                e.toolTip.add(
-                    "Harvest level "
-                        + MiningLevelHelper.getMiningLevel(temp.getHarvestLevel(e.itemStack.getItemDamage()))
-                            .getColoredLocalization());
-            }
         }
     }
 

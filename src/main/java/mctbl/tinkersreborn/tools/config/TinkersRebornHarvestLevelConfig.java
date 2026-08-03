@@ -11,12 +11,16 @@ import static net.minecraft.init.Blocks.lit_redstone_ore;
 import static net.minecraft.init.Blocks.redstone_ore;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.config.ConfigCategory;
@@ -27,6 +31,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.blocks.GravelOre;
+import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
 import mctbl.tinkersreborn.library.utils.MiningLevelHelper.MiningLevel;
 
@@ -42,22 +47,28 @@ public class TinkersRebornHarvestLevelConfig {
         // overwrites our Harvestlevel changes.
         // see ForgeHooks.initTools()
 
-        // blocks part
         if (TinkersRebornConfig.exportHarvestLevelDefaultConfig) {
-            saveDeafult();
+            saveBlockDeafult();
+            saveToolDefault();
         }
 
+        // blocks part
         // vanllia block override
         harvestLevelOverride();
         // ore dict block override
         oreDictOverride();
         // extra override
         blockOverride();
+
+        // tools part
+        modifyTools();
+        // extra override
+        toolOverride();
     }
 
-    private static void saveDeafult() {
+    private static void saveBlockDeafult() {
         Configuration cfg = new Configuration(
-            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornHarvestLevelDefault.cfg"));
+            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornBlockHarvestLevelDefault.cfg"));
         // blocks can not really be added automatically because derp
         for (Object key : Block.blockRegistry.getKeys()) {
             Block block = (Block) Block.blockRegistry.getObject(key);
@@ -89,6 +100,38 @@ public class TinkersRebornHarvestLevelConfig {
         cfg.save();
     }
 
+    private static void saveToolDefault() {
+        Configuration cfg = new Configuration(
+            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornToolHarvestLevelDefault.cfg"));
+        for (Object identifier : Item.itemRegistry.getKeys()) {
+            Object o = Item.itemRegistry.getObject(identifier);
+            if (!(o instanceof Item) || o instanceof ItemBlock || o instanceof ToolCore) continue;
+
+            Item item = (Item) o;
+            ItemStack stack = new ItemStack(item); // let's assume there are no sick bastards who use metadata to group
+                                                   // tools into a singular id
+            // ._.
+
+            String saneCategory = buildCategory(identifier.toString());
+
+            for (String tool : item.getToolClasses(stack)) {
+                int level = item.getHarvestLevel(stack, tool);
+                cfg.get(saneCategory, tool, level)
+                    .getInt();
+            }
+        }
+        cfg.save();
+    }
+
+    private static String buildCategory(String identifier) {
+        // make it sane
+        String cat = identifier.replace(".", "_"); // replace '.' in string.. blah. this
+                                                   // sucks
+        // then split it into subcategory of mod-id
+        return cat.replaceFirst(":", ".")
+            .toLowerCase();
+    }
+
     private static void harvestLevelOverride() {
         Blocks.obsidian.setHarvestLevel("pickaxe", getVanillaHarvestLevelMapping(3));
         Blocks.enchanting_table.setHarvestLevel("pickaxe", getVanillaHarvestLevelMapping(3));
@@ -104,9 +147,9 @@ public class TinkersRebornHarvestLevelConfig {
         Blocks.quartz_ore.setHarvestLevel("pickaxe", getVanillaHarvestLevelMapping(0));
     }
 
-    private static void readCfg() {
+    private static void oreDictOverride() {
         Configuration cfg = new Configuration(
-            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornOreDictHarvestLevelOverride.cfg"));
+            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornOreDictBlockHarvestLevelOverride.cfg"));
         cfg.load();
 
         StringBuilder comment = new StringBuilder("write ore dict under here\n");
@@ -122,10 +165,6 @@ public class TinkersRebornHarvestLevelConfig {
                     .getStringList());
         }
         cfg.save();
-    }
-
-    private static void oreDictOverride() {
-        readCfg();
         for (int i = 0; i < oreDictLevels.size(); ++i) for (String materialName : oreDictLevels.get(i)) {
             for (String prefix : TinkersRebornConfig.oreDictPrefixes)
                 for (ItemStack oreStack : OreDictionary.getOres(prefix + materialName)) modifyBlock(oreStack, i);
@@ -144,7 +183,7 @@ public class TinkersRebornHarvestLevelConfig {
      */
     private static void blockOverride() {
         Configuration cfg = new Configuration(
-            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornHarvestLevelOverride.cfg"));
+            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornBlockHarvestLevelOverride.cfg"));
         cfg.load();
 
         // write help comment into the Info category
@@ -244,6 +283,112 @@ public class TinkersRebornHarvestLevelConfig {
                 // exception can occur if stuff does weird things metadatas
             }
         }
+    }
+
+    private static void modifyTools() {
+        ItemStack tmp = new ItemStack(Items.stick); // we need one as argument, it's never actually accessed...
+        // search for all items that have pickaxe harvestability
+        for (Object o : Item.itemRegistry) {
+            Item item = (Item) o;
+            // cycle through all toolclasses. usually this'll either be pickaxe, shovel or axe. But mods could add items
+            // with multiple.
+            for (String toolClass : item.getToolClasses(tmp)) {
+                // adapt harvest levels
+                int old = item.getHarvestLevel(tmp, toolClass);
+                // wood/gold tool unchanged
+                if (old <= 0) continue;
+
+                int hlvl = getVanillaHarvestLevelMapping(old);
+
+                updateToolHarvestLevel(item, toolClass, hlvl);
+
+                if (TinkersRebornConfig.debug) TinkersReborn.LOG.debug(
+                    String.format(
+                        "Changed Harvest Level for %s of %s from %d to %d",
+                        toolClass,
+                        item.getUnlocalizedName(),
+                        old,
+                        hlvl));
+            }
+        }
+    }
+
+    private static void toolOverride() {
+        Configuration cfg = new Configuration(
+            new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornToolHarvestLevelOverride.cfg"));
+        cfg.load();
+
+        StringBuilder comment = new StringBuilder();
+        comment.append(
+            "Copy the desired tools you want to change from the defaults file into this file and adapt the stats.\n\n");
+
+        comment.append("Mining Levels:\n");
+        for (MiningLevel level : MiningLevelHelper.levelList) {
+            comment.append(String.format("  %d - %s%n", level.levelIdx, level.getLocalization()));
+        }
+
+        cfg.setCategoryComment(" Info", comment.toString());
+
+        for (Object identifier : Item.itemRegistry.getKeys()) {
+            Object o = Item.itemRegistry.getObject(identifier);
+            if (!(o instanceof Item) || o instanceof ItemBlock) continue;
+            // only load if it has a value
+            String saneCategory = buildCategory(identifier.toString());
+
+            if (!cfg.hasCategory(saneCategory)) continue;
+
+            Item item = (Item) o;
+            ItemStack stack = new ItemStack(item); // let's assume there are no sick bastards who use metadata to group
+                                                   // tools into a singular id
+            // ._.
+
+            boolean changed = false;
+            for (String tool : item.getToolClasses(stack)) {
+                int level = item.getHarvestLevel(stack, tool);
+                int newLevel = cfg.get(saneCategory, tool, level)
+                    .getInt();
+
+                // update tool
+                if (level != newLevel) {
+                    updateToolHarvestLevel(item, tool, newLevel);
+                    if (TinkersRebornConfig.debug) TinkersReborn.LOG.info(
+                        String.format(
+                            "Tool Override: Changed harvest level of %s to %d",
+                            item.getUnlocalizedName(),
+                            newLevel));
+                    changed = true;
+                }
+            }
+            if (!changed) cfg.removeCategory(cfg.getCategory(saneCategory));
+        }
+    }
+
+    public static void updateToolHarvestLevel(Item item, String toolClass, int hlvl) {
+        item.setHarvestLevel(toolClass, hlvl);
+        // meh. special fix for CofH tools
+        Class clazz = item.getClass();
+        while (clazz != Object.class) {
+            if (clazz.getSimpleName()
+                .equals("ItemToolAdv")) {
+                try {
+                    Field hlvlField = clazz.getDeclaredField("harvestLevel");
+                    hlvlField.setAccessible(true);
+                    hlvlField.set(item, hlvl);
+                } catch (NoSuchFieldException e) {
+                    // errorrr
+                    TinkersReborn.LOG.error("Couldn't find harvestlevel of " + item.getUnlocalizedName());
+                } catch (IllegalAccessException e) {
+                    TinkersReborn.LOG.error("Couldn't change harvestlevel of " + item.getUnlocalizedName());
+                }
+                break;
+            }
+            clazz = clazz.getSuperclass();
+        }
+
+        // check if the setting was successful
+        if (item.getHarvestLevel(new ItemStack(item), toolClass) != hlvl) TinkersReborn.LOG.error(
+            "Could not set harvestlevel of " + item.getUnlocalizedName()
+                + ". Contact the Mod Author to properly support Item.setHarvestLevel().");
     }
 
 }
