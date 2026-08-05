@@ -39,6 +39,7 @@ dependencies {
 //    compileOnly("com.github.GTNewHorizons:Mobs-Info:0.5.18-GTNH:dev")
 //    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.4')
     api('org.joml:joml:1.10.5')
+    compileOnly("com.github.GTNewHorizons:TinkersConstruct:1.14.96-GTNH:dev")
 
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:ToroHealth:1.2.3:dev')
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:waila:1.19.31:api')

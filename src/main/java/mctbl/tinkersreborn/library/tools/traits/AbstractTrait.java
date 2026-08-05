@@ -33,13 +33,12 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
     public static final Logger LOG = LogManager.getLogger(TinkersReborn.MODID + "Trait");
     protected final int color;
 
-    public AbstractTrait(String identifier, EnumChatFormatting color) {
+    protected AbstractTrait(String identifier, EnumChatFormatting color) {
         this(identifier, ColorUtil.enumChatFormattingToColor(color));
     }
 
-    public AbstractTrait(String identifier, int color) {
+    protected AbstractTrait(String identifier, int color) {
         super(TinkersRebornUtils.sanitizeLocalizationString(identifier));
-        // this.identifier = Util.sanitizeLocalizationString(identifier);
         this.color = color;
         this.type = ToolTags.TYPETRAITS;
 
@@ -69,7 +68,6 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
     }
 
     /* Updating */
-
     @Override
     public void onUpdate(ItemStack tool, World world, Entity entity, int itemSlot, boolean isSelected) {}
 
@@ -77,7 +75,6 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
     public void onArmorTick(ItemStack tool, World world, EntityPlayer player) {}
 
     /* Mining & Harvesting */
-
     @Override
     public void miningSpeed(ItemStack tool, PlayerEvent.BreakSpeed event) {}
 
@@ -122,7 +119,6 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
     public void onBlock(ItemStack tool, EntityPlayer player, LivingHurtEvent event) {}
 
     /* Durability and repairing */
-
     @Override
     public int onToolDamage(ItemStack tool, int damage, int newDamage, EntityLivingBase entity) {
         return newDamage;

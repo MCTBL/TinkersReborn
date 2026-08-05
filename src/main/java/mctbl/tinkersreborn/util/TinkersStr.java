@@ -85,7 +85,16 @@ public enum TinkersStr {
     uselessTool2("tooltip.uselessTool2"),
     uselessBow1("tooltip.uselessBow1"),
     uselessHoe1("tooltip.uselessHoe1"),
-    uselessWeapon1("tooltip.uselessWeapon1"),;
+    uselessWeapon1("tooltip.uselessWeapon1"),
+
+    // foods
+    strangefood1("tooltip.strangefood1"),
+    strangefood2("tooltip.strangefood2"),
+    strangefood3("tooltip.strangefood3"),
+    strangefood4("tooltip.strangefood4"),
+    strangefood5("tooltip.strangefood5"),
+    strangefood6("tooltip.strangefood6"),
+    strangefood7("tooltip.strangefood7"),;
 
     static String modPrefix = TinkersReborn.MODID;
     String localization;

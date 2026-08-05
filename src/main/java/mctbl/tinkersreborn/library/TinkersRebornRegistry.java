@@ -41,6 +41,7 @@ import mctbl.tinkersreborn.library.smeltery.ICastingRecipe;
 import mctbl.tinkersreborn.library.smeltery.PreferenceCastingRecipe;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.utils.DryingRecipe;
 import mctbl.tinkersreborn.library.utils.HeadDropCallback;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
@@ -93,6 +94,8 @@ public class TinkersRebornRegistry {
     protected static final List<ItemStack> meltingBlacklist = new ArrayList<>();
 
     protected static final Map<Fluid, Set<Pair<String, Integer>>> knownOreFluids = new HashMap<>();
+
+    protected static final List<DryingRecipe> dryingRegistry = new ArrayList<>();
 
     public void preInit() {
         this.initCreativeTab();
@@ -784,5 +787,137 @@ public class TinkersRebornRegistry {
 
     public static List<AlloyRecipe> getAlloys() {
         return ImmutableList.copyOf(alloyRegistry);
+    }
+
+    /**
+     * @return The list of all drying rack recipes
+     */
+    public static List<DryingRecipe> getAllDryingRecipes() {
+        return ImmutableList.copyOf(dryingRegistry);
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param input  Input ItemStack
+     * @param output Output ItemStack
+     * @param time   Recipe time in ticks
+     */
+    public static void registerDryingRecipe(ItemStack input, ItemStack output, int time) {
+        if (TinkersRebornUtils.isStackEmpty(output) || TinkersRebornUtils.isStackEmpty(input)) {
+            return;
+        }
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Item(input, 1), output, time));
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param input  Input Item
+     * @param output Output ItemStack
+     * @param time   Recipe time in ticks
+     */
+    public static void registerDryingRecipe(Item input, ItemStack output, int time) {
+        if (TinkersRebornUtils.isStackEmpty(output) || input == null) {
+            return;
+        }
+
+        ItemStack stack = new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE);
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Item(stack, 1), output, time));
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param input  Input Item
+     * @param output Output Item
+     * @param time   Recipe time in ticks
+     */
+    public static void registerDryingRecipe(Item input, Item output, int time) {
+        if (output == null || input == null) {
+            return;
+        }
+
+        ItemStack stack = new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE);
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Item(stack, 1), new ItemStack(output), time));
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param input  Input Block
+     * @param output Output Block
+     * @param time   Recipe time in ticks
+     */
+    public static void registerDryingRecipe(Block input, Block output, int time) {
+        if (output == null || input == null) {
+            return;
+        }
+
+        ItemStack stack = new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE);
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Item(stack, 1), new ItemStack(output), time));
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param oredict Input ore dictionary entry
+     * @param output  Output ItemStack
+     * @param time    Recipe time in ticks
+     */
+    public static void registerDryingRecipe(String oredict, ItemStack output, int time) {
+        if (TinkersRebornUtils.isStackEmpty(output) || oredict == null) {
+            return;
+        }
+
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Oredict(oredict, 1), output, time));
+    }
+
+    public static void addDryingRecipe(DryingRecipe recipe) {
+        // if(new TinkerRegisterEvent.DryingRackRegisterEvent(recipe).fire()) {
+        dryingRegistry.add(recipe);
+        // }
+        // else {
+        // try {
+        // String input = recipe.input.getInputs().stream().findFirst().map(ItemStack::getUnlocalizedName).orElse("?");
+        // String output = recipe.getResult().getUnlocalizedName();
+        // log.debug("Registration of drying rack recipe for " + output + " from " + input + " has been cancelled by
+        // event");
+        // } catch(Exception e) {
+        // log.error("Error when logging drying rack event", e);
+        // }
+        // }
+    }
+
+    /**
+     * Gets the drying time for a drying recipe
+     *
+     * @param input Input ItemStack
+     * @return Output drying time, or -1 if no recipe is found
+     */
+    public static int getDryingTime(ItemStack input) {
+        for (DryingRecipe r : dryingRegistry) {
+            if (r.matches(input)) {
+                return r.getTime();
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Gets the result for a drying recipe
+     *
+     * @param input Input ItemStack
+     * @return Output A copy of the output ItemStack, or Itemstack.EMPTY if no recipe is found
+     */
+    public static ItemStack getDryingResult(ItemStack input) {
+        for (DryingRecipe r : dryingRegistry) {
+            if (r.matches(input)) {
+                return r.getResult();
+            }
+        }
+
+        return null;
     }
 }

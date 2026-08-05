@@ -2,5 +2,5 @@ package mctbl.tinkersreborn.common;
 
 public class TinkersRebornGeneralProxyCommon {
 
-    public void initialize() {}
+    public void init() {}
 }

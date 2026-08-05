@@ -52,6 +52,7 @@ tinkersreborn.PartBuilder.name=Part Builder
 tinkersreborn.CastChest.name=Cast Chest
 tinkersreborn.PartChest.name=Part Chest
 tinkersreborn.CraftingStation.name=Crafting Station
+tinkersreborn.DryingRack.name=Drying Rack
 
 tinkersreborn.glueblock.name=Glue Block
 tinkersreborn.MultiBlock.Cobblestone.name=Seared Cobblestone
@@ -629,3 +630,21 @@ tinkersreborn.tooltip.uselessTool2=It can only be used for crafting
 tinkersreborn.tooltip.uselessHoe1=This hoe cannot hoe anything!
 tinkersreborn.tooltip.uselessWeapon1=This weapon hits like a wet noodle!
 tinkersreborn.tooltip.uselessBow1=This bows bowstring snapped!
+
+tinkersreborn.tooltip.strangefood1=It smells terrible, but if you
+tinkersreborn.tooltip.strangefood2=have nothing else to eat...
+tinkersreborn.tooltip.strangefood3=It seems edible, but somehow
+tinkersreborn.tooltip.strangefood4=it's just not appealing.
+tinkersreborn.tooltip.strangefood5=Stretchy food!
+tinkersreborn.tooltip.strangefood6=One vampiric appetizer
+tinkersreborn.tooltip.strangefood7=The mysteriously appearing snack
+
+tinkersreborn.jerky.name=Jerky
+tinkersreborn.jerky.beef.name=Beef Jerky
+tinkersreborn.jerky.pig.name=Bacon Jerky
+tinkersreborn.jerky.chicken.name=Chicken Jerky
+tinkersreborn.jerky.sheep.name=Mutton Jerky
+tinkersreborn.jerky.fish.name=Fish Jerky
+tinkersreborn.jerky.zombie.name=Monster Jerky
+tinkersreborn.jerky.blueslime.name=Gelatinous Slime Drop
+tinkersreborn.jerky.blood.name=Coagulated Blood Drop

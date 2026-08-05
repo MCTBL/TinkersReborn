@@ -35,8 +35,6 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
         super(m);
     }
 
-    public abstract TileEntity createNewTileEntity(World world, int metadata);
-
     public boolean openGui(EntityPlayer player, World world, BlockPos pos) {
         if (!world.isRemote) {
             player.openGui(TinkersReborn.instance, 0, world, pos.getX(), pos.getY(), pos.getZ());

@@ -22,6 +22,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -32,6 +33,7 @@ import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.client.StepSoundSlime;
 import mctbl.tinkersreborn.common.blocks.ConsecratedSoil;
+import mctbl.tinkersreborn.common.blocks.DryingRackBlock;
 import mctbl.tinkersreborn.common.blocks.GravelOre;
 import mctbl.tinkersreborn.common.blocks.GraveyardSoil;
 import mctbl.tinkersreborn.common.blocks.Grout;
@@ -47,6 +49,7 @@ import mctbl.tinkersreborn.common.blocks.slime.SlimeLeaves;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeSapling;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeTallGrass;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
+import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
 import mctbl.tinkersreborn.common.itemblocks.MetalOreItemBlock;
@@ -57,7 +60,9 @@ import mctbl.tinkersreborn.common.itemblocks.SlimeSaplingItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeTallGrassItem;
 import mctbl.tinkersreborn.common.itemblocks.TinkersRebornMetalItemBlock;
 import mctbl.tinkersreborn.common.items.GoldenHead;
+import mctbl.tinkersreborn.common.items.Jerky;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
@@ -76,6 +81,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Item tinkersBucket;
     public static Block stoneTorch;
     public static Item goldHead;
+    public static Item jerky;
     public static Block metalBlock;
     public static Block slimeSand;
     public static Block grout;
@@ -98,6 +104,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     // Ores
     public static Block oreSlag;
     public static Block oreGravel;
+    public static Block dryingRack;
 
     // Chest hooks
     public static ChestGenHooks tinkerHouseChest;
@@ -113,6 +120,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         goldHead = new GoldenHead(4, 1.2F, false);
         GameRegistry.registerItem(goldHead, goldHead.getUnlocalizedName());
+
+        jerky = new Jerky(Loader.isModLoaded("HungerOverhaul") || Loader.isModLoaded("fc_food"));
+        GameRegistry.registerItem(jerky, jerky.getUnlocalizedName());
 
         metalBlock = new TinkersRebornMetalBlock(Material.iron, 10.0F);
         GameRegistry.registerBlock(metalBlock, TinkersRebornMetalItemBlock.class, metalBlock.getUnlocalizedName());
@@ -159,6 +169,10 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         bloodFluid = new TinkersRebornFluid("blood", 0xFF0000, "blood");
 
+        dryingRack = new DryingRackBlock();
+        GameRegistry.registerBlock(dryingRack, dryingRack.getUnlocalizedName());
+        GameRegistry.registerTileEntity(DryingRackLogic.class, dryingRack.getUnlocalizedName());
+
         // Vanilla stack sizes
         Items.wooden_door.setMaxStackSize(16);
         Items.iron_door.setMaxStackSize(16);
@@ -177,7 +191,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         }
         this.addLoot();
         this.createEntities();
-        proxy.initialize();
+        this.registerDrying();
+        proxy.init();
 
         GameRegistry.registerWorldGenerator(new TinkersRebornWorldGenerator(), 0);
         MinecraftForge.TERRAIN_GEN_BUS.register(new TinkersRebornSurfaceOreGen());
@@ -273,5 +288,19 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
                 EnumCreatureType.monster,
                 set.toArray(new BiomeGenBase[0]));
         }
+    }
+
+    private void registerDrying() {
+        // Jerky
+        int time = 20 * 60 * 5;
+        TinkersRebornRegistry.registerDryingRecipe(Items.beef, new ItemStack(jerky, 1, 0), time);
+        TinkersRebornRegistry.registerDryingRecipe(Items.chicken, new ItemStack(jerky, 1, 1), time);
+        TinkersRebornRegistry.registerDryingRecipe(Items.porkchop, new ItemStack(jerky, 1, 2), time);
+        // TinkersRebornRegistry.registerDryingRecipe(Items.mutton, new ItemStack(jerky, 1, 3), time);
+        TinkersRebornRegistry.registerDryingRecipe(Items.fish, new ItemStack(jerky, 1, 4), time);
+        TinkersRebornRegistry.registerDryingRecipe(Items.rotten_flesh, new ItemStack(jerky, 1, 5), time);
+
+        // Sapling to dead bush
+        TinkersRebornRegistry.registerDryingRecipe("treeSapling", new ItemStack(Blocks.deadbush), 20 * 60 * 6);
     }
 }
