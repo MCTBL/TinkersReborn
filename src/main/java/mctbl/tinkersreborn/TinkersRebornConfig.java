@@ -29,6 +29,7 @@ public class TinkersRebornConfig {
     public static Set<String> excludedTools = new HashSet<String>();
     public static Set<String> excludedModTools = new HashSet<String>();
 
+    public static boolean keepHunger;
     public static boolean disableAllRecipes;
     public static String[] miningLevels;
     public static String fluidUnit;
@@ -101,6 +102,9 @@ public class TinkersRebornConfig {
         config.load();
 
         debug = config.get("General", "debug", true, "debug mode")
+            .getBoolean();
+
+        keepHunger = config.get("General", "keepHunger", true, "Keep hunger on death")
             .getBoolean();
 
         disableAllRecipes = config
