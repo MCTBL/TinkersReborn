@@ -51,6 +51,7 @@ import mctbl.tinkersreborn.common.blocks.slime.SlimeTallGrass;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
+import mctbl.tinkersreborn.common.events.TinkersRebornPlayerHandler;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
 import mctbl.tinkersreborn.common.itemblocks.MetalOreItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeGelItemBlock;
@@ -60,6 +61,7 @@ import mctbl.tinkersreborn.common.itemblocks.SlimeSaplingItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeTallGrassItem;
 import mctbl.tinkersreborn.common.itemblocks.TinkersRebornMetalItemBlock;
 import mctbl.tinkersreborn.common.items.GoldenHead;
+import mctbl.tinkersreborn.common.items.HeartCanister;
 import mctbl.tinkersreborn.common.items.Jerky;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -109,6 +111,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     // Chest hooks
     public static ChestGenHooks tinkerHouseChest;
     public static ChestGenHooks tinkerHousePatterns;
+
+    public static Item heartCanister;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -173,6 +177,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(dryingRack, dryingRack.getUnlocalizedName());
         GameRegistry.registerTileEntity(DryingRackLogic.class, dryingRack.getUnlocalizedName());
 
+        heartCanister = new HeartCanister();
+        GameRegistry.registerItem(heartCanister, heartCanister.getUnlocalizedName());
+
         // Vanilla stack sizes
         Items.wooden_door.setMaxStackSize(16);
         Items.iron_door.setMaxStackSize(16);
@@ -181,6 +188,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         Items.cake.setMaxStackSize(16);
 
         oreRegistry();
+
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornPlayerHandler());
     }
 
     @Override

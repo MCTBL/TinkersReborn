@@ -117,6 +117,12 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int p_77617_1_) {
+        return this.itemIcon;
+    }
+
+    @Override
     public FontRenderer getFontRenderer(ItemStack stack) {
         return TinkersRebornGeneralProxyClient.fontRender;
     }

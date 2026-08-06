@@ -61,13 +61,11 @@ public class CraftingItem extends Item {
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
-        if (unlocalizedNames != null) {
-            int arr = MathHelper.clamp_int(stack.getItemDamage(), 0, unlocalizedNames.length - 1);
-            return super.getUnlocalizedName() + "." + unlocalizedNames[arr];
-        } else {
-            return super.getUnlocalizedName();
-        }
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconFromDamage(int meta) {
+        int arr = MathHelper.clamp_int(meta, 0, this.unlocalizedNames.length);
+        if (arr >= icons.length) return icons[0];
+        return icons[arr];
     }
 
     @Override

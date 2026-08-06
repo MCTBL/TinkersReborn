@@ -80,6 +80,16 @@ public enum TinkersStr {
     tooltipSkillLevel("tooltip.level.skilllevel"),
     tooltipSkillxp("tooltip.level.skillxp"),
 
+    accessory("item.accessory"),
+    crafting("item.crafting"),
+    canister("canister"),
+    canisterRed1("canister.red1"),
+    canisterRed2("canister.red2"),
+    canisterYellow1("canister.yellow1"),
+    canisterYellow2("canister.yellow2"),
+    canisterGreen1("canister.green1"),
+    canisterGreen2("canister.green2"),
+
     // nerf vanilla
     uselessTool1("tooltip.uselessTool1"),
     uselessTool2("tooltip.uselessTool2"),

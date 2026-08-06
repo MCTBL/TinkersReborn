@@ -128,7 +128,13 @@ tinkersreborn.Cast=Cast
 tinkersreborn.CastIngot=Ingot Cast
 tinkersreborn.CastGem=Gem Cast
 tinkersreborn.CastNugget=Nugget Cast
-
+tinkersreborn.canister.empty.name=Empty Canister
+tinkersreborn.canister.miniheart.red.name=Miniature Red Heart
+tinkersreborn.canister.red.name=Red Heart Canister
+tinkersreborn.canister.miniheart.yellow.name=Miniature Yellow Heart
+tinkersreborn.canister.yellow.name=Yellow Heart Canister
+tinkersreborn.canister.miniheart.green.name=Miniature Green Heart
+tinkersreborn.canister.green.name=Green Heart Canister
 
 
 // materials
@@ -648,3 +654,13 @@ tinkersreborn.jerky.fish.name=Fish Jerky
 tinkersreborn.jerky.zombie.name=Monster Jerky
 tinkersreborn.jerky.blueslime.name=Gelatinous Slime Drop
 tinkersreborn.jerky.blood.name=Coagulated Blood Drop
+
+tinkersreborn.item.crafting=Crafting Item
+tinkersreborn.item.accessory=Accessory
+tinkersreborn.canister=Permanent health increase
+tinkersreborn.canister.red1=Part of low-level Heart Canisters
+tinkersreborn.canister.red2=Can be eaten to restore 10 hearts
+tinkersreborn.canister.yellow1=Part of mid-level Heart Canisters
+tinkersreborn.canister.yellow2=Can be eaten to restore 20 hearts
+tinkersreborn.canister.green1=Part of high-level Heart Canisters
+tinkersreborn.canister.green2=Can be eaten to restore 30 hearts

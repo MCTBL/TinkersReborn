@@ -53,7 +53,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
     public static final String TAG_LAUNCHER = "launcher";
     public static final String TAG_POWER = "power";
 
-    protected static final UUID PROJECTILE_POWER_MODIFIER = UUID.fromString("c6aefc21-081a-4c4a-b076-8f9d6cef9122");
+    protected static final UUID PROJECTILE_POWER_MODIFIER = UUID.fromString("28D447FF-51E4-4A80-A898-3BD7D9CFA21E");
     // projectiles tend to land about this far from any given block face
     private static final AxisAlignedBB ON_BLOCK_AABB = AxisAlignedBB
         .getBoundingBox(-0.05D, -0.05D, -0.05D, 0.05D, 0.05D, 0.05D);

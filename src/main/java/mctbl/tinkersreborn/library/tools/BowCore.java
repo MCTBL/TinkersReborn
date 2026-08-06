@@ -42,8 +42,8 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public abstract class BowCore extends ToolCore {
 
-    protected static final UUID LAUNCHER_BONUS_DAMAGE = UUID.fromString("066b8892-d2ac-4bae-ac22-26f9f91a02ee");
-    protected static final UUID LAUNCHER_DAMAGE_MODIFIER = UUID.fromString("4f76565a-3845-4a09-ba8f-92a37937a7c3");
+    protected static final UUID LAUNCHER_BONUS_DAMAGE = UUID.fromString("1E380EAF-3090-48B4-9756-164975C32DF9");
+    protected static final UUID LAUNCHER_DAMAGE_MODIFIER = UUID.fromString("B66BCBCC-0B2B-4FFA-8588-7CEA18860DEE");
 
     protected BowCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
