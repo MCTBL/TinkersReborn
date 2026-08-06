@@ -44,21 +44,19 @@ public class HeartCanister extends CraftingItem {
         int meta = stack.getItemDamage();
         if (meta == 1 || meta == 3 || meta == 5) {
             player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
-        }
-        if (!world.isRemote && meta == 2) {
+        } else if (!world.isRemote && (meta == 2 || meta == 4 || meta == 6)) {
             TinkersRebornPlayerStats stats = TinkersRebornPlayerStats.get(player);
             if (stats != null && stats.heartCanister != null) {
-                PlayerHeartCanisterExtended armor = stats.heartCanister;
-                ItemStack slotStack = armor.getStackInSlot(6);
-                if (slotStack == null) // || slotStack.getItem() == this)
-                {
-                    armor.setInventorySlotContents(6, new ItemStack(this, 1, 2));
+                PlayerHeartCanisterExtended hearts = stats.heartCanister;
+                ItemStack slotStack = hearts.getStackInSlot(meta / 2 - 1);
+                if (slotStack == null) {
+                    hearts.setInventorySlotContents(meta / 2 - 1, new ItemStack(this, 1, meta));
                     stack.stackSize--;
                 } else if (slotStack.getItem() == this && slotStack.stackSize < this.maxStackSize) {
                     slotStack.stackSize++;
                     stack.stackSize--;
                 }
-                armor.recalculateHealth(player, stats);
+                hearts.recalculateHealth(player, stats);
             }
         }
         return stack;

@@ -3,8 +3,6 @@ package mctbl.tinkersreborn.common.player;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 
-import mctbl.tinkersreborn.common.items.HeartCanister;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
@@ -13,6 +11,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import mctbl.tinkersreborn.common.items.HeartCanister;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class PlayerHeartCanisterExtended implements IInventory {
 
