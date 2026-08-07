@@ -2,10 +2,12 @@ package mctbl.tinkersreborn.tools.gui;
 
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -23,6 +25,10 @@ import org.lwjgl.util.Point;
 
 import com.google.common.collect.Lists;
 
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
@@ -52,7 +58,8 @@ import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 @SideOnly(Side.CLIENT)
-public class GuiToolStation extends GuiTinkerStation {
+@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
+public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(
         TinkersReborn.MODID,
@@ -560,5 +567,35 @@ public class GuiToolStation extends GuiTinkerStation {
         toolInfo.setText(message);
         traitInfo.setCaption(null);
         traitInfo.setText();
+    }
+
+    // NEI
+    @Override
+    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+        return currentVisibility;
+    }
+
+    @Override
+    public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
+        int guiXStart = guiLeft - buttons.xSize() + 4;
+        int guiXEnd = guiLeft + xSize + toolInfo.xSize() - 4;
+        int guiYStart = guiTop + 4;
+        int guiYEnd = guiTop + ySize - 4;
+        return x + w >= guiXStart && x <= guiXEnd && y + h >= guiYStart && y <= guiYEnd;
     }
 }

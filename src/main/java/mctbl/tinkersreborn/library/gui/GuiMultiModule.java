@@ -171,7 +171,9 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         }
     }
 
+    @Override
     public boolean func_146978_c(int left, int top, int right, int bottom, int pointX, int pointY) {
+        // isPointInRegion
         pointX -= this.cornerX;
         pointY -= this.cornerY;
         return pointX >= left - 1 && pointX < left + right + 1 && pointY >= top - 1 && pointY < top + bottom + 1;
