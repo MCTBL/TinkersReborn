@@ -3,7 +3,6 @@ package mctbl.tinkersreborn.tools.gui.module;
 import java.util.List;
 import java.util.ListIterator;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.EnumChatFormatting;
@@ -89,11 +88,6 @@ public class GuiInfoPanel extends GuiModule {
         caption = "Caption";
         text = Lists.newLinkedList();
 
-    }
-
-    @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height) {
-        super.setWorldAndResolution(mc, width, height);
     }
 
     @Override
@@ -196,7 +190,7 @@ public class GuiInfoPanel extends GuiModule {
             w -= slider.width + 3;
         }
 
-        w = (int) ((float) w / textScale);
+        w = (int) (w * 1.0F / textScale);
 
         List<String> lines = Lists.newLinkedList();
         tooltipLines.clear();
@@ -329,7 +323,7 @@ public class GuiInfoPanel extends GuiModule {
         // TODO tooltip position is incorrect
         drawHoveringText(
             lines,
-            (int) (mouseX - guiLeft + this.xSize * 1.5F),
+            mouseX - guiLeft,
             mouseY - guiTop - lines.size() * fontRenderer.FONT_HEIGHT / 2,
             this.fontRenderer);
     }
@@ -340,10 +334,10 @@ public class GuiInfoPanel extends GuiModule {
             .bindTexture(BACKGROUND);
 
         border.draw();
-        background.drawScaled(guiLeft + 4, guiTop + 4, xSize - 8, ySize - 8);
+        background.drawScaled(guiLeft + 4, guiTop, xSize - 8, ySize - 8);
 
-        float y = 5 + guiTop;
-        float x = 5 + guiLeft;
+        float y = 5.0F + guiTop;
+        float x = 5.0F + guiLeft;
         int color = 0xfff0f0f0;
 
         // info ? in the top right corner
@@ -368,7 +362,7 @@ public class GuiInfoPanel extends GuiModule {
             y += fontRenderer.FONT_HEIGHT + 3;
         }
 
-        if (text == null || text.size() == 0) {
+        if (text == null || text.isEmpty()) {
             // no text to draw
             return;
         }
@@ -398,11 +392,5 @@ public class GuiInfoPanel extends GuiModule {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         slider.update(mouseX, mouseY, !isMouseOverFullSlot(mouseX, mouseY) && isMouseInModule(mouseX, mouseY));
         slider.draw();
-    }
-
-    public void guiTopBias(int bias) {
-        this.guiTop += bias;
-        border.setPosition(guiLeft, guiTop);
-        slider.setPosition(guiRight() - border.w - 2, guiTop + border.h + 12);
     }
 }

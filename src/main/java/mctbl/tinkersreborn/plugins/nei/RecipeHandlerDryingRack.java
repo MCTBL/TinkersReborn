@@ -84,7 +84,6 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
                 for (ItemStack input : drying.input.getInputs()) {
                     this.arecipes.add(new CachedDryingRackRecipe(input, drying.getResult(), drying.time));
                 }
-
             }
         } else {
             super.loadCraftingRecipes(outputId, results);
@@ -99,7 +98,6 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
                     this.arecipes.add(new CachedDryingRackRecipe(input, drying.getResult(), drying.time));
                 }
             }
-
         }
     }
 

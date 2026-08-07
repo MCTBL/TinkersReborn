@@ -22,7 +22,7 @@ import mctbl.tinkersreborn.library.inventory.slots.SlotWrapper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 @SideOnly(Side.CLIENT)
-public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler {
+public class GuiMultiModule extends GuiContainer {
 
     protected List<GuiModule> modules = new ArrayList<>();
 
@@ -112,7 +112,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     }
 
     protected void drawContainerName() {
-        ContainerMultiModule multiContainer = (ContainerMultiModule) this.inventorySlots;
+        ContainerMultiModule<?> multiContainer = (ContainerMultiModule<?>) this.inventorySlots;
         String localizedName = multiContainer.getInventoryDisplayName();
         if (localizedName != null) {
             this.fontRendererObj.drawString(localizedName, 8, 6, 0x404040);
@@ -122,11 +122,6 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     protected void drawPlayerInventoryName() {
         String localizedName = Minecraft.getMinecraft().thePlayer.inventory.getInventoryName();
         this.fontRendererObj.drawString(TinkersRebornUtils.translate(localizedName), 8, this.ySize - 96 + 2, 0x404040);
-    }
-
-    @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height) {
-        super.setWorldAndResolution(mc, width, height);
     }
 
     @Override
@@ -151,15 +146,13 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     }
 
     private void syncSlotPositions() {
-        for (Object obj : this.inventorySlots.inventorySlots) {
-            Slot slot = (Slot) obj;
+        for (Slot slot : this.inventorySlots.inventorySlots) {
             GuiModule module = getModuleForSlot(slot.slotNumber);
             if (module == null) {
                 continue;
             }
 
-            if (slot instanceof SlotWrapper) {
-                SlotWrapper wrapper = (SlotWrapper) slot;
+            if (slot instanceof SlotWrapper wrapper) {
                 wrapper.xDisplayPosition = wrapper.parent.xDisplayPosition;
                 wrapper.yDisplayPosition = wrapper.parent.yDisplayPosition;
 
@@ -202,10 +195,8 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         GuiModule module = getModuleForPoint(mouseX, mouseY);
-        if (module != null) {
-            if (module.handleMouseClicked(mouseX, mouseY, mouseButton)) {
-                return;
-            }
+        if (module != null && module.handleMouseClicked(mouseX, mouseY, mouseButton)) {
+            return;
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -213,10 +204,8 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         GuiModule module = getModuleForPoint(mouseX, mouseY);
-        if (module != null) {
-            if (module.handleMouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)) {
-                return;
-            }
+        if (module != null && module.handleMouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)) {
+            return;
         }
 
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
@@ -266,37 +255,5 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
 
     public FontRenderer getFontRender() {
         return this.fontRendererObj;
-    }
-
-    public int guiLeft() {
-        return this.guiLeft;
-    }
-
-    public void guiLeftBias(int bias) {
-        this.guiLeft += bias;
-    }
-
-    public int guiTop() {
-        return this.guiTop;
-    }
-
-    public void guiTopBias(int bias) {
-        this.guiTop += bias;
-    }
-
-    public int xSize() {
-        return this.xSize;
-    }
-
-    public void xSizeBias(int bias) {
-        this.xSize += bias;
-    }
-
-    public int ySize() {
-        return this.ySize;
-    }
-
-    public void ySizeBias(int bias) {
-        this.ySize += bias;
     }
 }
