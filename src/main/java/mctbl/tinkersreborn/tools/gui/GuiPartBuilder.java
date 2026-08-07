@@ -59,7 +59,7 @@ public class GuiPartBuilder extends GuiTinkerStation implements INEIGuiHandler {
             (ContainerTinkerStation<?>) tile.getGuiContainer(inventoryplayer, world, x, y, z));
         materialInfo = new GuiInfoPanel(this, inventorySlots);
         this.addModule(materialInfo);
-        materialInfo.ySizeBias(83);
+        materialInfo.ySize += 83;
 
         partSelector = new GuiDynButtons(this);
 
@@ -189,7 +189,7 @@ public class GuiPartBuilder extends GuiTinkerStation implements INEIGuiHandler {
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
         int guiXStart = guiLeft + 4;
-        int guiXEnd = guiLeft + xSize + materialInfo.xSize() - 4;
+        int guiXEnd = guiLeft + xSize + materialInfo.xSize - 4;
         int guiYStart = guiTop + 4;
         int guiYEnd = guiTop + ySize - 4;
         return x + w >= guiXStart && x <= guiXEnd && y + h >= guiYStart && y <= guiYEnd;

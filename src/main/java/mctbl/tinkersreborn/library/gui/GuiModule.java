@@ -125,38 +125,6 @@ public abstract class GuiModule extends GuiContainer {
         return false;
     }
 
-    public int guiLeft() {
-        return this.guiLeft;
-    }
-
-    public void guiLeftBias(int bias) {
-        this.guiLeft += bias;
-    }
-
-    public int guiTop() {
-        return this.guiTop;
-    }
-
-    public void guiTopBias(int bias) {
-        this.guiTop += bias;
-    }
-
-    public int xSize() {
-        return this.xSize;
-    }
-
-    public void xSizeBias(int bias) {
-        this.xSize += bias;
-    }
-
-    public int ySize() {
-        return this.ySize;
-    }
-
-    public void ySizeBias(int bias) {
-        this.ySize += bias;
-    }
-
     public RenderItem getRenderItem() {
         return itemRender;
     }

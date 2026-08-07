@@ -115,7 +115,7 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
         this.addModule(traitInfo);
 
         toolInfo.yOffset = 5;
-        traitInfo.yOffset = toolInfo.ySize() + 9;
+        traitInfo.yOffset = toolInfo.ySize + 9;
 
         this.ySize = 174;
 
@@ -129,7 +129,7 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
         toolInfo.xOffset = 2;
         toolInfo.yOffset = beamC.h + panelDecorationL.h;
         traitInfo.xOffset = toolInfo.xOffset;
-        traitInfo.yOffset = toolInfo.yOffset + toolInfo.ySize() + 4;
+        traitInfo.yOffset = toolInfo.yOffset + toolInfo.ySize + 4;
 
         super.initGui();
         Keyboard.enableRepeatEvents(true);
@@ -144,7 +144,7 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
         textField.setMaxStringLength(40);
 
         for (GuiModule module : modules) {
-            module.guiTopBias(+4);
+            module.guiTop += 4;
         }
 
         updateGUI();
@@ -419,16 +419,16 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
 
         this.mc.getTextureManager()
             .bindTexture(BACKGROUND);
-        x = buttons.guiLeft() - beamL.w;
+        x = buttons.guiLeft - beamL.w;
         y = cornerY;
         // draw the beams at the top
         x += beamL.draw(x, y);
-        x += beamC.drawScaledX(x, y, buttons.xSize());
+        x += beamC.drawScaledX(x, y, buttons.xSize);
         beamR.draw(x, y);
 
-        x = toolInfo.guiLeft() - beamL.w;
+        x = toolInfo.guiLeft - beamL.w;
         x += beamL.draw(x, y);
-        x += beamC.drawScaledX(x, y, toolInfo.xSize());
+        x += beamC.drawScaledX(x, y, toolInfo.xSize);
         beamR.draw(x, y);
 
         // draw the decoration for the buttons
@@ -442,10 +442,10 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
         }
 
         // draw the decorations for the panels
-        panelDecorationL.draw(toolInfo.guiLeft() + 5, toolInfo.guiTop() - panelDecorationL.h);
-        panelDecorationR.draw(toolInfo.guiRight() - 5 - panelDecorationR.w, toolInfo.guiTop() - panelDecorationR.h);
-        panelDecorationL.draw(traitInfo.guiLeft() + 5, traitInfo.guiTop() - panelDecorationL.h);
-        panelDecorationR.draw(traitInfo.guiRight() - 5 - panelDecorationR.w, traitInfo.guiTop() - panelDecorationR.h);
+        panelDecorationL.draw(toolInfo.guiLeft + 5, toolInfo.guiTop - panelDecorationL.h);
+        panelDecorationR.draw(toolInfo.guiRight() - 5 - panelDecorationR.w, toolInfo.guiTop - panelDecorationR.h);
+        panelDecorationL.draw(traitInfo.guiLeft + 5, traitInfo.guiTop - panelDecorationL.h);
+        panelDecorationR.draw(traitInfo.guiRight() - 5 - panelDecorationR.w, traitInfo.guiTop - panelDecorationR.h);
 
         // continue as usual and hope that the drawing state is not completely wrecked
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
@@ -592,8 +592,8 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
 
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
-        int guiXStart = guiLeft - buttons.xSize() + 4;
-        int guiXEnd = guiLeft + xSize + toolInfo.xSize() - 4;
+        int guiXStart = guiLeft - buttons.xSize + 4;
+        int guiXEnd = guiLeft + xSize + toolInfo.xSize - 4;
         int guiYStart = guiTop + 4;
         int guiYEnd = guiTop + ySize - 4;
         return x + w >= guiXStart && x <= guiXEnd && y + h >= guiYStart && y <= guiYEnd;

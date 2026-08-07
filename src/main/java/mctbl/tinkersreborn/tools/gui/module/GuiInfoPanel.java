@@ -400,9 +400,8 @@ public class GuiInfoPanel extends GuiModule {
         slider.draw();
     }
 
-    @Override
     public void guiTopBias(int bias) {
-        super.guiTopBias(bias);
+        this.guiTop += bias;
         border.setPosition(guiLeft, guiTop);
         slider.setPosition(guiRight() - border.w - 2, guiTop + border.h + 12);
     }

@@ -90,7 +90,7 @@ public class GuiCraftingStation extends GuiTinkerStation implements INEIGuiHandl
 
     @Override
     public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
-        int guiXStart = guiLeft - (sideInventory != null ? sideInventory.xSize() : 0) + 4;
+        int guiXStart = guiLeft - (sideInventory != null ? sideInventory.xSize : 0) + 4;
         int guiXEnd = guiLeft + xSize - 4;
         int guiYStart = guiTop + 4;
         int guiYEnd = guiTop + ySize - 4;

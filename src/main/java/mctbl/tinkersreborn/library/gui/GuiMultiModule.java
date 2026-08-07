@@ -31,7 +31,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     public int realWidth;
     public int realHeight;
 
-    public GuiMultiModule(ContainerMultiModule container) {
+    public GuiMultiModule(ContainerMultiModule<?> container) {
         super(container);
 
         realWidth = -1;
@@ -94,7 +94,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
             // set correct state for the module
             GL11.glPushMatrix();
             GL11.glTranslatef(-this.guiLeft, -this.guiTop, 0.0F);
-            GL11.glTranslatef(module.guiLeft(), module.guiTop(), 0.0F);
+            GL11.glTranslatef(module.guiLeft, module.guiTop, 0.0F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -183,13 +183,13 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         module.updatePosition(this.cornerX, this.cornerY, this.realWidth, this.realHeight);
         module.mc = this.mc;
 
-        if (module.guiLeft() < this.guiLeft) {
-            this.xSize += this.guiLeft - module.guiLeft();
-            this.guiLeft = module.guiLeft();
+        if (module.guiLeft < this.guiLeft) {
+            this.xSize += this.guiLeft - module.guiLeft;
+            this.guiLeft = module.guiLeft;
         }
-        if (module.guiTop() < this.guiTop) {
-            this.ySize += this.guiTop - module.guiTop();
-            this.guiTop = module.guiTop();
+        if (module.guiTop < this.guiTop) {
+            this.ySize += this.guiTop - module.guiTop;
+            this.guiTop = module.guiTop;
         }
         if (module.guiRight() > this.guiLeft + this.xSize) {
             xSize = module.guiRight() - this.guiLeft;
@@ -225,8 +225,8 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     protected GuiModule getModuleForPoint(int x, int y) {
         for (GuiModule module : modules) {
             if (this.func_146978_c(
-                module.guiLeft(),
-                module.guiTop(),
+                module.guiLeft,
+                module.guiTop,
                 module.guiRight(),
                 module.guiBottom(),
                 x + this.cornerX,
@@ -252,8 +252,8 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         return null;
     }
 
-    protected ContainerMultiModule getContainer() {
-        return (ContainerMultiModule) inventorySlots;
+    protected ContainerMultiModule<?> getContainer() {
+        return (ContainerMultiModule<?>) inventorySlots;
     }
 
     public void renderItemIntoGui(ItemStack stack, int xPos, int yPos) {
