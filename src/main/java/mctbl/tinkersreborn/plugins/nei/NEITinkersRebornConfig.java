@@ -1,12 +1,14 @@
 package mctbl.tinkersreborn.plugins.nei;
 
+import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 
 public class NEITinkersRebornConfig implements IConfigureNEI {
 
     @Override
     public void loadConfig() {
-//        API.registerGuiOverlay(GuiCraftingStation.class, "tinkersreborn.craftingstation");
+        // API.registerGuiOverlay(GuiCraftingStation.class, "tinkersreborn.craftingstation");
+        registerHandler(new RecipeHandlerDryingRack());
     }
 
     @Override
@@ -19,4 +21,8 @@ public class NEITinkersRebornConfig implements IConfigureNEI {
         return "${version}";
     }
 
+    private static void registerHandler(RecipeHandlerBase handler) {
+        API.registerRecipeHandler(handler);
+        API.registerUsageHandler(handler);
+    }
 }

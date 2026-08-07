@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -302,9 +301,11 @@ public abstract class RecipeMatch {
             // transform "Requires 2 Cobblestone" into "2x require 1 Cobblestone" since the
             // oredictEntry only contains stacksize 1 usually
             ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
-            oredictEntry.forEach(
-                stack -> IntStream.range(0, amountNeeded)
-                    .forEach(i -> builder.add(stack)));
+            for (ItemStack stack : this.oredictEntry) {
+                for (int i = 0; i < this.amountNeeded; i++) {
+                    builder.add(stack);
+                }
+            }
             return builder.build();
         }
 

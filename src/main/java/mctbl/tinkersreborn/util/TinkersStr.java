@@ -104,7 +104,12 @@ public enum TinkersStr {
     strangefood4("tooltip.strangefood4"),
     strangefood5("tooltip.strangefood5"),
     strangefood6("tooltip.strangefood6"),
-    strangefood7("tooltip.strangefood7"),;
+    strangefood7("tooltip.strangefood7"),
+
+    // NEI
+    neiDryingrack("nei.dryingrack"),
+    neiDryingrackDuration("nei.dryingrack.duration");
+    ;
 
     static String modPrefix = TinkersReborn.MODID;
     String localization;

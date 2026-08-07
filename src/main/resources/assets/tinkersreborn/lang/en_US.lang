@@ -664,3 +664,6 @@ tinkersreborn.canister.yellow1=Part of mid-level Heart Canisters
 tinkersreborn.canister.yellow2=Can be eaten to restore 20 hearts
 tinkersreborn.canister.green1=Part of high-level Heart Canisters
 tinkersreborn.canister.green2=Can be eaten to restore 30 hearts
+
+tinkersreborn.nei.dryingrack=Drying Rack
+tinkersreborn.nei.dryingrack.duration=%d ticks (%d secs)
