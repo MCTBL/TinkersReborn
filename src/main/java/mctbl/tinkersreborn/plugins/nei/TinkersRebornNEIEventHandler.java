@@ -29,6 +29,15 @@ public class TinkersRebornNEIEventHandler {
                 .setHeight(55)
                 .setWidth(160)
                 .setMultipleWidgetsAllowed(true));
+
+        event.registerHandlerInfo(
+            RecipeHandlerAlloying.RECIPEID,
+            "TinkersReborn",
+            TinkersReborn.MODID,
+            builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.smelteryController))
+                .setHeight(65)
+                .setWidth(160)
+                .setMultipleWidgetsAllowed(true));
     }
 
 }

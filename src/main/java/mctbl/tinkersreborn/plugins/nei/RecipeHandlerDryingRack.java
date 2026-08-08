@@ -74,9 +74,9 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
 
     @Override
     public void drawExtras(int recipe) {
-        int time = ((CachedDryingRackRecipe) this.arecipes.get(recipe)).time;
-        drawProgressBar(68, 18, 160, 0, 23, 16, 60, 0);
+        this.drawProgressBar(68, 18, 160, 0, 23, 16, 60, 0);
 
+        int time = ((CachedDryingRackRecipe) this.arecipes.get(recipe)).time;
         int seconds = time / 20;
         GuiDraw.drawStringC(
             String.format(TinkersStr.neiDryingrackDuration.toString(), time, seconds),
