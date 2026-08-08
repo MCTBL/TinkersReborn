@@ -140,7 +140,7 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
 
     public String getTextureDomain(int textureNameIndex) {
         return "tinkersreborn";
-    };
+    }
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {

@@ -207,28 +207,28 @@ public class TinkersRebornConfig {
             .getStringList();
 
         nerfVanillaTools = config
-            .get("General", "disableRegularTools", true, "Makes all non-TConstruct tools mine nothing")
+            .get("General", "disableRegularTools", true, "Makes all non-Tinkers tools mine nothing")
             .getBoolean();
         nerfVanillaHoes = config
             .get(
                 "General",
                 "disableRegularHoes",
                 false,
-                "Makes all non-TConstruct hoes to not be able to hoe ground. Use the Mattock.")
+                "Makes all non-Tinkers hoes to not be able to hoe ground. Use the Mattock.")
             .getBoolean();
         nerfVanillaSwords = config
             .get(
                 "General",
                 "disableRegularSwords",
                 false,
-                "Makes all non-TConstruct swords useless. Like whacking enemies with a stick.")
+                "Makes all non-Tinkers swords useless. Like whacking enemies with a stick.")
             .getBoolean();
         nerfVanillaBows = config
             .get(
                 "General",
                 "disableRegularBows",
                 false,
-                "Makes all non-TConstruct bows useless. You suddenly forgot how to use a bow.")
+                "Makes all non-Tinkers bows useless. You suddenly forgot how to use a bow.")
             .getBoolean();
 
         String type = config.get(

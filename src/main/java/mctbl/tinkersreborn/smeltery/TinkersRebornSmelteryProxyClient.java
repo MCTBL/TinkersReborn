@@ -8,6 +8,7 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
+import mctbl.tinkersreborn.smeltery.model.BlockRenderCastingChannel;
 import mctbl.tinkersreborn.smeltery.model.CastingBasinSpecialRender;
 import mctbl.tinkersreborn.smeltery.model.CastingBlockRender;
 import mctbl.tinkersreborn.smeltery.model.CastingTableSpecialRenderer;
@@ -27,15 +28,13 @@ public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxy
         RenderingRegistry.registerBlockHandler(new SmelteryRender());
         RenderingRegistry.registerBlockHandler(new CastingBlockRender());
 
-        // RenderingRegistry.registerBlockHandler(new DryingRackRender());
         // RenderingRegistry.registerBlockHandler(new PaneRender());
         // RenderingRegistry.registerBlockHandler(new PaneConnectedRender());
         // RenderingRegistry.registerBlockHandler(new RenderBlockFluid());
-        // RenderingRegistry.registerBlockHandler(new BlockRenderCastingChannel());
+        RenderingRegistry.registerBlockHandler(new BlockRenderCastingChannel());
 
         ClientRegistry.bindTileEntitySpecialRenderer(CastingTableLogic.class, new CastingTableSpecialRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(CastingBasinLogic.class, new CastingBasinSpecialRender());
-        // ClientRegistry.bindTileEntitySpecialRenderer(DryingRackLogic.class, new DryingRackSpecialRender());
 
         IItemRenderer tankItemRenderer = new TankItemRenderer();
         MinecraftForgeClient

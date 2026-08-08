@@ -66,7 +66,7 @@ tinkersreborn.LavaTank.Window.name=Seared Window
 tinkersreborn.SearedBlock.Table.name=Casting Table
 tinkersreborn.SearedBlock.Faucet.name=Seared Faucet
 tinkersreborn.SearedBlock.Basin.name=Casting Basin
-
+tinkersreborn.SearedBlock.CastingChannel.name=Casting Channel
 
 tinkersreborn.moltenBucket=Molten %%material Bucket
 tinkersreborn.bucket=%%material Bucket

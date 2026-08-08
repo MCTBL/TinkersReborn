@@ -31,12 +31,14 @@ public class TinkersRebornItemBlock extends ItemBlock {
         this.append = "." + appendToEnd;
     }
 
+    @Override
     public int getMetadata(int meta) {
         return meta;
     }
 
+    @Override
     public String getUnlocalizedName(ItemStack itemstack) {
-        if (this.blockType.length == 1) {
+        if (this.blockType.length <= 1) {
             return this.unlocalizedName;
         }
         int pos = itemstack.getItemDamage();

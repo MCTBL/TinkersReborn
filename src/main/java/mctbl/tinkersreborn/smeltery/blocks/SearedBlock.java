@@ -228,12 +228,7 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return switch (metadata) {
-            case 0 -> new CastingTableLogic();
-            case 1 -> new FaucetLogic();
-            case 2 -> new CastingBasinLogic();
-            default -> null;
-        };
+        return this.createTileEntity(world, metadata);
     }
 
 }

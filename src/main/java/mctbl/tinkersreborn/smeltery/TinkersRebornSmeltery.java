@@ -20,6 +20,7 @@ import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
+import mctbl.tinkersreborn.smeltery.blocks.CastingChannelBlock;
 import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
 import mctbl.tinkersreborn.smeltery.blocks.GlueBlock;
 import mctbl.tinkersreborn.smeltery.blocks.LavaTankBlock;
@@ -28,12 +29,14 @@ import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryController;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryDrain;
 import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
+import mctbl.tinkersreborn.smeltery.entity.CastingChannelLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
 import mctbl.tinkersreborn.smeltery.entity.FaucetLogic;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
+import mctbl.tinkersreborn.smeltery.itemblocks.CastingChannelItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.FurnaceControllerItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
@@ -103,6 +106,10 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.registerTileEntity(CastingTableLogic.class, "tinkersreborn.CastingTable");
         GameRegistry.registerTileEntity(FaucetLogic.class, "tinkersreborn.Faucet");
         GameRegistry.registerTileEntity(CastingBasinLogic.class, "tinkersreborn.CastingBasin");
+
+        castingChannel = new CastingChannelBlock();
+        GameRegistry.registerBlock(castingChannel, CastingChannelItemBlock.class, castingChannel.getUnlocalizedName());
+        GameRegistry.registerTileEntity(CastingChannelLogic.class, "tinkersreborn.CastingChannel");
 
         TinkersRebornRegistry.registerFuel(new FluidStack(FluidRegistry.LAVA, 50), 100);
     }
