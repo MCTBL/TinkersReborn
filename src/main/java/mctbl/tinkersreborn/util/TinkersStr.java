@@ -108,7 +108,9 @@ public enum TinkersStr {
 
     // NEI
     neiDryingrack("nei.dryingrack"),
-    neiDryingrackDuration("nei.dryingrack.duration");
+    neiDryingrackDuration("nei.dryingrack.duration"),
+    neiMelting("nei.melting"),
+
     ;
 
     static String modPrefix = TinkersReborn.MODID;

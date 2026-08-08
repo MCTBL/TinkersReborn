@@ -5,15 +5,17 @@ import net.minecraft.item.ItemStack;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 
 public class NEITinkersRebornConfig implements IConfigureNEI {
 
     @Override
     public void loadConfig() {
-        // API.registerGuiOverlay(GuiCraftingStation.class, "tinkersreborn.craftingstation");
-        RecipeHandlerDryingRack handler = new RecipeHandlerDryingRack();
-        registerHandler(handler);
+        registerHandler(new RecipeHandlerDryingRack());
+        registerHandler(new RecipeHandlerMelting());
+
         API.addRecipeCatalyst(new ItemStack(TinkersRebornGeneral.dryingRack), RecipeHandlerDryingRack.RECIPEID);
+        API.addRecipeCatalyst(new ItemStack(TinkersRebornSmeltery.smelteryController), RecipeHandlerMelting.RECIPEID);
     }
 
     @Override

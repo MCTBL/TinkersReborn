@@ -6,6 +6,7 @@ import codechicken.nei.event.NEIRegisterHandlerInfosEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 
 public class TinkersRebornNEIEventHandler {
 
@@ -17,6 +18,15 @@ public class TinkersRebornNEIEventHandler {
             TinkersReborn.MODID,
             builder -> builder.setDisplayStack(new ItemStack(TinkersRebornGeneral.dryingRack))
                 .setHeight(65)
+                .setWidth(160)
+                .setMultipleWidgetsAllowed(true));
+
+        event.registerHandlerInfo(
+            RecipeHandlerMelting.RECIPEID,
+            "TinkersReborn",
+            TinkersReborn.MODID,
+            builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.smelteryController))
+                .setHeight(55)
                 .setWidth(160)
                 .setMultipleWidgetsAllowed(true));
     }

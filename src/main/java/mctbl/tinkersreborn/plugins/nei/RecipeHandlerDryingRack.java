@@ -23,10 +23,10 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
         public PositionedStack output;
         public int time;
 
-        public CachedDryingRackRecipe(ItemStack input, ItemStack output, int time) {
-            this.input = new PositionedStack(input, 44, 18);
-            this.output = new PositionedStack(output, 98, 18);
-            this.time = time;
+        public CachedDryingRackRecipe(DryingRecipe drying) {
+            this.input = new PositionedStack(drying.input.getInputs(), 44, 18);
+            this.output = new PositionedStack(drying.output, 98, 18);
+            this.time = drying.getTime();
         }
 
         @Override
@@ -90,9 +90,7 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals(this.getRecipeID())) {
             for (DryingRecipe drying : TinkersRebornRegistry.getAllDryingRecipes()) {
-                for (ItemStack input : drying.input.getInputs()) {
-                    this.arecipes.add(new CachedDryingRackRecipe(input, drying.getResult(), drying.time));
-                }
+                this.arecipes.add(new CachedDryingRackRecipe(drying));
             }
         } else {
             super.loadCraftingRecipes(outputId, results);
@@ -102,10 +100,8 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
     @Override
     public void loadCraftingRecipes(ItemStack result) {
         for (DryingRecipe drying : TinkersRebornRegistry.getAllDryingRecipes()) {
-            for (ItemStack input : drying.input.getInputs()) {
-                if (NEIServerUtils.areStacksSameTypeCrafting(drying.getResult(), result)) {
-                    this.arecipes.add(new CachedDryingRackRecipe(input, drying.getResult(), drying.time));
-                }
+            if (NEIServerUtils.areStacksSameTypeCrafting(drying.getResult(), result)) {
+                this.arecipes.add(new CachedDryingRackRecipe(drying));
             }
         }
     }
@@ -113,10 +109,9 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
     @Override
     public void loadUsageRecipes(ItemStack ingred) {
         for (DryingRecipe drying : TinkersRebornRegistry.getAllDryingRecipes()) {
-            for (ItemStack input : drying.input.getInputs()) {
-                if (NEIServerUtils.areStacksSameTypeCrafting(input, ingred)) {
-                    this.arecipes.add(new CachedDryingRackRecipe(input, drying.getResult(), drying.time));
-                }
+
+            if (drying.matches(ingred)) {
+                this.arecipes.add(new CachedDryingRackRecipe(drying));
             }
         }
     }
