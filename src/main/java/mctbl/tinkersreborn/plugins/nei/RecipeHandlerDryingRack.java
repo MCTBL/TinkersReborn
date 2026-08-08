@@ -15,6 +15,8 @@ import mctbl.tinkersreborn.util.TinkersStr;
 
 public class RecipeHandlerDryingRack extends RecipeHandlerBase {
 
+    public static final String RECIPEID = "tinkersreborn.dryingrack";
+
     public class CachedDryingRackRecipe extends CachedBaseRecipe {
 
         public PositionedStack input;
@@ -45,7 +47,12 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
 
     @Override
     public String getRecipeID() {
-        return "tinkersreborn.dryingrack";
+        return RECIPEID;
+    }
+
+    @Override
+    public String getHandlerId() {
+        return RECIPEID;
     }
 
     @Override

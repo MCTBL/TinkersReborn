@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraftforge.common.MinecraftForge;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -23,6 +26,7 @@ import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.leveling.CommandLevelUpTool;
+import mctbl.tinkersreborn.plugins.nei.TinkersRebornNEIEventHandler;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
@@ -65,6 +69,10 @@ public class TinkersReborn {
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
         l.forEach(m -> m.preInit(event));
+
+        if (Loader.isModLoaded("NotEnoughItems")) {
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornNEIEventHandler());
+        }
     }
 
     @EventHandler
