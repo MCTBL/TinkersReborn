@@ -57,7 +57,7 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
 
     @Override
     public void loadTransferRects() {
-        this.transferRects.add(new RecipeTransferRect(new Rectangle(68, 20, 22, 15), this.getRecipeID()));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(68, 20, 22, 15), RECIPEID));
     }
 
     @Override
@@ -75,6 +75,8 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
     @Override
     public void drawExtras(int recipe) {
         int time = ((CachedDryingRackRecipe) this.arecipes.get(recipe)).time;
+        drawProgressBar(68, 18, 160, 0, 23, 16, 60, 0);
+
         int seconds = time / 20;
         GuiDraw.drawStringC(
             String.format(TinkersStr.neiDryingrackDuration.toString(), time, seconds),
