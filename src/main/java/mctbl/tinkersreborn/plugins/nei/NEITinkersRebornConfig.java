@@ -14,10 +14,18 @@ public class NEITinkersRebornConfig implements IConfigureNEI {
         registerHandler(new RecipeHandlerDryingRack());
         registerHandler(new RecipeHandlerMelting());
         registerHandler(new RecipeHandlerAlloying());
+        registerHandler(new RecipeHandlerCastingTable());
+        registerHandler(new RecipeHandlerCastingBasin());
 
         API.addRecipeCatalyst(new ItemStack(TinkersRebornGeneral.dryingRack), RecipeHandlerDryingRack.RECIPEID);
         API.addRecipeCatalyst(new ItemStack(TinkersRebornSmeltery.smelteryController), RecipeHandlerMelting.RECIPEID);
         API.addRecipeCatalyst(new ItemStack(TinkersRebornSmeltery.smelteryController), RecipeHandlerAlloying.RECIPEID);
+        API.addRecipeCatalyst(
+            new ItemStack(TinkersRebornSmeltery.searedBlock, 1, 0),
+            RecipeHandlerCastingTable.RECIPEID);
+        API.addRecipeCatalyst(
+            new ItemStack(TinkersRebornSmeltery.searedBlock, 1, 2),
+            RecipeHandlerCastingBasin.RECIPEID);
     }
 
     @Override

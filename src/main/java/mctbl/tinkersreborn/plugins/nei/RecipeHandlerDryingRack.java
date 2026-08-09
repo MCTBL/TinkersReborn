@@ -19,9 +19,9 @@ public class RecipeHandlerDryingRack extends RecipeHandlerBase {
 
     public class CachedDryingRackRecipe extends CachedBaseRecipe {
 
-        public PositionedStack input;
-        public PositionedStack output;
-        public int time;
+        public final PositionedStack input;
+        public final PositionedStack output;
+        public final int time;
 
         public CachedDryingRackRecipe(DryingRecipe drying) {
             this.input = new PositionedStack(drying.input.getInputs(), 44, 18);

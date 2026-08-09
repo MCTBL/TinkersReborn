@@ -38,6 +38,24 @@ public class TinkersRebornNEIEventHandler {
                 .setHeight(65)
                 .setWidth(160)
                 .setMultipleWidgetsAllowed(true));
+
+        event.registerHandlerInfo(
+            RecipeHandlerCastingTable.RECIPEID,
+            "TinkersReborn",
+            TinkersReborn.MODID,
+            builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.searedBlock, 1, 0))
+                .setHeight(61)
+                .setWidth(144)
+                .setMultipleWidgetsAllowed(true));
+
+        event.registerHandlerInfo(
+            RecipeHandlerCastingBasin.RECIPEID,
+            "TinkersReborn",
+            TinkersReborn.MODID,
+            builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.searedBlock, 1, 2))
+                .setHeight(61)
+                .setWidth(144)
+                .setMultipleWidgetsAllowed(true));
     }
 
 }

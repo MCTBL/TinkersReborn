@@ -111,6 +111,9 @@ public enum TinkersStr {
     neiDryingrackDuration("nei.dryingrack.duration"),
     neiMelting("nei.melting"),
     neiAlloying("nei.alloying"),
+    neiCastingtable("nei.castingtable"),
+    neiCastingbasin("nei.castingbasin"),
+    neiCoolDownDuration("nei.casting.cooldown.duration"),
 
     ;
 

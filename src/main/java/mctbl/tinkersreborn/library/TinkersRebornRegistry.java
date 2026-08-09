@@ -584,6 +584,26 @@ public class TinkersRebornRegistry {
         }
     }
 
+    public static void registerGemMeltingCasting(Fluid fluid, String oreSuffix, ItemStack gemCast) {
+        String gemOre = "gem" + oreSuffix;
+        String blockOre = "block" + oreSuffix;
+        String rawOre = "ore" + oreSuffix;
+
+        registerMelting(new MeltingRecipe(RecipeMatch.of(gemOre, TinkersRebornMaterial.VALUE_Gem), fluid));
+
+        registerMelting(new MeltingRecipe(RecipeMatch.of(blockOre, TinkersRebornMaterial.VALUE_Gem * 9), fluid));
+
+        registerMelting(
+            new MeltingRecipe(
+                RecipeMatch.of(rawOre, (int) (TinkersRebornMaterial.VALUE_Gem * TinkersRebornConfig.oreToIngotRatio)),
+                fluid));
+
+        registerTableCasting(
+            new PreferenceCastingRecipe(gemOre, RecipeMatch.ofNBT(gemCast), fluid, TinkersRebornMaterial.VALUE_Gem));
+
+        registerBasinCasting(new PreferenceCastingRecipe(blockOre, null, fluid, TinkersRebornMaterial.VALUE_Gem * 9));
+    }
+
     /**
      * Adds a fluid to the knownOreFluids list, adding recipes for each combination
      * 
@@ -642,6 +662,14 @@ public class TinkersRebornRegistry {
             }
         }
         return null;
+    }
+
+    public static List<ICastingRecipe> getTableCasting() {
+        return ImmutableList.copyOf(tableCastRegistry);
+    }
+
+    public static List<ICastingRecipe> getBasinCasting() {
+        return ImmutableList.copyOf(basinCastRegistry);
     }
 
     public static void addFluidForCast() {

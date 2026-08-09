@@ -330,7 +330,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ItemStack castShard;
     public static ItemStack castIngot;
     public static ItemStack castNugget;
-    // public static ItemStack castGem;
+    public static ItemStack castGem;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -676,6 +676,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         castShard = Pattern.newStackWithToolPart(shard);
         castIngot = Pattern.newStackWithIdentifier(Pattern.CAST_INGOT);
         castNugget = Pattern.newStackWithIdentifier(Pattern.CAST_NUGGET);
+        castGem = Pattern.newStackWithIdentifier(Pattern.CAST_GEM);
 
         TinkersRebornRegistry.getMaterialIntegrations()
             .forEach(MaterialIntegration::preInit);
@@ -698,6 +699,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         }
         TinkersRebornRegistry.getMaterialIntegrations()
             .forEach(MaterialIntegration::integrate);
+        TinkersRebornRegistry.registerGemMeltingCasting(emeraldFluid, "Emerald", castGem);
 
         this.registerCraftingRecipes();
 
@@ -1104,7 +1106,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(null, tinFluid, "Tin"));
         integrate(new MaterialIntegration(null, aluminumFluid, "Aluminum"));
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.bloodFluid, null));
-        integrate(new MaterialIntegration(null, null, emeraldFluid, "Emerald"));
+        integrate(new MaterialIntegration(null, null, emeraldFluid, null));
 
         integrate(new MaterialIntegration(woodMaterial, null, null));
         integrate(new MaterialIntegration(stoneMaterial, null, null));

@@ -98,7 +98,7 @@ public class CastingRecipe implements ICastingRecipe {
         return this.fluid;
     }
 
-    // JEI stuff
+    // NEI stuff
     public ItemStack getResult() {
         return output;
     }
