@@ -27,6 +27,7 @@ import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.leveling.CommandLevelUpTool;
 import mctbl.tinkersreborn.plugins.nei.TinkersRebornNEIEventHandler;
+import mctbl.tinkersreborn.plugins.waila.TinkersRebornWaila;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 
@@ -57,6 +58,8 @@ public class TinkersReborn {
         l.add(new TinkersRebornGeneral());
         l.add(new TinkersRebornTools());
         l.add(new TinkersRebornSmeltery());
+
+        l.add(new TinkersRebornWaila());
     }
 
     @EventHandler

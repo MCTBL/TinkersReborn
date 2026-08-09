@@ -19,8 +19,8 @@ import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 
 public class DryingRackLogic extends TinkersRebornInventoryLogic implements ISidedInventory {
 
-    int currentTime;
-    int maxTime;
+    private int currentTime;
+    private int maxTime;
 
     public DryingRackLogic() {
         super(2, 1);
@@ -100,13 +100,13 @@ public class DryingRackLogic extends TinkersRebornInventoryLogic implements ISid
     @Override
     public Packet getDescriptionPacket() {
         NBTTagCompound tag = new NBTTagCompound();
-        writeCustomNBT(tag);
+        writeToNBT(tag);
         return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
-        readCustomNBT(packet.func_148857_g());
+        readFromNBT(packet.func_148857_g());
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
     }
 
@@ -130,5 +130,13 @@ public class DryingRackLogic extends TinkersRebornInventoryLogic implements ISid
     @Override
     public boolean canExtractItem(int slot, ItemStack itemstack, int side) {
         return this.isStackInSlot(1);
+    }
+
+    public int getMaxTime() {
+        return this.maxTime;
+    }
+
+    public int getCurrentTime() {
+        return this.currentTime;
     }
 }

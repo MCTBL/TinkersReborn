@@ -672,3 +672,13 @@ tinkersreborn.nei.alloying=Smeltery Alloying
 tinkersreborn.nei.castingbasin=Casting Basin
 tinkersreborn.nei.castingtable=Casting Table
 tinkersreborn.nei.casting.cooldown.duration=%d ticks
+
+tinkersreborn.waila.empty=Empty
+tinkersreborn.waila.liquidtag=Liquid: 
+tinkersreborn.waila.progress=Casting Progress: 
+tinkersreborn.waila.amounttag=Amount: 
+tinkersreborn.waila.contains=Contains: 
+tinkersreborn.waila.subtanks=Subtanks:
+tinkersreborn.waila.invalidstructure=Invalid structure
+tinkersreborn.waila.drying=Item: 
+tinkersreborn.waila.dryingProgress=Drying Progress: 

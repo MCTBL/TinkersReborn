@@ -115,7 +115,16 @@ public enum TinkersStr {
     neiCastingbasin("nei.castingbasin"),
     neiCoolDownDuration("nei.casting.cooldown.duration"),
 
-    ;
+    // Waila
+    wailaEmpty("waila.empty"),
+    wailaLiquidtag("waila.liquidtag"),
+    wailaAmounttag("waila.amounttag"),
+    wailaProgress("waila.progress"),
+    wailaContains("waila.contains"),
+    wailaSubtanks("waila.subtanks"),
+    wailaInvalidstructure("waila.invalidstructure"),
+    wailaDrying("waila.drying"),
+    wailaDryingProgress("waila.dryingProgress"),;
 
     static String modPrefix = TinkersReborn.MODID;
     String localization;
