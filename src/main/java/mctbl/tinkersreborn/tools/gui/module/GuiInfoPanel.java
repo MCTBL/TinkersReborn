@@ -327,7 +327,7 @@ public class GuiInfoPanel extends GuiModule {
             .bindTexture(BACKGROUND);
 
         border.draw();
-        background.drawScaled(guiLeft + 4, guiTop, xSize - 8, ySize - 8);
+        background.drawScaled(guiLeft + 4, guiTop + 4, xSize - 8, ySize - 8);
 
         float y = 5.0F + guiTop;
         float x = 5.0F + guiLeft;

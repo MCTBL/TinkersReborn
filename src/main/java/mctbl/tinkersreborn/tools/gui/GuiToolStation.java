@@ -144,7 +144,7 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
         textField.setMaxStringLength(40);
 
         for (GuiModule module : modules) {
-            module.guiTop += 4;
+            module.yOffset = 4;
         }
 
         updateGUI();
@@ -382,7 +382,7 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         for (int i = 0; i < Table_slot_count; i++) {
             Slot slot = inventorySlots.getSlot(i);
-            if (slot instanceof SlotToolStationIn && (!((SlotToolStationIn) slot).isDormant() || slot.getHasStack())) {
+            if (slot instanceof SlotToolStationIn s && (!s.isDormant() || slot.getHasStack())) {
                 SlotBorder
                     .draw(x + this.cornerX + slot.xDisplayPosition - 1, y + this.cornerY + slot.yDisplayPosition - 1);
             }

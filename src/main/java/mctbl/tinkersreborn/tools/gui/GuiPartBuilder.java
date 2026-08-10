@@ -59,10 +59,9 @@ public class GuiPartBuilder extends GuiTinkerStation implements INEIGuiHandler {
             (ContainerTinkerStation<?>) tile.getGuiContainer(inventoryplayer, world, x, y, z));
         materialInfo = new GuiInfoPanel(this, inventorySlots);
         this.addModule(materialInfo);
-        materialInfo.ySize += 83;
+        materialInfo.ySize = this.ySize;
 
         partSelector = new GuiDynButtons(this);
-
         this.addModuleFirst(partSelector);
     }
 

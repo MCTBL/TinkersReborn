@@ -155,7 +155,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
                 new ItemStack(TinkersRebornTools.bloodyBone),
                 RecipeMatch.ofNBT(new ItemStack(Items.bone)),
                 TinkersRebornGeneral.bloodFluid,
-                250,
+                200,
                 true,
                 false));
     }
