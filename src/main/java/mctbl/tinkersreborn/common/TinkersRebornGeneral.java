@@ -219,7 +219,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     @Override
     public void init(FMLInitializationEvent e) {
         if (!TinkersRebornConfig.disableAllRecipes) {
-            // craftingTableRecipes();
+            craftingTableRecipes();
             // addRecipesForFurnace();
         }
         this.createEntities();
@@ -393,5 +393,41 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         // Sapling to dead bush
         TinkersRebornRegistry.registerDryingRecipe("treeSapling", new ItemStack(Blocks.deadbush), 20 * 60 * 6);
+    }
+
+    private void craftingTableRecipes() {
+        ItemStack sandBlock = new ItemStack(Blocks.sand);
+        ItemStack dirtBlock = new ItemStack(Blocks.dirt);
+        ItemStack gravelBlock = new ItemStack(Blocks.gravel);
+        ItemStack clayBlock = new ItemStack(Blocks.clay);
+        ItemStack searedBrick = new ItemStack(TinkersRebornTools.searedBrick, 1);
+        ItemStack boneMeal = new ItemStack(Items.dye, 1, 15);
+        ItemStack flesh = new ItemStack(Items.rotten_flesh);
+        ItemStack stoneRod = TinkersRebornTools.rod.getNewPartWithMaterial("stone");
+        ItemStack graveyardSoilBlock = new ItemStack(graveyardSoil);
+        ItemStack consecratedSoilBlock = new ItemStack(consecratedSoil);
+
+        // Jack o'Latern Recipe - Stone Torch
+        GameRegistry.addRecipe(
+            new ItemStack(Blocks.lit_pumpkin, 1, 0),
+            "p",
+            "s",
+            'p',
+            new ItemStack(Blocks.pumpkin),
+            's',
+            new ItemStack(stoneTorch));
+        // Stone Torch Recipe
+        GameRegistry
+            .addRecipe(new ItemStack(stoneTorch, 4), "p", "w", 'p', new ItemStack(Items.coal, 1), 'w', stoneRod);
+
+        GameRegistry
+            .addRecipe(new ItemStack(grout, 8), "ABA", "BCB", "ABA", 'A', sandBlock, 'B', gravelBlock, 'C', clayBlock);
+        GameRegistry
+            .addShapelessRecipe(new ItemStack(grout, 2), sandBlock, gravelBlock, new ItemStack(Items.clay_ball));
+        GameRegistry.addSmelting(new ItemStack(grout, 1), searedBrick, 0);
+
+        GameRegistry.addShapelessRecipe(graveyardSoilBlock, dirtBlock, flesh, boneMeal);
+        GameRegistry.addSmelting(graveyardSoilBlock, consecratedSoilBlock, 0);
+        GameRegistry.addRecipe(new ShapedOreRecipe(dryingRack, "WWW", 'W', "slabWood"));
     }
 }

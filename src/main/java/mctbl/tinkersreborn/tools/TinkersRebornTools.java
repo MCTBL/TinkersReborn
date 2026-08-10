@@ -80,6 +80,7 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.utils.MaterialIntegration;
 import mctbl.tinkersreborn.tools.blocks.CastChestBlock;
@@ -1193,37 +1194,44 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     private void registerCraftingRecipes() {
         // CraftingManager instance = CraftingManager.getInstance();
         ItemStack paper = new ItemStack(Items.paper);
-        ItemStack blank_pattern = Pattern.newStackWithIdentifier("pattern_blank");
+        ItemStack blankPattern = Pattern.newStackWithIdentifier(Pattern.PATTERN_BLANK);
         ItemStack chest = new ItemStack(Blocks.chest);
+        ItemStack smelteryBrick = new ItemStack(TinkersRebornSmeltery.smelteryBlock);
+        ItemStack toolStationBlock = new ItemStack(toolStation);
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(blank_pattern, "Ss", "sS", 's', "plankWood", 'S', "stickWood"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(blankPattern, "Ss", "sS", 's', "plankWood", 'S', "stickWood"));
+
+        GameRegistry.addShapedRecipe(
+            toolStationBlock,
+            "A ",
+            "B ",
+            'A',
+            blankPattern,
+            'B',
+            new ItemStack(Blocks.crafting_table));
+
+        for (int i = 0; i < ToolForgeBlock.materials.length; i++) {
+            String str = ToolForgeBlock.materials[i];
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    new ItemStack(toolForge, 1, i),
+                    "AAA",
+                    "BCB",
+                    "B B",
+                    'A',
+                    smelteryBrick,
+                    'B',
+                    "block" + Character.toUpperCase(str.charAt(0)) + str.substring(1),
+                    'C',
+                    toolStationBlock));
+        }
 
         GameRegistry.addRecipe(
-            new ShapedOreRecipe(
-                new ItemStack(castChest),
-                " p ",
-                "scs",
-                "   ",
-                'p',
-                blank_pattern,
-                'c',
-                chest,
-                's',
-                "stickWood"));
+            new ShapedOreRecipe(castChest, " p ", "scs", "   ", 'p', blankPattern, 'c', chest, 's', "stickWood"));
         TinkersRebornRegistry.getAllToolParts()
             .forEach(
                 p -> GameRegistry.addRecipe(
-                    new ShapedOreRecipe(
-                        new ItemStack(partChest),
-                        " p ",
-                        "scs",
-                        "   ",
-                        'p',
-                        p,
-                        'c',
-                        chest,
-                        's',
-                        "stickWood")));
+                    new ShapedOreRecipe(partChest, " p ", "scs", "   ", 'p', p, 'c', chest, 's', "stickWood")));
     }
 
     private static void findToolsFromConfig() {

@@ -1,11 +1,16 @@
 package mctbl.tinkersreborn.smeltery.gui;
 
+import static cpw.mods.fml.common.Optional.Interface;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -14,6 +19,11 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.gui.GuiElement;
@@ -28,7 +38,9 @@ import mctbl.tinkersreborn.smeltery.network.SmelteryFluidClicked;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
 
-public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiquidTank {
+@SideOnly(Side.CLIENT)
+@Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
+public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiHandler, IGuiLiquidTank {
 
     public static final ResourceLocation BACKGROUND = new ResourceLocation(
         TinkersReborn.MODID,
@@ -329,5 +341,35 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
 
         // standard display stuff: bucket amounts
         amountToString(amount, text);
+    }
+
+    // NEI
+    @Override
+    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+        return currentVisibility;
+    }
+
+    @Override
+    public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
+        int guiXStart = guiLeft - sideinventory.xSize + 4;
+        int guiXEnd = guiLeft + xSize - 4;
+        int guiYStart = guiTop + 4;
+        int guiYEnd = guiTop + ySize - 4;
+        return x + w >= guiXStart && x <= guiXEnd && y + h >= guiYStart && y <= guiYEnd;
     }
 }
