@@ -95,7 +95,10 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals(getRecipeID())) {
             for (MeltingRecipe recipe : TinkersRebornRegistry.getAllMeltingRecipies()) {
-                this.arecipes.add(new CachedMeltingRecipe(recipe));
+                if (!recipe.input.getInputs()
+                    .isEmpty()) {
+                    this.arecipes.add(new CachedMeltingRecipe(recipe));
+                }
             }
         } else {
             super.loadCraftingRecipes(outputId, results);
@@ -105,7 +108,8 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
     @Override
     public void loadCraftingRecipes(FluidStack result) {
         for (MeltingRecipe recipe : TinkersRebornRegistry.getAllMeltingRecipies()) {
-            if (areFluidsEqual(recipe.output, result)) {
+            if (areFluidsEqual(recipe.output, result) && !recipe.input.getInputs()
+                .isEmpty()) {
                 this.arecipes.add(new CachedMeltingRecipe(recipe));
             }
         }
@@ -114,7 +118,8 @@ public class RecipeHandlerMelting extends RecipeHandlerBase {
     @Override
     public void loadUsageRecipes(ItemStack ingred) {
         for (MeltingRecipe recipe : TinkersRebornRegistry.getAllMeltingRecipies()) {
-            if (recipe.matches(ingred)) {
+            if (recipe.matches(ingred) && !recipe.input.getInputs()
+                .isEmpty()) {
                 this.arecipes.add(new CachedMeltingRecipe(recipe));
             }
         }

@@ -114,6 +114,7 @@ public enum TinkersStr {
     neiCastingtable("nei.castingtable"),
     neiCastingbasin("nei.castingbasin"),
     neiCoolDownDuration("nei.casting.cooldown.duration"),
+    neiEntitySmeltery("nei.entityMelting"),
 
     // Waila
     wailaEmpty("waila.empty"),

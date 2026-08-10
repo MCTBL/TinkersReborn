@@ -18,7 +18,7 @@ public class RecipeHandlerAlloying extends RecipeHandlerBase {
 
     public static final String RECIPEID = "tinkersreborn.smeltery.alloying";
 
-    public static final Rectangle OUTPUT_TANK = new Rectangle(118, 9, 18, 32);
+    public static final Rectangle OUTPUT_TANK = new Rectangle(118, 12, 18, 32);
 
     public class CachedAlloyingRecipe extends CachedBaseRecipe {
 
@@ -51,12 +51,12 @@ public class RecipeHandlerAlloying extends RecipeHandlerBase {
                 if (counter == recipe.getFluids()
                     .size() - 1) {
                     tank = new FluidTankElement(
-                        new Rectangle(21 + width * counter, 9, 36 - width * counter, 32),
+                        new Rectangle(21 + width * counter, 12, 36 - width * counter, 32),
                         maxAmount * mult,
                         stack);
                 } else {
                     tank = new FluidTankElement(
-                        new Rectangle(21 + width * counter, 9, width, 32),
+                        new Rectangle(21 + width * counter, 12, width, 32),
                         maxAmount * mult,
                         stack);
                 }
@@ -104,19 +104,19 @@ public class RecipeHandlerAlloying extends RecipeHandlerBase {
 
     @Override
     public void loadTransferRects() {
-        this.transferRects.add(new RecipeTransferRect(new Rectangle(76, 21, 22, 15), this.getRecipeID()));
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(76, 24, 22, 15), this.getRecipeID()));
     }
 
     @Override
     public void drawBackground(int recipe) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GuiDraw.changeTexture(this.getGuiTexture());
-        GuiDraw.drawTexturedModalRect(0, 0, 0, 62, 160, 65);
+        GuiDraw.drawTexturedModalRect(0, 0, 0, 59, 160, 65);
     }
 
     @Override
     public void drawExtras(int recipe) {
-        this.drawProgressBar(76, 19, 160, 0, 23, 16, 60, 0);
+        this.drawProgressBar(76, 21, 160, 0, 23, 16, 60, 0);
         super.drawExtras(recipe);
     }
 

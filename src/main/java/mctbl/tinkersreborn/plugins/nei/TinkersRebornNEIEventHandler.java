@@ -40,6 +40,15 @@ public class TinkersRebornNEIEventHandler {
                 .setMultipleWidgetsAllowed(true));
 
         event.registerHandlerInfo(
+            RecipeHandlerEntitySmeltery.RECIPEID,
+            "TinkersReborn",
+            TinkersReborn.MODID,
+            builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.smelteryController))
+                .setHeight(70)
+                .setWidth(160)
+                .setMultipleWidgetsAllowed(true));
+
+        event.registerHandlerInfo(
             RecipeHandlerCastingTable.RECIPEID,
             "TinkersReborn",
             TinkersReborn.MODID,

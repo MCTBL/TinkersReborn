@@ -669,6 +669,7 @@ tinkersreborn.nei.dryingrack=Drying Rack
 tinkersreborn.nei.dryingrack.duration=%d ticks (%d secs)
 tinkersreborn.nei.melting=Smeltery Melting
 tinkersreborn.nei.alloying=Smeltery Alloying
+tinkersreborn.nei.entityMelting=Entity Smeltery
 tinkersreborn.nei.castingbasin=Casting Basin
 tinkersreborn.nei.castingtable=Casting Table
 tinkersreborn.nei.casting.cooldown.duration=%d ticks

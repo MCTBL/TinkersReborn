@@ -121,14 +121,25 @@ public abstract class RecipeHandlerCastingBase extends RecipeHandlerBase {
     }
 
     @Override
-    public void loadUsageRecipes(ItemStack ingred) {
+    public void loadUsageRecipes(ItemStack ingredient) {
+        FluidStack fluid = getFluidStack(ingredient);
+
+        if (fluid != null) {
+            loadUsageRecipes(fluid);
+            return;
+        }
         for (ICastingRecipe recipe : getCastingRecipes()) {
-            if (recipe instanceof CastingRecipe re && this.isValidRecipe(re)
-                && (re.cast == null || re.cast.matches(Arrays.asList(ingred))
-                    .isPresent())) {
-                CachedCastingRecipe irecipe = new CachedCastingRecipe(re);
-                irecipe.setIngredientPermutation(irecipe.resources, ingred);
-                this.arecipes.add(irecipe);
+
+            if (recipe instanceof CastingRecipe re && isValidRecipe(re)
+                && re.cast != null
+                && re.cast.matches(Arrays.asList(ingredient))
+                    .isPresent()) {
+
+                CachedCastingRecipe cached = new CachedCastingRecipe(re);
+
+                cached.setIngredientPermutation(cached.resources, ingredient);
+
+                arecipes.add(cached);
             }
         }
     }

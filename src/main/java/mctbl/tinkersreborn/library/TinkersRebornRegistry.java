@@ -743,19 +743,29 @@ public class TinkersRebornRegistry {
             return;
         }
         entityMeltingRegistry.put(name, liquid);
-        TinkersReborn.LOG.info(
-            "Registered entity melting for {} into {} mB of {}",
-            clazz.getSimpleName(),
-            liquid.amount,
-            liquid.getLocalizedName());
+        if (TinkersRebornConfig.debug) {
+            TinkersReborn.LOG.info(
+                "Registered entity melting for {} into {} mB of {}",
+                clazz.getSimpleName(),
+                liquid.amount,
+                liquid.getLocalizedName());
+        }
     }
 
     public static FluidStack getMeltingForEntity(Entity entity) {
         String name = EntityList.classToStringMapping.get(entity.getClass());
+        return getMeltingForEntity(name);
+    }
+
+    public static FluidStack getMeltingForEntity(String name) {
         FluidStack fluidStack = entityMeltingRegistry.get(name);
         // check if the fluid is the correct one to use
         return Optional.ofNullable(fluidStack)
             .orElse(null);
+    }
+
+    public static Map<String, FluidStack> getAllEntityMelting() {
+        return ImmutableMap.copyOf(entityMeltingRegistry);
     }
 
     public static void registerAlloy(FluidStack result, FluidStack... inputs) {
