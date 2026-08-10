@@ -75,8 +75,9 @@ public class TinkersRebornConfig {
     public static boolean generateVillageSmeltery;
 
     public static int defaultModifiers;
-
     public static boolean autoSmeltWithLapis;
+    public static boolean diamondAndEmeraldCanIncreaseHarvestLevel;
+
     public static boolean celsiusPref;
 
     public static double oreToIngotRatio;
@@ -215,6 +216,9 @@ public class TinkersRebornConfig {
             .getInt();
 
         autoSmeltWithLapis = config.get(TOOLS, "Can Autosmelt modify work with fortune", false)
+            .getBoolean();
+        diamondAndEmeraldCanIncreaseHarvestLevel = config
+            .get(TOOLS, "Can diamnod and emerald increase mining level", true)
             .getBoolean();
 
         exportMaterialDefaultConfig = config
