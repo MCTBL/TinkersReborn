@@ -27,7 +27,7 @@ import mctbl.tinkersreborn.tools.model.TableRender;
 
 public class PartBuilderBlock extends TinkersRebornInventoryBlock implements ITinkersToolStationBlock {
 
-    public static final String[] materials = new String[] { "oak", "birch", "jungle", "spruce" };
+    public static final String[] materials = new String[] { "oak", "spruce", "birch", "jungle" };
 
     public PartBuilderBlock() {
         super(Material.wood);

@@ -57,6 +57,7 @@ tinkersreborn.DryingRack.name=Drying Rack
 tinkersreborn.glueblock.name=Glue Block
 tinkersreborn.MultiBlock.Cobblestone.name=Seared Cobblestone
 tinkersreborn.MultiBlock.Brick.name=Seared Bricks
+tinkersreborn.MultiBlock.Stone.name=Seared Stone
 tinkersreborn.SmelteryController.name=Smeltery Controller
 tinkersreborn.FurnaceController.name=Furnace Controller
 tinkersreborn.Drain.name=Smeltery Drain
@@ -79,6 +80,7 @@ fluid.molten_gold=Gold
 fluid.molten_emerald=Emerald
 fluid.molten_tin=Tin
 fluid.molten_aluminum=Aluminum
+fluid.molten_stone=Stone
 
 // Items
 tinkersreborn.material.Mossball.name=Ball of Moss

@@ -288,6 +288,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornFluid leadFluid;
     public static TinkersRebornFluid emeraldFluid;
     public static TinkersRebornFluid aluminumFluid;
+    public static TinkersRebornFluid stoneFluid;
 
     public static TinkersRebornMaterial woodMaterial;
     public static TinkersRebornMaterial stoneMaterial;
@@ -704,6 +705,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         TinkersRebornRegistry.getMaterialIntegrations()
             .forEach(MaterialIntegration::integrate);
         TinkersRebornRegistry.registerGemMeltingCasting(emeraldFluid, "Emerald", castGem);
+        TinkersRebornRegistry.registerMelting(new ItemStack(Blocks.stone), stoneFluid, 18);
+        TinkersRebornRegistry.registerMelting(new ItemStack(Blocks.cobblestone), stoneFluid, 18);
 
         this.registerCraftingRecipes();
 
@@ -795,8 +798,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         cactusMaterial.addTrait(spiky);
 
         obsidianMaterial = new TinkersRebornMaterial("Obsidian", 0xAA7FF5).setCraftable(true);
-        obsidianFluid = TinkersRebornFluid
-            .createMolten(obsidianMaterial.identifier, obsidianMaterial.materialTextColor, obsidianMaterial.identifier);
+        obsidianFluid = TinkersRebornFluid.createMolten(
+            obsidianMaterial.identifier,
+            obsidianMaterial.materialTextColor,
+            obsidianMaterial.identifier,
+            350);
         obsidianMaterial.addItem("obsidian", 1, VALUE_Ingot);
         obsidianMaterial.setRepresentativeItem(Blocks.obsidian);
         obsidianMaterial.addTrait(duritos);
@@ -968,7 +974,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         goldFluid = TinkersRebornFluid.createMolten("gold", 0xFFD700, "gold", 532);
         tinFluid = TinkersRebornFluid.createMolten("tin", 0xE6E6FA, "tin", 350);
         emeraldFluid = TinkersRebornFluid.createMolten("emerald", 0x17DD62, "emerald", 500);
-        aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xCCCCCC, "aluminum", 330);
+        aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xE88989, "aluminum", 330);
+        stoneFluid = TinkersRebornFluid.createMolten("stone", 0x2B2B2B, "stone", 800);
 
         this.registerBaseMaterialsStats();
         this.registerBowMaterialsStats();
@@ -1114,7 +1121,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(null, null, emeraldFluid, null));
 
         integrate(new MaterialIntegration(woodMaterial, null, null));
-        integrate(new MaterialIntegration(stoneMaterial, null, null));
+        integrate(new MaterialIntegration(stoneMaterial, stoneFluid, null));
         integrate(new MaterialIntegration(flintMaterial, null, null));
         integrate(new MaterialIntegration(cactusMaterial, null, null));
         integrate(new MaterialIntegration(boneMaterial, null, null));
@@ -1226,12 +1233,25 @@ public class TinkersRebornTools implements ITinkersRebornModule {
                     toolStationBlock));
         }
 
+        for (int i = 0; i < PartBuilderBlock.materials.length; i++) {
+            GameRegistry.addShapedRecipe(
+                new ItemStack(partBuilder, 1, i),
+                "A ",
+                "B ",
+                'A',
+                blankPattern,
+                'B',
+                new ItemStack(Blocks.log, 1, i));
+        }
+
         GameRegistry.addRecipe(
             new ShapedOreRecipe(castChest, " p ", "scs", "   ", 'p', blankPattern, 'c', chest, 's', "stickWood"));
         TinkersRebornRegistry.getAllToolParts()
             .forEach(
                 p -> GameRegistry.addRecipe(
                     new ShapedOreRecipe(partChest, " p ", "scs", "   ", 'p', p, 'c', chest, 's', "stickWood")));
+        GameRegistry.addShapelessRecipe(new ItemStack(craftingStation), new ItemStack(Blocks.crafting_table));
+
     }
 
     private static void findToolsFromConfig() {

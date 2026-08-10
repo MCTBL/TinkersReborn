@@ -120,7 +120,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         this.craftingTableRecipes();
 
         this.registerMeltingCasting();
-        this.registerTableCasting();
+        this.registerTableAndBasinCasting();
 
         proxy.initialize();
     }
@@ -143,7 +143,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         TinkersRebornRegistry.registerTableCasting(BoltCoreCastingRecipe.INSTANCE);
     }
 
-    private void registerTableCasting() {
+    private void registerTableAndBasinCasting() {
         TinkersRebornRegistry.registerTableCasting(
             new ItemStack(Items.ender_pearl),
             TinkersRebornTools.castGem,
@@ -158,6 +158,22 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
                 200,
                 true,
                 false));
+
+        TinkersRebornRegistry
+            .registerBasinCasting(new ItemStack(smelteryBlock, 1, 2), null, TinkersRebornTools.stoneFluid, 144);
+        TinkersRebornRegistry.registerBasinCasting(
+            new CastingRecipe(
+                new ItemStack(smelteryBlock, 1, 1),
+                RecipeMatch.of(Blocks.cobblestone),
+                TinkersRebornTools.stoneFluid,
+                72,
+                true,
+                false));
+        TinkersRebornRegistry.registerBasinCasting(
+            new ItemStack(TinkersRebornTools.searedBrick),
+            TinkersRebornTools.castIngot,
+            TinkersRebornTools.stoneFluid,
+            36);
     }
 
     private void craftingTableRecipes() {
