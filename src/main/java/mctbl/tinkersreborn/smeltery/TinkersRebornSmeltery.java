@@ -19,6 +19,7 @@ import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.smeltery.CastingRecipe;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.smeltery.blocks.CastingChannelBlock;
 import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
@@ -119,6 +120,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         this.craftingTableRecipes();
 
         this.registerMeltingCasting();
+        this.registerTableCasting();
 
         proxy.initialize();
     }
@@ -141,8 +143,24 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         TinkersRebornRegistry.registerTableCasting(BoltCoreCastingRecipe.INSTANCE);
     }
 
-    private void craftingTableRecipes() {
+    private void registerTableCasting() {
+        TinkersRebornRegistry.registerTableCasting(
+            new ItemStack(Items.ender_pearl),
+            TinkersRebornTools.castGem,
+            TinkersRebornGeneral.enderFluid,
+            250);
 
+        TinkersRebornRegistry.registerTableCasting(
+            new CastingRecipe(
+                new ItemStack(TinkersRebornTools.bloodyBone),
+                RecipeMatch.ofNBT(new ItemStack(Items.bone)),
+                TinkersRebornGeneral.bloodFluid,
+                250,
+                true,
+                false));
+    }
+
+    private void craftingTableRecipes() {
         // Define
         String[] patSurround = { "###", "#m#", "###" };
         ItemStack searedBrick = new ItemStack(TinkersRebornTools.searedBrick, 1);
@@ -195,8 +213,8 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             .registerMelting(new MeltingRecipe(RecipeMatch.of(Items.snowball, bucket / 8), water, 301));
 
         // bloooooood
-        // TinkersRebornRegistry.registerMelting(Items.rotten_flesh, TinkerFluids.blood, 40);
-        // TinkersRebornTools.obsidianFluid
+        TinkersRebornRegistry.registerMelting(Items.rotten_flesh, TinkersRebornGeneral.bloodFluid, 40);
+        TinkersRebornRegistry.registerMelting(Items.ender_pearl, TinkersRebornGeneral.enderFluid, 250);
 
         // obsidian
         TinkersRebornRegistry.registerMelting(

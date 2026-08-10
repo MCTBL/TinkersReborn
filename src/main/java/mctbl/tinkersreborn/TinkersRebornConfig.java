@@ -364,7 +364,7 @@ public class TinkersRebornConfig {
                 SMELTERY,
                 "entityMelting",
                 new String[] { "SnowMan;true;water;100", "Villager;true;molten_emerald;6",
-                    "VillagerGolem;true;molten_iron;18", "PigZombie;true;molten_gold;10", },
+                    "VillagerGolem;true;molten_iron;18", "PigZombie;true;molten_gold;10", "Enderman;true;ender;5", },
                 "List of entity melting entries in the format 'entity;subtypes;fluid;amount'.")
             .getStringList();
 

@@ -225,6 +225,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     // other items
     public static Item paperStack;
+    public static Item bloodyBone;
     public static Item slimeCrystal;
     public static Item searedBrick;
     public static Item cobaltIngot;
@@ -581,6 +582,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         reinforcement = new MaterialItem("Reinforcement", "reinforcement");
 
         paperStack = new MaterialItem("PaperStack", "paperstack");
+        bloodyBone = new MaterialItem("BloodyBone", "bloodybone");
         searedBrick = new MaterialItem("SearedBrick", "searedbrick");
         cobaltIngot = new MaterialItem("CobaltIngot", "cobaltingot");
         arditeIngot = new MaterialItem("ArditeIngot", "arditeingot");
@@ -625,6 +627,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(silkyJewel, silkyJewel.getUnlocalizedName());
         GameRegistry.registerItem(necroticBone, necroticBone.getUnlocalizedName());
         GameRegistry.registerItem(reinforcement, reinforcement.getUnlocalizedName());
+        GameRegistry.registerItem(bloodyBone, bloodyBone.getUnlocalizedName());
         GameRegistry.registerItem(paperStack, paperStack.getUnlocalizedName());
         GameRegistry.registerItem(searedBrick, searedBrick.getUnlocalizedName());
         GameRegistry.registerItem(cobaltIngot, cobaltIngot.getUnlocalizedName());
@@ -916,9 +919,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             .createMolten(silverMaterial.identifier, silverMaterial.materialTextColor, silverMaterial.identifier, 480);
         silverMaterial.addTrait(holy);
 
-        bloodBoneMaterial = new TinkersRebornMaterial("BloodBone", 0xC70000).setCraftable(true);
+        bloodBoneMaterial = new TinkersRebornMaterial("BloodyBone", 0xC70000).setCraftable(true);
         bloodBoneMaterial.addItem("boneBloodied", 1, VALUE_Ingot);
-        // bloodBoneMaterial.setRepresentativeItem(TinkerCommons.matBloodyBone);
+        bloodBoneMaterial.setRepresentativeItem(TinkersRebornTools.bloodyBone);
         bloodBoneMaterial.addTrait(raging2, MaterialStatusType.HEAD);
         bloodBoneMaterial.addTrait(splintering, MaterialStatusType.HEAD);
         bloodBoneMaterial.addTrait(raging);
@@ -1106,6 +1109,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(null, tinFluid, "Tin"));
         integrate(new MaterialIntegration(null, aluminumFluid, "Aluminum"));
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.bloodFluid, null));
+        integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.enderFluid, null));
         integrate(new MaterialIntegration(null, null, emeraldFluid, null));
 
         integrate(new MaterialIntegration(woodMaterial, null, null));
@@ -1183,6 +1187,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         OreDictionary.registerOre("slimeball", new ItemStack(glueBall));
 
         OreDictionary.registerOre("boneWithered", new ItemStack(necroticBone));
+        OreDictionary.registerOre("boneBloodied", new ItemStack(bloodyBone));
     }
 
     private void registerCraftingRecipes() {

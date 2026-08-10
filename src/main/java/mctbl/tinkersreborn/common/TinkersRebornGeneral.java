@@ -118,6 +118,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static SlimeSapling slimeSapling;
 
     public static TinkersRebornFluid bloodFluid;
+    public static TinkersRebornFluid enderFluid;
 
     // Ores
     public static Block oreSlag;
@@ -189,6 +190,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(oreGravel, GravelOreItem.class, oreGravel.getUnlocalizedName());
 
         bloodFluid = new TinkersRebornFluid("blood", 0xFF0000, "blood");
+        enderFluid = new TinkersRebornFluid("ender", 0x0B4D42, "ender");
 
         dryingRack = new DryingRackBlock();
         GameRegistry.registerBlock(dryingRack, dryingRack.getUnlocalizedName());
