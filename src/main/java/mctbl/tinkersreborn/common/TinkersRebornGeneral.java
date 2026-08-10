@@ -2,7 +2,9 @@ package mctbl.tinkersreborn.common;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
@@ -12,7 +14,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.ChestGenHooks;
@@ -30,6 +34,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.client.StepSoundSlime;
@@ -67,13 +72,22 @@ import mctbl.tinkersreborn.common.items.HeartCanister;
 import mctbl.tinkersreborn.common.items.Jerky;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.items.FilledBucket;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
+import mctbl.tinkersreborn.tools.items.Pattern;
+import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.RecipeRemover;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.world.gen.SlimeIslandGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornSurfaceOreGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornWorldGenerator;
+import mctbl.tinkersreborn.world.village.ComponentSmeltery;
+import mctbl.tinkersreborn.world.village.ComponentToolWorkshop;
+import mctbl.tinkersreborn.world.village.VillageSmelteryHandler;
+import mctbl.tinkersreborn.world.village.VillageToolWorkshopHandler;
 
 public class TinkersRebornGeneral implements ITinkersRebornModule {
 
@@ -113,6 +127,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     // Chest hooks
     public static ChestGenHooks tinkerHouseChest;
     public static ChestGenHooks tinkerHousePatterns;
+    public static ChestGenHooks tinkerHouseParts;
 
     public static Item heartCanister;
 
@@ -205,9 +220,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
             // craftingTableRecipes();
             // addRecipesForFurnace();
         }
-        this.addLoot();
         this.createEntities();
         this.registerDrying();
+        this.registerVillageStructures();
         proxy.init();
 
         GameRegistry.registerWorldGenerator(new TinkersRebornWorldGenerator(), 0);
@@ -217,7 +232,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
-
+        addLoot();
     }
 
     private void oreRegistry() {
@@ -278,8 +293,66 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
                 "slimeball"));
     }
 
-    private void addLoot() {
-        // TODO add some loot to village
+    private static void addLoot() {
+        tinkerHouseChest = ChestGenHooks.getInfo("TinkersRebornHouse");
+        tinkerHouseChest.setMin(3);
+        tinkerHouseChest.setMax(8);
+        tinkerHouseChest.addItem(new WeightedRandomChestContent(new ItemStack(heartCanister, 1, 1), 1, 1, 2));
+        tinkerHouseChest
+            .addItem(new WeightedRandomChestContent(new ItemStack(TinkersRebornTools.searedBrick), 2, 8, 12));
+        tinkerHouseChest
+            .addItem(new WeightedRandomChestContent(Pattern.newStackWithIdentifier(Pattern.PATTERN_BLANK), 1, 3, 10));
+        tinkerHouseChest.addItem(new WeightedRandomChestContent(new ItemStack(Items.iron_ingot), 1, 3, 5));
+        tinkerHouseChest.addItem(new WeightedRandomChestContent(new ItemStack(Items.gold_ingot), 1, 2, 2));
+
+        tinkerHousePatterns = ChestGenHooks.getInfo("TinkersRebornPatterns");
+        tinkerHousePatterns.setMin(TinkersRebornConfig.generatePatternNumber[0]);
+        tinkerHousePatterns.setMax(TinkersRebornConfig.generatePatternNumber[1]);
+        TinkersRebornTools.patternAndCast.getAllPatternType()
+            .forEach(
+                part -> tinkerHousePatterns.addItem(
+                    new WeightedRandomChestContent(
+                        Pattern.newStackWithIdentifier(part),
+                        1,
+                        part.equals(Pattern.PATTERN_BLANK) ? 5 : 1,
+                        part.equals(Pattern.PATTERN_BLANK) ? 60 : 12)));
+
+        tinkerHouseParts = ChestGenHooks.getInfo("TinkersRebornParts");
+        tinkerHouseParts.setMin(TinkersRebornConfig.generateToolPartNumber[0]);
+        tinkerHouseParts.setMax(TinkersRebornConfig.generateToolPartNumber[1]);
+
+        List<TinkersRebornMaterial> allowMaterialList = Arrays.asList(TinkersRebornConfig.generateToolPartMaterials)
+            .stream()
+            .map(TinkersRebornUtils::sanitizeLocalizationString)
+            .map(TinkersRebornRegistry::getMaterialByIdentifier)
+            .collect(Collectors.toList());
+        for (TinkersRebornToolPart part : TinkersRebornRegistry.getAllToolParts()) {
+            for (int idx = 0; idx < allowMaterialList.size(); idx++) {
+                TinkersRebornMaterial material = allowMaterialList.get(idx);
+                if (material.getStats(part.allowType) != null) {
+                    ItemStack stack = part.getNewPartWithMaterial(material);
+                    if (stack != null) {
+                        int weight = TinkersRebornConfig.generateToolPartMaterialsWeights[idx];
+                        tinkerHouseParts.addItem(new WeightedRandomChestContent(stack, 1, 1, weight));
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void registerVillageStructures() {
+        if (!TinkersRebornConfig.addToVillages) return;
+
+        VillagerRegistry.instance()
+            .registerVillageCreationHandler(new VillageToolWorkshopHandler());
+        MapGenStructureIO.func_143031_a(ComponentToolWorkshop.class, "TinkersReborn:ToolWorkshop");
+
+        if (TinkersRebornConfig.generateVillageSmeltery) {
+            VillagerRegistry.instance()
+                .registerVillageCreationHandler(new VillageSmelteryHandler());
+            MapGenStructureIO.func_143031_a(ComponentSmeltery.class, "TinkersReborn:Smeltery");
+        }
     }
 
     private void createEntities() {
