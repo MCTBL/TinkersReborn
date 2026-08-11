@@ -134,7 +134,7 @@ public class TinkersRebornToolsEventsHandler {
         final EntityPlayer player = (EntityPlayer) event.entityLiving;
         Entity attacker = event.source.getSourceOfDamage();
 
-        ItemStack tool = player.getItemInUse();
+        ItemStack tool = player.isUsingItem() ? player.getCurrentEquippedItem() : null;
         if (isTool(tool) && !ToolTagsHelper.isBroken(tool)) {
             if (player.isBlocking() && !event.isCanceled()) {
                 ToolTagsHelper.getTraitsOrdered(tool)

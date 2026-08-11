@@ -21,10 +21,10 @@ public class TraitEcological extends AbstractTrait {
     @Override
     public void onUpdate(ItemStack tool, World world, Entity entity, int itemSlot, boolean isSelected) {
         // *20 because 20 ticks in a second
-        if (!world.isRemote && entity instanceof EntityPlayer player && random.nextInt(chance * 20) == 0) {
-            if (player.getItemInUse() != tool) {
-                ToolTagsHelper.healTool(tool, 1, (EntityLivingBase) entity);
-            }
+        if (!world.isRemote && entity instanceof EntityPlayer player
+            && random.nextInt(chance * 20) == 0
+            && !(player.isUsingItem() && player.getCurrentEquippedItem() == tool)) {
+            ToolTagsHelper.healTool(tool, 1, (EntityLivingBase) entity);
         }
     }
 }

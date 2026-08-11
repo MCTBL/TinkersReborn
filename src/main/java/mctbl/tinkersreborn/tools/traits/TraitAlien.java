@@ -44,7 +44,8 @@ public class TraitAlien extends TraitProgressiveStats {
         }
 
         // we don't update if the player is currently breaking a block because that'd reset it
-        if (playerIsBreakingBlock(entity) || (entity instanceof EntityPlayer player && player.getItemInUse() == tool)) {
+        if (playerIsBreakingBlock(entity) || (entity instanceof EntityPlayer player && player.isUsingItem()
+            && player.getCurrentEquippedItem() == tool)) {
             return;
         }
 
