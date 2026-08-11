@@ -46,6 +46,7 @@ public enum TinkersStr {
     partCrafterMaterialValue("gui.partbuilder.material_value"),
     partCrafterMaterialCantMakePart("gui.partbuilder.material_cant_make"),
 
+    smelteryFuel("gui.smeltery.fuel"),
     smelteryFuelHeat("gui.smeltery.fuel.heat"),
     smelteryFuelEmpty("gui.smeltery.fuel.empty"),
 

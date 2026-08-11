@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.utils.FuelInfo;
+import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
 
@@ -92,7 +93,7 @@ public class GuiHeatingStructureFuelTank extends GuiMultiModule {
     protected void drawFuelTooltip(int mouseX, int mouseY) {
         List<String> text = new ArrayList<>();
         FluidStack fuel = fuelInfo.fluid;
-        text.add(EnumChatFormatting.WHITE + TinkersRebornUtils.translate("gui.smeltery.fuel"));
+        text.add(ColorUtil.addWhite(TinkersStr.smelteryFuel.toString()));
         if (fuel != null) {
             text.add(fuel.getLocalizedName());
 

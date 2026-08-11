@@ -70,6 +70,10 @@ tinkersreborn.SearedBlock.Faucet.name=Seared Faucet
 tinkersreborn.SearedBlock.Basin.name=Casting Basin
 tinkersreborn.SearedBlock.CastingChannel.name=Casting Channel
 
+tinkersreborn.tank.tooltip1=Contains
+tinkersreborn.tank.tooltip2=Keeps any fluids it has when harvested
+tinkersreborn.tank.tooltip3=Heart of the Smeltery
+
 tinkersreborn.moltenBucket=Molten %%material Bucket
 tinkersreborn.bucket=%%material Bucket
 tinkersreborn.moltenFluid=Molten %%material
@@ -315,8 +319,6 @@ tinkersreborn.stat.fletching.modifier.name=Modifier
 tinkersreborn.stat.fletching.modifier.desc=How many arrows you can craft with this.\nProjectile ammo will be multiplied by this.
 
 tinkersreborn.stat.projectile.name=Projectile
-//stat.projectile.ammo.name=Ammo
-
 
 
 // traits
