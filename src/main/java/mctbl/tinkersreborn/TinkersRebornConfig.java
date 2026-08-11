@@ -3,7 +3,9 @@ package mctbl.tinkersreborn;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraftforge.common.config.Configuration;
 
@@ -90,6 +92,8 @@ public class TinkersRebornConfig {
     public static int vineHammerMaxOreMine;
     public static int vineHammerMineEachTick;
 
+    public static Set<String> heartDropBlacklist;
+
     // leveling
     public static boolean toolLevelingEnable;
     public static int maxToolLevel;
@@ -139,6 +143,14 @@ public class TinkersRebornConfig {
             .getStringList();
         fluidUnit = config.get(GENERAL, "Fluid unit", "mB", "Only for display")
             .getString();
+
+        heartDropBlacklist = Arrays
+            .asList(
+                config.get(GENERAL, "Heart Drop Black List", new String[] {}, "Which Boss won't drop yellow heart")
+                    .getStringList())
+            .stream()
+            .map(s -> s.toLowerCase(Locale.US))
+            .collect(Collectors.toSet());
 
         naturalSlimeSpawn = config.get(GENERAL, "Blue Slime spawn chance", 1, "Set to 0 to disable")
             .getInt();

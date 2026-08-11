@@ -59,6 +59,7 @@ import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
 import mctbl.tinkersreborn.common.events.HealthBarRenderer;
+import mctbl.tinkersreborn.common.events.TinkersRebornMobEventHandler;
 import mctbl.tinkersreborn.common.events.TinkersRebornPlayerHandler;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
 import mctbl.tinkersreborn.common.itemblocks.MetalOreItemBlock;
@@ -210,6 +211,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         oreRegistry();
 
         MinecraftForge.EVENT_BUS.register(new TinkersRebornPlayerHandler());
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornMobEventHandler());
         HealthBarRenderer healthBarRenderer = new HealthBarRenderer();
         MinecraftForge.EVENT_BUS.register(healthBarRenderer);
         FMLCommonHandler.instance()
@@ -348,7 +350,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         EntityRegistry
             .registerModEntity(KingBlueSlime.class, "Tinkers King Slime", 2, TinkersReborn.instance, 64, 5, true);
 
-        if (TinkersRebornConfig.naturalSlimeSpawn > 1) {
+        if (TinkersRebornConfig.naturalSlimeSpawn > 0) {
             Type[] biomeTypes = { Type.FOREST, Type.PLAINS, Type.MOUNTAIN, Type.HILLS, Type.SWAMP, Type.JUNGLE,
                 Type.WASTELAND };
             Set<BiomeGenBase> set = new HashSet<>();
