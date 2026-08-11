@@ -100,7 +100,7 @@ public class GuiButtonItem<T> extends GuiButton {
             } else {
                 parent.renderItemIntoGui(icon, xPosition + 1, yPosition + 1);
             }
-        }else {
+        } else {
             GuiScreen.func_146110_a(xPosition, yPosition, 54, 0, 18, 18, 256, 256);
         }
     }

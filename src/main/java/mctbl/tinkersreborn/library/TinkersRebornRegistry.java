@@ -65,8 +65,8 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
     public static TinkersRebornCreativeTab blockTab;
     public static TinkersRebornCreativeTab toolsTab;
     public static TinkersRebornCreativeTab weaponsTab;
-    public static TinkersRebornCreativeTab partsTab;
     public static TinkersRebornCreativeTab projectileTab;
+    public static TinkersRebornCreativeTab partsTab;
     public static TinkersRebornCreativeTab miscTab;
 
     protected static final List<ToolCore> tools = new ArrayList<>();
@@ -121,8 +121,8 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         blockTab = new TinkersRebornCreativeTab("TinkersRebornBlocks");
         toolsTab = new TinkersRebornCreativeTab("TinkersRebornTools");
         weaponsTab = new TinkersRebornCreativeTab("TinkersRebornWeapons");
-        partsTab = new TinkersRebornCreativeTab("TinkersRebornParts");
         projectileTab = new TinkersRebornCreativeTab("TinkersRebornProjectile");
+        partsTab = new TinkersRebornCreativeTab("TinkersRebornParts");
         miscTab = new TinkersRebornCreativeTab("TinkersRebornMisc");
     }
 
@@ -130,8 +130,8 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         blockTab.init(new ItemStack(TinkersRebornGeneral.goldHead));
         toolsTab.init(TinkersRebornTools.pickaxe.getToolForRender());
         weaponsTab.init(TinkersRebornTools.broadSword.getToolForRender());
-        partsTab.init(TinkersRebornTools.pickaxeHead.getNewPartWithMaterial(TinkersRebornTools.woodMaterial));
         projectileTab.init(TinkersRebornTools.arrow.getToolForRender());
+        partsTab.init(TinkersRebornTools.pickaxeHead.getNewPartWithMaterial(TinkersRebornTools.woodMaterial));
         miscTab.init(new ItemStack(TinkersRebornGeneral.heartCanister, 1, 2));
     }
 

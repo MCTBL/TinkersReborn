@@ -12,6 +12,7 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.smeltery.ICastingRecipe;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.items.BoltCore;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 /**
  * Special casting recipe for BoltCore.
@@ -30,7 +31,7 @@ public class BoltCoreCastingRecipe implements ICastingRecipe {
     @Override
     public boolean matches(@Nonnull ItemStack cast, Fluid fluid) {
         // Cast must be an arrowShaft with a valid material
-        if (cast.getItem() != TinkersRebornTools.arrowShaft) {
+        if (TinkersRebornUtils.isStackEmpty(cast) || cast.getItem() != TinkersRebornTools.arrowShaft) {
             return false;
         }
 

@@ -6,12 +6,11 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.gui.GuiButtonItem;
 import mctbl.tinkersreborn.library.gui.GuiSideButtons;
 import mctbl.tinkersreborn.library.gui.Icons;
 import mctbl.tinkersreborn.library.tools.ToolCore;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class GuiButtonsToolStation extends GuiSideButtons {
 
@@ -43,7 +42,7 @@ public class GuiButtonsToolStation extends GuiSideButtons {
                 index++,
                 -1,
                 -1,
-                TinkersRebornUtils.translate("gui.repair"),
+                TinkersStr.toolStationRepairTitle.toString(),
                 ToolBuildGuiInfo.repairInfo,
                 parent);
             shiftButton(button, 0, -18 * style);
@@ -81,8 +80,6 @@ public class GuiButtonsToolStation extends GuiSideButtons {
     @SuppressWarnings("unchecked")
     @Override
     protected void actionPerformed(GuiButton button) {
-        TinkersReborn.LOG.info(String.format("GuiButtonsToolStation click %s", button.displayString));
-
         for (GuiButton o : buttonList) {
             if (o instanceof GuiButtonItem) {
                 ((GuiButtonItem<ToolBuildGuiInfo>) o).pressed = false;
