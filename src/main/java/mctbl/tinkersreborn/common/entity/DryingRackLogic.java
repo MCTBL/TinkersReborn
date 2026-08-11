@@ -32,6 +32,7 @@ public class DryingRackLogic extends TinkersRebornInventoryLogic implements ISid
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return null;
     }

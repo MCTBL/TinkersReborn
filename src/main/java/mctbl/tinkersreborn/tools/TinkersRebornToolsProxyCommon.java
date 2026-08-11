@@ -17,4 +17,12 @@ public class TinkersRebornToolsProxyCommon {
 
     public void initialize() {}
 
+    public int getTableRenderId() {
+        return 0;
+    }
+
+    public int getChestRenderId() {
+        return 0;
+    }
+
 }

@@ -6,6 +6,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.entity.TinkersRebornChestLogic;
 import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.tools.gui.GuiPartChest;
@@ -33,6 +35,7 @@ public class PartChestLogic extends TinkersRebornChestLogic {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiPartChest(inventoryplayer, this, world, x, y, z);
     }

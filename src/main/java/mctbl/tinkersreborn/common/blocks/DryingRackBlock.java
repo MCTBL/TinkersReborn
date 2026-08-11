@@ -18,8 +18,8 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
-import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
 import mctbl.tinkersreborn.util.ItemHelper;
@@ -189,7 +189,7 @@ public class DryingRackBlock extends TinkersRebornInventoryBlock {
     /* Rendering */
     @Override
     public int getRenderType() {
-        return DryingRackRender.model;
+        return TinkersRebornGeneral.proxy.getDryingRackRenderId();
     }
 
     @Override

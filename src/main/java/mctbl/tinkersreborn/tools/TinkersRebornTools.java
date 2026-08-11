@@ -97,7 +97,6 @@ import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
 import mctbl.tinkersreborn.tools.entity.ToolForgeLogic;
 import mctbl.tinkersreborn.tools.entity.ToolStationLogic;
-import mctbl.tinkersreborn.tools.events.TinkersRebornProjectileRenderEvents;
 import mctbl.tinkersreborn.tools.events.TinkersRebornToolsEventsHandler;
 import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaBowNerfHandler;
 import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaHoeNerfHandler;
@@ -342,8 +341,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         FMLCommonHandler.instance()
             .bus()
             .register(tre);
-
-        MinecraftForge.EVENT_BUS.register(new TinkersRebornProjectileRenderEvents());
 
         toolStation = new ToolStationBlock();
         GameRegistry.registerBlock(toolStation, ToolStationItemBlock.class, toolStation.getUnlocalizedName());

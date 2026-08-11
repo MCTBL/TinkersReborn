@@ -123,6 +123,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public FontRenderer getFontRenderer(ItemStack stack) {
         return TinkersRebornGeneralProxyClient.fontRender;
     }

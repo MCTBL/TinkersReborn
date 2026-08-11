@@ -87,6 +87,8 @@ public class GuiButtonItem<T> extends GuiButton {
 
             drawIcon(mc);
         }
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     protected void drawIcon(Minecraft mc) {

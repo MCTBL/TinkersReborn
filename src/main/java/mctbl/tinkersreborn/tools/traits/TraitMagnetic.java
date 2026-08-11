@@ -3,7 +3,6 @@ package mctbl.tinkersreborn.tools.traits;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.vecmath.Vector3d;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -87,20 +86,20 @@ public class TraitMagnetic extends AbstractTraitLeveled {
             float strength = 0.07f;
 
             // calculate direction: item -> player
-            Vector3d vec = new Vector3d(x, y, z);
-            vec.sub(new Vector3d(item.posX, item.posY, item.posZ));
+            double deltaX = x - item.posX;
+            double deltaY = y - item.posY;
+            double deltaZ = z - item.posZ;
+            double distanceSquared = deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ;
 
-            if (vec.lengthSquared() <= 0.05) {
+            if (distanceSquared <= 0.05D) {
                 continue;
             }
 
-            vec.normalize();
-            vec.scale(strength);
+            double scale = strength / Math.sqrt(distanceSquared);
 
-            // we calculated the movement vector and set it to the correct strength.. now we apply it \o/
-            item.motionX += vec.x;
-            item.motionY += vec.y;
-            item.motionZ += vec.z;
+            item.motionX += deltaX * scale;
+            item.motionY += deltaY * scale;
+            item.motionZ += deltaZ * scale;
 
             pulled++;
         }

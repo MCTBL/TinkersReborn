@@ -40,4 +40,24 @@ public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxy
         MinecraftForgeClient
             .registerItemRenderer(Item.getItemFromBlock(TinkersRebornSmeltery.lavaTank), tankItemRenderer);
     }
+
+    @Override
+    public int getSmelteryRender() {
+        return SmelteryRender.smelteryModel;
+    }
+
+    @Override
+    public int getTankRender() {
+        return TankRender.tankModelID;
+    }
+
+    @Override
+    public int getCastingBlockRender() {
+        return CastingBlockRender.searedModel;
+    }
+
+    @Override
+    public int getCastingChannelRender() {
+        return BlockRenderCastingChannel.renderID;
+    }
 }

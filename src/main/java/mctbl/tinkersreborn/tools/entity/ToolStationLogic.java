@@ -12,6 +12,8 @@ import net.minecraft.world.World;
 
 import org.lwjgl.util.Point;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiToolStation;
@@ -44,6 +46,7 @@ public class ToolStationLogic extends TinkersRebornInventoryLogic implements ISi
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiToolStation(inventoryplayer, world, BlockPos.of(x, y, z), this);
     }

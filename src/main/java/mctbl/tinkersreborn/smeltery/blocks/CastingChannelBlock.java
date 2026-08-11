@@ -18,7 +18,6 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.CastingChannelLogic;
-import mctbl.tinkersreborn.smeltery.model.BlockRenderCastingChannel;
 
 public class CastingChannelBlock extends TinkersRebornInventoryBlock {
 
@@ -72,7 +71,7 @@ public class CastingChannelBlock extends TinkersRebornInventoryBlock {
 
     @Override
     public int getRenderType() {
-        return BlockRenderCastingChannel.renderID;
+        return TinkersRebornSmeltery.proxy.getCastingChannelRender();
     }
 
     @Override

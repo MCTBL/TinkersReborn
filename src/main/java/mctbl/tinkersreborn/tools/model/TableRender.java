@@ -18,6 +18,7 @@ import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic.DisplayItem;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
 
+// TODO split TileEntitySpecialRenderer and ISimpleBlockRenderingHandler to 2 class
 public class TableRender extends TileEntitySpecialRenderer implements ISimpleBlockRenderingHandler {
 
     public static int model = RenderingRegistry.getNextAvailableRenderId();

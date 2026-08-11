@@ -882,7 +882,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return this.toolForRender;
     }
 
-    @SideOnly(Side.CLIENT)
     protected RenderMaterial getMaterialForPartForGuiRendering(int idx) {
         int correctId = idx % TinkersRebornRegistry.getRenderMaterialMap()
             .size() + 1;

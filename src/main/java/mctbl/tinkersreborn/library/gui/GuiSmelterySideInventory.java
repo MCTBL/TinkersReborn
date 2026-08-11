@@ -119,6 +119,8 @@ public class GuiSmelterySideInventory extends GuiSideInventory {
                 mouseY - guiTop,
                 this.fontRendererObj);
         }
+
+        RenderHelper.enableStandardItemLighting();
     }
 
 }

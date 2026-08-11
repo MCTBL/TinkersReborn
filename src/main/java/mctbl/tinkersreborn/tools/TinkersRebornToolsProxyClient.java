@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.tools;
 
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -11,6 +12,7 @@ import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.tools.BowCore;
 import mctbl.tinkersreborn.tools.entity.EntityArrow;
 import mctbl.tinkersreborn.tools.entity.EntityBolt;
+import mctbl.tinkersreborn.tools.events.TinkersRebornProjectileAndToolsRenderEvents;
 import mctbl.tinkersreborn.tools.items.tools.CrossBow;
 import mctbl.tinkersreborn.tools.model.BowRenderer;
 import mctbl.tinkersreborn.tools.model.ChestRender;
@@ -46,5 +48,17 @@ public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon
         EntityArrowRenderer arrowRenderer = new EntityArrowRenderer();
         RenderingRegistry.registerEntityRenderingHandler(EntityArrow.class, arrowRenderer);
         RenderingRegistry.registerEntityRenderingHandler(EntityBolt.class, arrowRenderer);
+
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornProjectileAndToolsRenderEvents());
+    }
+
+    @Override
+    public int getTableRenderId() {
+        return TableRender.model;
+    }
+
+    @Override
+    public int getChestRenderId() {
+        return ChestRender.model;
     }
 }

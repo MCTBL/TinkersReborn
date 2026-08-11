@@ -27,7 +27,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -58,7 +57,6 @@ import mctbl.tinkersreborn.common.blocks.slime.SlimeTallGrass;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
-import mctbl.tinkersreborn.common.events.HealthBarRenderer;
 import mctbl.tinkersreborn.common.events.TinkersRebornMobEventHandler;
 import mctbl.tinkersreborn.common.events.TinkersRebornPlayerHandler;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
@@ -217,11 +215,6 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         MinecraftForge.EVENT_BUS.register(new TinkersRebornPlayerHandler());
         MinecraftForge.EVENT_BUS.register(new TinkersRebornMobEventHandler());
-        HealthBarRenderer healthBarRenderer = new HealthBarRenderer();
-        MinecraftForge.EVENT_BUS.register(healthBarRenderer);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(healthBarRenderer);
     }
 
     @Override
