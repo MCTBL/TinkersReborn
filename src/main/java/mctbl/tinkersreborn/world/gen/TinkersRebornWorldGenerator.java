@@ -21,12 +21,12 @@ public class TinkersRebornWorldGenerator implements IWorldGenerator {
     WorldGenMinable ardite;
 
     public TinkersRebornWorldGenerator() {
-        copper = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 3, 8, Blocks.stone);
-        tin = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 4, 8, Blocks.stone);
-        aluminum = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 5, 6, Blocks.stone);
+        copper = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 2, 8, Blocks.stone);
+        tin = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 3, 8, Blocks.stone);
+        aluminum = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 4, 6, Blocks.stone);
 
-        cobalt = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 1, 3, Blocks.netherrack);
-        ardite = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 2, 3, Blocks.netherrack);
+        cobalt = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 0, 3, Blocks.netherrack);
+        ardite = new WorldGenMinable(TinkersRebornGeneral.oreSlag, 1, 3, Blocks.netherrack);
     }
 
     @Override

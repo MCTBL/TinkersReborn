@@ -114,7 +114,6 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         this.partAmount = partAmount;
         this.maxStackSize = 1;
         this.setUnlocalizedName("TinkerTools." + toolTypeName);
-        this.setCreativeTab(TinkersRebornRegistry.toolsTab);
         this.setNoRepair();
         this.toolTypeName = toolTypeName.toLowerCase();
 

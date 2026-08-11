@@ -55,6 +55,7 @@ public class TinkersReborn {
     public static File cfgDirectory;
 
     public TinkersReborn() {
+        l.add(TinkersRebornRegistry.instance);
         l.add(new TinkersRebornGeneral());
         l.add(new TinkersRebornTools());
         l.add(new TinkersRebornSmeltery());
@@ -67,7 +68,6 @@ public class TinkersReborn {
         cfgDirectory = event.getModConfigurationDirectory();
         TinkerNetwork.instance.setUp();
         TinkersRebornConfig.setupConfig(cfgDirectory);
-        TinkersRebornRegistry.instance.preInit();
         AbstractPacketThreadsafe.init();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 

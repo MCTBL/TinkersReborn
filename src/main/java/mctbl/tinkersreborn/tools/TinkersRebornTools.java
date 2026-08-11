@@ -1196,11 +1196,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         OreDictionary.registerOre("boneWithered", new ItemStack(necroticBone));
         OreDictionary.registerOre("boneBloodied", new ItemStack(bloodyBone));
+
+        OreDictionary.registerOre("blockObsidian", new ItemStack(Blocks.obsidian));
     }
 
     private void registerCraftingRecipes() {
-        // CraftingManager instance = CraftingManager.getInstance();
-        ItemStack paper = new ItemStack(Items.paper);
         ItemStack blankPattern = Pattern.newStackWithIdentifier(Pattern.PATTERN_BLANK);
         ItemStack chest = new ItemStack(Blocks.chest);
         ItemStack smelteryBrick = new ItemStack(TinkersRebornSmeltery.smelteryBlock);
@@ -1252,6 +1252,57 @@ public class TinkersRebornTools implements ITinkersRebornModule {
                     new ShapedOreRecipe(partChest, " p ", "scs", "   ", 'p', p, 'c', chest, 's', "stickWood")));
         GameRegistry.addShapelessRecipe(new ItemStack(craftingStation), new ItemStack(Blocks.crafting_table));
 
+        GameRegistry.addShapedRecipe(
+            new ItemStack(mossball),
+            "AAA",
+            "AAA",
+            "AAA",
+            'A',
+            new ItemStack(Blocks.mossy_cobblestone));
+        GameRegistry
+            .addShapedRecipe(new ItemStack(mossball), "AAA", "AAA", "AAA", 'A', new ItemStack(Blocks.stonebrick, 1, 1));
+
+        GameRegistry.addShapedRecipe(
+            new ItemStack(lavaCrystal),
+            "ABA",
+            "BCB",
+            "ABA",
+            'A',
+            new ItemStack(Items.blaze_rod),
+            'B',
+            new ItemStack(Items.fire_charge),
+            'C',
+            new ItemStack(Items.lava_bucket));
+        GameRegistry.addShapedRecipe(
+            new ItemStack(lavaCrystal),
+            "ABA",
+            "BCB",
+            "ABA",
+            'A',
+            new ItemStack(Items.fire_charge),
+            'B',
+            new ItemStack(Items.blaze_rod),
+            'C',
+            new ItemStack(Items.lava_bucket));
+
+        GameRegistry.addShapedRecipe(
+            new ItemStack(silkyCloth),
+            "AAA",
+            "ABA",
+            "AAA",
+            'A',
+            new ItemStack(Items.string),
+            'B',
+            new ItemStack(Items.gold_nugget));
+        GameRegistry.addShapedRecipe(
+            new ItemStack(silkyJewel),
+            " A ",
+            "ABA",
+            " A ",
+            'A',
+            new ItemStack(silkyCloth),
+            'B',
+            new ItemStack(Items.emerald));
     }
 
     private static void findToolsFromConfig() {

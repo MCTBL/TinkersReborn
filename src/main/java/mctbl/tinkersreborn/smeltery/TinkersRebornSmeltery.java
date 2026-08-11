@@ -119,18 +119,17 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     public void init(FMLInitializationEvent e) {
         this.craftingTableRecipes();
 
-        this.registerMeltingCasting();
+        this.registerMeltingRecipe();
         this.registerTableAndBasinCasting();
+        this.registerBoltCoreCasting();
+        TinkersRebornRegistry.registerEntityMelting();
 
         proxy.initialize();
     }
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
-
-        TinkersRebornRegistry.registerEntityMelting();
         this.registerAlloys();
-        this.registerBoltCoreCasting();
     }
 
     /**
@@ -174,6 +173,15 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             TinkersRebornTools.castIngot,
             TinkersRebornTools.stoneFluid,
             36);
+
+        TinkersRebornRegistry.registerBasinCasting(
+            new CastingRecipe(
+                new ItemStack(TinkersRebornTools.reinforcement),
+                RecipeMatch.of(TinkersRebornTools.largeplate.getNewPartWithMaterial(TinkersRebornTools.ironMaterial)),
+                TinkersRebornTools.obsidianFluid,
+                1152,
+                true,
+                false));
     }
 
     private void craftingTableRecipes() {
@@ -216,7 +224,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.addRecipe(new ItemStack(castingChannel, 4, 0), "b b", "bbb", 'b', searedBrick); // Channel
     }
 
-    private void registerMeltingCasting() {
+    private void registerMeltingRecipe() {
         int bucket = 1000;
 
         // Water

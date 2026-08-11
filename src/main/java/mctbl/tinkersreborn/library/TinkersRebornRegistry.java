@@ -14,7 +14,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
@@ -30,8 +29,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.crafting.AlloyRecipe;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
@@ -53,7 +56,7 @@ import mctbl.tinkersreborn.tools.items.Pattern;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class TinkersRebornRegistry {
+public class TinkersRebornRegistry implements ITinkersRebornModule {
 
     public static TinkersRebornRegistry instance = new TinkersRebornRegistry();
 
@@ -97,19 +100,36 @@ public class TinkersRebornRegistry {
 
     protected static final List<DryingRecipe> dryingRegistry = new ArrayList<>();
 
-    public void preInit() {
-        this.initCreativeTab();
+    @Override
+    public void preInit(FMLPreInitializationEvent e) {
+        initCreativeTab();
         this.initRegistry();
+    }
 
+    @Override
+    public void init(FMLInitializationEvent e) {
+        // Nothing
+    }
+
+    @Override
+    public void postInit(FMLPostInitializationEvent e) {
+        setCreativeTab();
     }
 
     private void initCreativeTab() {
-        // TODO remember init after postInit to switch TinkersReborn's Item
-        blockTab = new TinkersRebornCreativeTab("TinkersRebornBlocks").init(new ItemStack(Items.cookie));
-        toolsTab = new TinkersRebornCreativeTab("TinkersRebornTools").init(new ItemStack(Items.flint_and_steel));
-        weaponsTab = new TinkersRebornCreativeTab("TinkersRebornWeapons").init(new ItemStack(Items.diamond_boots));
-        partsTab = new TinkersRebornCreativeTab("TinkersRebornParts").init(new ItemStack(Items.bow));
-        miscTab = new TinkersRebornCreativeTab("TinkersRebornMisc").init(new ItemStack(Items.iron_pickaxe));
+        blockTab = new TinkersRebornCreativeTab("TinkersRebornBlocks");
+        toolsTab = new TinkersRebornCreativeTab("TinkersRebornTools");
+        weaponsTab = new TinkersRebornCreativeTab("TinkersRebornWeapons");
+        partsTab = new TinkersRebornCreativeTab("TinkersRebornParts");
+        miscTab = new TinkersRebornCreativeTab("TinkersRebornMisc");
+    }
+
+    private static void setCreativeTab() {
+        blockTab.init(new ItemStack(TinkersRebornGeneral.goldHead));
+        toolsTab.init(TinkersRebornTools.pickaxe.getToolForRender());
+        weaponsTab.init(TinkersRebornTools.broadSword.getToolForRender());
+        partsTab.init(TinkersRebornTools.pickaxeHead.getNewPartWithMaterial(TinkersRebornTools.woodMaterial));
+        miscTab.init(new ItemStack(TinkersRebornGeneral.heartCanister, 1, 2));
     }
 
     private void initRegistry() {
@@ -958,4 +978,5 @@ public class TinkersRebornRegistry {
 
         return null;
     }
+
 }

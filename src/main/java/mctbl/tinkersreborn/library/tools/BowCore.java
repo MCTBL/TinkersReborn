@@ -47,6 +47,7 @@ public abstract class BowCore extends ToolCore {
 
     protected BowCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
+        this.setCreativeTab(TinkersRebornRegistry.weaponsTab);
         this.categoryTags.add(Category.LAUNCHER);
     }
 

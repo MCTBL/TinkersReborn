@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
@@ -220,7 +221,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public void init(FMLInitializationEvent e) {
         if (!TinkersRebornConfig.disableAllRecipes) {
             craftingTableRecipes();
-            // addRecipesForFurnace();
+            addRecipesForFurnace();
         }
         this.createEntities();
         this.registerDrying();
@@ -249,7 +250,6 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         OreDictionary.registerOre("oreIron", new ItemStack(oreGravel, 1, 0));
         OreDictionary.registerOre("oreGold", new ItemStack(oreGravel, 1, 1));
-        OreDictionary.registerOre("oreCobalt", new ItemStack(oreGravel, 1, 5));
         OreDictionary.registerOre("oreCopper", new ItemStack(oreGravel, 1, 2));
         OreDictionary.registerOre("oreTin", new ItemStack(oreGravel, 1, 3));
         OreDictionary.registerOre("oreAluminum", new ItemStack(oreGravel, 1, 4));
@@ -277,22 +277,6 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         // Vanilla stuff
         OreDictionary.registerOre("slimeball", new ItemStack(Items.slime_ball));
         OreDictionary.registerOre("blockGlass", new ItemStack(Blocks.glass));
-        RecipeRemover.removeShapedRecipe(new ItemStack(Blocks.sticky_piston));
-        RecipeRemover.removeShapedRecipe(new ItemStack(Items.magma_cream));
-        RecipeRemover.removeShapedRecipe(new ItemStack(Items.lead));
-        GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Blocks.sticky_piston), "slimeball", Blocks.piston));
-        GameRegistry
-            .addRecipe(new ShapelessOreRecipe(new ItemStack(Items.magma_cream), "slimeball", Items.blaze_powder));
-        GameRegistry.addRecipe(
-            new ShapedOreRecipe(
-                new ItemStack(Items.lead, 2),
-                "ss ",
-                "sS ",
-                "  s",
-                's',
-                Items.string,
-                'S',
-                "slimeball"));
     }
 
     private static void addLoot() {
@@ -406,6 +390,25 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         ItemStack stoneRod = TinkersRebornTools.rod.getNewPartWithMaterial("stone");
         ItemStack graveyardSoilBlock = new ItemStack(graveyardSoil);
         ItemStack consecratedSoilBlock = new ItemStack(consecratedSoil);
+        ItemStack emptyHeartCanister = new ItemStack(heartCanister, 1, 0);
+
+        // Vanilla stuff
+        RecipeRemover.removeShapedRecipe(new ItemStack(Blocks.sticky_piston));
+        RecipeRemover.removeShapedRecipe(new ItemStack(Items.magma_cream));
+        RecipeRemover.removeShapedRecipe(new ItemStack(Items.lead));
+        GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Blocks.sticky_piston), "slimeball", Blocks.piston));
+        GameRegistry
+            .addRecipe(new ShapelessOreRecipe(new ItemStack(Items.magma_cream), "slimeball", Items.blaze_powder));
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                new ItemStack(Items.lead, 2),
+                "ss ",
+                "sS ",
+                "  s",
+                's',
+                Items.string,
+                'S',
+                "slimeball"));
 
         // Jack o'Latern Recipe - Stone Torch
         GameRegistry.addRecipe(
@@ -429,5 +432,34 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.addShapelessRecipe(graveyardSoilBlock, dirtBlock, flesh, boneMeal);
         GameRegistry.addSmelting(graveyardSoilBlock, consecratedSoilBlock, 0);
         GameRegistry.addRecipe(new ShapedOreRecipe(dryingRack, "WWW", 'W', "slabWood"));
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(emptyHeartCanister, "AA", "AA", 'A', "ingotAluminum"));
+        GameRegistry.addShapelessRecipe(
+            new ItemStack(heartCanister, 1, 2),
+            emptyHeartCanister,
+            new ItemStack(heartCanister, 1, 1));
+        GameRegistry.addShapelessRecipe(
+            new ItemStack(heartCanister, 1, 4),
+            emptyHeartCanister,
+            new ItemStack(heartCanister, 1, 3));
+        GameRegistry.addShapelessRecipe(
+            new ItemStack(heartCanister, 1, 6),
+            emptyHeartCanister,
+            new ItemStack(heartCanister, 1, 5));
+    }
+
+    private void addRecipesForFurnace() {
+        String[] oreDict = new String[] { "Cobalt", "Ardite", "Copper", "Tin", "Aluminum", "Aluminium", "Iron",
+            "Gold" };
+        for (String ore : oreDict) {
+            for (ItemStack oreBlock : OreDictionary.getOres("ore" + ore)) {
+                if (FurnaceRecipes.smelting()
+                    .getSmeltingResult(oreBlock) == null) {
+                    for (ItemStack oreIngot : OreDictionary.getOres("ingot" + ore)) {
+                        GameRegistry.addSmelting(oreBlock, oreIngot, 0);
+                    }
+                }
+            }
+        }
     }
 }
