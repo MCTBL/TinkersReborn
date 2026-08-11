@@ -45,7 +45,7 @@ public class RecipeHandlerEntitySmeltery extends RecipeHandlerBase {
 
         public CachedEntitySmelteryRecipe(Class<? extends EntityLivingBase> entityClass, FluidStack fluid) {
             this.entityClass = entityClass;
-            this.fluid = Arrays.asList(new FluidTankElement(OUTPUT_TANK, fluid.amount, fluid));
+            this.fluid = Arrays.asList(new FluidTankElement(OUTPUT_TANK, Math.max(32, fluid.amount), fluid));
         }
 
         @Override
