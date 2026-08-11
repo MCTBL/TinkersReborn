@@ -45,7 +45,7 @@ public abstract class AmmoCore extends ToolCore {
 
     protected AmmoCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
-        this.setCreativeTab(TinkersRebornRegistry.weaponsTab);
+        this.setCreativeTab(TinkersRebornRegistry.projectileTab);
         durabilityPerAmmo = 10;
     }
 

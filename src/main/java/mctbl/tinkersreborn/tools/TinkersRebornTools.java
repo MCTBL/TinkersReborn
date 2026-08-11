@@ -1097,6 +1097,25 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     private void registerBowMaterialsStats() {
         woodMaterial.addStats(new BowMaterialStats(1f, 1f, 0));
+        cactusMaterial.addStats(new BowMaterialStats(1.05f, 0.9f, 0));
+        boneMaterial.addStats(new BowMaterialStats(0.95f, 1.15f, 0));
+        paperMaterial.addStats(new BowMaterialStats(1.5f, 0.4f, -2f));
+
+        slimeMaterial.addStats(new BowMaterialStats(0.85f, 1.3f, 0));
+        blueSlimeMaterial.addStats(new BowMaterialStats(1.05f, 1f, 0));
+
+        cobaltMaterial.addStats(new BowMaterialStats(0.75f, 1.3f, 3f));
+        arditeMaterial.addStats(new BowMaterialStats(0.45f, 0.8f, 1f));
+        manyullynMaterial.addStats(new BowMaterialStats(0.65f, 1.2f, 4f));
+        ironMaterial.addStats(new BowMaterialStats(0.5f, 1.5f, 7f));
+        pigIronMaterial.addStats(new BowMaterialStats(0.6f, 1.4f, 7f));
+        bloodBoneMaterial.addStats(new BowMaterialStats(0.95f, 1.15f, 0));
+        copperMaterial.addStats(new BowMaterialStats(0.6f, 1.45f, 5f));
+        bronzeMaterial.addStats(new BowMaterialStats(0.55f, 1.5f, 6f));
+        leadMaterial.addStats(new BowMaterialStats(0.4f, 1.3f, 3f));
+        silverMaterial.addStats(new BowMaterialStats(1.2f, 0.8f, 2f));
+        steelMaterial.addStats(new BowMaterialStats(0.4f, 2f, 9f));
+        alumiteMaterial.addStats(new BowMaterialStats(0.4f, 1.5f, 8f));
     }
 
     private void registerMaterialIntegrations() {

@@ -1,17 +1,16 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,6 +20,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
@@ -61,6 +61,17 @@ public class Bolt extends AmmoCore {
 
         // extra one
         this.allIcons.add(new HashMap<>());
+    }
+
+    @Override
+    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+        if (!material.hasStats(MaterialStatusType.HEAD) && !material.isCastable()) {
+            return null;
+        }
+        List<ItemStack> list = new ArrayList<>();
+        list.add(TinkersRebornTools.boltCore.getNewPartWithMaterial(material.identifier));
+        list.add(TinkersRebornTools.fletching.getNewPartWithMaterial(TinkersRebornTools.featherMaterial));
+        return ToolBuilderHelper.buildTool(toolName, list.toArray(new ItemStack[0]));
     }
 
     @Override
@@ -117,11 +128,6 @@ public class Bolt extends AmmoCore {
     @Override
     public int getPartAmonuntForRender() {
         return 3;
-    }
-
-    @Override
-    public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
-        // TODO Auto-generated method stub
     }
 
     @Override

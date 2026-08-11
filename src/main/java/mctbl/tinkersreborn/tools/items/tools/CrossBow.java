@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,11 +17,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.client.Crosshairs;
 import mctbl.tinkersreborn.library.client.ICrosshair;
 import mctbl.tinkersreborn.library.client.ICustomCrosshairUser;
+import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.BowCore;
 import mctbl.tinkersreborn.library.tools.ProjectileLauncherNBT;
+import mctbl.tinkersreborn.library.tools.ToolCore.ToolPartRecord;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
@@ -48,6 +51,20 @@ public class CrossBow extends BowCore implements ICustomCrosshairUser {
             .add(new ToolPartRecord(TinkersRebornTools.crossbowLimb, MaterialStatusType.HANDLE, "_crossbow_bow"));
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.toughbind, MaterialStatusType.EXTRA, "_crossbow_binding"));
+    }
+
+    @Override
+    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+        if (!material.hasStats(MaterialStatusType.BOW) || !material.hasStats(MaterialStatusType.HANDLE)
+            || !material.hasStats(MaterialStatusType.EXTRA)) {
+            return null;
+        }
+        List<ItemStack> list = new ArrayList<>();
+        list.add(TinkersRebornTools.crossbowBody.getNewPartWithMaterial(material));
+        list.add(TinkersRebornTools.bowString.getNewPartWithMaterial(TinkersRebornTools.stringMaterial));
+        list.add(TinkersRebornTools.crossbowLimb.getNewPartWithMaterial(material));
+        list.add(TinkersRebornTools.toughbind.getNewPartWithMaterial(material));
+        return ToolBuilderHelper.buildTool(toolName, list.toArray(new ItemStack[0]));
     }
 
     public CrossBow(String toolTypeName, int partAmount) {

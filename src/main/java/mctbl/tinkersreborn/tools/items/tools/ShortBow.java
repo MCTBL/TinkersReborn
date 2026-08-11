@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.client.Crosshairs;
 import mctbl.tinkersreborn.library.client.ICrosshair;
 import mctbl.tinkersreborn.library.client.ICustomCrosshairUser;
+import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.BowCore;
@@ -41,6 +43,18 @@ public class ShortBow extends BowCore implements ICustomCrosshairUser {
 
     public ShortBow(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
+    }
+
+    @Override
+    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+        if (!material.hasStats(MaterialStatusType.BOW)) {
+            return null;
+        }
+        List<ItemStack> list = new ArrayList<>();
+        list.add(TinkersRebornTools.bowString.getNewPartWithMaterial(TinkersRebornTools.stringMaterial));
+        list.add(TinkersRebornTools.bowLimb.getNewPartWithMaterial(material));
+        list.add(TinkersRebornTools.bowLimb.getNewPartWithMaterial(material));
+        return ToolBuilderHelper.buildTool(toolName, list.toArray(new ItemStack[0]));
     }
 
     @Override

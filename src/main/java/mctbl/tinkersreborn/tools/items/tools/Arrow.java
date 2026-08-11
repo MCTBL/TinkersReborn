@@ -1,11 +1,13 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
@@ -32,6 +34,18 @@ public class Arrow extends AmmoCore {
             .add(new ToolPartRecord(TinkersRebornTools.fletching, MaterialStatusType.FLETCHING, "_arrow_fletching"));
 
         addCategory(Category.NO_MELEE, Category.PROJECTILE);
+    }
+
+    @Override
+    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+        if (!material.hasStats(MaterialStatusType.HEAD)) {
+            return null;
+        }
+        List<ItemStack> list = new ArrayList<>();
+        list.add(TinkersRebornTools.arrowShaft.getNewPartWithMaterial(TinkersRebornTools.woodMaterial));
+        list.add(TinkersRebornTools.arrowhead.getNewPartWithMaterial(material));
+        list.add(TinkersRebornTools.fletching.getNewPartWithMaterial(TinkersRebornTools.featherMaterial));
+        return ToolBuilderHelper.buildTool(toolName, list.toArray(new ItemStack[0]));
     }
 
     @Override

@@ -1,11 +1,13 @@
 package mctbl.tinkersreborn.tools.items.tools;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ProjectileLauncherNBT;
@@ -30,6 +32,19 @@ public class LongBow extends ShortBow {
         this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.bowLimb, MaterialStatusType.BOW, "_bow_bottom"));
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.largeplate, MaterialStatusType.EXTRA, "_bow_grip"));
+    }
+
+    @Override
+    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+        if (!material.hasStats(MaterialStatusType.BOW) || !material.hasStats(MaterialStatusType.EXTRA)) {
+            return null;
+        }
+        List<ItemStack> list = new ArrayList<>();
+        list.add(TinkersRebornTools.bowString.getNewPartWithMaterial(TinkersRebornTools.stringMaterial));
+        list.add(TinkersRebornTools.bowLimb.getNewPartWithMaterial(material));
+        list.add(TinkersRebornTools.bowLimb.getNewPartWithMaterial(material));
+        list.add(TinkersRebornTools.largeplate.getNewPartWithMaterial(material));
+        return ToolBuilderHelper.buildTool(toolName, list.toArray(new ItemStack[0]));
     }
 
     @Override

@@ -430,7 +430,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
         for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
-            ItemStack tool = buildTool(material, null);
+            ItemStack tool = this.buildTool(material, null);
             if (tool != null) list.add(tool);
         }
     }
