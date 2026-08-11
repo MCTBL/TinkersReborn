@@ -2,12 +2,14 @@ package mctbl.tinkersreborn;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.particle.EntityBreakingFX;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.particle.ParticleAttackBroadsword;
 import mctbl.tinkersreborn.common.particle.ParticleAttackCleaver;
 import mctbl.tinkersreborn.common.particle.ParticleAttackHammer;
@@ -23,10 +25,9 @@ public class ClientProxy extends CommonProxy {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
 
+    @Override
     public void spawnParticle(Particles particleType, World world, double x, double y, double z, double xSpeed,
         double ySpeed, double zSpeed, int... data) {
-        // if(Config.disableAllParticles) return;
-
         EntityFX effect = createParticle(particleType, mc.theWorld, x, y, z, xSpeed, ySpeed, zSpeed, data);
         mc.effectRenderer.addEffect(effect);
 
@@ -42,12 +43,8 @@ public class ClientProxy extends CommonProxy {
         double ySpeed, double zSpeed, int... data) {
         switch (type) {
             // entities
-            // case BLUE_SLIME:
-            // return new EntitySlimeFx(world, x, y, z, TinkerCommons.matSlimeBallBlue.getItem(),
-            // TinkerCommons.matSlimeBallBlue.getItemDamage());
-            // case PURPLE_SLIME:
-            // return new EntitySlimeFx(world, x, y, z, TinkerCommons.matSlimeBallPurple.getItem(),
-            // TinkerCommons.matSlimeBallPurple.getItemDamage());
+            case BLUE_SLIME:
+                return new EntityBreakingFX(world, x, y, z, TinkersRebornGeneral.strangeFood, 0);
             // // attack
             case CLEAVER_ATTACK:
                 return new ParticleAttackCleaver(world, x, y, z, xSpeed, ySpeed, zSpeed);

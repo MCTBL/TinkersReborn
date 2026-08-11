@@ -13,6 +13,8 @@ import net.minecraftforge.fluids.Fluid;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
+import mctbl.tinkersreborn.common.entity.BlueSlime;
+import mctbl.tinkersreborn.common.entity.KingBlueSlime;
 import mctbl.tinkersreborn.library.entity.SlimeBase;
 
 public class SlimeFluid extends BlockFluidClassic {
@@ -52,11 +54,13 @@ public class SlimeFluid extends BlockFluidClassic {
         if (rand.nextInt(100) == 0 && isSourceBlock(world, x, y, z)
             && world.checkNoEntityCollision(AxisAlignedBB.getBoundingBox(x - 1, y - 1, z - 1, x + 2, y + 2, z + 2))) {
             SlimeBase slime;
-            // TODO
-            // if (rand.nextInt(300) == 0) slime = new KingBlueSlime(world);
-            // else slime = new BlueSlime(world);
-            // slime.setPosition((double) x + 0.5D, (double) y + 1.5D, (double) z + 0.5D);
-            // world.spawnEntityInWorld(slime);
+            if (rand.nextInt(300) == 0) {
+                slime = new KingBlueSlime(world);
+            } else {
+                slime = new BlueSlime(world);
+            }
+            slime.setPosition((double) x + 0.5D, (double) y + 1.5D, (double) z + 0.5D);
+            world.spawnEntityInWorld(slime);
         }
     }
 

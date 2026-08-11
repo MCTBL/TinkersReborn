@@ -722,14 +722,14 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.wooden_axe));
             ItemStack starterPick = ToolBuilderHelper.buildTool(
                 "Starter Pickaxe",
-                pickaxeHead.getNewPartWithMaterial("wood"),
-                binding.getNewPartWithMaterial("wood"),
-                rod.getNewPartWithMaterial("wood"));
+                pickaxeHead.getNewPartWithMaterial(woodMaterial),
+                binding.getNewPartWithMaterial(woodMaterial),
+                rod.getNewPartWithMaterial(woodMaterial));
             ItemStack starterAxe = ToolBuilderHelper.buildTool(
                 "Starter Hatchet",
-                axeHead.getNewPartWithMaterial("wood"),
-                binding.getNewPartWithMaterial("wood"),
-                rod.getNewPartWithMaterial("wood"));
+                axeHead.getNewPartWithMaterial(woodMaterial),
+                binding.getNewPartWithMaterial(woodMaterial),
+                rod.getNewPartWithMaterial(woodMaterial));
             if (starterPick != null)
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(starterPick, 1, 1, 5));
             if (starterAxe != null)
@@ -740,14 +740,14 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.stone_pickaxe));
             ItemStack stonePick = ToolBuilderHelper.buildTool(
                 "Starter Pickaxe",
-                pickaxeHead.getNewPartWithMaterial("stone"),
-                binding.getNewPartWithMaterial("stone"),
-                rod.getNewPartWithMaterial("stone"));
+                pickaxeHead.getNewPartWithMaterial(stoneMaterial),
+                binding.getNewPartWithMaterial(woodMaterial),
+                rod.getNewPartWithMaterial(woodMaterial));
             ItemStack stoneAxe = ToolBuilderHelper.buildTool(
                 "Starter Hatchet",
-                axeHead.getNewPartWithMaterial("stone"),
-                binding.getNewPartWithMaterial("stone"),
-                rod.getNewPartWithMaterial("stone"));
+                axeHead.getNewPartWithMaterial(stoneMaterial),
+                binding.getNewPartWithMaterial(woodMaterial),
+                rod.getNewPartWithMaterial(woodMaterial));
             if (stonePick != null)
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(stonePick, 1, 1, 5));
             if (stoneAxe != null)
@@ -830,17 +830,18 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         boneMaterial.addTrait(fractured);
 
         paperMaterial = new TinkersRebornMaterial("Paper", 0xFFFFFF).setCraftable(true);
-        paperMaterial.addItem("paper", 1, VALUE_Fragment);
+        paperMaterial.addItem(Items.paper, 1, VALUE_Fragment);
+        paperMaterial.addItem(paperStack, 1, VALUE_Ingot);
         paperMaterial.setRepresentativeItem(Items.paper);
         paperMaterial.addTrait(writable2, MaterialStatusType.HEAD);
         paperMaterial.addTrait(writable);
 
         slimeMaterial = new TinkersRebornMaterial("Slime", 0x6EB065).setCraftable(true);
-        slimeMaterial.addItem("slimecrystalGreen", 1, VALUE_Ingot);
+        slimeMaterial.addItem("slimeCrystalGreen", 1, VALUE_Ingot);
         slimeMaterial.addTrait(slimeyGreen);
 
         blueSlimeMaterial = new TinkersRebornMaterial("BlueSlime", 0x66AEB0).setCraftable(true);
-        blueSlimeMaterial.addItem("slimecrystalBlue", 1, VALUE_Ingot);
+        blueSlimeMaterial.addItem("slimeCrystalBlue", 1, VALUE_Ingot);
         blueSlimeMaterial.addTrait(slimeyBlue);
 
         ironMaterial = new TinkersRebornMaterial("Iron", 0xDADADA);
@@ -1198,15 +1199,20 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         OreDictionary.registerOre("boneBloodied", new ItemStack(bloodyBone));
 
         OreDictionary.registerOre("blockObsidian", new ItemStack(Blocks.obsidian));
+
+        OreDictionary.registerOre("slimeCrystalGreen", new ItemStack(slimeCrystal));
+        OreDictionary.registerOre("slimeCrystalBlue", new ItemStack(blueSlimeCrystal));
     }
 
     private void registerCraftingRecipes() {
+        ItemStack paper = new ItemStack(Items.paper);
         ItemStack blankPattern = Pattern.newStackWithIdentifier(Pattern.PATTERN_BLANK);
         ItemStack chest = new ItemStack(Blocks.chest);
         ItemStack smelteryBrick = new ItemStack(TinkersRebornSmeltery.smelteryBlock);
         ItemStack toolStationBlock = new ItemStack(toolStation);
 
         GameRegistry.addRecipe(new ShapedOreRecipe(blankPattern, "Ss", "sS", 's', "plankWood", 'S', "stickWood"));
+        GameRegistry.addRecipe(new ItemStack(paperStack), "AA", "AA", 'A', paper);
 
         GameRegistry.addShapedRecipe(
             toolStationBlock,

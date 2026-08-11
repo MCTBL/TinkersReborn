@@ -6,7 +6,7 @@ itemGroup.TinkersRebornMisc=Tinkers Reborn Others
 
 tinkersreborn.stonetorch.name=Stone Torch
 tinkersreborn.goldenhead.name=Golden Head
-tinkersreborn.goldenhead.tooltip1=EAT?
+tinkersreborn.goldenhead.tooltip1=EAT? And Who is HE?
 tinkersreborn.goldenhead.tooltip2=Golden Head
 
 tinkersreborn.metalblock.Cobalt.name=Cobalt Block
@@ -84,8 +84,8 @@ fluid.molten_stone=Stone
 
 // Items
 tinkersreborn.material.Mossball.name=Ball of Moss
-tinkersreborn.material.SlimeCrystal.name=Slime Crystal
-tinkersreborn.material.BlueSlimeCrystal.name=Slime Crystal
+tinkersreborn.material.SlimeCrystal.name=Green Slime Crystal
+tinkersreborn.material.BlueSlimeCrystal.name=Blue Slime Crystal
 tinkersreborn.material.LavaCrystal.name=Lava Crystal
 tinkersreborn.material.SilkyCloth.name=Silky Cloth
 tinkersreborn.material.SilkyJewel.name=Silky Jewel
@@ -140,6 +140,9 @@ tinkersreborn.canister.yellow.name=Yellow Heart Canister
 tinkersreborn.canister.miniheart.green.name=Miniature Green Heart
 tinkersreborn.canister.green.name=Green Heart Canister
 
+// slime
+entity.tinkersreborn.BlueSlime.name=Blue Slime
+entity.tinkersreborn.KingSlime.name=King Slime
 
 // materials
 material.wood.name=Wood
@@ -161,7 +164,7 @@ material.bronze.name=Bronze
 material.alumite.name=Alumite
 material.steel.name=Steel
 material.blueslime.name=Blue Slime
-material.blueslime.prefix=Slime
+material.blueslime.prefix=Blue Slime
 material.pigiron.name=Pig Iron
 material.endstone.name=End
 material.lead.name=Lead
@@ -172,10 +175,10 @@ material.reed.name=Reeds
 material.ice.name=Ice
 material.string.name=String
 material.vine.name=Vines
-material.slimevine_blue.name=Blue Slimevine
+material.slimevine.name=Slimevine
 material.feather.name=Feather
 material.leaf.name=Leaf
-material.slimeleaf_blue.name=Blue Slimeleaf
+material.slimeleaf.name=Slimeleaf
 
 // tools
 tinkersreborn.tooltip.nameformat=%s %s
@@ -658,6 +661,10 @@ tinkersreborn.jerky.fish.name=Fish Jerky
 tinkersreborn.jerky.zombie.name=Monster Jerky
 tinkersreborn.jerky.blueslime.name=Gelatinous Slime Drop
 tinkersreborn.jerky.blood.name=Coagulated Blood Drop
+
+tinkersreborn.strangefood.edibleslime.name=Blue Slime Ball
+tinkersreborn.strangefood.edibleblood.name=Coagulated Blood
+tinkersreborn.strangefood.bacon.name=Bacon
 
 tinkersreborn.item.crafting=Crafting Item
 tinkersreborn.item.accessory=Accessory

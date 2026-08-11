@@ -17,11 +17,6 @@ public class KingBlueSlime extends SlimeBase implements IBossDisplayData {
     }
 
     @Override
-    protected String getSlimeParticle() {
-        return "tinkers.blueslime";
-    }
-
-    @Override
     protected SlimeBase createInstance(World world) {
         return new KingBlueSlime(world);
     }

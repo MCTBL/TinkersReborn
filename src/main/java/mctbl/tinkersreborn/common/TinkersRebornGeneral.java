@@ -72,6 +72,7 @@ import mctbl.tinkersreborn.common.itemblocks.TinkersRebornMetalItemBlock;
 import mctbl.tinkersreborn.common.items.GoldenHead;
 import mctbl.tinkersreborn.common.items.HeartCanister;
 import mctbl.tinkersreborn.common.items.Jerky;
+import mctbl.tinkersreborn.common.items.StrangeFood;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
@@ -133,6 +134,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static ChestGenHooks tinkerHouseParts;
 
     public static Item heartCanister;
+    public static Item strangeFood;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -200,6 +202,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         heartCanister = new HeartCanister();
         GameRegistry.registerItem(heartCanister, heartCanister.getUnlocalizedName());
+
+        strangeFood = new StrangeFood();
+        GameRegistry.registerItem(strangeFood, strangeFood.getUnlocalizedName());
 
         // Vanilla stack sizes
         Items.wooden_door.setMaxStackSize(16);
@@ -346,9 +351,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     private void createEntities() {
         EntityRegistry
             .registerModEntity(FancyEntityItem.class, "Tinkers Fancy Item", 0, TinkersReborn.instance, 32, 5, true);
-        EntityRegistry.registerModEntity(BlueSlime.class, "Tinkers Blue Slime", 1, TinkersReborn.instance, 64, 5, true);
-        EntityRegistry
-            .registerModEntity(KingBlueSlime.class, "Tinkers King Slime", 2, TinkersReborn.instance, 64, 5, true);
+        EntityRegistry.registerModEntity(BlueSlime.class, "BlueSlime", 1, TinkersReborn.instance, 64, 3, true);
+        EntityRegistry.registerModEntity(KingBlueSlime.class, "KingSlime", 2, TinkersReborn.instance, 64, 3, true);
 
         if (TinkersRebornConfig.naturalSlimeSpawn > 0) {
             Type[] biomeTypes = { Type.FOREST, Type.PLAINS, Type.MOUNTAIN, Type.HILLS, Type.SWAMP, Type.JUNGLE,
@@ -373,9 +377,10 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         TinkersRebornRegistry.registerDryingRecipe(Items.beef, new ItemStack(jerky, 1, 0), time);
         TinkersRebornRegistry.registerDryingRecipe(Items.chicken, new ItemStack(jerky, 1, 1), time);
         TinkersRebornRegistry.registerDryingRecipe(Items.porkchop, new ItemStack(jerky, 1, 2), time);
-        // TinkersRebornRegistry.registerDryingRecipe(Items.mutton, new ItemStack(jerky, 1, 3), time);
         TinkersRebornRegistry.registerDryingRecipe(Items.fish, new ItemStack(jerky, 1, 4), time);
         TinkersRebornRegistry.registerDryingRecipe(Items.rotten_flesh, new ItemStack(jerky, 1, 5), time);
+        TinkersRebornRegistry.registerDryingRecipe(new ItemStack(strangeFood, 1, 0), new ItemStack(jerky, 1, 6), time);
+        TinkersRebornRegistry.registerDryingRecipe(new ItemStack(strangeFood, 1, 1), new ItemStack(jerky, 1, 7), time);
 
         // Sapling to dead bush
         TinkersRebornRegistry.registerDryingRecipe("treeSapling", new ItemStack(Blocks.deadbush), 20 * 60 * 6);
@@ -393,6 +398,10 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         ItemStack graveyardSoilBlock = new ItemStack(graveyardSoil);
         ItemStack consecratedSoilBlock = new ItemStack(consecratedSoil);
         ItemStack emptyHeartCanister = new ItemStack(heartCanister, 1, 0);
+        ItemStack greenSlimeSand = new ItemStack(slimeSand, 1, 0);
+        ItemStack blueSlimeSand = new ItemStack(slimeSand, 1, 1);
+        ItemStack greenSlimeBall = new ItemStack(Items.slime_ball);
+        ItemStack blueSlimeBall = new ItemStack(strangeFood);
 
         // Vanilla stuff
         RecipeRemover.removeShapedRecipe(new ItemStack(Blocks.sticky_piston));
@@ -448,9 +457,16 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
             new ItemStack(heartCanister, 1, 6),
             emptyHeartCanister,
             new ItemStack(heartCanister, 1, 5));
+        GameRegistry
+            .addShapedRecipe(greenSlimeSand, "AA ", "AA ", "BC ", 'A', greenSlimeBall, 'B', sandBlock, 'C', dirtBlock);
+        GameRegistry
+            .addShapedRecipe(blueSlimeSand, "AA ", "AA ", "BC ", 'A', blueSlimeBall, 'B', sandBlock, 'C', dirtBlock);
     }
 
     private void addRecipesForFurnace() {
+        ItemStack greenSlimeSand = new ItemStack(slimeSand, 1, 0);
+        ItemStack blueSlimeSand = new ItemStack(slimeSand, 1, 1);
+
         String[] oreDict = new String[] { "Cobalt", "Ardite", "Copper", "Tin", "Aluminum", "Aluminium", "Iron",
             "Gold" };
         for (String ore : oreDict) {
@@ -463,5 +479,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
                 }
             }
         }
+
+        GameRegistry.addSmelting(greenSlimeSand, new ItemStack(TinkersRebornTools.slimeCrystal), 0);
+        GameRegistry.addSmelting(blueSlimeSand, new ItemStack(TinkersRebornTools.blueSlimeCrystal), 0);
     }
 }

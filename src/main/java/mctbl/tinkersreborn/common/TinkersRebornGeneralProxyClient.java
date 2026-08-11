@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.common;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelSlime;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -9,9 +10,12 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.client.TinkersRebornFontRender;
+import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
+import mctbl.tinkersreborn.common.entity.KingBlueSlime;
 import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.common.model.DryingRackSpecialRender;
+import mctbl.tinkersreborn.common.model.SlimeRender;
 
 public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCommon {
 
@@ -43,5 +47,10 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
                     .isCurrentLanguageBidirectional());
         }
         resourceManager.registerReloadListener(fontRender);
+
+        SlimeRender slimeRender = new SlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25F);
+
+        RenderingRegistry.registerEntityRenderingHandler(BlueSlime.class, slimeRender);
+        RenderingRegistry.registerEntityRenderingHandler(KingBlueSlime.class, slimeRender);
     }
 }
