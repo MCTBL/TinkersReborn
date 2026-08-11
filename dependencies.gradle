@@ -38,7 +38,6 @@ dependencies {
 //	compileOnly("com.github.GTNewHorizons:waila:1.19.31:api")
 //    compileOnly("com.github.GTNewHorizons:Mobs-Info:0.5.18-GTNH:dev")
 //    compileOnly('com.github.GTNewHorizons:SpecialMobs:3.7.4')
-    api('org.joml:joml:1.10.5')
     compileOnly("com.github.GTNewHorizons:TinkersConstruct:1.14.96-GTNH:dev")
     compileOnly("com.github.GTNewHorizons:NotEnoughItems:2.8.114-GTNH:dev")
     compileOnly('com.github.GTNewHorizons:waila:1.19.31:api')
