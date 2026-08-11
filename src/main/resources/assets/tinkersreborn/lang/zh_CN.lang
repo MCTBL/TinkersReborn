@@ -70,6 +70,10 @@ tinkersreborn.SearedBlock.Faucet.name=浇注口
 tinkersreborn.SearedBlock.Basin.name=铸造盆
 tinkersreborn.SearedBlock.CastingChannel.name=浇注道
 
+tinkersreborn.tank.tooltip1=容纳
+tinkersreborn.tank.tooltip2=掉落时也能保存其中的流体
+tinkersreborn.tank.tooltip3=冶炼厂的心脏
+
 tinkersreborn.moltenBucket=熔融%%material桶
 tinkersreborn.bucket=%%material桶
 tinkersreborn.moltenFluid=熔融%%material
