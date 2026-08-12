@@ -702,11 +702,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             .forEach(trait -> trait.afterBlockBreak(stack, world, block, blockPos, player, wasEffective));
         ToolTagsHelper.damageTool(stack, damage, player);
 
-        if (TinkersRebornConfig.toolLevelingEnable && wasEffective
-            && (this instanceof Hammer || this instanceof Pickaxe)) {
-            boolean blockIsOre = TinkersRebornUtils.isOreBlock(world, blockPos);
+        if (TinkersRebornConfig.toolLevelingEnable && wasEffective) {
             // bonus xp for mining ores!
-            ToolLevelingHelper.addXP(stack, (EntityPlayer) player, blockIsOre ? 2 : 1);
+            ToolLevelingHelper
+                .addXP(stack, (EntityPlayer) player, TinkersRebornUtils.isOreBlock(world, blockPos) ? 2 : 1);
         }
     }
 
