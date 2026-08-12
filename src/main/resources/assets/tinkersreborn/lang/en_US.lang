@@ -86,6 +86,7 @@ fluid.molten_emerald=Emerald
 fluid.molten_tin=Tin
 fluid.molten_aluminum=Aluminum
 fluid.molten_stone=Stone
+fluid.molten_alubrass=Aluminum Brass
 
 // Items
 tinkersreborn.material.Mossball.name=Ball of Moss

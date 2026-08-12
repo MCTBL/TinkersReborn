@@ -287,6 +287,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornFluid leadFluid;
     public static TinkersRebornFluid emeraldFluid;
     public static TinkersRebornFluid aluminumFluid;
+    public static TinkersRebornFluid alubrassFluid;
     public static TinkersRebornFluid stoneFluid;
 
     public static TinkersRebornMaterial woodMaterial;
@@ -973,6 +974,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         tinFluid = TinkersRebornFluid.createMolten("tin", 0xE6E6FA, "tin", 350);
         emeraldFluid = TinkersRebornFluid.createMolten("emerald", 0x17DD62, "emerald", 500);
         aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xE88989, "aluminum", 330);
+        alubrassFluid = TinkersRebornFluid.createMolten("alubrass", 0xF0D467, "alubrass", 330);
         stoneFluid = TinkersRebornFluid.createMolten("stone", 0x2B2B2B, "stone", 800);
 
         this.registerBaseMaterialsStats();
@@ -1133,6 +1135,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(null, null, goldFluid, "Gold"));
         integrate(new MaterialIntegration(null, tinFluid, "Tin"));
         integrate(new MaterialIntegration(null, aluminumFluid, "Aluminum"));
+        integrate(new MaterialIntegration(null, alubrassFluid, "AluminumBrass"));
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.bloodFluid, null));
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.enderFluid, null));
         integrate(new MaterialIntegration(null, null, emeraldFluid, null));
@@ -1178,6 +1181,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         OreDictionary.registerOre("ingotAluminum", new ItemStack(aluminumIngot));
         OreDictionary.registerOre("ingotAluminium", new ItemStack(aluminumIngot));
         OreDictionary.registerOre("ingotBronze", new ItemStack(bronzeIngot));
+        OreDictionary.registerOre("ingotAluminumBrass", new ItemStack(aluBrassIngot));
         OreDictionary.registerOre("ingotAluminiumBrass", new ItemStack(aluBrassIngot));
         OreDictionary.registerOre("ingotAlumite", new ItemStack(alumiteIngot));
         OreDictionary.registerOre("ingotSteel", new ItemStack(steelIngot));

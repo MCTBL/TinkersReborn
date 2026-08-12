@@ -697,6 +697,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
 
     public static void addFluidForCast() {
         fluidForCast.add(new FluidStack(TinkersRebornTools.goldFluid, TinkersRebornMaterial.VALUE_Ingot * 2));
+        fluidForCast.add(new FluidStack(TinkersRebornTools.alubrassFluid, TinkersRebornMaterial.VALUE_Ingot * 2));
     }
 
     /**

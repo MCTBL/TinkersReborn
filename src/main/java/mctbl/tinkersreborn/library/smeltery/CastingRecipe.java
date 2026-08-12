@@ -59,7 +59,6 @@ public class CastingRecipe implements ICastingRecipe {
 
     @Override
     public boolean matches(ItemStack cast, Fluid fluid) {
-
         if ((TinkersRebornUtils.isStackEmpty(cast) && this.cast == null)
             || (this.cast != null && this.cast.matches(Arrays.asList(new ItemStack[] { cast }))
                 .isPresent())) {

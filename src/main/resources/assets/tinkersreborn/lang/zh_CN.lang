@@ -86,6 +86,7 @@ fluid.molten_emerald=绿宝石
 fluid.molten_tin=锡
 fluid.molten_aluminum=铝
 fluid.molten_stone=石
+fluid.molten_alubrass=铝黄铜
 
 // Items
 tinkersreborn.material.Mossball.name=苔藓球
