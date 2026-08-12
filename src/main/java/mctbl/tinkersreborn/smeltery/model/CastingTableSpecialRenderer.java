@@ -20,6 +20,27 @@ import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
 @SideOnly(Side.CLIENT)
 public class CastingTableSpecialRenderer extends TileEntitySpecialRenderer {
 
+    /**
+     * The original TiC cast textures used a 14x14 opaque area inside a 16x16
+     * texture. TinkersReborn casts use the complete 16x16 area, so they need to
+     * be scaled by 14 / 16 to retain the same physical size on the table.
+     */
+    private static final float CAST_SCALE = 14F / 16F;
+
+    /**
+     * Moves the cast roughly one rendered texture pixel toward the back of the
+     * casting table. This is applied in the item's local plane, so it follows the
+     * table's facing instead of becoming a fixed world-direction offset.
+     */
+    private static final float CAST_POSITION_OFFSET = 1F / 32F;
+
+    /**
+     * Center of the 2D item quad produced by RenderItem while renderInFrame is
+     * enabled. RenderItem centers the quad at y = 0.25, translates it by -0.05,
+     * then applies its internal 0.5128205 scale.
+     */
+    private static final float ITEM_QUAD_CENTER_Y = (0.25F - 0.05F) * 0.5128205F;
+
     @Override
     public void renderTileEntityAt(TileEntity logic, double var2, double var4, double var6, float var8) {
         this.render((CastingTableLogic) logic, var2, var4, var6, var8);
@@ -75,6 +96,17 @@ public class CastingTableSpecialRenderer extends TileEntitySpecialRenderer {
             GL11.glRotatef(90F, -1F, 0F, 0F);
             GL11.glTranslatef(-0.2275F, -0.1F, 0F);
         }
+
+        // The original table transform leaves full-size cast artwork visually
+        // about one pixel too close to the front edge.
+        GL11.glTranslatef(0F, CAST_POSITION_OFFSET, 0F);
+
+        // Scale around the center of the item plane. Scaling around the origin
+        // would make the cast smaller but also move it toward one edge of the
+        // table. Z is intentionally left unchanged to preserve item thickness.
+        GL11.glTranslatef(0F, ITEM_QUAD_CENTER_Y, 0F);
+        GL11.glScalef(CAST_SCALE, CAST_SCALE, 1F);
+        GL11.glTranslatef(0F, -ITEM_QUAD_CENTER_Y, 0F);
 
         RenderItem.renderInFrame = true;
         RenderManager.instance.renderEntityWithPosYaw(entityitem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
