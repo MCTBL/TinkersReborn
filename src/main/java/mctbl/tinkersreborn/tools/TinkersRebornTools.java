@@ -74,6 +74,7 @@ import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.crafting.SharpeningKitRepairRecipe;
 import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
@@ -1230,6 +1231,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         ItemStack chest = new ItemStack(Blocks.chest);
         ItemStack smelteryBrick = new ItemStack(TinkersRebornSmeltery.smelteryBlock);
         ItemStack toolStationBlock = new ItemStack(toolStation);
+
+        // for sharpening kit crafting repair recipe
+        GameRegistry.addRecipe(new SharpeningKitRepairRecipe());
 
         GameRegistry.addRecipe(new ShapedOreRecipe(blankPattern, "Ss", "sS", 's', "plankWood", 'S', "stickWood"));
         GameRegistry.addRecipe(new ItemStack(paperStack), "AA", "AA", 'A', paper);
