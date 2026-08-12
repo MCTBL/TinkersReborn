@@ -225,7 +225,7 @@ public abstract class RecipeMatch {
 
             List<ItemStack> nonNullStacks = new ArrayList<>(Collections.nCopies(stacks.length, null));
             for (int i = 0; i < stacks.length; i++) {
-                if (stacks[i].stackSize != 0) {
+                if (!isStackEmpty(stacks[i])) {
                     nonNullStacks.set(i, stacks[i].copy());
                 }
             }
@@ -244,7 +244,7 @@ public abstract class RecipeMatch {
             Set<Integer> needed = new HashSet<>();
 
             for (int i = 0; i < itemStacks.size(); i++) {
-                if (itemStacks.get(i).stackSize != 0) {
+                if (!isStackEmpty(itemStacks.get(i))) {
                     needed.add(i);
                 }
             }

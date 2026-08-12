@@ -1140,30 +1140,30 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.enderFluid, null));
         integrate(new MaterialIntegration(null, null, emeraldFluid, null));
 
-        integrate(new MaterialIntegration(woodMaterial, null, null));
-        integrate(new MaterialIntegration(stoneMaterial, stoneFluid, null));
-        integrate(new MaterialIntegration(flintMaterial, null, null));
-        integrate(new MaterialIntegration(cactusMaterial, null, null));
-        integrate(new MaterialIntegration(boneMaterial, null, null));
-        integrate(new MaterialIntegration(netherrackMaterial, null, null));
-        integrate(new MaterialIntegration(endStoneMaterial, null, null));
-        integrate(new MaterialIntegration(paperMaterial, null, null));
-        integrate(new MaterialIntegration(slimeMaterial, null, null));
-        integrate(new MaterialIntegration(blueSlimeMaterial, null, null));
+        integrate(new MaterialIntegration(woodMaterial));
+        integrate(new MaterialIntegration(stoneMaterial, stoneFluid));
+        integrate(new MaterialIntegration(flintMaterial));
+        integrate(new MaterialIntegration(cactusMaterial));
+        integrate(new MaterialIntegration(boneMaterial));
+        integrate(new MaterialIntegration(netherrackMaterial));
+        integrate(new MaterialIntegration(endStoneMaterial));
+        integrate(new MaterialIntegration(paperMaterial));
+        integrate(new MaterialIntegration(slimeMaterial));
+        integrate(new MaterialIntegration(blueSlimeMaterial));
 
-        integrate(new MaterialIntegration(stringMaterial, null, null));
-        integrate(new MaterialIntegration(vineMaterial, null, null));
-        integrate(new MaterialIntegration(slimeVineMaterial, null, null));
+        integrate(new MaterialIntegration(stringMaterial));
+        integrate(new MaterialIntegration(vineMaterial));
+        integrate(new MaterialIntegration(slimeVineMaterial));
 
-        integrate(new MaterialIntegration(blazeMaterial, null, null));
-        integrate(new MaterialIntegration(reedMaterial, null, null));
-        integrate(new MaterialIntegration(iceMaterial, null, null));
+        integrate(new MaterialIntegration(blazeMaterial));
+        integrate(new MaterialIntegration(reedMaterial));
+        integrate(new MaterialIntegration(iceMaterial));
 
-        integrate(new MaterialIntegration(featherMaterial, null, null));
-        integrate(new MaterialIntegration(leafMaterial, null, null));
-        integrate(new MaterialIntegration(slimeleafMaterial, null, null));
+        integrate(new MaterialIntegration(featherMaterial));
+        integrate(new MaterialIntegration(leafMaterial));
+        integrate(new MaterialIntegration(slimeleafMaterial));
 
-        integrate(new MaterialIntegration(bloodBoneMaterial, null, null));
+        integrate(new MaterialIntegration(bloodBoneMaterial));
     }
 
     private void oreDictRegistry() {
