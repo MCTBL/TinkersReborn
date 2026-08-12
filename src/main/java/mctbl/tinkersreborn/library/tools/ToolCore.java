@@ -51,6 +51,7 @@ import mctbl.tinkersreborn.common.TinkersRebornGeneralProxyClient;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.event.TinkersRebornEvent;
+import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
@@ -862,8 +863,20 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return list;
     }
 
-    protected void getTooltipComponents(ItemStack stack, EntityPlayer player, List<String> list) {
+    protected void getTooltipComponents(ItemStack stack, EntityPlayer player, List<String> tootips) {
+        List<ToolPartRecord> partList = this.getToolComponentsParts();
+        List<TinkersRebornMaterial> materialList = ToolTagsHelper.getToolBaseMaterialsList(stack);
 
+        for (int i = 0; i < partList.size(); i++) {
+            tootips.add(null);
+            ToolPartRecord toolPartRecord = partList.get(i);
+            TinkersRebornMaterial tinkersRebornMaterial = materialList.get(i);
+            IMaterialStats stats = tinkersRebornMaterial.getStats(toolPartRecord.statusType());
+            if (stats != null) {
+                tootips.add(ColorUtil.addUnderLine(stats.getLocalizedName()));
+                tootips.addAll(stats.getLocalizedInfo());
+            }
+        }
     }
 
     public ItemStack getToolForRender() {
@@ -888,8 +901,8 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return TinkersRebornRegistry.getRenderMaterial(renderMaterialName);
     }
 
-    @Nullable
     @Override
+    @Nullable
     public ItemStack repair(ItemStack repairable, List<ItemStack> repairItems) {
         if (repairable.getItemDamage() == 0 && !ToolTagsHelper.isBroken(repairable)) {
             // undamaged and not broken - no need to repair
@@ -1181,7 +1194,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         public List<ITrait> getApplicableTraitsForMaterial(TinkersRebornMaterial material) {
             List<ITrait> list = new ArrayList<>();
             list.addAll(material.getAllTraitsForStats(this.statusType));
-            if (list.size() == 0) list.addAll(material.getAllTraitsForStats(null));
+            if (list.isEmpty()) list.addAll(material.getAllTraitsForStats(null));
             return list;
         }
 

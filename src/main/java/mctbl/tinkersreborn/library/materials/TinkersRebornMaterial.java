@@ -301,8 +301,12 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public List<ITrait> getAllTraitsForStats(MaterialStatusType staus) {
+        return this.getAllTraitsForStats(staus, true);
+    }
+
+    public List<ITrait> getAllTraitsForStats(MaterialStatusType staus, boolean includeNull) {
         List<ITrait> list = new ArrayList<>(this.traits.get(staus));
-        if (staus != null) {
+        if (includeNull && staus != null) {
             list.addAll(this.traits.get(null));
         }
         return list;

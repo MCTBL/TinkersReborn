@@ -21,11 +21,11 @@ public abstract class TraitProgressiveStats extends AbstractTrait {
     protected final static String pool_key = "pool"; // Key to the tag that contains the free unassigned
     protected final static String applied_key = "bonus"; // Key to the tag that contains the already applied bonus stats
 
-    public TraitProgressiveStats(String identifier, EnumChatFormatting color) {
+    protected TraitProgressiveStats(String identifier, EnumChatFormatting color) {
         super(identifier, color);
     }
 
-    public TraitProgressiveStats(String identifier, int color) {
+    protected TraitProgressiveStats(String identifier, int color) {
         super(identifier, color);
     }
 

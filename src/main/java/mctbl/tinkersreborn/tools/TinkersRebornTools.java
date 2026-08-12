@@ -374,7 +374,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         arrowShaft = new TinkersRebornToolPart("arrow_shaft", "ArrowShaft", VALUE_Ingot * 2, MaterialStatusType.SHAFT);
         axeHead = new TinkersRebornToolPart("axe_head", "AxeHead", VALUE_Ingot * 2);
         battlesignHead = new TinkersRebornToolPart("battlesign_head", "SignHead", VALUE_Ingot * 3);
-        binding = new TinkersRebornToolPart("binding", "Binding", VALUE_Ingot);
+        binding = new TinkersRebornToolPart("binding", "Binding", VALUE_Ingot, MaterialStatusType.EXTRA);
         bowLimb = new TinkersRebornToolPart("bow_limb", "BowLimb", VALUE_Ingot * 3, MaterialStatusType.BOW);
         chiselHead = new TinkersRebornToolPart("chisel_head", "ChiselHead", VALUE_Ingot * 2);
         crossbar = new TinkersRebornToolPart("crossbar", "Crossbar", VALUE_Ingot);
@@ -395,14 +395,14 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         lumberaxeHead = new TinkersRebornToolPart("lumberaxe_head", "LumberAxeHead", VALUE_Ingot * 8);
         mediumGuard = new TinkersRebornToolPart("medium_guard", "MediumGuard", VALUE_Ingot);
         pickaxeHead = new TinkersRebornToolPart("pickaxe_head", "PickaxeHead", VALUE_Ingot * 2);
-        rod = new TinkersRebornToolPart("rod", "ToolRod", VALUE_Ingot);
+        rod = new TinkersRebornToolPart("rod", "ToolRod", VALUE_Ingot, MaterialStatusType.HANDLE);
         scytheHead = new TinkersRebornToolPart("scythe_head", "ScytheHead", VALUE_Ingot * 8);
         shard = new TinkersRebornToolPart("shard", "ToolShard", VALUE_Shard);
         shovelHead = new TinkersRebornToolPart("shovel_head", "ShovelHead", VALUE_Ingot * 2);
         shuriken = new TinkersRebornToolPart("shuriken", "Shuriken", VALUE_Ingot * 2);
         swordBlade = new TinkersRebornToolPart("sword_blade", "SwordBlade", VALUE_Ingot * 2);
-        toughbind = new TinkersRebornToolPart("toughbind", "ToughBinding", VALUE_Ingot * 3);
-        toughrod = new TinkersRebornToolPart("toughrod", "ToughRod", VALUE_Ingot * 3);
+        toughbind = new TinkersRebornToolPart("toughbind", "ToughBinding", VALUE_Ingot * 3, MaterialStatusType.EXTRA);
+        toughrod = new TinkersRebornToolPart("toughrod", "ToughRod", VALUE_Ingot * 3, MaterialStatusType.HANDLE);
         kamaHead = new TinkersRebornToolPart("kama_head", "KamaHead", VALUE_Ingot * 2);
         sharpeningKit = new SharpeningKit("sharpening_kit", "SharpeningKit");
         bowString = new BowString();

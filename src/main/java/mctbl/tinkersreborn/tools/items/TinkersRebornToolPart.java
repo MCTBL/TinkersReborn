@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,9 +21,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.common.TinkersRebornGeneralProxyClient;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.items.CraftingItem;
+import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.IToolPart;
+import mctbl.tinkersreborn.library.tools.ITrait;
+import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TextureHelper;
 import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTags;
@@ -63,6 +67,21 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     public String getLocalizedPartName() {
         return translate(this.getUnlocalizedToolName());
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> tootips, boolean detail) {
+        TinkersRebornMaterial material = this.getMaterial(stack);
+        IMaterialStats stats = material.getStats(this.allowType);
+        List<ITrait> allTraitsForStats = material.getAllTraitsForStats(this.allowType, false);
+        if (stats != null) {
+            tootips.add(ColorUtil.addUnderLine(stats.getLocalizedName()));
+            tootips.addAll(stats.getLocalizedInfo());
+            if (!allTraitsForStats.isEmpty()) {
+                tootips.add(null);
+                allTraitsForStats.forEach(t -> tootips.add(ColorUtil.encodeColor(t.getColor()) + t.getLocalizedName()));
+            }
+        }
     }
 
     @Override

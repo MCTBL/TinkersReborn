@@ -48,6 +48,11 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
     }
 
     @Override
+    public int getColor() {
+        return this.color;
+    }
+
+    @Override
     public String getIdentifier() {
         return identifier;
     }

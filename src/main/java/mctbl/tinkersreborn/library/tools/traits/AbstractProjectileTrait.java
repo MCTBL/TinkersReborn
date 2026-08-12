@@ -10,13 +10,13 @@ import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 
-public class AbstractProjectileTrait extends AbstractTrait implements IProjectileTrait {
+public abstract class AbstractProjectileTrait extends AbstractTrait implements IProjectileTrait {
 
-    public AbstractProjectileTrait(String identifier, EnumChatFormatting color) {
+    protected AbstractProjectileTrait(String identifier, EnumChatFormatting color) {
         super(identifier, color);
     }
 
-    public AbstractProjectileTrait(String identifier, int color) {
+    protected AbstractProjectileTrait(String identifier, int color) {
         super(identifier, color);
     }
 
