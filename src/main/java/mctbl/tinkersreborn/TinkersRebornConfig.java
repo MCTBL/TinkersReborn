@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import net.minecraftforge.common.config.Configuration;
 
+import cpw.mods.fml.common.Loader;
+
 public class TinkersRebornConfig {
 
     public static String GENERAL = "General";
@@ -107,6 +109,8 @@ public class TinkersRebornConfig {
     public static int[] toolModifiersAtLevels;
 
     public static boolean detailedXpTooltip;
+
+    public static boolean isAngelicaLoaded;
 
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
@@ -460,6 +464,10 @@ public class TinkersRebornConfig {
             1.0f,
             9.99f,
             "Exponential multiplier for required boost xp per level");
+
+        if (Loader.isModLoaded("angelica")) {
+            isAngelicaLoaded = true;
+        }
 
         config.save();
     }

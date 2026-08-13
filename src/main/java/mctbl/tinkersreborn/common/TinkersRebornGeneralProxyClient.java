@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.common;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelSlime;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
@@ -11,6 +12,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.client.TinkersRebornFontRender;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
@@ -23,7 +25,7 @@ import mctbl.tinkersreborn.common.model.SlimeRender;
 public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCommon {
 
     private static final Minecraft mc = Minecraft.getMinecraft();
-    public static TinkersRebornFontRender fontRender;
+    public static FontRenderer fontRender = mc.fontRenderer;
 
     @Override
     public void init() {
@@ -41,21 +43,21 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
     @SideOnly(Side.CLIENT)
     void registerRender() {
         IReloadableResourceManager resourceManager = (IReloadableResourceManager) mc.getResourceManager();
-
-        fontRender = new TinkersRebornFontRender(
-            mc.gameSettings,
-            new ResourceLocation("textures/font/ascii.png"),
-            mc.renderEngine);
-
-        if (mc.gameSettings.language != null) {
-            fontRender.setUnicodeFlag(
-                mc.getLanguageManager()
-                    .isCurrentLocaleUnicode() || mc.gameSettings.forceUnicodeFont);
-            fontRender.setBidiFlag(
-                mc.getLanguageManager()
-                    .isCurrentLanguageBidirectional());
+        if (!TinkersRebornConfig.isAngelicaLoaded) {
+            fontRender = new TinkersRebornFontRender(
+                mc.gameSettings,
+                new ResourceLocation("textures/font/ascii.png"),
+                mc.renderEngine);
+            if (mc.gameSettings.language != null) {
+                fontRender.setUnicodeFlag(
+                    mc.getLanguageManager()
+                        .isCurrentLocaleUnicode() || mc.gameSettings.forceUnicodeFont);
+                fontRender.setBidiFlag(
+                    mc.getLanguageManager()
+                        .isCurrentLanguageBidirectional());
+            }
+            resourceManager.registerReloadListener(fontRender);
         }
-        resourceManager.registerReloadListener(fontRender);
 
         SlimeRender slimeRender = new SlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25F);
 
