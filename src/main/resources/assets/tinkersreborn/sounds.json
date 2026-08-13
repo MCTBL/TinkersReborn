@@ -1,46 +1,46 @@
 {
-   "little_saw": {
-     "category": "player",
-     "sounds": [
-       "tinkersreborn:little_saw"
-     ]
-   },
+  "little_saw": {
+    "category": "player",
+    "sounds": ["tinkersreborn:little_saw"]
+  },
   "sizzle": {
     "category": "block",
-    "sounds": [
-      "tinkersreborn:sizzle"
-    ]
+    "sounds": ["tinkersreborn:sizzle"]
   },
   "sweep": {
     "category": "player",
     "sounds": [
       "tinkersreborn:sweep1",
-	  "tinkersreborn:sweep2",
-	  "tinkersreborn:sweep3",
-	  "tinkersreborn:sweep4",
-	  "tinkersreborn:sweep5",
-	  "tinkersreborn:sweep6",
-	  "tinkersreborn:sweep7"
+      "tinkersreborn:sweep2",
+      "tinkersreborn:sweep3",
+      "tinkersreborn:sweep4",
+      "tinkersreborn:sweep5",
+      "tinkersreborn:sweep6",
+      "tinkersreborn:sweep7"
     ]
   },
-   "crossbow_reload": {
-	"category": "player",
-	"sounds": [
-		"tinkersreborn:crossbow_reload"
-	]
-   },
-   "crit": {
-	"category": "player",
-	"sounds": [
-		"tinkersreborn:crit1",
-		"tinkersreborn:crit2",
-		"tinkersreborn:crit3"
-	]
-   },
-   "chime": {
-	"category": "player",
-	"sounds": [
-		"tinkersreborn:chime"
-	]
-   }
+  "crossbow_reload": {
+    "category": "player",
+    "sounds": ["tinkersreborn:crossbow_reload"]
+  },
+  "crit": {
+    "category": "player",
+    "sounds": [
+      "tinkersreborn:crit1",
+      "tinkersreborn:crit2",
+      "tinkersreborn:crit3"
+    ]
+  },
+  "chime": {
+    "category": "player",
+    "sounds": ["tinkersreborn:chime"]
+  },
+  "toy_squeak": {
+    "category": "player",
+    "sounds": ["tinkersreborn:toy_squeak"]
+  },
+  "nodamage": {
+    "category": "player",
+    "sounds": ["tinkersreborn:weak1", "tinkersreborn:weak2", "tinkersreborn:weak3", "tinkersreborn:weak4"]
+  }
 }

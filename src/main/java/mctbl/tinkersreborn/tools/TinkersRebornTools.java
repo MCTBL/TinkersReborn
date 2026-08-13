@@ -40,6 +40,7 @@ import static mctbl.tinkersreborn.tools.TinkersRebornTraits.slimeyGreen;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.spiky;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.splintering;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.splitting;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.squeaky;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.stiff;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.stonebound;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.tasty;
@@ -311,6 +312,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornMaterial blueSlimeMaterial;
     public static TinkersRebornMaterial pigIronMaterial;
     public static TinkersRebornMaterial endStoneMaterial;
+    public static TinkersRebornMaterial spongeMaterial;
 
     public static TinkersRebornMaterial leadMaterial;
     public static TinkersRebornMaterial silverMaterial;
@@ -819,6 +821,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         endStoneMaterial.addTrait(alien, MaterialStatusType.HEAD);
         endStoneMaterial.addTrait(enderference);
 
+        spongeMaterial = new TinkersRebornMaterial("Sponge", 0xCACC4E).setCraftable(true);
+        spongeMaterial.addItem(Blocks.sponge, VALUE_Ingot);
+        spongeMaterial.setRepresentativeItem(Blocks.sponge);
+        spongeMaterial.addTrait(squeaky);
+
         boneMaterial = new TinkersRebornMaterial("Bone", 0xEDEBCA).setCraftable(true);
         boneMaterial.addItem("bone", 1, VALUE_Ingot);
         // see ItemDye
@@ -1067,6 +1074,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             new HeadMaterialStats(420, 4, 3.23F, 3.23F),
             new HandleMaterialStats(0.85F, 0),
             new ExtraMaterialStats(42));
+        spongeMaterial.addStats(
+            new HeadMaterialStats(1050, 0, 0.0F, 0.51F),
+            new HandleMaterialStats(1.20f, 250),
+            new ExtraMaterialStats(250));
 
         leadMaterial.addStats(
             new HeadMaterialStats(434, 1, 3.5F, 5.25F),
@@ -1116,6 +1127,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         silverMaterial.addStats(new BowMaterialStats(1.2f, 0.8f, 2f));
         steelMaterial.addStats(new BowMaterialStats(0.4f, 2f, 9f));
         alumiteMaterial.addStats(new BowMaterialStats(0.4f, 1.5f, 8f));
+        spongeMaterial.addStats(new BowMaterialStats(1.15f, 0.75f, 0));
     }
 
     private void registerMaterialIntegrations() {
@@ -1148,6 +1160,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(boneMaterial));
         integrate(new MaterialIntegration(netherrackMaterial));
         integrate(new MaterialIntegration(endStoneMaterial));
+        integrate(new MaterialIntegration(spongeMaterial));
         integrate(new MaterialIntegration(paperMaterial));
         integrate(new MaterialIntegration(slimeMaterial));
         integrate(new MaterialIntegration(blueSlimeMaterial));

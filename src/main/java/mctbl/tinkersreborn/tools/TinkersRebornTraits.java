@@ -36,6 +36,7 @@ import mctbl.tinkersreborn.tools.traits.TraitSlimey;
 import mctbl.tinkersreborn.tools.traits.TraitSpiky;
 import mctbl.tinkersreborn.tools.traits.TraitSplintering;
 import mctbl.tinkersreborn.tools.traits.TraitSplitting;
+import mctbl.tinkersreborn.tools.traits.TraitSqueaky;
 import mctbl.tinkersreborn.tools.traits.TraitStiff;
 import mctbl.tinkersreborn.tools.traits.TraitStonebound;
 import mctbl.tinkersreborn.tools.traits.TraitTasty;
@@ -84,7 +85,7 @@ public class TinkersRebornTraits {
     public static final AbstractTrait spiky = new TraitSpiky();
     public static final AbstractTrait splintering = new TraitSplintering();
     // public static final AbstractTrait splinters = new TraitSplinters();
-    // public static final AbstractTrait squeaky = new TraitSqueaky();
+    public static final AbstractTrait squeaky = new TraitSqueaky();
     // public static final AbstractTrait superheat = new TraitSuperheat();
     public static final AbstractTrait stiff = new TraitStiff();
     public static final AbstractTrait stonebound = new TraitStonebound();
@@ -92,7 +93,7 @@ public class TinkersRebornTraits {
     // public static final AbstractTrait unnatural = new TraitUnnatural();
     public static final AbstractTrait writable = new TraitWritable(1);
     public static final AbstractTrait writable2 = new TraitWritable(2);
-    //
+
     // // arrow shaft traits
     public static final AbstractTrait breakable = new TraitBreakable();
     // public static final AbstractTrait endspeed = new TraitEndspeed();

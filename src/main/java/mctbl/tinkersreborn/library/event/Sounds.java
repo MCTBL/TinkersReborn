@@ -27,6 +27,9 @@ public class Sounds {
     public static final String crossbow_reload = sound("crossbow_reload");
     public static final String chime = sound("chime");
 
+    public static final String toy_squeak = sound("toy_squeak");
+    public static final String nodamage = sound("nodamage");
+
     private static String sound(String name) {
         String soundName = TinkersReborn.MODID + ":" + name;
         sounds.add(soundName);

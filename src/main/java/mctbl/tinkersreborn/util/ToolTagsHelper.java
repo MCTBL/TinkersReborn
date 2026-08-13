@@ -959,7 +959,7 @@ public class ToolTagsHelper {
                 tool.reduceDurabilityOnHit(stack, null, damage);
             }
         } else {
-            sound = "entity.player.attack.nodamage";
+            sound = Sounds.nodamage;
         }
 
         if (player != null && sound != null && !player.worldObj.isRemote) {
