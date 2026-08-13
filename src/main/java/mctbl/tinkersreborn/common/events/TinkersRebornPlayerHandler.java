@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.common.events;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
@@ -31,10 +32,11 @@ public class TinkersRebornPlayerHandler {
         newStats.heartCanister.recalculateHealth(newPlayer, newStats);
 
         if (TinkersRebornConfig.keepHunger) {
+            NBTTagCompound foodData = new NBTTagCompound();
+            oldPlayer.getFoodStats()
+                .writeNBT(foodData);
             newPlayer.getFoodStats()
-                .setFoodLevel(
-                    oldPlayer.getFoodStats()
-                        .getFoodLevel());
+                .readNBT(foodData);
         }
     }
 }
