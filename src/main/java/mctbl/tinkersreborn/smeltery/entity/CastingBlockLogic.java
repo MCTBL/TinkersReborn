@@ -25,6 +25,7 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.event.Sounds;
@@ -94,18 +95,24 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
             if (newCapacity > 0) {
                 // new tank with the wanted capacity so we can simulate fill with the correct capacity
                 IFluidTank calcTank = new FluidTank(resource.getFluid(), 0, newCapacity);
+                int filled = calcTank.fill(resource, doFill);
 
-                if (doFill) {
+                if (doFill && filled > 0) {
                     this.capacity = calcTank.getCapacity();
                     this.liquid = calcTank.getFluid();
+                    this.syncFluidToClients();
                 }
 
-                return calcTank.fill(resource, doFill);
+                return filled;
             }
         }
 
         // non-empty tank. just try to fill
-        return this.fillInternal(resource, doFill);
+        int filled = this.fillInternal(resource, doFill);
+        if (doFill && filled > 0) {
+            this.syncFluidToClients();
+        }
+        return filled;
     }
 
     /**
@@ -387,6 +394,14 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
 
     @Override
     public void updateEntity() {
+        if (this.worldObj.isRemote && this.renderOffset > 0) {
+            this.renderOffset -= TinkersRebornConfig.smelteryDrainEachTick;
+            if (this.renderOffset < 0) {
+                this.renderOffset = 0;
+            }
+            this.worldObj.func_147479_m(this.xCoord, this.yCoord, this.zCoord);
+        }
+
         // no recipeeeh
         if (recipe == null) {
             return;
@@ -453,7 +468,15 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
                     this.yCoord + 1.1,
                     this.zCoord + rand.nextDouble(),
                     0.0D,
+                    rand.nextDouble() * 0.1D,
+                    0.0D);
+                this.worldObj.spawnParticle(
+                    "flame",
+                    this.xCoord + rand.nextDouble(),
+                    this.yCoord + 1.1,
+                    this.zCoord + rand.nextDouble(),
                     0.0D,
+                    rand.nextDouble() * 0.1D,
                     0.0D);
             }
         }
@@ -550,6 +573,15 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
 
         if (this.worldObj != null && !this.worldObj.isRemote && this.worldObj instanceof WorldServer world) {
             TinkerNetwork.sendToClients(world, this.getBlockPos(), new FluidUpdatePacket(this.getBlockPos(), null));
+        }
+    }
+
+    private void syncFluidToClients() {
+        this.markDirty();
+
+        if (this.worldObj instanceof WorldServer world && !this.worldObj.isRemote) {
+            TinkerNetwork
+                .sendToClients(world, this.getBlockPos(), new FluidUpdatePacket(this.getBlockPos(), this.getFluid()));
         }
     }
 

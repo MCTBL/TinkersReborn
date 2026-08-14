@@ -434,7 +434,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         patternAndCast.addNewPatterntype(pickaxeHead);
         patternAndCast.addNewPatterntype(rod);
         patternAndCast.addNewPatterntype(scytheHead);
-        // patternAndCast.addNewPatterntype(shard);
+        patternAndCast.addNewPatterntype(shard);
         patternAndCast.addNewPatterntype(shovelHead);
         patternAndCast.addNewPatterntype(shuriken);
         patternAndCast.addNewPatterntype(swordBlade);

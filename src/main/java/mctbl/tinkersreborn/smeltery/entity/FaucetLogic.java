@@ -30,6 +30,10 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
     public boolean hasRedstonePower = false;
 
     public boolean activateFaucet() {
+        if (worldObj == null || worldObj.isRemote) {
+            return false;
+        }
+
         if (liquid == null && active) {
             int x = xCoord - getForgeDirection().offsetX;
             int z = zCoord - getForgeDirection().offsetZ;
@@ -58,10 +62,18 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
 
     @Override
     public void updateEntity() {
+        // The client only renders the latest state received from the server.
+        // A transfer batch is normally exactly smelteryDrainEachTick mB, so
+        // decrementing it client-side would clear the stream before it renders.
+        if (worldObj == null || worldObj.isRemote) {
+            return;
+        }
+
         if (liquid != null) {
             liquid.amount -= TinkersRebornConfig.smelteryDrainEachTick;
             if (liquid.amount <= 0) {
                 liquid = null;
+
                 if (!activateFaucet()) {
                     active = false;
                     worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
@@ -122,11 +134,17 @@ public class FaucetLogic extends TileEntity implements ITinkersRebornIFacingLogi
 
     @Override
     public void setActive(boolean flag) {
+        if (worldObj == null || worldObj.isRemote) {
+            return;
+        }
+
         if (!active) {
             active = true;
             active = activateFaucet();
         } else {
             active = false;
+            liquid = null;
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
         }
     }
 

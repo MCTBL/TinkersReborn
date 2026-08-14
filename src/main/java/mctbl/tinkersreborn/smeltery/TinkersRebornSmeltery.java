@@ -311,10 +311,10 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             TinkersRebornTools.aluminumFluid,
             TinkersRebornTools.ironFluid)) {
             TinkersRebornRegistry.registerAlloy(
-                new FluidStack(TinkersRebornTools.alumiteFluid, 144),
-                new FluidStack(TinkersRebornTools.aluminumFluid, 144),
-                new FluidStack(TinkersRebornTools.ironFluid, 144),
-                new FluidStack(TinkersRebornTools.obsidianFluid, 288));
+                new FluidStack(TinkersRebornTools.alumiteFluid, 1),
+                new FluidStack(TinkersRebornTools.aluminumFluid, 1),
+                new FluidStack(TinkersRebornTools.ironFluid, 1),
+                new FluidStack(TinkersRebornTools.obsidianFluid, 2));
         }
 
         // 1 ingot copper + 3 ingot aluminum = 4 alumbrass
@@ -324,9 +324,9 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             TinkersRebornTools.copperFluid,
             TinkersRebornTools.alubrassFluid)) {
             TinkersRebornRegistry.registerAlloy(
-                new FluidStack(TinkersRebornTools.alubrassFluid, 144 * 4),
-                new FluidStack(TinkersRebornTools.copperFluid, 144),
-                new FluidStack(TinkersRebornTools.aluminumFluid, 144 * 3));
+                new FluidStack(TinkersRebornTools.alubrassFluid, 4),
+                new FluidStack(TinkersRebornTools.copperFluid, 1),
+                new FluidStack(TinkersRebornTools.aluminumFluid, 3));
         }
     }
 }

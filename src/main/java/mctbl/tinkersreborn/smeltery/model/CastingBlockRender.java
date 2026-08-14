@@ -266,7 +266,6 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
                 renderer.renderStandardBlock(block, x, y, z);
 
                 // Details
-
                 renderer.setRenderBounds(0.001f, 0.1245f, 0.001f, 0.1245f, 0.999f, 0.4375f);
                 renderer.renderStandardBlock(block, x, y, z);
                 renderer.setRenderBounds(0.001f, 0.1245f, 0.5625f, 0.1245f, 0.999f, 0.999f);
@@ -314,35 +313,33 @@ public class CastingBlockRender implements ISimpleBlockRenderingHandler {
                 renderer.renderStandardBlock(block, x, y, z);
 
                 // Liquids
-                if (world.getTileEntity(x, y, z) instanceof CastingBasinLogic logic) {
-                    if (logic.liquid != null) {
-                        float minHeight = 0.25F;
-                        float maxHeight = 0.95F;
+                if (world.getTileEntity(x, y, z) instanceof CastingBasinLogic logic && logic.liquid != null) {
+                    float minHeight = 0.25F;
+                    float maxHeight = 0.95F;
 
-                        float minX = 0.0625F;
-                        float maxX = 0.9375F;
-                        float minZ = 0.0625F;
-                        float maxZ = 0.9375F;
+                    float minX = 0.0625F;
+                    float maxX = 0.9375F;
+                    float minZ = 0.0625F;
+                    float maxZ = 0.9375F;
 
-                        float percent = (float) logic.getLiquidAmount() / (float) logic.getCapacity();
-                        float height = percent * (maxHeight - minHeight);
+                    float percent = (float) logic.getLiquidAmount() / (float) logic.getCapacity();
+                    float height = percent * (maxHeight - minHeight);
 
-                        // float height = (logic.getLiquidAmount() /
-                        // (logic.getCapacity() * 1.05F) * 0.6875F) / maxHeight;
-                        renderer.setRenderBounds(minX, minHeight, minZ, maxX, minHeight + height, maxZ);
+                    // float height = (logic.getLiquidAmount() /
+                    // (logic.getCapacity() * 1.05F) * 0.6875F) / maxHeight;
+                    renderer.setRenderBounds(minX, minHeight, minZ, maxX, minHeight + height, maxZ);
 
-                        Fluid fluid = logic.liquid.getFluid();
-                        BlockSkinRenderHelper.renderLiquidBlock(
-                            fluid.getStillIcon(),
-                            fluid.getFlowingIcon(),
-                            x,
-                            y,
-                            z,
-                            renderer,
-                            world,
-                            false,
-                            fluid.getColor(logic.liquid));
-                    }
+                    Fluid fluid = logic.liquid.getFluid();
+                    BlockSkinRenderHelper.renderLiquidBlock(
+                        fluid.getStillIcon(),
+                        fluid.getFlowingIcon(),
+                        x,
+                        y,
+                        z,
+                        renderer,
+                        world,
+                        false,
+                        fluid.getColor(logic.liquid));
                 }
             } else {
                 renderer.setRenderBounds(0.0F, 0.75F, 0.0F, 1.0F, 1.0F, 1.0F);

@@ -484,13 +484,10 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
     public static void registerToolpartMeltingCasting(TinkersRebornMaterial material) {
         // melt ALL the toolparts n stuff. Also cast them.
         Fluid fluid = material.getFluid();
-        for (TinkersRebornToolPart toolPart : TinkersRebornRegistry.toolPartNameMap.values()) {
-            if (toolPart == TinkersRebornTools.boltCore) {
-                continue;
-            }
-
+        for (String type : TinkersRebornTools.patternAndCast.getAllPatternType()) {
+            TinkersRebornToolPart toolPart = TinkersRebornRegistry.toolPartNameMap.get(type);
             ItemStack stack = toolPart.getNewPartWithMaterial(material);
-            ItemStack cast = Pattern.newStackWithToolPart(toolPart);
+            ItemStack cast = Pattern.newStackWithIdentifier(type);
 
             if (fluid != null && stack != null) {
                 // melting
@@ -508,20 +505,20 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         }
 
         // same for shard
-        if (TinkersRebornTools.castShard != null) {
-            ItemStack stack = TinkersRebornTools.shard.getNewPartWithMaterial(material);
+        ItemStack shardStack = TinkersRebornTools.shard.getNewPartWithMaterial(material);
+        if (TinkersRebornTools.castShard != null && shardStack != null) {
             int cost = TinkersRebornTools.shard.cost;
 
             if (fluid != null) {
                 // melting
-                registerMelting(stack, fluid, cost);
+                registerMelting(shardStack, fluid, cost);
                 // casting
-                registerTableCasting(stack, TinkersRebornTools.castShard, fluid, cost);
+                registerTableCasting(shardStack, TinkersRebornTools.castShard, fluid, cost);
             }
             // register cast creation from the toolparts
             for (FluidStack fs : fluidForCast) {
                 registerTableCasting(
-                    new CastingRecipe(TinkersRebornTools.castShard, RecipeMatch.ofNBT(stack), fs, true, true));
+                    new CastingRecipe(TinkersRebornTools.castShard, RecipeMatch.ofNBT(shardStack), fs, true, true));
             }
         }
     }
