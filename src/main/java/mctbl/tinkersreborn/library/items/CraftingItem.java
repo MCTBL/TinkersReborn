@@ -69,6 +69,7 @@ public class CraftingItem extends Item {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void getSubItems(Item b, CreativeTabs tab, List<ItemStack> list) {
         if (!this.hidden) {
             for (int i = 0; i < unlocalizedNames.length; i++)

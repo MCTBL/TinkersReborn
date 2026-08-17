@@ -4,15 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import com.google.gson.annotations.SerializedName;
-
 import mctbl.tinkersreborn.TinkersReborn;
 
 public class TinkersRebornItemBlock extends ItemBlock {
 
     public String[] blockType;
 
-    @SerializedName(value = "secondUnlocalizedName")
     public String unlocalizedName;
     public String append;
 

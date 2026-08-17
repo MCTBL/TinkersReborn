@@ -112,6 +112,8 @@ public class TinkersRebornConfig {
 
     public static boolean isAngelicaLoaded;
 
+    public static String[] manualNames;
+
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
@@ -464,6 +466,9 @@ public class TinkersRebornConfig {
             1.0f,
             9.99f,
             "Exponential multiplier for required boost xp per level");
+
+        manualNames = config.get(GENERAL, "Manual Names", new String[] { "materialsandyou" })
+            .getStringList();
 
         if (Loader.isModLoaded("angelica")) {
             isAngelicaLoaded = true;

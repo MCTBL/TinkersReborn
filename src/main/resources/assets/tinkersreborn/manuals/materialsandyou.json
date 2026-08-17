@@ -1,0 +1,48 @@
+{
+  "title": "tinkersreborn.manuals.materialsandyou.title",
+  "tooltip": "tinkersreborn.manuals.materialsandyou.tooltip",
+  "color": "0xB4905A",
+  "pages": [
+    {
+      "type": "text",
+      "text": "tinkersreborn.manuals.materialsandyou.welcome"
+    },
+    {
+      "type": "navigation",
+      "buttons": [
+        {
+          "to": "intro",
+          "icon": "TinkersReborn:CraftingStation",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptointro"
+        },
+        {
+          "to": "tools",
+          "icon": "minecraft:iron_pickaxe",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptotools"
+        },
+        {
+          "to": "materials",
+          "icon": "minecraft:iron_ingot",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptomaterials"
+        },
+        {
+          "to": "modifies",
+          "icon": "minecraft:redstone",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptomodifies"
+        },
+        {
+          "to": "smeltery",
+          "icon": "TinkersReborn:Smeltery",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptosmeltery"
+        },
+        {
+          "to": "bowmaterials",
+          "icon": "minecraft:bow",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptobowmaterials"
+        }
+      ],
+      "size": "large",
+      "capacity": 3
+    }
+  ]
+}

@@ -70,6 +70,7 @@ import mctbl.tinkersreborn.common.itemblocks.TinkersRebornMetalItemBlock;
 import mctbl.tinkersreborn.common.items.GoldenHead;
 import mctbl.tinkersreborn.common.items.HeartCanister;
 import mctbl.tinkersreborn.common.items.Jerky;
+import mctbl.tinkersreborn.common.items.ManualItem;
 import mctbl.tinkersreborn.common.items.StrangeFood;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -133,6 +134,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
     public static Item heartCanister;
     public static Item strangeFood;
+    public static Item manualItem;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -204,6 +206,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         strangeFood = new StrangeFood();
         GameRegistry.registerItem(strangeFood, strangeFood.getUnlocalizedName());
 
+        manualItem = new ManualItem();
+        GameRegistry.registerItem(manualItem, manualItem.getUnlocalizedName());
+
         // Vanilla stack sizes
         Items.wooden_door.setMaxStackSize(16);
         Items.iron_door.setMaxStackSize(16);
@@ -212,6 +217,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         Items.cake.setMaxStackSize(16);
 
         oreRegistry();
+
+        proxy.preInit();
 
         MinecraftForge.EVENT_BUS.register(new TinkersRebornPlayerHandler());
         MinecraftForge.EVENT_BUS.register(new TinkersRebornMobEventHandler());
@@ -231,11 +238,13 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerWorldGenerator(new TinkersRebornWorldGenerator(), 0);
         MinecraftForge.TERRAIN_GEN_BUS.register(new TinkersRebornSurfaceOreGen());
         GameRegistry.registerWorldGenerator(new SlimeIslandGen(slimePool, 2), 2);
+
     }
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
         addLoot();
+        proxy.postInit();
     }
 
     private void oreRegistry() {

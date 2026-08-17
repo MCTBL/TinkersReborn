@@ -701,3 +701,8 @@ tinkersreborn.waila.subtanks=Subtanks:
 tinkersreborn.waila.invalidstructure=Invalid structure
 tinkersreborn.waila.drying=Item: 
 tinkersreborn.waila.dryingProgress=Drying Progress: 
+
+// manual
+tinkersreborn.manuals.unname=Unname
+tinkersreborn.manuals.materialsandyou.title=Materials And You
+tinkersreborn.manuals.materialsandyou.tooltip=Rework by: MCTBL

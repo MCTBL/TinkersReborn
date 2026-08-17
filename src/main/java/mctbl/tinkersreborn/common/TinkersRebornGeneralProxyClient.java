@@ -18,6 +18,9 @@ import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
 import mctbl.tinkersreborn.common.events.HealthBarRenderer;
+import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
+import mctbl.tinkersreborn.common.manuals.processor.NavigationPageProcessor;
+import mctbl.tinkersreborn.common.manuals.processor.TextPageProcessor;
 import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.common.model.DryingRackSpecialRender;
 import mctbl.tinkersreborn.common.model.SlimeRender;
@@ -26,6 +29,13 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     public static FontRenderer fontRender = mc.fontRenderer;
+
+    @Override
+    public void preInit() {
+        TinkersRebornManualDataBase.loadManuals();
+        TinkersRebornManualDataBase.registerPageProcessor("text", new TextPageProcessor());
+        TinkersRebornManualDataBase.registerPageProcessor("navigation", new NavigationPageProcessor());
+    }
 
     @Override
     public void init() {
@@ -38,6 +48,11 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
         FMLCommonHandler.instance()
             .bus()
             .register(healthBarRenderer);
+    }
+
+    @Override
+    public void postInit() {
+        TinkersRebornManualDataBase.processManuals();
     }
 
     @SideOnly(Side.CLIENT)
@@ -69,4 +84,5 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
     public int getDryingRackRenderId() {
         return DryingRackRender.model;
     }
+
 }
