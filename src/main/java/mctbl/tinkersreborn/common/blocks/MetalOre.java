@@ -17,11 +17,11 @@ public class MetalOre extends TinkersRebornBlock {
     public MetalOre() {
         super(Material.rock, "tinkersreborn.MetalOre", 10.0F, TinkersRebornConfig.oreTypes);
 
-        this.setHarvestLevel("pickaxe", 4, 1); // cobalt
-        this.setHarvestLevel("pickaxe", 4, 2); // ardite
-        this.setHarvestLevel("pickaxe", 1, 3); // copper
-        this.setHarvestLevel("pickaxe", 1, 4); // tin
-        this.setHarvestLevel("pickaxe", 1, 5); // aluminum
+        this.setHarvestLevel("pickaxe", 4, 0); // cobalt
+        this.setHarvestLevel("pickaxe", 4, 1); // ardite
+        this.setHarvestLevel("pickaxe", 1, 2); // copper
+        this.setHarvestLevel("pickaxe", 1, 3); // tin
+        this.setHarvestLevel("pickaxe", 1, 4); // aluminum
 
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
@@ -29,7 +29,7 @@ public class MetalOre extends TinkersRebornBlock {
     @Override
     public float getBlockHardness(World world, int x, int y, int z) {
         int meta = world.getBlockMetadata(x, y, z);
-        if (meta <= 2) return 10f;
+        if (meta <= 1) return 10f;
         else return 3f;
     }
 
