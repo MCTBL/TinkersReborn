@@ -101,6 +101,8 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
 
     protected static final List<DryingRecipe> dryingRegistry = new ArrayList<>();
 
+    protected static final Map<String, Object> manualIcons = new HashMap<>();
+
     @Override
     public void preInit(FMLPreInitializationEvent e) {
         initCreativeTab();
@@ -980,4 +982,43 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         return null;
     }
 
+    public static boolean checkHadManualIconRegistered(String name) {
+        return manualIcons.containsKey(name);
+    }
+
+    public static void registerManualIcon(String name, ItemStack stack) {
+        manualIcons.put(name, stack);
+    }
+
+    public static void registerManualIcon(String name, ItemStack[] stacks) {
+        if (!manualIcons.containsKey(name)) {
+            manualIcons.put(name, stacks);
+        }
+    }
+
+    public static Object getManualIcon(String name) {
+        return manualIcons.get(name);
+    }
+
+    public static ItemStack getOrRegisterManualIcon(String name) {
+        if (!checkHadManualIconRegistered(name)) {
+            String[] icon = name.split(":");
+            String iconStackName = name;
+            int iconDamage = 0;
+            if (icon.length == 3) {
+                iconStackName = icon[0] + ":" + icon[1];
+                iconDamage = Integer.parseInt(icon[2]);
+            }
+            ItemStack tempStack = new ItemStack((Item) Item.itemRegistry.getObject(iconStackName), 1, iconDamage);
+            registerManualIcon(name, tempStack);
+        }
+        return (ItemStack) getManualIcon(name);
+    }
+
+    public static ItemStack getOrRegisterManualIcon(String name, ItemStack stack) {
+        if (!checkHadManualIconRegistered(name)) {
+            registerManualIcon(name, stack);
+        }
+        return (ItemStack) getManualIcon(name);
+    }
 }

@@ -29,10 +29,7 @@ public class TinkersRebornManualDataBase {
                 JsonObject jsObj = parser.parse(stream)
                     .getAsJsonObject();
                 ManualBookData bookData = new ManualBookData(new ManualBookDefinition(jsObj));
-                books.put(
-                    bookData.getDefinition()
-                        .getTitle(),
-                    bookData);
+                books.put(name, bookData);
             } catch (Exception e) {
                 TinkersReborn.LOG.error("Get some error when loading {}", name);
                 TinkersReborn.LOG.error(e.getLocalizedMessage());

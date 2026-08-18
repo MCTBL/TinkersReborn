@@ -3,15 +3,11 @@ package mctbl.tinkersreborn;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import mctbl.tinkersreborn.common.TinkersRebornGeneral;
-import mctbl.tinkersreborn.common.items.ManualItem;
 import mctbl.tinkersreborn.common.network.AbstractPacket;
 import mctbl.tinkersreborn.common.network.SpawnParticlePacket;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
@@ -23,8 +19,7 @@ public class CommonProxy implements IGuiHandler {
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TinkersRebornInventoryLogic tinker) {
+        if (world.getTileEntity(x, y, z) instanceof TinkersRebornInventoryLogic tinker) {
             return tinker.getGuiContainer(player.inventory, world, x, y, z);
         }
         return null;
@@ -32,12 +27,8 @@ public class CommonProxy implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-        TileEntity tileEntity = world.getTileEntity(x, y, z);
-        ItemStack stack;
-        if (tileEntity instanceof TinkersRebornInventoryLogic tinker) {
+        if (world.getTileEntity(x, y, z) instanceof TinkersRebornInventoryLogic tinker) {
             return tinker.getGui(player.inventory, world, x, y, z);
-        } else if ((stack = player.getItemInUse()) != null && stack.getItem() == TinkersRebornGeneral.manualItem) {
-            return ManualItem.getGui(stack);
         }
         return null;
     }

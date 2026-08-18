@@ -14,13 +14,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.client.TinkersRebornFontRender;
+import mctbl.tinkersreborn.client.TinkersRebornManualFontRender;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
 import mctbl.tinkersreborn.common.events.HealthBarRenderer;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
-import mctbl.tinkersreborn.common.manuals.processor.NavigationPageProcessor;
-import mctbl.tinkersreborn.common.manuals.processor.TextPageProcessor;
+import mctbl.tinkersreborn.common.manuals.pages.CoverPage.CoverPageProcessor;
+import mctbl.tinkersreborn.common.manuals.pages.NavigationPage.NavigationPageProcessor;
+import mctbl.tinkersreborn.common.manuals.pages.TextPage.TextPageProcessor;
 import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.common.model.DryingRackSpecialRender;
 import mctbl.tinkersreborn.common.model.SlimeRender;
@@ -29,12 +31,14 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
 
     private static final Minecraft mc = Minecraft.getMinecraft();
     public static FontRenderer fontRender = mc.fontRenderer;
+    public static FontRenderer manualFontRender = mc.fontRenderer;
 
     @Override
     public void preInit() {
         TinkersRebornManualDataBase.loadManuals();
         TinkersRebornManualDataBase.registerPageProcessor("text", new TextPageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("navigation", new NavigationPageProcessor());
+        TinkersRebornManualDataBase.registerPageProcessor("cover", new CoverPageProcessor());
     }
 
     @Override
@@ -63,16 +67,22 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
                 mc.gameSettings,
                 new ResourceLocation("textures/font/ascii.png"),
                 mc.renderEngine);
-            if (mc.gameSettings.language != null) {
-                fontRender.setUnicodeFlag(
-                    mc.getLanguageManager()
-                        .isCurrentLocaleUnicode() || mc.gameSettings.forceUnicodeFont);
-                fontRender.setBidiFlag(
-                    mc.getLanguageManager()
-                        .isCurrentLanguageBidirectional());
-            }
+            // if (mc.gameSettings.language != null) {
+            // fontRender.setUnicodeFlag(
+            // mc.getLanguageManager()
+            // .isCurrentLocaleUnicode() || mc.gameSettings.forceUnicodeFont);
+            // fontRender.setBidiFlag(
+            // mc.getLanguageManager()
+            // .isCurrentLanguageBidirectional());
+            // }
             resourceManager.registerReloadListener(fontRender);
         }
+
+        manualFontRender = new TinkersRebornManualFontRender(
+            mc.gameSettings,
+            new ResourceLocation("textures/font/ascii.png"),
+            mc.renderEngine);
+        resourceManager.registerReloadListener(fontRender);
 
         SlimeRender slimeRender = new SlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25F);
 

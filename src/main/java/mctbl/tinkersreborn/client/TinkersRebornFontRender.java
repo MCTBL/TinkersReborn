@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -16,13 +17,14 @@ import mctbl.tinkersreborn.util.ColorUtil;
 
 public class TinkersRebornFontRender extends FontRenderer {
 
-    private int state = 0;
-    private int red;
-    private int green;
-    private int blue;
-    private boolean needShadow;
+    protected int state = 0;
+    protected int red;
+    protected int green;
+    protected int blue;
+    protected boolean needShadow;
+    private static final String NEWLINE_REGEX_SEQUENCE = "\\\\n";
 
-    private static final Map<Character, String> COLOR_MAP = new HashMap<Character, String>();
+    protected static final Map<Character, String> COLOR_MAP = new HashMap<Character, String>();
 
     public TinkersRebornFontRender(GameSettings gameSettingsIn, ResourceLocation location,
         TextureManager textureManagerIn) {
@@ -47,9 +49,12 @@ public class TinkersRebornFontRender extends FontRenderer {
 
     @Override
     public List<String> listFormattedStringToWidth(String str, int wrapWidth) {
-        return Arrays.asList(
-            this.wrapFormattedStringToWidth(str, wrapWidth)
-                .split("\n"));
+        return Arrays.stream(str.split(NEWLINE_REGEX_SEQUENCE))
+            .flatMap(
+                line -> Arrays.stream(
+                    this.wrapFormattedStringToWidth(line, wrapWidth)
+                        .split("\n")))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -65,7 +70,7 @@ public class TinkersRebornFontRender extends FontRenderer {
         return Math.max(super.drawString(text, x, y, color, false), l);
     }
 
-    private String changeMCFormatToTinkersColor(String input) {
+    protected String changeMCFormatToTinkersColor(String input) {
         if (input == null || input.isEmpty() || !input.contains("§")) {
             return input;
         }
@@ -251,8 +256,9 @@ public class TinkersRebornFontRender extends FontRenderer {
     /**
      * Checks if the char code is a hexadecimal character, used to set colour.
      */
-    private static boolean isFormatColor(char colorChar) {
+    protected static boolean isFormatColor(char colorChar) {
         return colorChar >= 48 && colorChar <= 57 || colorChar >= 97 && colorChar <= 102
             || colorChar >= 65 && colorChar <= 70;
     }
+
 }

@@ -1,7 +1,9 @@
 package mctbl.tinkersreborn.common.items;
 
 import java.util.List;
+import java.util.Map.Entry;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -12,7 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -36,9 +37,8 @@ public class ManualItem extends Item {
     @Override
     public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer player) {
         if (worldIn.isRemote) {
-            player.openGui(TinkersReborn.instance, 0, worldIn, (int) player.posX, (int) player.posY, (int) player.posZ);
-            FMLClientHandler.instance()
-                .displayGuiScreen(player, getGui(itemStackIn));
+            Minecraft.getMinecraft()
+                .displayGuiScreen(getGui(itemStackIn));
         }
         return itemStackIn;
     }
@@ -69,13 +69,15 @@ public class ManualItem extends Item {
 
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
-        for (ManualBookData bookData : TinkersRebornManualDataBase.getBooks()
-            .values()) {
+        for (Entry<String, ManualBookData> entry : TinkersRebornManualDataBase.getBooks()
+            .entrySet()) {
+            ManualBookData bookData = entry.getValue();
             ManualBookDefinition bookDefinition = bookData.getDefinition();
             NBTTagCompound newTag = new NBTTagCompound();
             newTag.setInteger("color", bookDefinition.getColor());
             newTag.setString("title", bookDefinition.getTitle());
             newTag.setString("tooltip", bookDefinition.getTooltip());
+            newTag.setString("name", entry.getKey());
             ItemStack temp = new ItemStack(item);
             temp.setTagCompound(newTag);
             list.add(temp);
@@ -83,16 +85,15 @@ public class ManualItem extends Item {
     }
 
     public static GuiScreen getGui(ItemStack bookStack) {
-        String bookTitle = ToolTagsHelper.getTagSafe(bookStack)
-            .getString("title");
+        String bookName = ToolTagsHelper.getTagSafe(bookStack)
+            .getString("name");
         ManualBookData bookData = TinkersRebornManualDataBase.getBooks()
-            .getOrDefault(bookTitle, null);
+            .getOrDefault(bookName, null);
         if (bookData == null) {
-            TinkersReborn.LOG.error("There's no book data for {}", bookTitle);
+            TinkersReborn.LOG.error("There's no book data for {}", bookName);
             return null;
         }
-        TinkersReborn.LOG.info("Found book data for {}", bookTitle);
-        return new GuiManual();
+        return new GuiManual(bookData);
     }
 
     @Override
