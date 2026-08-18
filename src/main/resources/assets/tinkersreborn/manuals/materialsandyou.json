@@ -46,7 +46,9 @@
     },
     {
       "type": "text",
-      "text": "tinkersreborn.manuals.materialsandyou.welcome1"
+      "text": "tinkersreborn.manuals.materialsandyou.welcome1",
+      "title": "tinkersreborn.manuals.materialsandyou.welcome.title",
+      "align": "right"
     },
     {
       "type": "text",

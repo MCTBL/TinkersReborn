@@ -36,6 +36,18 @@ public abstract class AbstractManualPage {
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {}
 
+    protected void drawStrCenterAt(String str, int x, int y) {
+        this.drawStrCenterAt(str, x, y, 1.0F, 0x000000);
+    }
+
+    protected void drawStrCenterAt(String str, int x, int y, int color) {
+        this.drawStrCenterAt(str, x, y, 1.0F, color);
+    }
+
+    protected void drawStrCenterAt(String str, int x, int y, float scale) {
+        this.drawStrCenterAt(str, x, y, scale, 0x000000);
+    }
+
     protected void drawStrCenterAt(String str, int x, int y, float scale, int color) {
         fontRender.drawString(
             str,

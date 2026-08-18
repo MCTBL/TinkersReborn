@@ -47,6 +47,7 @@ public class GuiManual extends GuiScreen {
 
     public GuiManual(ManualBookData bookData) {
         this.bookData = bookData;
+        this.currentPage = 0;
     }
 
     @Override
@@ -110,7 +111,6 @@ public class GuiManual extends GuiScreen {
         this.buttonHomePage = new TinkersRebornTurnPageButton(3, 4, 5, ButtonType.homePage);
         this.buttonBackToJumpFrom = new TinkersRebornTurnPageButton(4, COVER_WIDTH - 9, 178, ButtonType.backToJumpFrom);
 
-        this.currentPage = 0;
         this.bookTotalPages = this.bookData.getPages()
             .size();
     }
