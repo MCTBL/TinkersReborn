@@ -3,8 +3,6 @@ package mctbl.tinkersreborn.common.items;
 import java.util.List;
 import java.util.Map.Entry;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,10 +12,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.ManualBookData;
 import mctbl.tinkersreborn.library.manuals.ManualBookDefinition;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -36,10 +33,7 @@ public class ManualItem extends Item {
 
     @Override
     public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer player) {
-        if (worldIn.isRemote) {
-            Minecraft.getMinecraft()
-                .displayGuiScreen(getGui(itemStackIn));
-        }
+        TinkersRebornGeneral.proxy.openManual(itemStackIn);
         return itemStackIn;
     }
 
@@ -82,18 +76,6 @@ public class ManualItem extends Item {
             temp.setTagCompound(newTag);
             list.add(temp);
         }
-    }
-
-    public static GuiScreen getGui(ItemStack bookStack) {
-        String bookName = ToolTagsHelper.getTagSafe(bookStack)
-            .getString("name");
-        ManualBookData bookData = TinkersRebornManualDataBase.getBooks()
-            .getOrDefault(bookName, null);
-        if (bookData == null) {
-            TinkersReborn.LOG.error("There's no book data for {}", bookName);
-            return null;
-        }
-        return new GuiManual(bookData);
     }
 
     @Override

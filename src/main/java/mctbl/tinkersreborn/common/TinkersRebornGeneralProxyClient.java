@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelSlime;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -12,6 +13,7 @@ import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.client.TinkersRebornFontRender;
 import mctbl.tinkersreborn.client.TinkersRebornManualFontRender;
@@ -28,6 +30,9 @@ import mctbl.tinkersreborn.common.manuals.pages.TextPage.TextPageProcessor;
 import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.common.model.DryingRackSpecialRender;
 import mctbl.tinkersreborn.common.model.SlimeRender;
+import mctbl.tinkersreborn.library.gui.GuiManual;
+import mctbl.tinkersreborn.library.manuals.ManualBookData;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCommon {
 
@@ -97,6 +102,20 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
     @Override
     public int getDryingRackRenderId() {
         return DryingRackRender.model;
+    }
+
+    @Override
+    public void openManual(ItemStack stack) {
+        String bookName = ToolTagsHelper.getTagSafe(stack)
+            .getString("name");
+        ManualBookData bookData = TinkersRebornManualDataBase.getBooks()
+            .getOrDefault(bookName, null);
+        if (bookData == null) {
+            TinkersReborn.LOG.error("There's no book data for {}", bookName);
+            return;
+        }
+        Minecraft.getMinecraft()
+            .displayGuiScreen(new GuiManual(bookData));
     }
 
 }
