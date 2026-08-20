@@ -5,8 +5,6 @@ import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.tools.BowCore;
@@ -42,8 +40,8 @@ public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon
                     t,
                     (t instanceof BowCore) ? (t instanceof CrossBow) ? new CrossBowRender() : bowRender : render));
 
-        EntityRegistry.registerModEntity(EntityArrow.class, "arrow", 10, TinkersReborn.instance, 64, 1, false);
-        EntityRegistry.registerModEntity(EntityBolt.class, "bolt", 11, TinkersReborn.instance, 64, 1, false);
+        // EntityRegistry.registerModEntity(EntityArrow.class, "arrow", 10, TinkersReborn.instance, 64, 1, false);
+        // EntityRegistry.registerModEntity(EntityBolt.class, "bolt", 11, TinkersReborn.instance, 64, 1, false);
         // EntityRegistry.registerModEntity(EntityShuriken.class, "shuriken", 12, TinkersReborn.instance, 64, 1, false);
         EntityArrowRenderer arrowRenderer = new EntityArrowRenderer();
         RenderingRegistry.registerEntityRenderingHandler(EntityArrow.class, arrowRenderer);

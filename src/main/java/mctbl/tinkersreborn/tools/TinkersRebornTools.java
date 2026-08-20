@@ -70,7 +70,9 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
@@ -95,6 +97,8 @@ import mctbl.tinkersreborn.tools.config.TinkersRebornHarvestLevelConfig;
 import mctbl.tinkersreborn.tools.config.TinkersRebornMaterialConfig;
 import mctbl.tinkersreborn.tools.entity.CastChestLogic;
 import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
+import mctbl.tinkersreborn.tools.entity.EntityArrow;
+import mctbl.tinkersreborn.tools.entity.EntityBolt;
 import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
 import mctbl.tinkersreborn.tools.entity.ToolForgeLogic;
@@ -671,6 +675,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         MiningLevelHelper.preInit();
 
         TinkersRebornModifiers.INSTANCE.preInit(e);
+
+        EntityRegistry.registerModEntity(EntityArrow.class, "arrow", 10, TinkersReborn.instance, 64, 1, false);
+        EntityRegistry.registerModEntity(EntityBolt.class, "bolt", 11, TinkersReborn.instance, 64, 1, false);
     }
 
     @Override
