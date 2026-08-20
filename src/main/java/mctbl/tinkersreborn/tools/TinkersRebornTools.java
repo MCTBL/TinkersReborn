@@ -689,6 +689,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         TinkersRebornRegistry.addFluidForCast();
 
+        this.registerCraftingRecipes();
+
         proxy.initialize();
     }
 
@@ -708,8 +710,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         TinkersRebornRegistry.registerGemMeltingCasting(emeraldFluid, "Emerald", castGem);
         TinkersRebornRegistry.registerMelting(new ItemStack(Blocks.stone), stoneFluid, 18);
         TinkersRebornRegistry.registerMelting(new ItemStack(Blocks.cobblestone), stoneFluid, 18);
-
-        this.registerCraftingRecipes();
 
         TinkersRebornMaterialConfig.postInit();
         TinkersRebornHarvestLevelConfig.postInit();
@@ -1241,6 +1241,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     private void registerCraftingRecipes() {
         ItemStack paper = new ItemStack(Items.paper);
         ItemStack blankPattern = Pattern.newStackWithIdentifier(Pattern.PATTERN_BLANK);
+        ItemStack blankPattern4 = blankPattern.copy();
+        blankPattern4.stackSize = 4;
+
         ItemStack chest = new ItemStack(Blocks.chest);
         ItemStack smelteryBrick = new ItemStack(TinkersRebornSmeltery.smelteryBlock);
         ItemStack toolStationBlock = new ItemStack(toolStation);
@@ -1248,7 +1251,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         // for sharpening kit crafting repair recipe
         GameRegistry.addRecipe(new SharpeningKitRepairRecipe());
 
-        GameRegistry.addRecipe(new ShapedOreRecipe(blankPattern, "Ss", "sS", 's', "plankWood", 'S', "stickWood"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(blankPattern4, "Ss", "sS", 's', "plankWood", 'S', "stickWood"));
         GameRegistry.addRecipe(new ItemStack(paperStack), "AA", "AA", 'A', paper);
 
         GameRegistry.addShapedRecipe(

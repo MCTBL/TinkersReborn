@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
 import mctbl.tinkersreborn.library.manuals.ManualPageDefinition;
 import mctbl.tinkersreborn.library.manuals.ManualPageProcessor;
@@ -25,7 +26,7 @@ public class CoverPage extends AbstractManualPage {
 
     @Override
     public void renderContentLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
-        int manualTicks) {
+        int manualTicks, GuiManual manual) {
         int cousorX = contentWidth / 2;
         int cousorY = contentHeight * 3 / 7;
 

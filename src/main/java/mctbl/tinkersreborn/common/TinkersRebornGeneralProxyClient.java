@@ -21,7 +21,9 @@ import mctbl.tinkersreborn.common.entity.KingBlueSlime;
 import mctbl.tinkersreborn.common.events.HealthBarRenderer;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
 import mctbl.tinkersreborn.common.manuals.pages.CoverPage.CoverPageProcessor;
+import mctbl.tinkersreborn.common.manuals.pages.ImagePage.ImagePageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.NavigationPage.NavigationPageProcessor;
+import mctbl.tinkersreborn.common.manuals.pages.RecipePage.RecipePageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.TextPage.TextPageProcessor;
 import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.common.model.DryingRackSpecialRender;
@@ -39,6 +41,8 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
         TinkersRebornManualDataBase.registerPageProcessor("text", new TextPageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("navigation", new NavigationPageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("cover", new CoverPageProcessor());
+        TinkersRebornManualDataBase.registerPageProcessor("recipe", new RecipePageProcessor());
+        TinkersRebornManualDataBase.registerPageProcessor("image", new ImagePageProcessor());
     }
 
     @Override

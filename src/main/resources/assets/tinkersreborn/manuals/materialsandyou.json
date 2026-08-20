@@ -47,12 +47,22 @@
     {
       "type": "text",
       "text": "tinkersreborn.manuals.materialsandyou.welcome1",
-      "title": "tinkersreborn.manuals.materialsandyou.welcome.title",
-      "align": "right"
+      "title": "tinkersreborn.manuals.materialsandyou.welcome.title"
+    },
+    {
+      "type": "recipe",
+      "output": "tinkersreborn:tinkersreborn.Pattern",
+      "text": "tinkersreborn.manuals.materialsandyou.welcome2"
     },
     {
       "type": "text",
-      "text": "tinkersreborn.manuals.materialsandyou.welcome2"
+      "text": "tinkersreborn.manuals.materialsandyou.repair1",
+      "title": "tinkersreborn.manuals.materialsandyou.repair.title"
+    },
+    {
+      "type": "image",
+      "image": "tinkersreborn:textures/gui/book/inventory_repair.png",
+      "text": "tinkersreborn.manuals.materialsandyou.repair2"
     }
   ]
 }

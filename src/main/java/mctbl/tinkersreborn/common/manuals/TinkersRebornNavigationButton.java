@@ -85,7 +85,7 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
         this.color = color;
     }
 
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, int manualTicks) {
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, int manualTicks, int pageX, int pageY) {
         if (this.visible) {
             this.height = (int) (defaultHeight * this.bs.multi);
             this.width = (int) (defaultWidth * this.bs.multi);
@@ -94,10 +94,10 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
 
             if (isMouseInButton) {
                 Gui.drawRect(
-                    this.xPosition,
-                    this.yPosition,
-                    (int) (this.xPosition + defaultWidth * this.bs.multi),
-                    (int) (this.yPosition + defaultHeight * this.bs.multi),
+                    this.xPosition + pageX,
+                    this.yPosition + pageY,
+                    (int) (this.xPosition + pageX + defaultWidth * this.bs.multi),
+                    (int) (this.yPosition + pageY + defaultHeight * this.bs.multi),
                     0xAAAAAAAA);
             }
 
@@ -108,18 +108,18 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
             if (fontRender.getStringWidth(boldButtonStr) <= this.width / this.bs.multi * 2) {
                 fontRender.drawString(
                     boldButtonStr,
-                    (int) ((this.xPosition + this.width * 1.0F / 2) / this.bs.multi * 2
+                    (int) ((this.xPosition + pageX + this.width * 1.0F / 2) / this.bs.multi * 2
                         - fontRender.getStringWidth(boldButtonStr) * 1.0F / 2),
-                    (int) ((this.yPosition + this.height) / this.bs.multi * 2 - fontRender.FONT_HEIGHT),
+                    (int) ((this.yPosition + pageY + this.height) / this.bs.multi * 2 - fontRender.FONT_HEIGHT),
                     this.color);
             } else {
                 // much smaller
                 GL11.glScalef(0.8f, 0.8f, 1.0f);
                 fontRender.drawString(
                     boldButtonStr,
-                    (int) ((this.xPosition + this.width * 1.0F / 2) / this.bs.multi * 2.5
+                    (int) ((this.xPosition + pageX + this.width * 1.0F / 2) / this.bs.multi * 2.5
                         - fontRender.getStringWidth(boldButtonStr) * 1.0F / 2),
-                    (int) ((this.yPosition + this.height) / this.bs.multi * 2.5 - fontRender.FONT_HEIGHT),
+                    (int) ((this.yPosition + pageY + this.height) / this.bs.multi * 2.5 - fontRender.FONT_HEIGHT),
                     this.color);
                 // resize back
                 GL11.glScalef(1.25f, 1.25f, 1.0f);
@@ -128,12 +128,12 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
             GL11.glScalef(2.0f, 2.0f, 1.0f);
             GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-            this.drawItem(mc, manualTicks);
+            this.drawItem(mc, manualTicks, pageX, pageY);
             GL11.glScalef(1.0f / this.bs.multi, 1.0f / this.bs.multi, 1.0f);
         }
     }
 
-    private void drawItem(final Minecraft mc, int manualTicks) {
+    private void drawItem(final Minecraft mc, int manualTicks, int pageX, int pageY) {
         int length = renderStack.length;
         if (length == 0) {
             return;
@@ -154,14 +154,14 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
             mc.fontRenderer,
             mc.renderEngine,
             stackToRender,
-            (int) (this.xPosition / this.bs.multi + 2),
-            (int) (this.yPosition / this.bs.multi + (this.buttonStrKey.isEmpty() ? 2 : 0)));
+            (int) ((this.xPosition + pageX) / this.bs.multi + 2),
+            (int) ((this.yPosition + pageY) / this.bs.multi + (this.buttonStrKey.isEmpty() ? 2 : 0)));
         this.itemRender.renderItemOverlayIntoGUI(
             mc.fontRenderer,
             mc.renderEngine,
             stackToRender,
-            (int) (this.xPosition / this.bs.multi + 2),
-            (int) (this.yPosition / this.bs.multi + (this.buttonStrKey.isEmpty() ? 2 : 0)));
+            (int) ((this.xPosition + pageX) / this.bs.multi + 2),
+            (int) ((this.yPosition + pageY) / this.bs.multi + (this.buttonStrKey.isEmpty() ? 2 : 0)));
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
         this.itemRender.zLevel = 0.0F;

@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornNavigationButton;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornNavigationButton.ButtonSize;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
 import mctbl.tinkersreborn.library.manuals.ManualPageDefinition;
 import mctbl.tinkersreborn.library.manuals.ManualPageProcessor;
@@ -40,6 +41,19 @@ public class NavigationPage extends AbstractManualPage {
         this.titleKey = json.has("title") ? json.get("title")
             .getAsString() : null;
 
+        int middleX = contentWidth / 2;
+        int middleY = contentHeight / 2;
+        int buttonGap = 5;
+        int buttonWidth = (int) (TinkersRebornNavigationButton.defaultWidth * buttonSize.getMulti());
+        int buttonHeight = (int) (TinkersRebornNavigationButton.defaultHeight * buttonSize.getMulti());
+        int buttonRows = ceilDiv(buttonArrays.size(), this.buttonEachRow);
+
+        int buttonsGroupHeight = buttonRows * buttonHeight + (buttonRows - 1) * buttonGap;
+        int buttonsGroupWidth = this.buttonEachRow * buttonWidth + (this.buttonEachRow - 1) * buttonGap;
+
+        int buttonsGroupStartX = middleX - buttonsGroupWidth / 2;
+        int buttonsGroupStartY = middleY - buttonsGroupHeight / 2;
+
         for (int idx = 0; idx < buttonArrays.size(); idx++) {
             JsonObject buttonJsonObject = buttonArrays.get(idx)
                 .getAsJsonObject();
@@ -51,7 +65,20 @@ public class NavigationPage extends AbstractManualPage {
                 .getAsString() : null;
             ItemStack itemStack = TinkersRebornRegistry.getOrRegisterManualIcon(iconStr);
 
-            buttons.add(new TinkersRebornNavigationButton(idx, buttonSize, itemStack, text, target));
+            TinkersRebornNavigationButton b = new TinkersRebornNavigationButton(
+                idx,
+                buttonSize,
+                itemStack,
+                text,
+                target);
+
+            int row = idx / this.buttonEachRow;
+            int column = idx % this.buttonEachRow;
+
+            b.xPosition = buttonsGroupStartX + column * (buttonWidth + buttonGap);
+            b.yPosition = buttonsGroupStartY + row * (buttonHeight + buttonGap);
+
+            buttons.add(b);
         }
     }
 
@@ -66,38 +93,12 @@ public class NavigationPage extends AbstractManualPage {
 
     @Override
     public void renderContentLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
-        int manualTicks) {
+        int manualTicks, GuiManual manual) {
         if (titleStr != null && !titleStr.isEmpty())
             this.drawStrCenterAt(ColorUtil.addUnderLine(titleStr), pageX + contentWidth / 2, pageY + 4, 1.0f, 0x000000);
 
-        int middleX = pageX + contentWidth / 2;
-        int middleY = pageY + contentHeight / 2;
-
-        int buttonWidth = (int) (TinkersRebornNavigationButton.defaultWidth * buttonSize.getMulti());
-        int buttonHeight = (int) (TinkersRebornNavigationButton.defaultHeight * buttonSize.getMulti());
-
-        int buttonGap = 5;
-
-        int buttonRows = ceilDiv(this.buttons.size(), this.buttonEachRow);
-
-        int buttonsGroupHeight = buttonRows * buttonHeight + (buttonRows - 1) * buttonGap;
-        int buttonsGroupWidth = this.buttonEachRow * buttonWidth + (this.buttonEachRow - 1) * buttonGap;
-
-        int buttonsGroupStartX = middleX - buttonsGroupWidth / 2;
-        int buttonsGroupStartY = middleY - buttonsGroupHeight / 2;
-
-        for (int idx = 0; idx < this.buttons.size(); idx++) {
-            TinkersRebornNavigationButton b = this.buttons.get(idx);
-            int row = idx / this.buttonEachRow;
-            int column = idx % this.buttonEachRow;
-
-            int buttonX = buttonsGroupStartX + column * (buttonWidth + buttonGap);
-            int buttonY = buttonsGroupStartY + row * (buttonHeight + buttonGap);
-
-            b.xPosition = buttonX;
-            b.yPosition = buttonY;
-            b.drawButton(Minecraft.getMinecraft(), manualMouseX, manualMouseY, manualTicks);
-        }
+        this.buttons.forEach(
+            b -> b.drawButton(Minecraft.getMinecraft(), manualMouseX, manualMouseY, manualTicks, pageX, pageY));
     }
 
     @Override

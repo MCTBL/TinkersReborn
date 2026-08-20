@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
+import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
 import mctbl.tinkersreborn.library.manuals.ManualPageDefinition;
 import mctbl.tinkersreborn.library.manuals.ManualPageProcessor;
@@ -18,6 +19,7 @@ public class TextPage extends AbstractManualPage {
     protected final String text;
     protected String translatedText;
     protected final String align;
+    protected boolean haveTitle;
 
     public TextPage(JsonObject json) {
         super(json);
@@ -31,8 +33,7 @@ public class TextPage extends AbstractManualPage {
 
     @Override
     public void renderContentLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
-        int manualTicks) {
-        boolean haveTitle = false;
+        int manualTicks, GuiManual manual) {
         if (this.translatedTitle != null && !this.translatedTitle.isEmpty()) {
             String underLineTitle = ColorUtil.addUnderLine(translatedTitle);
             if (this.align.equals("center")) {
@@ -46,15 +47,23 @@ public class TextPage extends AbstractManualPage {
             } else {
                 fontRender.drawString(underLineTitle, pageX, pageY, 0x000000);
             }
-            haveTitle = true;
         }
-        fontRender
-            .drawSplitString(translatedText, pageX, pageY + (haveTitle ? fontRender.FONT_HEIGHT : 0), 178, 0x000000);
+        if (this.translatedText != null) {
+            fontRender.drawSplitString(
+                this.translatedText,
+                pageX,
+                pageY + (haveTitle ? fontRender.FONT_HEIGHT : 0),
+                180,
+                0x000000);
+        }
     }
 
     @Override
     public void setupTranslate() {
         this.translatedTitle = TinkersRebornUtils.translate(this.title);
+        if (this.translatedTitle != null && !this.translatedTitle.isEmpty()) {
+            this.haveTitle = true;
+        }
         this.translatedText = TinkersRebornUtils.translate(this.text);
     }
 

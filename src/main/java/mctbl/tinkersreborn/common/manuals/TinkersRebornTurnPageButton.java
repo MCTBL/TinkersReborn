@@ -61,7 +61,9 @@ public class TinkersRebornTurnPageButton extends GuiManualButton {
     public static int ARROWCOLORHOVER = 0xFF541C;
 
     private final ButtonType buttonType;
-    private static final ResourceLocation background = new ResourceLocation("tinkersreborn", "textures/gui/book.png");
+    private static final ResourceLocation background = new ResourceLocation(
+        "tinkersreborn",
+        "textures/gui/book/book.png");
 
     public TinkersRebornTurnPageButton(int id, int xPosition, int yPosition, ButtonType buttonType) {
         super(id, xPosition, yPosition, buttonType.textureWidth, buttonType.textureHeight, "");
@@ -78,6 +80,10 @@ public class TinkersRebornTurnPageButton extends GuiManualButton {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        this.drawButton(mc, mouseX, mouseY, 0, 0);
+    }
+
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, int pageX, int pageY) {
         if (this.visible) {
             boolean isMouseInButton = this.isHover(mouseX, mouseY);
 
@@ -91,8 +97,8 @@ public class TinkersRebornTurnPageButton extends GuiManualButton {
             }
 
             func_146110_a(
-                this.xPosition,
-                this.yPosition,
+                this.xPosition + pageX,
+                this.yPosition + pageY,
                 this.buttonType.textureX,
                 this.buttonType.textureY,
                 this.buttonType.textureWidth,

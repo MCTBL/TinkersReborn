@@ -704,6 +704,13 @@ tinkersreborn.waila.dryingProgress=Drying Progress:
 
 // manuals
 tinkersreborn.manuals.unname=Unname
+tinkersreborn.manuals.recipetype.ShapedOreRecipe=Shaped Ore Recipe
+tinkersreborn.manuals.recipetype.ShapelessOreRecipe=Shapeless Ore Recipe
+tinkersreborn.manuals.recipetype.ShapedRecipes=Shaped Recipes
+tinkersreborn.manuals.recipetype.ShapelessRecipes=Shapeless Recipes
+tinkersreborn.manuals.recipetype.FurnaceRecipes=Furnace Recipes
+tinkersreborn.manuals.recipetype.ToolStationRecipe=Tool Station Recipe
+
 tinkersreborn.manuals.materialsandyou.title=Materials And You
 tinkersreborn.manuals.materialsandyou.tooltip=Rework by: MCTBL
 tinkersreborn.manuals.materialsandyou.homepage=Materials and You\nThis is all of what you need in TiC\nBy MCTBL
@@ -714,5 +721,8 @@ tinkersreborn.manuals.materialsandyou.jumptomodifies=Modifies
 tinkersreborn.manuals.materialsandyou.jumptosmeltery=Smeltery
 tinkersreborn.manuals.materialsandyou.jumptobowmaterials=Bow Materials
 tinkersreborn.manuals.materialsandyou.welcome.title=The Lost Page
-tinkersreborn.manuals.materialsandyou.welcome1=Welcome to the §mfirst§r second edition of Materials and You: Surviving the first day and beyond. Within these pages you will find the first steps to making the tools and materials you need to survive.\n\nThis book is a magic copy; it updates whenever the original has been modified. Check back occasionally for information on new things.
-tinkersreborn.manuals.materialsandyou.welcome2=The first step in making tools is crafting a blank pattern. It is a blank slate to stamp a shape into, providing a reference for future creations. The patterns are shaped on the Stencil Table or are used as tabletops.\n\nYou can then shape a material in a part builder with the pattern, then combine parts in the tool station. Patterns can be stored and accessed in the pattern chest.\n\nTogether these make the Tool Workshop. It is recommended you keep all of these nearby when using any of them.
+tinkersreborn.manuals.materialsandyou.welcome1=\nWelcome to the §mfirst§r second edition of Materials and You: Surviving the first day and beyond. Within these pages you will find the first steps to making the tools and materials you need to survive.\n\nThis book is a magic copy; it updates whenever the original has been modified. Check back occasionally for information on new things.\n\nThe first step in making tools is crafting a blank pattern. It is a blank slate to stamp a shape into, providing a reference for future creations.
+tinkersreborn.manuals.materialsandyou.welcome2=You can then shape a material in a part builder with the pattern, then combine parts in the tool station. Patterns can be stored and accessed in the pattern chest.
+tinkersreborn.manuals.materialsandyou.repair.title=Repairing
+tinkersreborn.manuals.materialsandyou.repair1=As you use your tools, they take damage. Once all of their durability is gone they break. :(\n\nTo fix that you need to repair your tool. You don't need to wait until it breaks, you can repair it at any time!\n\nRepairing is easy. Put the tool into a tool station or forge and add items equivalent to the head of the tool. If the tool's head is made of multiple parts you can use each of those materials. Repairing with multiple materials at the same time grants bonus durability repaired.\n\nYou can also repair your tools while deep under the earth or adventuring far away from your base.
+tinkersreborn.manuals.materialsandyou.repair2=To do so simply take a sharpening kit of the material you need, and put it into a crafting grid together with the tool.

@@ -6,6 +6,7 @@ import java.util.Queue;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -23,7 +24,9 @@ import mctbl.tinkersreborn.library.manuals.ManualBookData;
 @SideOnly(Side.CLIENT)
 public class GuiManual extends GuiScreen {
 
-    private static final ResourceLocation bookTexture = new ResourceLocation("tinkersreborn", "textures/gui/book.png");
+    private static final ResourceLocation bookTexture = new ResourceLocation(
+        "tinkersreborn",
+        "textures/gui/book/book.png");
 
     private static final float GUIMAXPERCENTAGE = 0.85f; // The maximum percentage that the manual GUI can occupy
     public static int COVER_WIDTH = 206;
@@ -38,6 +41,9 @@ public class GuiManual extends GuiScreen {
     public float scale = 1.0f;
     protected int guiLeft;
     protected int guiTop;
+    /*
+     * [0, 19]
+     */
     protected int manualTicks;
 
     private TinkersRebornTurnPageButton buttonNextPage;
@@ -45,15 +51,28 @@ public class GuiManual extends GuiScreen {
     private TinkersRebornTurnPageButton buttonHomePage;
     private TinkersRebornTurnPageButton buttonBackToJumpFrom;
 
+    public final float backgroundR;
+    public final float backgroundG;
+    public final float backgroundB;
+
+    public RenderItem renderItem = new RenderItem();
+
     public GuiManual(ManualBookData bookData) {
         this.bookData = bookData;
         this.currentPage = 0;
+
+        int backGroundColor = bookData.getDefinition()
+            .getColor();
+
+        this.backgroundR = ((backGroundColor >> 16) & 0xFF) / 255.0f;
+        this.backgroundG = ((backGroundColor >> 8) & 0xFF) / 255.0f;
+        this.backgroundB = (backGroundColor & 0xFF) / 255.0f;
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
-        this.manualTicks++;
+        this.manualTicks = this.manualTicks++ % 20;
     }
 
     @Override
@@ -73,10 +92,9 @@ public class GuiManual extends GuiScreen {
 
             this.setupManualRenderState();
             this.drawManualBackground();
+            this.drawManualControls(manualMouseX, manualMouseY);
 
             this.drawManualPages(manualMouseX, manualMouseY, partialTicks);
-
-            this.drawManualControls(manualMouseX, manualMouseY);
         } finally {
             GL11.glPopAttrib();
             GL11.glPopMatrix();
@@ -127,16 +145,9 @@ public class GuiManual extends GuiScreen {
     }
 
     private void drawManualBackground() {
-        int backGroundColor = this.bookData.getDefinition()
-            .getColor();
-
-        float r = ((backGroundColor >> 16) & 0xFF) / 255.0f;
-        float g = ((backGroundColor >> 8) & 0xFF) / 255.0f;
-        float b = (backGroundColor & 0xFF) / 255.0f;
-
         this.mc.getTextureManager()
             .bindTexture(bookTexture);
-        GL11.glColor4f(r, g, b, 1.0F);
+        GL11.glColor4f(backgroundR, backgroundG, backgroundB, 1.0F);
         func_146110_a(0, 0, 0.0F, 0.0F, COVER_WIDTH * 2, COVER_HEIGHT, 512.0F, 512.0F);
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -151,12 +162,12 @@ public class GuiManual extends GuiScreen {
         List<AbstractManualPage> pages = this.bookData.getPages();
         if (leftIndex < pages.size()) {
             pages.get(leftIndex)
-                .renderPage(19, 17, manualMouseX, manualMouseY, partialTicks, this.manualTicks);
+                .renderPage(19, 17, manualMouseX - 19, manualMouseY - 17, partialTicks, this.manualTicks, this);
         }
 
         if (rightIndex < pages.size()) {
             pages.get(rightIndex)
-                .renderPage(213, 17, manualMouseX, manualMouseY, partialTicks, this.manualTicks);
+                .renderPage(213, 17, manualMouseX - 213, manualMouseY - 17, partialTicks, this.manualTicks, this);
         }
     }
 

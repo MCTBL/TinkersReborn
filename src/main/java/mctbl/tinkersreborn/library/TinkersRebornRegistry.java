@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -16,6 +17,9 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -36,6 +40,8 @@ import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.crafting.AlloyRecipe;
+import mctbl.tinkersreborn.library.manuals.TinkersRebornRecipeHolder;
+import mctbl.tinkersreborn.library.manuals.TinkersRebornRecipeHolder.RecipeType;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
@@ -102,6 +108,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
     protected static final List<DryingRecipe> dryingRegistry = new ArrayList<>();
 
     protected static final Map<String, Object> manualIcons = new HashMap<>();
+    protected static final Map<String, TinkersRebornRecipeHolder[]> recipeIcons = new HashMap<>();
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -991,9 +998,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
     }
 
     public static void registerManualIcon(String name, ItemStack[] stacks) {
-        if (!manualIcons.containsKey(name)) {
-            manualIcons.put(name, stacks);
-        }
+        manualIcons.computeIfAbsent(name, k -> stacks);
     }
 
     public static Object getManualIcon(String name) {
@@ -1002,17 +1007,20 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
 
     public static ItemStack getOrRegisterManualIcon(String name) {
         if (!checkHadManualIconRegistered(name)) {
-            String[] icon = name.split(":");
-            String iconStackName = name;
-            int iconDamage = 0;
-            if (icon.length == 3) {
-                iconStackName = icon[0] + ":" + icon[1];
-                iconDamage = Integer.parseInt(icon[2]);
-            }
-            ItemStack tempStack = new ItemStack((Item) Item.itemRegistry.getObject(iconStackName), 1, iconDamage);
-            registerManualIcon(name, tempStack);
+            registerManualIcon(name, getItemStackFromString(name));
         }
         return (ItemStack) getManualIcon(name);
+    }
+
+    public static ItemStack getItemStackFromString(String name) {
+        String[] icon = name.split(":");
+        String iconStackName = name;
+        int iconDamage = 0;
+        if (icon.length == 3) {
+            iconStackName = icon[0] + ":" + icon[1];
+            iconDamage = Integer.parseInt(icon[2]);
+        }
+        return new ItemStack((Item) Item.itemRegistry.getObject(iconStackName), 1, iconDamage);
     }
 
     public static ItemStack getOrRegisterManualIcon(String name, ItemStack stack) {
@@ -1020,5 +1028,36 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
             registerManualIcon(name, stack);
         }
         return (ItemStack) getManualIcon(name);
+    }
+
+    public static TinkersRebornRecipeHolder[] getOrRegisterRecipeIcon(String name) {
+        if (!recipeIcons.containsKey(name)) {
+            ItemStack outPutStack = getOrRegisterManualIcon(name);
+            List<TinkersRebornRecipeHolder> recipes = new ArrayList<>();
+            for (IRecipe i : CraftingManager.getInstance()
+                .getRecipeList()) {
+                ItemStack output = i.getRecipeOutput();
+                if (output != null && output.isItemEqual(outPutStack)) recipes.add(new TinkersRebornRecipeHolder(i));
+            }
+
+            for (Entry<ItemStack, ItemStack> t : FurnaceRecipes.smelting()
+                .getSmeltingList()
+                .entrySet()) {
+                if (t.getValue()
+                    .isItemEqual(outPutStack)) recipes.add(new TinkersRebornRecipeHolder(t.getKey(), t.getValue()));
+            }
+
+            recipeIcons.put(name, recipes.toArray(new TinkersRebornRecipeHolder[] {}));
+        }
+        return recipeIcons.get(name);
+    }
+
+    public static void registerTinkersRebornToolRecipeIcon(String name, ItemStack[][] inputs, ItemStack output,
+        RecipeType type) {
+        if (!recipeIcons.containsKey(name)) {
+            getOrRegisterManualIcon(name, output);
+            recipeIcons
+                .put(name, new TinkersRebornRecipeHolder[] { new TinkersRebornRecipeHolder(inputs, output, type) });
+        }
     }
 }
