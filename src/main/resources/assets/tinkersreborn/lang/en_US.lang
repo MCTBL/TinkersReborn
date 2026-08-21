@@ -499,7 +499,8 @@ tinkersreborn.gui.smeltery.progress.no_recipe=Item can't be molten
 tinkersreborn.gui.smeltery.progress.no_fuel=No valid fuel in smeltery
 tinkersreborn.gui.smeltery.progress.no_heat=Not enough heat to melt this item
 tinkersreborn.gui.smeltery.progress.no_space=Not enough free space in the smeltery
-tinkersreborn.gui.smeltery.progress.fill_clear=Fill or clear bucket
+
+tinkersreborn.gui.smeltery.fill_clear=Fill or clear bucket
 
 // Leveling
 tinkersreborn.message.levelup.generic=Looks like your %s is being used since: %s
