@@ -13,12 +13,17 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Same as Container but provides some extra functionality to simplify things
@@ -157,6 +162,48 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
         }
 
         playerInventoryStart = start;
+    }
+
+    /**
+     * Draws the player armor starting at the given position
+     *
+     * @param playerInventory The players inventory
+     * @param xCorner         Default Value: 8
+     * @param yCorner         Default Value: (rows - 4) * 18 + 103
+     */
+    protected void addPlayerArmor(InventoryPlayer playerInventory, int xCorner, int yCorner) {
+        for (int i = 0; i < 4; i++) {
+            final int k = i;
+            this.addSlotToContainer(
+                new Slot(playerInventory, playerInventory.getSizeInventory() - 1 - i, xCorner, yCorner + i * 18) {
+
+                    /**
+                     * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(),
+                     * but 1
+                     * in the case of armor slots)
+                     */
+                    public int getSlotStackLimit() {
+                        return 1;
+                    }
+
+                    /**
+                     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
+                     */
+                    public boolean isItemValid(ItemStack stack) {
+                        if (stack == null) return false;
+                        return stack.getItem()
+                            .isValidArmor(stack, k, playerInventory.player);
+                    }
+
+                    /**
+                     * Returns the icon index on items.png that is used as background image of the slot.
+                     */
+                    @SideOnly(Side.CLIENT)
+                    public IIcon getBackgroundIconIndex() {
+                        return ItemArmor.func_94602_b(k);
+                    }
+                });
+        }
     }
 
     @Nonnull
