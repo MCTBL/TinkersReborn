@@ -90,7 +90,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
      */
     protected String name;
 
-    public TinkersRebornMultiBlockInvenotryLogic(String name) {
+    protected TinkersRebornMultiBlockInvenotryLogic(String name) {
         super(0);
         this.itemTemperatures = new int[0];
         this.itemTempRequired = new int[0];

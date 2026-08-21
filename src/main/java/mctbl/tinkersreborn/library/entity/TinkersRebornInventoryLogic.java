@@ -37,11 +37,11 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     protected String invName;
     protected int stackSizeLimit;
 
-    public TinkersRebornInventoryLogic(int invSize) {
+    protected TinkersRebornInventoryLogic(int invSize) {
         this(invSize, 64);
     }
 
-    public TinkersRebornInventoryLogic(int invSize, int maxStackSize) {
+    protected TinkersRebornInventoryLogic(int invSize, int maxStackSize) {
         inventory = new ItemStack[invSize];
         stackSizeLimit = maxStackSize;
     }

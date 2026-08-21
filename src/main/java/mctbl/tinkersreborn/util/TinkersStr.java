@@ -59,6 +59,7 @@ public enum TinkersStr {
     smtleteryNoFuel("gui.smeltery.progress.no_fuel"),
     smtleteryNoHeat("gui.smeltery.progress.no_heat"),
     smtleteryNoSpace("gui.smeltery.progress.no_space"),
+    smtleteryFillOrClear("gui.smeltery.fill_clear"),
 
     smtleteryCapacity("gui.smeltery.capacity"),
     smtleteryCapacityAvailable("gui.smeltery.capacity_available"),

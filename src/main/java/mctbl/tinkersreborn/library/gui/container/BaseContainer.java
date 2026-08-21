@@ -36,11 +36,11 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
 
     public List<Container> subContainers = new ArrayList<>();
 
-    public BaseContainer(T tile) {
+    protected BaseContainer(T tile) {
         this(tile, EnumFacing.DOWN);
     }
 
-    public BaseContainer(T tile, EnumFacing invDir) {
+    protected BaseContainer(T tile, EnumFacing invDir) {
         this.tile = tile;
         this.inventory = (IInventory) this.tile;
         this.xCoord = this.tile.xCoord;
@@ -51,7 +51,7 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
 
     }
 
-    public BaseContainer(T tile, ForgeDirection invDir) {
+    protected BaseContainer(T tile, ForgeDirection invDir) {
         this.tile = tile;
         this.inventory = (IInventory) this.tile;
         this.xCoord = this.tile.xCoord;

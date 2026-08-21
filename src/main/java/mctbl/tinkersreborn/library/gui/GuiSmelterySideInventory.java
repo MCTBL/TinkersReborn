@@ -16,10 +16,10 @@ public class GuiSmelterySideInventory extends GuiSideInventory {
 
     protected final SmelteryLogic smeltery;
 
-    protected GuiElement progressBar = new GuiElementScalable(176, 150, 3, 16, 256, 256);
-    protected GuiElement unprogressBar = new GuiElementScalable(179, 150, 3, 16);
-    protected GuiElement uberHeatBar = new GuiElementScalable(182, 150, 3, 16);
-    protected GuiElement noMeltBar = new GuiElementScalable(185, 150, 3, 16);
+    protected GuiElement progressBar = new GuiElementScalable(176, 201, 3, 16, 256, 256);
+    protected GuiElement unprogressBar = new GuiElementScalable(179, 201, 3, 16);
+    protected GuiElement uberHeatBar = new GuiElementScalable(182, 201, 3, 16);
+    protected GuiElement noMeltBar = new GuiElementScalable(185, 201, 3, 16);
 
     public GuiSmelterySideInventory(GuiMultiModule parent, Container container, SmelteryLogic smeltery, int slotCount,
         int columns) {
@@ -29,8 +29,8 @@ public class GuiSmelterySideInventory extends GuiSideInventory {
 
         GuiElement.defaultTexH = 256;
         GuiElement.defaultTexW = 256;
-        slot = new GuiElementScalable(0, 166, 22, 18);
-        slotEmpty = new GuiElementScalable(22, 166, 22, 18);
+        slot = new GuiElementScalable(0, 197, 22, 18);
+        slotEmpty = new GuiElementScalable(22, 197, 22, 18);
         yOffset = 0;
     }
 

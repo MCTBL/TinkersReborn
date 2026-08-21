@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.smeltery.gui;
 
 import static cpw.mods.fml.common.Optional.Interface;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +10,9 @@ import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -26,6 +29,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
+import mctbl.tinkersreborn.library.gui.GuiButtonItem;
 import mctbl.tinkersreborn.library.gui.GuiElement;
 import mctbl.tinkersreborn.library.gui.GuiHeatingStructureFuelTank;
 import mctbl.tinkersreborn.library.gui.GuiSmelterySideInventory;
@@ -34,6 +38,7 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.IGuiLiquidTank;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
+import mctbl.tinkersreborn.smeltery.network.SmelteryButtonClicked;
 import mctbl.tinkersreborn.smeltery.network.SmelteryFluidClicked;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
@@ -46,10 +51,20 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
         TinkersReborn.MODID,
         "textures/gui/smeltery.png");
 
-    protected GuiElement scala = new GuiElement(176, 76, 52, 52, 256, 256);
+    protected GuiElement scala = new GuiElement(176, 107, 80, 80, 256, 256);
+    protected final int fuelStartX = 116;
+    protected final int fuelStartY = 32;
+    protected final int fuelWidth = 16;
+    protected final int fuelHeight = 64;
+
+    protected final int fluidStartX = 8;
+    protected final int fluidStartY = 16;
+    protected final int fluidWidth = 80;
+    protected final int fluidHeight = 80;
 
     protected final GuiSmelterySideInventory sideinventory;
     protected final SmelteryLogic smeltery;
+    protected GuiButtonItem<ItemStack> fillButton;
 
     public GuiSmeltery(ContainerSmeltery container, SmelteryLogic smeltery) {
         super(container);
@@ -63,6 +78,8 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
             smeltery.getSizeInventory(),
             container.calcColumns());
         addModule(sideinventory);
+
+        this.ySize = 197;
     }
 
     // this is the same for both structures, but the superclass does not have (nor
@@ -79,6 +96,18 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
     }
 
     @Override
+    public void initGui() {
+        super.initGui();
+        this.fillButton = new GuiButtonItem<ItemStack>(
+            0,
+            93 + cornerX,
+            46 + cornerY,
+            new ItemStack(Items.bucket),
+            null,
+            this);
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         // we don't need to add the corner since the mouse is already reletive to the
         // corner
@@ -91,15 +120,38 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
         mouseY -= cornerY;
 
         // Liquids
-        List<String> tooltip = getTankTooltip(smeltery, mouseX, mouseY, 8, 16, 60, 68);
+        List<String> tooltip = getTankTooltip(
+            smeltery,
+            mouseX,
+            mouseY,
+            fluidStartX,
+            fluidStartY,
+            fluidStartX + fluidWidth,
+            fluidStartY + fluidHeight);
         if (tooltip != null) {
             this.drawHoveringText(tooltip, mouseX, mouseY, this.fontRendererObj);
         }
 
         // Fuel tooltips
-        if (71 <= mouseX && mouseX < 83 && 16 <= mouseY && mouseY < 68) {
-            drawFuelTooltip(mouseX, mouseY);
+        if (fuelStartX <= mouseX && mouseX < fuelStartX + fuelWidth
+            && fuelStartY <= mouseY
+            && mouseY < fuelStartY + fuelHeight) {
+            this.drawFuelTooltip(mouseX, mouseY);
         }
+
+        if (fillButton.func_146115_a()) {
+            this.drawHoveringText(
+                Arrays.asList(TinkersStr.smtleteryFillOrClear.toString()),
+                mouseX,
+                mouseY,
+                this.fontRendererObj);
+        }
+    }
+
+    @Override
+    protected void drawPlayerInventoryName() {
+        String localizedName = Minecraft.getMinecraft().thePlayer.inventory.getInventoryName();
+        this.fontRendererObj.drawString(TinkersRebornUtils.translate(localizedName), 8, this.ySize - 96 + 2, 0x404040);
     }
 
     @Override
@@ -109,17 +161,18 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
         // draw liquids
-        drawGuiTank(smeltery, 8 + cornerX, 16 + cornerY, scala.w, scala.h, this.zLevel);
+        drawGuiTank(smeltery, fluidStartX + cornerX, fluidStartY + cornerY, scala.w, scala.h, this.zLevel);
 
         // update fuel info
         fuelInfo = smeltery.getFuelDisplay();
-        drawFuel(71, 16, 12, 52);
+        drawFuel(fuelStartX, fuelStartY, fuelWidth, fuelHeight);
 
         // draw the scala
         this.mc.getTextureManager()
             .bindTexture(BACKGROUND);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        scala.draw(8 + cornerX, 16 + cornerY);
+        scala.draw(fluidStartX + cornerX, fluidStartY + cornerY);
+        fillButton.drawButton(mc, mouseX, mouseY);
     }
 
     private void drawGuiTank(SmelteryLogic liquids, int x, int y, int w, int height, float zLevel) {
@@ -142,8 +195,20 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
-            handleTankClick(smeltery, mouseX - cornerX, mouseY - cornerY, 8, 16, 60, 68);
+            handleTankClick(
+                smeltery,
+                mouseX - cornerX,
+                mouseY - cornerY,
+                fluidStartX,
+                fluidStartY,
+                fluidStartX + fluidWidth,
+                fluidStartY + fluidHeight);
         }
+        if (this.fillButton.func_146115_a()) {
+            this.fillButton.func_146113_a(this.mc.getSoundHandler());
+            TinkerNetwork.sendToServer(new SmelteryButtonClicked(isShiftKeyDown()));
+        }
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 

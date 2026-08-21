@@ -11,9 +11,13 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -23,6 +27,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -41,8 +46,10 @@ import mctbl.tinkersreborn.library.event.TinkerSmelteryEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
+import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
+import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.smeltery.network.SmelteryFluidUpdatePacket;
 import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -63,6 +70,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public int currentMoltenMetalAmount;
     public int blocksPerLayer;
     public int multiLayers;
+
+    public IInventory buckets = new InventoryBasic("smeltery.bucket", false, 2);
 
     public SmelteryLogic() {
         super("smeltery");
@@ -694,5 +703,67 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             .collect(Collectors.toList());
         collect.add(new FluidTankInfo(null, this.maxMoltenMetalAmount - this.currentMoltenMetalAmount));
         return collect.toArray(new FluidTankInfo[] {});
+    }
+
+    public void fillOrClearBucket(boolean isShiftClick, EntityPlayer player) {
+        ItemStack bucket = buckets.getStackInSlot(0);
+        if (bucket != null && buckets.getStackInSlot(1) == null) {
+            FluidStack fluidStack = null;
+            ItemStack backStack = null;
+
+            // from tank side is fill or drain, not bucket
+            boolean fill = false;
+            boolean drain = false;
+            int drainAmount = 0;
+
+            if (bucket.getItem() instanceof FilledBucket filledBucket) {
+                TinkersRebornFluid fluid = filledBucket.getFluidStackInBucket(bucket);
+                if (fluid != null) {
+                    fluidStack = new FluidStack(fluid, 1000);
+                    backStack = new ItemStack(Items.bucket);
+                }
+                fill = true;
+            } else if (FluidContainerRegistry.isFilledContainer(bucket)) {
+                fluidStack = FluidContainerRegistry.getFluidForFilledItem(bucket);
+                backStack = FluidContainerRegistry.drainFluidContainer(bucket);
+                fill = true;
+            } else if (FluidContainerRegistry.isEmptyContainer(bucket)) {
+                FluidStack lowestFluid = this.getFluid();
+                backStack = FluidContainerRegistry.fillFluidContainer(lowestFluid, bucket);
+                drainAmount = FluidContainerRegistry.getContainerCapacity(lowestFluid, bucket);
+                if (backStack == null && lowestFluid.getFluid() instanceof TinkersRebornFluid tFluid) {
+                    backStack = TinkersRebornGeneral.tinkersBucket.getNewFluidBucketWithMaterial(tFluid.identifier);
+                    drainAmount = 1000;
+                }
+                drain = true;
+            }
+
+            if (fill && fluidStack != null) {
+                int amount = this.fill(fluidStack, false);
+                if (amount == fluidStack.amount) {
+                    this.fill(fluidStack, true);
+                    if (isShiftClick && player.inventory.addItemStackToInventory(backStack)) {
+                        player.inventory.markDirty();
+                    } else {
+                        buckets.setInventorySlotContents(1, backStack);
+                    }
+                    buckets.decrStackSize(0, 1);
+                }
+            } else if (drain && backStack != null && drainAmount > 0) {
+                FluidStack drainedFluid = this.drain(drainAmount, false);
+                if (drainedFluid.amount == drainAmount) {
+                    this.drain(drainAmount, true);
+                    if (isShiftClick && player.inventory.addItemStackToInventory(backStack)) {
+                        player.inventory.markDirty();
+                    } else {
+                        buckets.setInventorySlotContents(1, backStack);
+                    }
+                    buckets.decrStackSize(0, 1);
+                }
+
+            }
+
+        }
+
     }
 }

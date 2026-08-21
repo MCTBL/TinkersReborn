@@ -2,9 +2,14 @@ package mctbl.tinkersreborn.smeltery.inventory;
 
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemBucket;
+import net.minecraft.item.ItemStack;
 
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
+import mctbl.tinkersreborn.library.inventory.slots.SlotOnlyTake;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 
 public class ContainerSmeltery extends ContainerMultiModule<SmelteryLogic> {
@@ -14,13 +19,19 @@ public class ContainerSmeltery extends ContainerMultiModule<SmelteryLogic> {
     protected int oldFuel = 0;
     protected int[] oldHeats;
 
+    protected Slot bucketSlotIn;
+    protected Slot bucketSlotOut;
+
     public ContainerSmeltery(InventoryPlayer inventoryPlayer, SmelteryLogic tile) {
         super(tile);
+
+        addSlotToContainer(new BucketSlot(tile.buckets, 0, 94, 16));
+        addSlotToContainer(new SlotOnlyTake(tile.buckets, 1, 94, 80));
 
         sideInventory = new ContainerSmelterySideInventory(tile, 0, 0, calcColumns());
         addSubContainer(sideInventory, true);
 
-        addPlayerInventory(inventoryPlayer, 8, 84);
+        addPlayerInventory(inventoryPlayer, 8, 115);
 
         oldHeats = new int[tile.getSizeInventory()];
     }
@@ -73,6 +84,18 @@ public class ContainerSmeltery extends ContainerMultiModule<SmelteryLogic> {
             // id = index of the melting progress to update + 1, if 0 its the fuel boolean
             // data = temperature
             tile.updateTemperatureFromPacket(id - 1, data);
+        }
+    }
+
+    public static class BucketSlot extends Slot {
+
+        public BucketSlot(IInventory inv, int slotIndex, int slotX, int slotY) {
+            super(inv, slotIndex, slotX, slotY);
+        }
+
+        @Override
+        public boolean isItemValid(ItemStack stack) {
+            return stack.getItem() instanceof ItemBucket;
         }
     }
 }

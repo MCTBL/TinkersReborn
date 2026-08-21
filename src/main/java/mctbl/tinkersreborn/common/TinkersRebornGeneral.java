@@ -98,7 +98,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         serverSide = "mctbl.tinkersreborn.common.TinkersRebornGeneralProxyCommon")
     public static TinkersRebornGeneralProxyCommon proxy;
 
-    public static Item tinkersBucket;
+    public static FilledBucket tinkersBucket;
     public static Block stoneTorch;
     public static Item goldHead;
     public static Item jerky;
