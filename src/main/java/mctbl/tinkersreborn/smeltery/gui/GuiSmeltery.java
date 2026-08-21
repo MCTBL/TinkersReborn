@@ -31,6 +31,7 @@ import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.gui.GuiButtonItem;
 import mctbl.tinkersreborn.library.gui.GuiElement;
+import mctbl.tinkersreborn.library.gui.GuiElementScalable;
 import mctbl.tinkersreborn.library.gui.GuiHeatingStructureFuelTank;
 import mctbl.tinkersreborn.library.gui.GuiSmelterySideInventory;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
@@ -52,6 +53,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
         "textures/gui/smeltery.png");
 
     protected GuiElement scala = new GuiElement(176, 107, 80, 80, 256, 256);
+    protected GuiElementScalable flame = new GuiElementScalable(176, 187, 14, 14, 256, 256);
     protected final int fuelStartX = 116;
     protected final int fuelStartY = 32;
     protected final int fuelWidth = 16;
@@ -61,6 +63,9 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
     protected final int fluidStartY = 16;
     protected final int fluidWidth = 80;
     protected final int fluidHeight = 80;
+
+    protected final int fuelProgressStartX = 117;
+    protected final int fuelProgressStartY = 29;
 
     protected final GuiSmelterySideInventory sideinventory;
     protected final SmelteryLogic smeltery;
@@ -171,6 +176,8 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
         this.mc.getTextureManager()
             .bindTexture(BACKGROUND);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        int h = (int) ((flame.h + 1) * (smeltery.fuelReleaseTicks * 1.0F / Math.max(smeltery.fuelTotalTicks, 1)));
+        flame.drawScaledYReverse(fuelProgressStartX + cornerX, fuelProgressStartY + cornerY, h);
         scala.draw(fluidStartX + cornerX, fluidStartY + cornerY);
         fillButton.drawButton(mc, mouseX, mouseY);
     }

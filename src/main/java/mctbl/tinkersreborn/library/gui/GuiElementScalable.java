@@ -1,6 +1,6 @@
 package mctbl.tinkersreborn.library.gui;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.Gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -23,7 +23,7 @@ public class GuiElementScalable extends GuiElement {
         // remainder that doesn't fit total width
         int remainder = width % w;
         if (remainder > 0) {
-            GuiScreen.func_146110_a(xPos + width - remainder, yPos, x, y, remainder, h, texW, texH);
+            Gui.func_146110_a(xPos + width - remainder, yPos, x, y, remainder, h, texW, texH);
         }
 
         return width;
@@ -36,7 +36,21 @@ public class GuiElementScalable extends GuiElement {
         // remainder that doesn't fit total width
         int remainder = height % h;
         if (remainder > 0) {
-            GuiScreen.func_146110_a(xPos, yPos + height - remainder, x, y, w, remainder, texW, texH);
+            Gui.func_146110_a(xPos, yPos + height - remainder, x, y, w, remainder, texW, texH);
+        }
+
+        return w;
+    }
+
+    // special for flame, yPos is left down cornor
+    public int drawScaledYReverse(int xPos, int yPos, int height) {
+        // remainder that doesn't fit total width
+        for (int i = 0; i < height / h; i++) {
+            draw(xPos, yPos - (i + 1) * h);
+        }
+        int remainder = height % h;
+        if (remainder > 0) {
+            Gui.func_146110_a(xPos, yPos - height, x, y + h - remainder, w, remainder, texW, texH);
         }
 
         return w;
@@ -60,7 +74,7 @@ public class GuiElementScalable extends GuiElement {
         // remainder that doesn't fit total width
         int remainder = width % w;
         if (remainder > 0) {
-            GuiScreen.func_146110_a(xPos + width - remainder, yPos, x, y, remainder, yRest, texW, texH);
+            Gui.func_146110_a(xPos + width - remainder, yPos, x, y, remainder, yRest, texW, texH);
         }
 
         return width;

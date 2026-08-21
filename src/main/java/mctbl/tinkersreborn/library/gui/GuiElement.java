@@ -1,6 +1,6 @@
 package mctbl.tinkersreborn.library.gui;
 
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.Gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -55,7 +55,7 @@ public class GuiElement {
      * @param yPos Y-Coordinate on the screen
      */
     public int draw(int xPos, int yPos) {
-        GuiScreen.func_146110_a(xPos, yPos, x, y, w, h, texW, texH);
+        Gui.func_146110_a(xPos, yPos, x, y, w, h, texW, texH);
         return w;
     }
 
