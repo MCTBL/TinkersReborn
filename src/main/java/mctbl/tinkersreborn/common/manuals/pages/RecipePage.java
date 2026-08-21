@@ -16,6 +16,7 @@ import mctbl.tinkersreborn.common.manuals.TinkersRebornTurnPageButton.ButtonType
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
+import mctbl.tinkersreborn.library.manuals.AbstractManualPage.RenderStack;
 import mctbl.tinkersreborn.library.manuals.ManualPageDefinition;
 import mctbl.tinkersreborn.library.manuals.ManualPageProcessor;
 import mctbl.tinkersreborn.library.manuals.TinkersRebornRecipeHolder;
@@ -81,11 +82,11 @@ public class RecipePage extends AbstractManualPage {
         // TinkersRebornRegistry.registerManualIcon(iconStr, tempStack);
 
         this.recipes = TinkersRebornRegistry.getOrRegisterRecipeIcon(iconStr);
-        this.previousRecipeButton = new TinkersRebornTurnPageButton(0, 8, 15, ButtonType.previousPage);
+        this.previousRecipeButton = new TinkersRebornTurnPageButton(0, 8, 0, ButtonType.previousPage);
         this.nextRecipeButton = new TinkersRebornTurnPageButton(
             1,
             contentWidth - 8 - ButtonType.previousPage.getTextureWidth(),
-            15,
+            0,
             ButtonType.nextPage);
         this.selectedIdx = 0;
     }
@@ -103,21 +104,17 @@ public class RecipePage extends AbstractManualPage {
     @Override
     public void renderBackgroundLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
         int manualTicks, GuiManual manual) {
-        if (this.selectedIdx >= 0 && this.selectedIdx < this.recipes.length) {
-            switch (this.selectedRecipe.recipeType) {
-                case FURNACE -> this.renderFurnaceRecipeBackGround(pageX, pageY, manual);
-                case TOOLSTATION -> this.renderToolStationRecipeBackGround();
-                default -> {
-                    if (this.selectedRecipe.recipeSize == 2) {
-                        this.render22CraftingRecipeBackGround(pageX, pageY, manual);
-                    } else {
-                        this.render33CraftingRecipeBackGround(pageX, pageY, manual);
-                    }
+        switch (this.selectedRecipe.recipeType) {
+            case FURNACE -> this.renderFurnaceRecipeBackGround(pageX, pageY, manual);
+            case TOOLSTATION -> this.renderToolStationRecipeBackGround();
+            default -> {
+                if (this.selectedRecipe.recipeSize == 2) {
+                    this.render22CraftingRecipeBackGround(pageX, pageY, manual);
+                } else {
+                    this.render33CraftingRecipeBackGround(pageX, pageY, manual);
                 }
             }
-
         }
-
     }
 
     @Override
@@ -152,7 +149,7 @@ public class RecipePage extends AbstractManualPage {
             fontRender.drawSplitString(translatedText, pageX, pageY + 125, 180, 0x000000);
         }
 
-        if (this.selectedIdx >= 0 && this.selectedIdx < this.recipes.length) {
+        if (this.selectedRecipe != null) {
             this.setUpForRenderItem();
             switch (this.selectedRecipe.recipeType) {
                 case FURNACE -> this.renderFurnaceRecipeItemStack(pageX, pageY, manual);
@@ -219,6 +216,7 @@ public class RecipePage extends AbstractManualPage {
         ItemStack outputStack = selectedRecipe.outputStack;
 
         this.renderItemStackIntoPage(outputStack, (pageX + 137) / 2, (pageY + 52) / 2, manual);
+        this.renderStacks.add(new RenderStack(outputStack, 137, 52));
 
         for (int i = 0; i < inputStacks.length; i++) {
             if (inputStacks[i] != null && inputStacks[i][0] != null) {
@@ -228,6 +226,7 @@ public class RecipePage extends AbstractManualPage {
                     (pageX + 25 + 36 * (i % 2)) / 2,
                     (pageY + 35 + (i / 2) * 35) / 2,
                     manual);
+                this.renderStacks.add(new RenderStack(renderStack, 25 + 36 * (i % 2), 35 + (i / 2) * 35));
             }
         }
     }
@@ -244,6 +243,7 @@ public class RecipePage extends AbstractManualPage {
         ItemStack outputStack = selectedRecipe.outputStack;
 
         this.renderItemStackIntoPage(outputStack, (pageX + 145) / 2, (pageY + 52) / 2, manual);
+        this.renderStacks.add(new RenderStack(outputStack, 145, 52));
 
         for (int i = 0; i < inputStacks.length; i++) {
             if (inputStacks[i] != null && inputStacks[i][0] != null) {
@@ -253,8 +253,37 @@ public class RecipePage extends AbstractManualPage {
                     (pageX + 5 + 36 * (i % 3)) / 2,
                     (pageY + 17 + (i / 3) * 35) / 2,
                     manual);
+                this.renderStacks.add(new RenderStack(renderStack, 5 + 36 * (i % 3), 17 + (i / 3) * 35));
             }
         }
+    }
+
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (this.nextRecipeButton.contains(mouseX, mouseY)) {
+            this.selectedIdx = (this.selectedIdx + 1) % this.recipes.length;
+        } else if (this.previousRecipeButton.contains(mouseX, mouseY)) {
+            this.selectedIdx = ((this.selectedIdx + this.recipes.length) - 1) % this.recipes.length;
+        } else {
+            super.mouseClicked(mouseX, mouseY, mouseButton);
+        }
+    }
+
+    @Override
+    public void drawToolTips(int mouseX, int mouseY, int manualX, int manualY, GuiManual manual) {
+        for (RenderStack s : this.renderStacks) {
+            if (s.getX() <= manualX && manualX <= s.getX() + 18 * 2
+                && s.getY() <= manualY
+                && manualY <= s.getY() + 18 * 2) {
+                manual.drawHoveringText(
+                    s.getStack()
+                        .getTooltip(manual.mc.thePlayer, false),
+                    mouseX,
+                    mouseY,
+                    fontRender);
+            }
+        }
+        super.drawToolTips(mouseX, mouseY, manualX, manualY, manual);
     }
 
     public static class RecipePageProcessor implements ManualPageProcessor {

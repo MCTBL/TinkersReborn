@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Queue;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -52,6 +53,10 @@ public class GuiManual extends GuiScreen {
     private TinkersRebornTurnPageButton buttonPreviousPage;
     private TinkersRebornTurnPageButton buttonHomePage;
     private TinkersRebornTurnPageButton buttonBackToJumpFrom;
+
+    protected final int leftPageStartX = 19;
+    protected final int rightPageStartX = 213;
+    protected final int pageStartY = 17;
 
     public final float backgroundR;
     public final float backgroundG;
@@ -111,7 +116,28 @@ public class GuiManual extends GuiScreen {
 
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        // drawManualTooltip(mouseX, mouseY, manualMouseX, manualMouseY);
+        this.drawManualTooltip(mouseX, mouseY, manualMouseX, manualMouseY);
+    }
+
+    private void drawManualTooltip(int mouseX, int mouseY, int manualX, int manualY) {
+        int leftIndex = this.currentPage;
+        int rightIndex = leftIndex + 1;
+        List<AbstractManualPage> pages = this.bookData.getPages();
+        if (manualX >= leftPageStartX && manualX <= leftPageStartX + AbstractManualPage.contentWidth
+            && leftIndex < pages.size()) {
+            pages.get(leftIndex)
+                .drawToolTips(mouseX, mouseY, manualX - leftPageStartX, manualY - pageStartY, this);
+        }
+        if (manualX >= rightPageStartX && manualX <= rightPageStartX + AbstractManualPage.contentWidth
+            && rightIndex < pages.size()) {
+            pages.get(rightIndex)
+                .drawToolTips(mouseX, mouseY, manualX - rightPageStartX, manualY - pageStartY, this);
+        }
+    }
+
+    @Override
+    public void drawHoveringText(List<String> textLines, int x, int y, FontRenderer font) {
+        super.drawHoveringText(textLines, x, y, font);
     }
 
     @Override
@@ -165,18 +191,30 @@ public class GuiManual extends GuiScreen {
 
     private void drawManualPages(int manualMouseX, int manualMouseY, float partialTicks) {
         int leftIndex = this.currentPage;
-
         int rightIndex = leftIndex + 1;
-        //
         List<AbstractManualPage> pages = this.bookData.getPages();
         if (leftIndex < pages.size()) {
             pages.get(leftIndex)
-                .renderPage(19, 17, manualMouseX - 19, manualMouseY - 17, partialTicks, this.manualTicks, this);
+                .renderPage(
+                    leftPageStartX,
+                    pageStartY,
+                    manualMouseX - leftPageStartX,
+                    manualMouseY - pageStartY,
+                    partialTicks,
+                    this.manualTicks,
+                    this);
         }
 
         if (rightIndex < pages.size()) {
             pages.get(rightIndex)
-                .renderPage(213, 17, manualMouseX - 213, manualMouseY - 17, partialTicks, this.manualTicks, this);
+                .renderPage(
+                    rightPageStartX,
+                    pageStartY,
+                    manualMouseX - rightPageStartX,
+                    manualMouseY - pageStartY,
+                    partialTicks,
+                    this.manualTicks,
+                    this);
         }
     }
 
@@ -196,6 +234,19 @@ public class GuiManual extends GuiScreen {
             TinkersReborn.LOG.info("buttonBackToJumpFrom clicked");
         }
 
+        int leftIndex = this.currentPage;
+        int rightIndex = leftIndex + 1;
+        List<AbstractManualPage> pages = this.bookData.getPages();
+        if (manualX >= leftPageStartX && manualX <= leftPageStartX + AbstractManualPage.contentWidth
+            && leftIndex < pages.size()) {
+            pages.get(leftIndex)
+                .mouseClicked(manualX - leftPageStartX, manualY - pageStartY, mouseButton);
+        }
+        if (manualX >= rightPageStartX && manualX <= rightPageStartX + AbstractManualPage.contentWidth
+            && rightIndex < pages.size()) {
+            pages.get(rightIndex)
+                .mouseClicked(manualX - rightPageStartX, manualY - pageStartY, mouseButton);
+        }
     }
 
     @Override

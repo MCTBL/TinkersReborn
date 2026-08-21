@@ -1,5 +1,8 @@
 package mctbl.tinkersreborn.library.manuals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -15,12 +18,39 @@ import mctbl.tinkersreborn.library.gui.GuiManual;
 
 public abstract class AbstractManualPage {
 
+    public static class RenderStack {
+
+        private final ItemStack stack;
+        private final int x;
+        private final int y;
+
+        public RenderStack(ItemStack stack, int x, int y) {
+            this.stack = stack;
+            this.x = x;
+            this.y = y;
+        }
+
+        public ItemStack getStack() {
+            return stack;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+    }
+
     public static FontRenderer fontRender = TinkersRebornGeneralProxyClient.manualFontRender;
 
     public static final int contentWidth = 180;
     public static final int contentHeight = 165;
 
     protected final String name;
+    protected final List<RenderStack> renderStacks = new ArrayList<>();
 
     protected AbstractManualPage(JsonObject json) {
         this.name = json.has("name") ? json.get("name")
@@ -29,6 +59,7 @@ public abstract class AbstractManualPage {
 
     public void renderPage(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
         int manualTicks, GuiManual manual) {
+        this.renderStacks.clear();
         this.renderBackgroundLayer(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
         this.renderContentLayer(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
     }
@@ -42,6 +73,8 @@ public abstract class AbstractManualPage {
     public abstract void setupTranslate();
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {}
+
+    public void drawToolTips(int mouseX, int mouseY, int manualX, int manualY, GuiManual manual) {}
 
     protected void drawStrCenterAt(String str, int x, int y) {
         this.drawStrCenterAt(str, x, y, 1.0F, 0x000000);
