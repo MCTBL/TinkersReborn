@@ -13,6 +13,8 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+
 public class TinkersRebornRecipeHolder {
 
     private static final Field WIDTH_FIELD;
@@ -45,6 +47,9 @@ public class TinkersRebornRecipeHolder {
             this.type = t;
         }
 
+        public String translate() {
+            return TinkersRebornUtils.translate("tinkersreborn.manuals.recipetype." + this.type);
+        }
     }
 
     private static int getSize(ShapedOreRecipe sor) {

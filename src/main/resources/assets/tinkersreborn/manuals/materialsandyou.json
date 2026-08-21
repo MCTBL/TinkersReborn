@@ -55,6 +55,36 @@
       "text": "tinkersreborn.manuals.materialsandyou.welcome2"
     },
     {
+      "type": "recipe",
+      "output": "tinkersreborn:tinkersreborn.PartBuilder",
+      "text": "tinkersreborn.manuals.materialsandyou.partbuilder.intro"
+    },
+    {
+      "type": "image",
+      "image": "tinkersreborn:textures/gui/book/part_builder.png",
+      "text": "tinkersreborn.manuals.materialsandyou.partbuilder"
+    },
+    {
+      "type": "recipe",
+      "output": "tinkersreborn:tinkersreborn.ToolStation",
+      "text": "tinkersreborn.manuals.materialsandyou.toolstation.intro"
+    },
+    {
+      "type": "text",
+      "text": "tinkersreborn.manuals.materialsandyou.toolstation"
+    },
+    {
+      "type": "text",
+      "title": "tinkersreborn.manuals.materialsandyou.storagechest.title",
+      "align": "center",
+      "text": "tinkersreborn.manuals.materialsandyou.storagechest"
+    },
+    {
+      "type": "recipe",
+      "output": "tinkersreborn:tinkersreborn.PartChest",
+      "text": "tinkersreborn.manuals.materialsandyou.partchest"
+    },
+    {
       "type": "text",
       "text": "tinkersreborn.manuals.materialsandyou.repair1",
       "title": "tinkersreborn.manuals.materialsandyou.repair.title"

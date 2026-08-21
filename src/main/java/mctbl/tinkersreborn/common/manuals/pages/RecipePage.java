@@ -59,7 +59,7 @@ public class RecipePage extends AbstractManualPage {
         this.title = json.has("title") ? json.get("title")
             .getAsString() : "";
         this.align = json.has("align") ? json.get("align")
-            .getAsString() : "left";
+            .getAsString() : "center";
 
         String iconStr = json.has("output") ? json.get("output")
             .getAsString() : null;
@@ -123,24 +123,33 @@ public class RecipePage extends AbstractManualPage {
     @Override
     public void renderContentLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
         int manualTicks, GuiManual manual) {
-
         if (this.translatedTitle != null && !this.translatedTitle.isEmpty()) {
             String underLineTitle = ColorUtil.addUnderLine(translatedTitle);
+            String recipeType = this.selectedRecipe.recipeType.translate();
             if (this.align.equals("center")) {
                 this.drawStrCenterAt(underLineTitle, pageX + contentWidth / 2, pageY);
+                this.drawStrCenterAt(recipeType, pageX + contentWidth / 2, pageY + fontRender.FONT_HEIGHT);
             } else if (this.align.equals("right")) {
                 fontRender.drawString(
                     underLineTitle,
                     pageX + contentWidth - fontRender.getStringWidth(underLineTitle),
                     pageY,
                     0x000000);
+                fontRender.drawString(
+                    recipeType,
+                    pageX + contentWidth - fontRender.getStringWidth(recipeType),
+                    pageY + fontRender.FONT_HEIGHT,
+                    0x000000);
+
             } else {
                 fontRender.drawString(underLineTitle, pageX, pageY, 0x000000);
+                fontRender.drawString(recipeType, pageX, pageY + fontRender.FONT_HEIGHT, 0x000000);
             }
+
         }
 
         if (this.translatedText != null && !this.translatedText.isEmpty()) {
-            fontRender.drawSplitString(translatedText, pageX, pageY + 114, 180, 0x000000);
+            fontRender.drawSplitString(translatedText, pageX, pageY + 125, 180, 0x000000);
         }
 
         if (this.selectedIdx >= 0 && this.selectedIdx < this.recipes.length) {
@@ -187,7 +196,7 @@ public class RecipePage extends AbstractManualPage {
         manual.mc.getTextureManager()
             .bindTexture(smeltingTexture);
         GL11.glColor4f(manual.backgroundR, manual.backgroundG, manual.backgroundB, 1.0F);
-        manual.drawTexturedModalRect(pageX + 35, pageY, 0, 0, 114, 111);
+        manual.drawTexturedModalRect(pageX + 35, pageY + 11, 0, 0, 114, 111);
     }
 
     private void renderFurnaceRecipeItemStack(int pageX, int pageY, GuiManual manual) {
@@ -202,14 +211,14 @@ public class RecipePage extends AbstractManualPage {
         manual.mc.getTextureManager()
             .bindTexture(craftingTexture);
         GL11.glColor4f(manual.backgroundR, manual.backgroundG, manual.backgroundB, 1.0F);
-        manual.drawTexturedModalRect(pageX + 19, pageY + 18, 0, 114, 155, 78);
+        manual.drawTexturedModalRect(pageX + 19, pageY + 29, 0, 114, 155, 78);
     }
 
     private void render22CraftingRecipeItemStack(int pageX, int pageY, GuiManual manual) {
         ItemStack[][] inputStacks = selectedRecipe.inputStacks;
         ItemStack outputStack = selectedRecipe.outputStack;
 
-        this.renderItemStackIntoPage(outputStack, (pageX + 137) / 2, (pageY + 41) / 2, manual);
+        this.renderItemStackIntoPage(outputStack, (pageX + 137) / 2, (pageY + 52) / 2, manual);
 
         for (int i = 0; i < inputStacks.length; i++) {
             if (inputStacks[i] != null && inputStacks[i][0] != null) {
@@ -217,7 +226,7 @@ public class RecipePage extends AbstractManualPage {
                 this.renderItemStackIntoPage(
                     renderStack,
                     (pageX + 25 + 36 * (i % 2)) / 2,
-                    (pageY + 24 + (i / 2) * 35) / 2,
+                    (pageY + 35 + (i / 2) * 35) / 2,
                     manual);
             }
         }
@@ -227,10 +236,26 @@ public class RecipePage extends AbstractManualPage {
         manual.mc.getTextureManager()
             .bindTexture(craftingTexture);
         GL11.glColor4f(manual.backgroundR, manual.backgroundG, manual.backgroundB, 1.0F);
-        manual.drawTexturedModalRect(pageX - 1, pageY, 0, 0, 183, 114);
+        manual.drawTexturedModalRect(pageX - 1, pageY + 11, 0, 0, 183, 114);
     }
 
-    private void render33CraftingRecipeItemStack(int pageX, int pageY, GuiManual manual) {}
+    private void render33CraftingRecipeItemStack(int pageX, int pageY, GuiManual manual) {
+        ItemStack[][] inputStacks = selectedRecipe.inputStacks;
+        ItemStack outputStack = selectedRecipe.outputStack;
+
+        this.renderItemStackIntoPage(outputStack, (pageX + 145) / 2, (pageY + 52) / 2, manual);
+
+        for (int i = 0; i < inputStacks.length; i++) {
+            if (inputStacks[i] != null && inputStacks[i][0] != null) {
+                ItemStack renderStack = inputStacks[i][this.counter % inputStacks[i].length];
+                this.renderItemStackIntoPage(
+                    renderStack,
+                    (pageX + 5 + 36 * (i % 3)) / 2,
+                    (pageY + 17 + (i / 3) * 35) / 2,
+                    manual);
+            }
+        }
+    }
 
     public static class RecipePageProcessor implements ManualPageProcessor {
 

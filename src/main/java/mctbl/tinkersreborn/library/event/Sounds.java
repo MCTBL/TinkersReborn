@@ -29,6 +29,7 @@ public class Sounds {
 
     public static final String toy_squeak = sound("toy_squeak");
     public static final String nodamage = sound("nodamage");
+    public static final String turn_page = sound("turn_page");
 
     private static String sound(String name) {
         String soundName = TinkersReborn.MODID + ":" + name;

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -36,6 +37,7 @@ public class GuiManual extends GuiScreen {
     protected int bookTotalPages;
     protected Queue<Integer> jumpFromPage = new LinkedList<>();
     protected int currentPage;
+    protected int previousRenderPage;
     protected ManualBookData bookData;
 
     public float scale = 1.0f;
@@ -60,6 +62,7 @@ public class GuiManual extends GuiScreen {
     public GuiManual(ManualBookData bookData) {
         this.bookData = bookData;
         this.currentPage = 0;
+        this.previousRenderPage = 0;
 
         int backGroundColor = bookData.getDefinition()
             .getColor();
@@ -77,6 +80,12 @@ public class GuiManual extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if (this.previousRenderPage != this.currentPage) {
+            this.previousRenderPage = this.currentPage;
+            this.mc.getSoundHandler()
+                .playSound(PositionedSoundRecord.func_147673_a(new ResourceLocation(TinkersReborn.MODID, "turn_page")));
+        }
+
         this.drawDefaultBackground();
 
         int manualMouseX = this.screenToManualX(mouseX);

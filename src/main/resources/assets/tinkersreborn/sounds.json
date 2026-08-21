@@ -41,6 +41,19 @@
   },
   "nodamage": {
     "category": "player",
-    "sounds": ["tinkersreborn:weak1", "tinkersreborn:weak2", "tinkersreborn:weak3", "tinkersreborn:weak4"]
+    "sounds": [
+      "tinkersreborn:weak1",
+      "tinkersreborn:weak2",
+      "tinkersreborn:weak3",
+      "tinkersreborn:weak4"
+    ]
+  },
+  "turn_page": {
+    "category": "master",
+    "sounds": [
+      "tinkersreborn:open_flip1",
+      "tinkersreborn:open_flip2",
+      "tinkersreborn:open_flip3"
+    ]
   }
 }
