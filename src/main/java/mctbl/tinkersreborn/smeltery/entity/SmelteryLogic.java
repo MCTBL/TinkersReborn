@@ -59,6 +59,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public static final DamageSource smelteryDamage = new DamageSource("smeltery").setFireDamage();
 
     private static final int MAX_SMELTERY_SIZE = 7;
+    private static final int BUCKET_INPUT_SLOT = 0;
+    private static final int BUCKET_OUTPUT_SLOT = 1;
     public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
     protected static final int ALLOYING_PER_TICK = 10; // how much liquid can be created per tick to make alloys
     public static final String MOLTEN_METAL_LIST = "MoltenMetal";
@@ -706,64 +708,90 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     }
 
     public void fillOrClearBucket(boolean isShiftClick, EntityPlayer player) {
-        ItemStack bucket = buckets.getStackInSlot(0);
-        if (bucket != null && buckets.getStackInSlot(1) == null) {
-            FluidStack fluidStack = null;
-            ItemStack backStack = null;
-
-            // from tank side is fill or drain, not bucket
-            boolean fill = false;
-            boolean drain = false;
-            int drainAmount = 0;
-
-            if (bucket.getItem() instanceof FilledBucket filledBucket) {
-                TinkersRebornFluid fluid = filledBucket.getFluidStackInBucket(bucket);
-                if (fluid != null) {
-                    fluidStack = new FluidStack(fluid, 1000);
-                    backStack = new ItemStack(Items.bucket);
-                }
-                fill = true;
-            } else if (FluidContainerRegistry.isFilledContainer(bucket)) {
-                fluidStack = FluidContainerRegistry.getFluidForFilledItem(bucket);
-                backStack = FluidContainerRegistry.drainFluidContainer(bucket);
-                fill = true;
-            } else if (FluidContainerRegistry.isEmptyContainer(bucket)) {
-                FluidStack lowestFluid = this.getFluid();
-                backStack = FluidContainerRegistry.fillFluidContainer(lowestFluid, bucket);
-                drainAmount = FluidContainerRegistry.getContainerCapacity(lowestFluid, bucket);
-                if (backStack == null && lowestFluid.getFluid() instanceof TinkersRebornFluid tFluid) {
-                    backStack = TinkersRebornGeneral.tinkersBucket.getNewFluidBucketWithMaterial(tFluid.identifier);
-                    drainAmount = 1000;
-                }
-                drain = true;
-            }
-
-            if (fill && fluidStack != null) {
-                int amount = this.fill(fluidStack, false);
-                if (amount == fluidStack.amount) {
-                    this.fill(fluidStack, true);
-                    if (isShiftClick && player.inventory.addItemStackToInventory(backStack)) {
-                        player.inventory.markDirty();
-                    } else {
-                        buckets.setInventorySlotContents(1, backStack);
-                    }
-                    buckets.decrStackSize(0, 1);
-                }
-            } else if (drain && backStack != null && drainAmount > 0) {
-                FluidStack drainedFluid = this.drain(drainAmount, false);
-                if (drainedFluid.amount == drainAmount) {
-                    this.drain(drainAmount, true);
-                    if (isShiftClick && player.inventory.addItemStackToInventory(backStack)) {
-                        player.inventory.markDirty();
-                    } else {
-                        buckets.setInventorySlotContents(1, backStack);
-                    }
-                    buckets.decrStackSize(0, 1);
-                }
-
-            }
-
+        ItemStack bucket = buckets.getStackInSlot(BUCKET_INPUT_SLOT);
+        if (bucket == null || buckets.getStackInSlot(BUCKET_OUTPUT_SLOT) != null) {
+            return;
         }
 
+        if (bucket.getItem() instanceof FilledBucket || FluidContainerRegistry.isFilledContainer(bucket)) {
+            emptyContainerIntoSmeltery(bucket, isShiftClick, player);
+            return;
+        }
+
+        if (FluidContainerRegistry.isEmptyContainer(bucket)) {
+            fillContainerFromSmeltery(bucket, isShiftClick, player);
+        }
+    }
+
+    private void emptyContainerIntoSmeltery(ItemStack bucket, boolean isShiftClick, EntityPlayer player) {
+        FluidStack containedFluid;
+        ItemStack emptyContainer;
+
+        // FilledBucket uses NBT to distinguish fluids, which FluidContainerRegistry ignores in 1.7.10.
+        if (bucket.getItem() instanceof FilledBucket filledBucket) {
+            TinkersRebornFluid fluid = filledBucket.getFluidStackInBucket(bucket);
+            if (fluid == null) {
+                return;
+            }
+
+            containedFluid = new FluidStack(fluid, FluidContainerRegistry.BUCKET_VOLUME);
+            emptyContainer = new ItemStack(Items.bucket);
+        } else {
+            containedFluid = FluidContainerRegistry.getFluidForFilledItem(bucket);
+            emptyContainer = FluidContainerRegistry.drainFluidContainer(bucket);
+        }
+
+        if (containedFluid == null || emptyContainer == null) {
+            return;
+        }
+
+        int accepted = this.fill(containedFluid, false);
+        if (accepted != containedFluid.amount) {
+            return;
+        }
+
+        this.fill(containedFluid, true);
+        finishContainerOperation(emptyContainer, isShiftClick, player);
+    }
+
+    private void fillContainerFromSmeltery(ItemStack bucket, boolean isShiftClick, EntityPlayer player) {
+        FluidStack availableFluid = this.getFluid();
+        if (availableFluid == null || availableFluid.amount <= 0) {
+            return;
+        }
+
+        ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(availableFluid, bucket);
+        int drainAmount = FluidContainerRegistry.getContainerCapacity(availableFluid, bucket);
+
+        if (filledContainer == null && availableFluid.getFluid() instanceof TinkersRebornFluid fluid) {
+            filledContainer = TinkersRebornGeneral.tinkersBucket.getNewFluidBucketWithMaterial(fluid.identifier);
+            drainAmount = FluidContainerRegistry.BUCKET_VOLUME;
+        }
+
+        if (filledContainer == null || drainAmount <= 0) {
+            return;
+        }
+
+        FluidStack drainedFluid = this.drain(drainAmount, false);
+        if (drainedFluid == null || drainedFluid.amount != drainAmount) {
+            return;
+        }
+
+        this.drain(drainAmount, true);
+        finishContainerOperation(filledContainer, isShiftClick, player);
+    }
+
+    private void finishContainerOperation(ItemStack result, boolean isShiftClick, EntityPlayer player) {
+        boolean returnedToPlayer = false;
+        if (isShiftClick && player != null) {
+            returnedToPlayer = player.inventory.addItemStackToInventory(result);
+            player.inventory.markDirty();
+        }
+
+        if (!returnedToPlayer) {
+            buckets.setInventorySlotContents(BUCKET_OUTPUT_SLOT, result);
+        }
+
+        buckets.decrStackSize(BUCKET_INPUT_SLOT, 1);
     }
 }
