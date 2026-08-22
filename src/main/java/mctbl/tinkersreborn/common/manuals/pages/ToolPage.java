@@ -18,7 +18,7 @@ import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class ToolPage extends RecipePage {
 
-    private static final String pattern = "{'title':tinkersreborn.tool.%s,'text':tinkersreborn.tool.%s.desc}";
+    private static final String pattern = "{'name':%s, 'title':tinkersreborn.tool.%s,'text':tinkersreborn.tool.%s.desc}";
 
     private static final int[][] inputPostiton = new int[][] { { 28, 28 }, { 7, 50 }, { 3, 24 }, { 28, 3 }, { 53, 24 },
         { 49, 50 } };
@@ -29,7 +29,8 @@ public class ToolPage extends RecipePage {
 
     protected ToolPage(ToolCore toolcore) {
         super(
-            TinkersRebornUtils.jsonParser.parse(String.format(pattern, toolcore.toolTypeName, toolcore.toolTypeName))
+            TinkersRebornUtils.jsonParser
+                .parse(String.format(pattern, toolcore.toolTypeName, toolcore.toolTypeName, toolcore.toolTypeName))
                 .getAsJsonObject());
         this.tool = toolcore;
         this.initToolRecipe();

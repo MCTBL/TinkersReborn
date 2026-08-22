@@ -3,6 +3,7 @@ package mctbl.tinkersreborn.common.manuals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -70,7 +71,7 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
     }
 
     public TinkersRebornNavigationButton(int id, ButtonSize bs, ItemStack s, String target) {
-        this(id, bs, s, "", target);
+        this(id, bs, new ItemStack[] { s }, "", target, Arrays.asList(s.getDisplayName()), 0x000000);
     }
 
     public TinkersRebornNavigationButton(int id, ButtonSize bs, ItemStack[] s, String target, String tooltips,
@@ -83,9 +84,11 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
         super(id, 0, 0, defaultHeight, defaultWidth, "");
         this.bs = bs;
         this.renderStack = s;
-        this.buttonStrKey = buttonStr;
+        this.buttonStrKey = TinkersRebornUtils.translate(buttonStr);
         this.target = target;
-        this.toolTips = tooltips;
+        this.toolTips = tooltips.stream()
+            .map(TinkersRebornUtils::translate)
+            .collect(Collectors.toList());
         this.color = color;
     }
 

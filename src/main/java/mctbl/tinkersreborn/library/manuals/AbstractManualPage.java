@@ -85,7 +85,7 @@ public abstract class AbstractManualPage {
 
     public abstract void setupTranslate();
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {}
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton, GuiManual manual) {}
 
     public void drawToolTips(int mouseX, int mouseY, int manualX, int manualY, GuiManual manual) {
         for (RenderStack s : this.renderStacks) {

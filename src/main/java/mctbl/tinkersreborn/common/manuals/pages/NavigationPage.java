@@ -93,6 +93,26 @@ public class NavigationPage extends AbstractManualPage {
     }
 
     @Override
+    public void drawToolTips(int mouseX, int mouseY, int manualX, int manualY, GuiManual manual) {
+        super.drawToolTips(mouseX, mouseY, manualX, manualY, manual);
+        this.buttons.forEach(b -> {
+            if (b.contains(manualX, manualY)) {
+                manual.drawHoveringText(b.getTooltips(), mouseX, mouseY, fontRender);
+            }
+        });
+    }
+
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton, GuiManual manual) {
+        this.buttons.forEach(b -> {
+            if (b.contains(mouseX, mouseY)) {
+                manual.tryToJumpToPage(b.target);
+            }
+        });
+        super.mouseClicked(mouseX, mouseY, mouseButton, manual);
+    }
+
+    @Override
     public void setupTranslate() {
         this.titleStr = TinkersRebornUtils.translate(this.titleKey);
     }

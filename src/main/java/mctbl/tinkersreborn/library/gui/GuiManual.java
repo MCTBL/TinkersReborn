@@ -1,8 +1,8 @@
 package mctbl.tinkersreborn.library.gui;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
+import java.util.Map;
+import java.util.Stack;
 
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
@@ -36,7 +36,7 @@ public class GuiManual extends GuiScreen {
     public static int GUI_MARGIN = 12;
 
     protected int bookTotalPages;
-    protected Queue<Integer> jumpFromPage = new LinkedList<>();
+    protected Stack<Integer> jumpFromPage = new Stack<>();
     protected int currentPage;
     protected int previousRenderPage;
     protected ManualBookData bookData;
@@ -231,7 +231,7 @@ public class GuiManual extends GuiScreen {
         } else if (this.buttonHomePage.contains(manualX, manualY)) {
             this.currentPage = 0;
         } else if (this.buttonBackToJumpFrom.contains(manualX, manualY)) {
-            TinkersReborn.LOG.info("buttonBackToJumpFrom clicked");
+            this.currentPage = this.jumpFromPage.pop();
         }
 
         int leftIndex = this.currentPage;
@@ -240,12 +240,12 @@ public class GuiManual extends GuiScreen {
         if (manualX >= leftPageStartX && manualX <= leftPageStartX + AbstractManualPage.contentWidth
             && leftIndex < pages.size()) {
             pages.get(leftIndex)
-                .mouseClicked(manualX - leftPageStartX, manualY - pageStartY, mouseButton);
+                .mouseClicked(manualX - leftPageStartX, manualY - pageStartY, mouseButton, this);
         }
         if (manualX >= rightPageStartX && manualX <= rightPageStartX + AbstractManualPage.contentWidth
             && rightIndex < pages.size()) {
             pages.get(rightIndex)
-                .mouseClicked(manualX - rightPageStartX, manualY - pageStartY, mouseButton);
+                .mouseClicked(manualX - rightPageStartX, manualY - pageStartY, mouseButton, this);
         }
     }
 
@@ -304,11 +304,11 @@ public class GuiManual extends GuiScreen {
         return MathHelper.floor_float((screenY - this.guiTop) / this.scale);
     }
 
-    private int manualToScreenX(int manualX) {
-        return this.guiLeft + Math.round(manualX * this.scale);
-    }
-
-    private int manualToScreenY(int manualY) {
-        return this.guiTop + Math.round(manualY * this.scale);
+    public void tryToJumpToPage(String name) {
+        Map<String, Integer> indexMap = this.bookData.getIndexMap();
+        if (indexMap.containsKey(name)) {
+            this.jumpFromPage.add(this.currentPage);
+            this.currentPage = indexMap.get(name) / 2 * 2;
+        }
     }
 }

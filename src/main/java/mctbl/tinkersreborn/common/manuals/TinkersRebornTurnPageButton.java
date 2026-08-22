@@ -17,7 +17,7 @@ public class TinkersRebornTurnPageButton extends GuiManualButton {
 
         nextPage(412, 0, 18, 10, "nextPage"),
         previousPage(412, 10, 18, 10, "previousPage"),
-        backToJumpFrom(412, 20, 18, 10, "backToJumpFrom"),
+        backToJumpFrom(412, 30, 18, 10, "backToJumpFrom"),
         homePage(412, 40, 14, 17, "homePage");
 
         int textureX;

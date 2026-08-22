@@ -282,13 +282,13 @@ public class RecipePage extends AbstractManualPage {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton, GuiManual manual) {
         if (this.nextRecipeButton != null && this.nextRecipeButton.contains(mouseX, mouseY)) {
             this.selectedIdx = (this.selectedIdx + 1) % this.recipes.length;
         } else if (this.previousRecipeButton != null && this.previousRecipeButton.contains(mouseX, mouseY)) {
             this.selectedIdx = ((this.selectedIdx + this.recipes.length) - 1) % this.recipes.length;
         } else {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            super.mouseClicked(mouseX, mouseY, mouseButton, manual);
         }
     }
 
