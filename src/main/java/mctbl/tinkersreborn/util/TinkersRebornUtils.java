@@ -20,6 +20,8 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 
+import com.google.gson.JsonParser;
+
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 
@@ -29,6 +31,7 @@ public class TinkersRebornUtils {
         "#,###,###.##",
         DecimalFormatSymbols.getInstance(Locale.US));
     public static final DecimalFormat dfPercent = new DecimalFormat("#%");
+    public static final JsonParser jsonParser = new JsonParser();
 
     /**
      * Removes all whitespaces from the given string and makes it lowerspace.
@@ -232,6 +235,15 @@ public class TinkersRebornUtils {
         String tool = block.getHarvestTool(meta);
         int level = block.getHarvestLevel(meta);
         return "pickaxe".equals(tool) && level >= 2;
+    }
+
+    public static int ceilDiv(int x, int y) {
+        final int q = x / y;
+        // if the signs are the same and modulo not zero, round up
+        if ((x ^ y) >= 0 && (q * y != x)) {
+            return q + 1;
+        }
+        return q;
     }
 
 }

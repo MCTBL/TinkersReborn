@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.manuals.ManualBookData;
 import mctbl.tinkersreborn.library.manuals.ManualBookDefinition;
 import mctbl.tinkersreborn.library.manuals.ManualPageProcessor;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class TinkersRebornManualDataBase {
 
@@ -21,12 +21,11 @@ public class TinkersRebornManualDataBase {
     private TinkersRebornManualDataBase() {}
 
     public static void loadManuals() {
-        JsonParser parser = new JsonParser();
         for (String name : TinkersRebornConfig.manualNames) {
             try {
                 InputStreamReader stream = new InputStreamReader(
                     TinkersReborn.class.getResourceAsStream("/assets/tinkersreborn/manuals/" + name + ".json"));
-                JsonObject jsObj = parser.parse(stream)
+                JsonObject jsObj = TinkersRebornUtils.jsonParser.parse(stream)
                     .getAsJsonObject();
                 ManualBookData bookData = new ManualBookData(new ManualBookDefinition(jsObj));
                 books.put(name, bookData);

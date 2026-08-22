@@ -23,11 +23,20 @@ public abstract class AbstractManualPage {
         private final ItemStack stack;
         private final int x;
         private final int y;
+        private final float scale;
 
         public RenderStack(ItemStack stack, int x, int y) {
             this.stack = stack;
             this.x = x;
             this.y = y;
+            this.scale = 1.0F;
+        }
+
+        public RenderStack(ItemStack stack, int x, int y, float scale) {
+            this.stack = stack;
+            this.x = x;
+            this.y = y;
+            this.scale = scale;
         }
 
         public ItemStack getStack() {
@@ -40,6 +49,10 @@ public abstract class AbstractManualPage {
 
         public int getY() {
             return y;
+        }
+
+        public float getScale() {
+            return scale;
         }
 
     }
@@ -74,7 +87,22 @@ public abstract class AbstractManualPage {
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {}
 
-    public void drawToolTips(int mouseX, int mouseY, int manualX, int manualY, GuiManual manual) {}
+    public void drawToolTips(int mouseX, int mouseY, int manualX, int manualY, GuiManual manual) {
+        for (RenderStack s : this.renderStacks) {
+            if (s.getX() <= manualX && manualX <= s.getX() + 16 * s.getScale()
+                && s.getY() <= manualY
+                && manualY <= s.getY() + 16 * s.getScale()) {
+                ItemStack stack = s.getStack();
+                FontRenderer render = stack.getItem()
+                    .getFontRenderer(stack);
+                manual.drawHoveringText(
+                    stack.getTooltip(manual.mc.thePlayer, false),
+                    mouseX,
+                    mouseY,
+                    render == null ? fontRender : render);
+            }
+        }
+    }
 
     protected void drawStrCenterAt(String str, int x, int y) {
         this.drawStrCenterAt(str, x, y, 1.0F, 0x000000);

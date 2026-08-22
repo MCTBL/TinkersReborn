@@ -732,7 +732,7 @@ tinkersreborn.manuals.materialsandyou.toolstation=To finish the first step in yo
 tinkersreborn.manuals.materialsandyou.storagechest.title=Storage Chests
 tinkersreborn.manuals.materialsandyou.storagechest=So, you want to store your extra parts in a special chest, eh? If not, too bad you have the option anyway.\n\nPart chests allow you to store an abundance of extra parts you may have. Each slot can hold a stack of 8 parts max. If you need more than that, you're doing something wrong or have very convoluted recipes.\n\nOh, that chest is too restrictive? Try the tinkers' chest! It can store any item in a total of 64 slots, though each slot holds just 16 items.
 tinkersreborn.manuals.materialsandyou.partchest=Never know when you might need that unused tool part again later.
-
 tinkersreborn.manuals.materialsandyou.repair.title=Repairing
 tinkersreborn.manuals.materialsandyou.repair1=As you use your tools, they take damage. Once all of their durability is gone they break. :(\n\nTo fix that you need to repair your tool. You don't need to wait until it breaks, you can repair it at any time!\n\nRepairing is easy. Put the tool into a tool station or forge and add items equivalent to the head of the tool. If the tool's head is made of multiple parts you can use each of those materials. Repairing with multiple materials at the same time grants bonus durability repaired.\n\nYou can also repair your tools while deep under the earth or adventuring far away from your base.
 tinkersreborn.manuals.materialsandyou.repair2=To do so simply take a sharpening kit of the material you need, and put it into a crafting grid together with the tool.
+tinkersreborn.manuals.materialsandyou.tools.title=Tools

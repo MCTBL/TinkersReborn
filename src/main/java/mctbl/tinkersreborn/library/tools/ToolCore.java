@@ -866,8 +866,9 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     protected void getTooltipComponents(ItemStack stack, EntityPlayer player, List<String> tootips) {
         List<ToolPartRecord> partList = this.getToolComponentsParts();
         List<TinkersRebornMaterial> materialList = ToolTagsHelper.getToolBaseMaterialsList(stack);
+        int idxMax = Math.min(partList.size(), materialList.size());
 
-        for (int i = 0; i < partList.size(); i++) {
+        for (int i = 0; i < idxMax; i++) {
             tootips.add(null);
             ToolPartRecord toolPartRecord = partList.get(i);
             TinkersRebornMaterial tinkersRebornMaterial = materialList.get(i);

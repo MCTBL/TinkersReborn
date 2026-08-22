@@ -178,7 +178,11 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     @Override
     public TinkersRebornMaterial getMaterial(ItemStack stack) {
-        return TinkersRebornRegistry.getMaterialByIdentifier(readNBT(stack));
+        String identifier = readNBT(stack);
+        if (identifier.startsWith("_internal_render")) {
+            return TinkersRebornRegistry.getRenderMaterial(identifier);
+        }
+        return TinkersRebornRegistry.getMaterialByIdentifier(identifier);
     }
 
     public int getCost() {

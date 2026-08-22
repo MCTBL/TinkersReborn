@@ -69,6 +69,10 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
             0x000000);
     }
 
+    public TinkersRebornNavigationButton(int id, ButtonSize bs, ItemStack s, String target) {
+        this(id, bs, s, "", target);
+    }
+
     public TinkersRebornNavigationButton(int id, ButtonSize bs, ItemStack[] s, String target, String tooltips,
         int color) {
         this(id, bs, s, "", target, Arrays.asList(tooltips), color);

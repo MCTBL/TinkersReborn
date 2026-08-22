@@ -16,7 +16,7 @@
           "text": "tinkersreborn.manuals.materialsandyou.jumptointro"
         },
         {
-          "to": "tools",
+          "to": "toolsHomePage",
           "icon": "minecraft:iron_pickaxe",
           "text": "tinkersreborn.manuals.materialsandyou.jumptotools"
         },
@@ -47,7 +47,8 @@
     {
       "type": "text",
       "text": "tinkersreborn.manuals.materialsandyou.welcome1",
-      "title": "tinkersreborn.manuals.materialsandyou.welcome.title"
+      "title": "tinkersreborn.manuals.materialsandyou.welcome.title",
+      "name": "intro"
     },
     {
       "type": "recipe",
@@ -93,6 +94,11 @@
       "type": "image",
       "image": "tinkersreborn:textures/gui/book/inventory_repair.png",
       "text": "tinkersreborn.manuals.materialsandyou.repair2"
+    },
+    {
+      "type": "toolsNavigation",
+      "title": "tinkersreborn.manuals.materialsandyou.tools.title",
+      "name": "toolsHomePage"
     }
   ]
 }

@@ -27,6 +27,7 @@ import mctbl.tinkersreborn.common.manuals.pages.ImagePage.ImagePageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.NavigationPage.NavigationPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.RecipePage.RecipePageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.TextPage.TextPageProcessor;
+import mctbl.tinkersreborn.common.manuals.pages.ToolsNavigationPage.ToolsNavigationPageProcessor;
 import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.common.model.DryingRackSpecialRender;
 import mctbl.tinkersreborn.common.model.SlimeRender;
@@ -48,6 +49,7 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
         TinkersRebornManualDataBase.registerPageProcessor("cover", new CoverPageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("recipe", new RecipePageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("image", new ImagePageProcessor());
+        TinkersRebornManualDataBase.registerPageProcessor("toolsNavigation", new ToolsNavigationPageProcessor());
     }
 
     @Override

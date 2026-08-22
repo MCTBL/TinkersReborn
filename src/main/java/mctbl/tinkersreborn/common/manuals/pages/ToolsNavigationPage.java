@@ -1,13 +1,11 @@
 package mctbl.tinkersreborn.common.manuals.pages;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import mctbl.tinkersreborn.common.manuals.TinkersRebornNavigationButton;
@@ -17,36 +15,37 @@ import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
 import mctbl.tinkersreborn.library.manuals.ManualPageDefinition;
 import mctbl.tinkersreborn.library.manuals.ManualPageProcessor;
+import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class NavigationPage extends AbstractManualPage {
+public class ToolsNavigationPage extends AbstractManualPage {
 
     protected final List<TinkersRebornNavigationButton> buttons = new ArrayList<>();
 
+    protected final String title;
+    protected String translatedTitle;
+
     protected int buttonEachRow;
     protected ButtonSize buttonSize;
-    protected String titleKey;
-    protected String titleStr;
 
-    public NavigationPage(JsonObject json) {
+    public ToolsNavigationPage(JsonObject json) {
         super(json);
-        JsonArray buttonArrays = json.get("buttons")
-            .getAsJsonArray();
         String buttonSizeStr = json.has("size") ? json.get("size")
-            .getAsString() : "large";
+            .getAsString() : "medium";
         this.buttonEachRow = json.has("capacity") ? json.get("capacity")
-            .getAsInt() : 5;
+            .getAsInt() : 7;
         this.buttonSize = ButtonSize.getSize(buttonSizeStr);
-        this.titleKey = json.has("title") ? json.get("title")
-            .getAsString() : null;
+        this.title = json.has("title") ? json.get("title")
+            .getAsString() : "";
 
+        List<ToolCore> allTools = TinkersRebornRegistry.getAllTools();
         int middleX = contentWidth / 2;
         int middleY = contentHeight / 2;
         int buttonGap = 5;
         int buttonWidth = (int) (TinkersRebornNavigationButton.defaultWidth * buttonSize.getMulti());
         int buttonHeight = (int) (TinkersRebornNavigationButton.defaultHeight * buttonSize.getMulti());
-        int buttonRows = TinkersRebornUtils.ceilDiv(buttonArrays.size(), this.buttonEachRow);
+        int buttonRows = TinkersRebornUtils.ceilDiv(allTools.size(), this.buttonEachRow);
 
         int buttonsGroupHeight = buttonRows * buttonHeight + (buttonRows - 1) * buttonGap;
         int buttonsGroupWidth = this.buttonEachRow * buttonWidth + (this.buttonEachRow - 1) * buttonGap;
@@ -54,23 +53,17 @@ public class NavigationPage extends AbstractManualPage {
         int buttonsGroupStartX = middleX - buttonsGroupWidth / 2;
         int buttonsGroupStartY = middleY - buttonsGroupHeight / 2;
 
-        for (int idx = 0; idx < buttonArrays.size(); idx++) {
-            JsonObject buttonJsonObject = buttonArrays.get(idx)
-                .getAsJsonObject();
-            String target = buttonJsonObject.has("to") ? buttonJsonObject.get("to")
-                .getAsString() : null;
-            String iconStr = buttonJsonObject.has("icon") ? buttonJsonObject.get("icon")
-                .getAsString() : null;
-            String text = buttonJsonObject.has("text") ? buttonJsonObject.get("text")
-                .getAsString() : null;
-            ItemStack itemStack = TinkersRebornRegistry.getOrRegisterManualIcon(iconStr);
+        for (int idx = 0; idx < allTools.size(); idx++) {
+            ToolCore toolcore = allTools.get(idx);
+            String toolTypeName = toolcore.toolTypeName;
+            ItemStack itemStack = TinkersRebornRegistry
+                .getOrRegisterManualIcon(toolTypeName, toolcore.getToolForRender());
 
             TinkersRebornNavigationButton b = new TinkersRebornNavigationButton(
                 idx,
                 buttonSize,
                 itemStack,
-                text,
-                target);
+                toolTypeName);
 
             int row = idx / this.buttonEachRow;
             int column = idx % this.buttonEachRow;
@@ -85,8 +78,8 @@ public class NavigationPage extends AbstractManualPage {
     @Override
     public void renderContentLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
         int manualTicks, GuiManual manual) {
-        if (titleStr != null && !titleStr.isEmpty())
-            this.drawStrCenterAt(ColorUtil.addUnderLine(titleStr), pageX + contentWidth / 2, pageY + 4, 1.0f, 0x000000);
+        if (this.translatedTitle != null && !this.translatedTitle.isEmpty())
+            this.drawStrCenterAt(ColorUtil.addUnderLine(translatedTitle), pageX + contentWidth / 2, pageY);
 
         this.buttons.forEach(
             b -> b.drawButton(Minecraft.getMinecraft(), manualMouseX, manualMouseY, manualTicks, pageX, pageY));
@@ -94,14 +87,20 @@ public class NavigationPage extends AbstractManualPage {
 
     @Override
     public void setupTranslate() {
-        this.titleStr = TinkersRebornUtils.translate(this.titleKey);
+        this.translatedTitle = TinkersRebornUtils.translate(this.title);
     }
 
-    public static class NavigationPageProcessor implements ManualPageProcessor {
+    public static class ToolsNavigationPageProcessor implements ManualPageProcessor {
 
         @Override
         public List<AbstractManualPage> process(ManualPageDefinition definition) {
-            return Arrays.asList(new NavigationPage(definition.getData()));
+            List<AbstractManualPage> list = new ArrayList<>();
+
+            list.add(new ToolsNavigationPage(definition.getData()));
+            TinkersRebornRegistry.getAllTools()
+                .forEach(t -> list.add(new ToolPage(t)));
+
+            return list;
         }
 
     }

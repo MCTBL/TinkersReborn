@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.library.manuals;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,7 @@ public class ManualBookData {
 
     public ManualBookData(ManualBookDefinition definition) {
         this.definition = definition;
+        this.indexMap = new HashMap<>();
     }
 
     public void processBook() {
@@ -35,7 +37,7 @@ public class ManualBookData {
         for (int i = 0; i < this.pages.size(); i++) {
             AbstractManualPage p = this.pages.get(i);
             if (p.name != null && !p.name.isEmpty()) {
-                indexMap.put(p.name, i);
+                this.indexMap.put(p.name, i);
             }
         }
     }

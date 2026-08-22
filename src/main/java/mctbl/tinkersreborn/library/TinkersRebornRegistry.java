@@ -1052,12 +1052,13 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         return recipeIcons.get(name);
     }
 
-    public static void registerTinkersRebornToolRecipeIcon(String name, ItemStack[][] inputs, ItemStack output,
-        RecipeType type) {
+    public static TinkersRebornRecipeHolder[] registerTinkersRebornToolRecipeIcon(String name, ItemStack[][] inputs,
+        ItemStack output, RecipeType type) {
         if (!recipeIcons.containsKey(name)) {
             getOrRegisterManualIcon(name, output);
             recipeIcons
                 .put(name, new TinkersRebornRecipeHolder[] { new TinkersRebornRecipeHolder(inputs, output, type) });
         }
+        return recipeIcons.get(name);
     }
 }

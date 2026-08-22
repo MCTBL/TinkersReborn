@@ -355,5 +355,15 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         public RenderMaterial(String identifier, int color) {
             super(identifier, color);
         }
+
+        @Override
+        public String localizedName() {
+            return "";
+        }
+
+        @Override
+        public String localizedPrefix() {
+            return "";
+        }
     }
 }
