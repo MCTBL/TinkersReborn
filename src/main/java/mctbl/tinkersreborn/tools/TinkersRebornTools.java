@@ -709,6 +709,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         TinkersRebornRegistry.getMaterialIntegrations()
             .forEach(MaterialIntegration::integrate);
+        TinkersRebornRegistry.removeHiddenMaterial();
+
         if (shard != null) {
             for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
                 ItemStack shardStack = shard.getNewPartWithMaterial(material.identifier);
@@ -788,6 +790,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         woodMaterial.addItem("stickWood", 1, VALUE_Shard);
         woodMaterial.addItem("plankWood", 1, VALUE_Ingot);
         woodMaterial.addItem("logWood", 1, VALUE_Ingot * 4);
+        woodMaterial.setRepresentativeItem(Blocks.planks);
         woodMaterial.addTrait(ecological);
 
         stoneMaterial = new TinkersRebornMaterial("Stone", 0x7F7F7F).setCraftable(true);
@@ -855,10 +858,12 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         slimeMaterial = new TinkersRebornMaterial("Slime", 0x6EB065).setCraftable(true);
         slimeMaterial.addItem("slimeCrystalGreen", 1, VALUE_Ingot);
+        slimeMaterial.setRepresentativeItem(slimeCrystal);
         slimeMaterial.addTrait(slimeyGreen);
 
         blueSlimeMaterial = new TinkersRebornMaterial("BlueSlime", 0x66AEB0).setCraftable(true);
         blueSlimeMaterial.addItem("slimeCrystalBlue", 1, VALUE_Ingot);
+        blueSlimeMaterial.setRepresentativeItem(blueSlimeCrystal);
         blueSlimeMaterial.addTrait(slimeyBlue);
 
         ironMaterial = new TinkersRebornMaterial("Iron", 0xDADADA);
@@ -925,21 +930,21 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         alumiteMaterial.addCommonItems("Alumite");
         alumiteMaterial.addTrait(duritos);
 
-        steelMaterial = new TinkersRebornMaterial("Steel", 0xA0A0A0);
+        steelMaterial = new TinkersRebornMaterial("Steel", 0xA0A0A0, true);
         steelFluid = TinkersRebornFluid
             .createMolten(steelMaterial.identifier, steelMaterial.materialTextColor, steelMaterial.identifier, 681);
         steelMaterial.addCommonItems("Steel");
         steelMaterial.addTrait(sharp, MaterialStatusType.HEAD);
         steelMaterial.addTrait(stiff);
 
-        leadMaterial = new TinkersRebornMaterial("Lead", 0x4D4968);
+        leadMaterial = new TinkersRebornMaterial("Lead", 0x4D4968, true);
         leadFluid = TinkersRebornFluid
             .createMolten(leadMaterial.identifier, leadMaterial.materialTextColor, leadMaterial.identifier, 400);
         leadMaterial.addCommonItems("Lead");
         leadMaterial.addTrait(poisonous);
         leadMaterial.addTrait(heavy);
 
-        silverMaterial = new TinkersRebornMaterial("Silver", 0xD1ECF6);
+        silverMaterial = new TinkersRebornMaterial("Silver", 0xD1ECF6, true);
         silverFluid = TinkersRebornFluid
             .createMolten(silverMaterial.identifier, silverMaterial.materialTextColor, silverMaterial.identifier, 480);
         silverMaterial.addTrait(holy);

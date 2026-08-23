@@ -133,6 +133,7 @@ public class MaterialIntegration {
             TinkersRebornRegistry.registerOredictMeltingCasting(fluid, oreSuffix);
         }
         if (material != null) {
+            material.setVisible();
             TinkersRebornRegistry.registerToolpartMeltingCasting(material);
             registerRepresentativeItem();
         }

@@ -107,6 +107,8 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     // public final int materialId;
     public int materialTextColor = 0xffffff; // used in tooltips and other text. Saved in NBT.
 
+    private boolean isHidden;
+
     // we use a specific map for 2 reasons:
     // * A Map so we can obtain the stats we want quickly
     // * the linked map to ensure the order when iterating
@@ -135,6 +137,10 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public TinkersRebornMaterial(String identifier, int color) {
+        this(identifier, color, false);
+    }
+
+    public TinkersRebornMaterial(String identifier, int color, boolean isHidden) {
         this.identifier = TinkersRebornUtils.sanitizeLocalizationString(identifier); // lowercases and removes
         this.localizationIdentifier = String.format(LOC_Name, this.identifier);
 
@@ -149,6 +155,8 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         this.materialTextColor = color;
         this.statsMap = new LinkedHashMap<>();
         this.traits = LinkedHashMultimap.create();
+
+        this.isHidden = isHidden;
     }
 
     public TinkersRebornMaterial addStats(IMaterialStats m) {
@@ -356,6 +364,15 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
                 }
             }
         }
+        return this;
+    }
+
+    public boolean isHidden() {
+        return this.isHidden;
+    }
+
+    public TinkersRebornMaterial setVisible() {
+        this.isHidden = false;
         return this;
     }
 

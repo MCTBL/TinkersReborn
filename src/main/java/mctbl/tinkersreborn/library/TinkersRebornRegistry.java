@@ -82,7 +82,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
     protected static final List<ToolCore> toolForgeCrafting = new ArrayList<>();
 
     protected static final List<TinkersRebornMaterial> allMaterialsList = new ArrayList<>();
-    protected static final Map<String, TinkersRebornMaterial> materialIdentifierMaps = new HashMap<>();
+    protected static final Map<String, TinkersRebornMaterial> materialIdentifierMaps = new LinkedHashMap<>();
     protected static final Map<String, RenderMaterial> renderMaterials = new HashMap<>();
 
     protected static final Map<String, IModifier> modifierAndTraitIdentifierMaps = new LinkedHashMap<>();
@@ -649,6 +649,16 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         }
 
         knownOreFluids.put(fluid, knownOres);
+    }
+
+    public static void removeHiddenMaterial() {
+        materialIdentifierMaps.entrySet()
+            .removeIf(
+                e -> e.getValue()
+                    .isHidden());
+
+        allMaterialsList.clear();
+        allMaterialsList.addAll(materialIdentifierMaps.values());
     }
 
     public static List<TinkersRebornMaterial> getAllMaterialList() {

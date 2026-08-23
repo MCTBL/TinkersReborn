@@ -21,7 +21,7 @@
           "text": "tinkersreborn.manuals.materialsandyou.jumptotools"
         },
         {
-          "to": "materials",
+          "to": "materialHomePage",
           "icon": "minecraft:iron_ingot",
           "text": "tinkersreborn.manuals.materialsandyou.jumptomaterials"
         },
