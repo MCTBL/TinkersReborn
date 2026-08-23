@@ -678,6 +678,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         EntityRegistry.registerModEntity(EntityArrow.class, "arrow", 10, TinkersReborn.instance, 64, 1, false);
         EntityRegistry.registerModEntity(EntityBolt.class, "bolt", 11, TinkersReborn.instance, 64, 1, false);
+        
+        proxy.preInit();
     }
 
     @Override
@@ -698,7 +700,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         this.registerCraftingRecipes();
 
-        proxy.initialize();
+        proxy.init();
     }
 
     @Override
@@ -774,6 +776,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         if (TinkersRebornConfig.nerfVanillaBows) {
             MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaBowNerfHandler());
         }
+        
+        proxy.postInit();
     }
 
     /**

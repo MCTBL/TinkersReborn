@@ -99,6 +99,11 @@
       "type": "toolsNavigation",
       "title": "tinkersreborn.manuals.materialsandyou.tools.title",
       "name": "toolsHomePage"
+    },
+    {
+      "type": "materialNavigation",
+      "title": "tinkersreborn.manuals.materialsandyou.material.title",
+      "name": "materialHomePage"
     }
   ]
 }

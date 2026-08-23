@@ -76,7 +76,7 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
 
     public TinkersRebornNavigationButton(int id, ButtonSize bs, ItemStack[] s, String target, String tooltips,
         int color) {
-        this(id, bs, s, "", target, Arrays.asList(tooltips), color);
+        this(id, bs, s, "", target, Arrays.asList(ColorUtil.encodeColor(color) + tooltips), color);
     }
 
     public TinkersRebornNavigationButton(int id, ButtonSize bs, ItemStack[] s, String buttonStr, String target,
@@ -86,10 +86,10 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
         this.renderStack = s;
         this.buttonStrKey = TinkersRebornUtils.translate(buttonStr);
         this.target = target;
+        this.color = color;
         this.toolTips = tooltips.stream()
             .map(TinkersRebornUtils::translate)
             .collect(Collectors.toList());
-        this.color = color;
     }
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY, int manualTicks, int pageX, int pageY) {

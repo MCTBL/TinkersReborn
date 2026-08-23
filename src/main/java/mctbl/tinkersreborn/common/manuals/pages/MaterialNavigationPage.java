@@ -15,11 +15,11 @@ import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
 import mctbl.tinkersreborn.library.manuals.ManualPageDefinition;
 import mctbl.tinkersreborn.library.manuals.ManualPageProcessor;
-import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class ToolsNavigationPage extends AbstractManualPage {
+public class MaterialNavigationPage extends AbstractManualPage {
 
     protected final List<TinkersRebornNavigationButton> buttons = new ArrayList<>();
 
@@ -29,23 +29,23 @@ public class ToolsNavigationPage extends AbstractManualPage {
     protected int buttonEachRow;
     protected ButtonSize buttonSize;
 
-    public ToolsNavigationPage(JsonObject json) {
+    public MaterialNavigationPage(JsonObject json) {
         super(json);
         String buttonSizeStr = json.has("size") ? json.get("size")
-            .getAsString() : "medium";
+            .getAsString() : "small";
         this.buttonEachRow = json.has("capacity") ? json.get("capacity")
             .getAsInt() : 7;
         this.buttonSize = ButtonSize.getSize(buttonSizeStr);
         this.title = json.has("title") ? json.get("title")
             .getAsString() : "";
 
-        List<ToolCore> allTools = TinkersRebornRegistry.getAllTools();
+        List<TinkersRebornMaterial> allMaterials = TinkersRebornRegistry.getAllMaterialList();
         int middleX = contentWidth / 2;
         int middleY = contentHeight / 2;
         int buttonGap = 5;
         int buttonWidth = (int) (TinkersRebornNavigationButton.defaultWidth * buttonSize.getMulti());
         int buttonHeight = (int) (TinkersRebornNavigationButton.defaultHeight * buttonSize.getMulti());
-        int buttonRows = TinkersRebornUtils.ceilDiv(allTools.size(), this.buttonEachRow);
+        int buttonRows = TinkersRebornUtils.ceilDiv(allMaterials.size(), this.buttonEachRow);
 
         int buttonsGroupHeight = buttonRows * buttonHeight + (buttonRows - 1) * buttonGap;
         int buttonsGroupWidth = this.buttonEachRow * buttonWidth + (this.buttonEachRow - 1) * buttonGap;
@@ -53,17 +53,16 @@ public class ToolsNavigationPage extends AbstractManualPage {
         int buttonsGroupStartX = middleX - buttonsGroupWidth / 2;
         int buttonsGroupStartY = middleY - buttonsGroupHeight / 2;
 
-        for (int idx = 0; idx < allTools.size(); idx++) {
-            ToolCore toolcore = allTools.get(idx);
-            String toolTypeName = toolcore.toolTypeName;
-            ItemStack itemStack = TinkersRebornRegistry
-                .getOrRegisterManualIcon(toolTypeName, toolcore.getToolForRender());
+        for (int idx = 0; idx < allMaterials.size(); idx++) {
+            TinkersRebornMaterial material = allMaterials.get(idx);
+            String materialName = material.localizedName();
+            ItemStack itemStack = material.getRepresentativeItem();
 
             TinkersRebornNavigationButton b = new TinkersRebornNavigationButton(
                 idx,
                 buttonSize,
-                itemStack,
-                toolTypeName);
+                new ItemStack[] {itemStack},
+                material.identifier, materialName, material.materialTextColor);
 
             int row = idx / this.buttonEachRow;
             int column = idx % this.buttonEachRow;
@@ -110,17 +109,16 @@ public class ToolsNavigationPage extends AbstractManualPage {
         super.mouseClicked(mouseX, mouseY, mouseButton, manual);
     }
 
-    public static class ToolsNavigationPageProcessor implements ManualPageProcessor {
+    public static class MaterialNavigationPageProcessor implements ManualPageProcessor {
 
         @Override
         public List<AbstractManualPage> process(ManualPageDefinition definition) {
             List<AbstractManualPage> list = new ArrayList<>();
 
-            list.add(new ToolsNavigationPage(definition.getData()));
-            TinkersRebornRegistry.getAllTools()
-                .forEach(t -> list.add(new ToolPage(t)));
+            list.add(new MaterialNavigationPage(definition.getData()));
 
             return list;
         }
     }
+
 }

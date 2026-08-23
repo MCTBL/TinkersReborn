@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.tools.BowCore;
@@ -22,8 +23,13 @@ import mctbl.tinkersreborn.tools.model.ToolRender;
 public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon {
 
     @Override
-    public void initialize() {
+    public void init() {
         this.registerRenderer();
+    }
+    
+    @Override
+    public void postInit() {
+	TinkersRebornManualDataBase.processManuals();
     }
 
     protected void registerRenderer() {

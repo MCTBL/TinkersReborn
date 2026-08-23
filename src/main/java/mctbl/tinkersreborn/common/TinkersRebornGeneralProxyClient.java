@@ -24,6 +24,7 @@ import mctbl.tinkersreborn.common.events.HealthBarRenderer;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
 import mctbl.tinkersreborn.common.manuals.pages.CoverPage.CoverPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.ImagePage.ImagePageProcessor;
+import mctbl.tinkersreborn.common.manuals.pages.MaterialNavigationPage.MaterialNavigationPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.NavigationPage.NavigationPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.RecipePage.RecipePageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.TextPage.TextPageProcessor;
@@ -50,6 +51,7 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
         TinkersRebornManualDataBase.registerPageProcessor("recipe", new RecipePageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("image", new ImagePageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("toolsNavigation", new ToolsNavigationPageProcessor());
+        TinkersRebornManualDataBase.registerPageProcessor("materialNavigation", new MaterialNavigationPageProcessor());
     }
 
     @Override
@@ -67,7 +69,8 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
 
     @Override
     public void postInit() {
-        TinkersRebornManualDataBase.processManuals();
+	// move to tinkersreborn tools post init
+//        TinkersRebornManualDataBase.processManuals();
     }
 
     @SideOnly(Side.CLIENT)
