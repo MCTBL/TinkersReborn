@@ -86,7 +86,7 @@ public class NavigationPage extends AbstractManualPage {
     public void renderContentLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
         int manualTicks, GuiManual manual) {
         if (titleStr != null && !titleStr.isEmpty())
-            this.drawStrCenterAt(ColorUtil.addUnderLine(titleStr), pageX + contentWidth / 2, pageY + 4, 1.0f, 0x000000);
+            this.drawStrCenterAt(ColorUtil.addUnderLine(titleStr), pageX + contentWidth / 2, pageY + 4);
 
         this.buttons.forEach(
             b -> b.drawButton(Minecraft.getMinecraft(), manualMouseX, manualMouseY, manualTicks, pageX, pageY));

@@ -105,23 +105,28 @@ public abstract class AbstractManualPage {
     }
 
     protected void drawStrCenterAt(String str, int x, int y) {
-        this.drawStrCenterAt(str, x, y, 1.0F, 0x000000);
+        this.drawStrCenterAt(str, x, y, 1.0F, 0x000000, false);
     }
 
     protected void drawStrCenterAt(String str, int x, int y, int color) {
-        this.drawStrCenterAt(str, x, y, 1.0F, color);
+        this.drawStrCenterAt(str, x, y, 1.0F, color, false);
+    }
+
+    protected void drawStrCenterAt(String str, int x, int y, int color, boolean shadow) {
+        this.drawStrCenterAt(str, x, y, 1.0F, color, shadow);
     }
 
     protected void drawStrCenterAt(String str, int x, int y, float scale) {
-        this.drawStrCenterAt(str, x, y, scale, 0x000000);
+        this.drawStrCenterAt(str, x, y, scale, 0x000000, false);
     }
 
-    protected void drawStrCenterAt(String str, int x, int y, float scale, int color) {
+    protected void drawStrCenterAt(String str, int x, int y, float scale, int color, boolean shadow) {
         fontRender.drawString(
             str,
             (int) (x / scale - fontRender.getStringWidth(str) * 1.0F / 2),
             (int) ((y - fontRender.FONT_HEIGHT * 1.0F / 2) / scale),
-            color);
+            color,
+            shadow);
     }
 
     protected void setUpForRenderItem() {

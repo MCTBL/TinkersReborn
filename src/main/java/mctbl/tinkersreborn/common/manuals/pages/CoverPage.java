@@ -32,11 +32,11 @@ public class CoverPage extends AbstractManualPage {
 
         float titleScale = 2.5F;
         GL11.glScalef(titleScale, titleScale, 1.0f);
-        this.drawStrCenterAt(translatedText[0], pageX + cousorX, pageY + cousorY, titleScale, 0x000000);
+        this.drawStrCenterAt(translatedText[0], pageX + cousorX, pageY + cousorY, titleScale);
         cousorY += fontRender.FONT_HEIGHT * titleScale;
         GL11.glScalef(1 / titleScale, 1 / titleScale, 1.0f);
         for (int idx = 1; idx < translatedText.length; idx++) {
-            this.drawStrCenterAt(translatedText[idx], pageX + cousorX, pageY + cousorY, 1.0F, 0x000000);
+            this.drawStrCenterAt(translatedText[idx], pageX + cousorX, pageY + cousorY);
             cousorY += fontRender.FONT_HEIGHT;
         }
 

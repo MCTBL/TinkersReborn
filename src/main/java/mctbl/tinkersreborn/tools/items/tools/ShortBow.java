@@ -46,7 +46,7 @@ public class ShortBow extends BowCore implements ICustomCrosshairUser {
     }
 
     @Override
-    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+    public ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
         if (!material.hasStats(MaterialStatusType.BOW)) {
             return null;
         }

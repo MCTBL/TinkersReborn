@@ -54,8 +54,8 @@ public class GuiManual extends GuiScreen {
     private TinkersRebornTurnPageButton buttonHomePage;
     private TinkersRebornTurnPageButton buttonBackToJumpFrom;
 
-    protected final int leftPageStartX = 19;
-    protected final int rightPageStartX = 213;
+    public static final int leftPageStartX = 19;
+    public static final int rightPageStartX = 213;
     protected final int pageStartY = 17;
 
     public final float backgroundR;
@@ -80,7 +80,7 @@ public class GuiManual extends GuiScreen {
     @Override
     public void updateScreen() {
         super.updateScreen();
-        this.manualTicks = this.manualTicks++ % 20;
+        this.manualTicks = (this.manualTicks + 1) % 20;
     }
 
     @Override

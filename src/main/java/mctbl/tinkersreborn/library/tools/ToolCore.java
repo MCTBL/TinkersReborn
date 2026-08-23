@@ -436,7 +436,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         }
     }
 
-    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+    public ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
         List<ItemStack> list = new ArrayList<>();
         for (int i = 0; i < this.partAmount; i++) {
             ToolPartRecord toolPartRecord = this.componentsParts.get(i);

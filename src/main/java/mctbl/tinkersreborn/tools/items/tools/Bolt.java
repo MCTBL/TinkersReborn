@@ -64,7 +64,7 @@ public class Bolt extends AmmoCore {
     }
 
     @Override
-    protected ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
+    public ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
         if (!material.hasStats(MaterialStatusType.HEAD) && !material.isCastable()) {
             return null;
         }
