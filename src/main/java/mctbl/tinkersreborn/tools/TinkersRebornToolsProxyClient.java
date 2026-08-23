@@ -26,10 +26,10 @@ public class TinkersRebornToolsProxyClient extends TinkersRebornToolsProxyCommon
     public void init() {
         this.registerRenderer();
     }
-    
+
     @Override
     public void postInit() {
-	TinkersRebornManualDataBase.processManuals();
+        TinkersRebornManualDataBase.processManuals();
     }
 
     protected void registerRenderer() {

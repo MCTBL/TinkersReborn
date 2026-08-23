@@ -14,11 +14,11 @@ public class TinkersRebornToolsProxyCommon {
     public static final int battlesignTextID = 99;
 
     public TinkersRebornToolsProxyCommon() {}
-    
+
     public void preInit() {}
 
     public void init() {}
-    
+
     public void postInit() {}
 
     public int getTableRenderId() {

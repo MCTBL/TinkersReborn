@@ -61,8 +61,10 @@ public class MaterialNavigationPage extends AbstractManualPage {
             TinkersRebornNavigationButton b = new TinkersRebornNavigationButton(
                 idx,
                 buttonSize,
-                new ItemStack[] {itemStack},
-                material.identifier, materialName, material.materialTextColor);
+                new ItemStack[] { itemStack },
+                material.identifier,
+                materialName,
+                material.materialTextColor);
 
             int row = idx / this.buttonEachRow;
             int column = idx % this.buttonEachRow;

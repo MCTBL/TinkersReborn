@@ -69,8 +69,8 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
 
     @Override
     public void postInit() {
-	// move to tinkersreborn tools post init
-//        TinkersRebornManualDataBase.processManuals();
+        // move to tinkersreborn tools post init
+        // TinkersRebornManualDataBase.processManuals();
     }
 
     @SideOnly(Side.CLIENT)

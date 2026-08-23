@@ -32,6 +32,7 @@ import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
+import mctbl.tinkersreborn.library.utils.RecipeUtil;
 import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
@@ -118,7 +119,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public static final TinkersRebornMaterial UNKNOWN = new TinkersRebornMaterial("unknown", EnumChatFormatting.WHITE);
-    
+
     static {
         UNKNOWN.addStats(new HeadMaterialStats(1, 1, 1, 0));
         UNKNOWN.addStats(new HandleMaterialStats(1f, 0));
@@ -243,6 +244,14 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public ItemStack getRepresentativeItem() {
+        if (representativeOre != null && !representativeOre.isEmpty()) {
+            ItemStack ore = RecipeUtil.getPreference(representativeOre);
+
+            if (!TinkersRebornUtils.isStackEmpty(ore)) {
+                return ore;
+            }
+        }
+
         return representativeItem;
     }
 

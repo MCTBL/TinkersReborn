@@ -678,7 +678,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         EntityRegistry.registerModEntity(EntityArrow.class, "arrow", 10, TinkersReborn.instance, 64, 1, false);
         EntityRegistry.registerModEntity(EntityBolt.class, "bolt", 11, TinkersReborn.instance, 64, 1, false);
-        
+
         proxy.preInit();
     }
 
@@ -707,6 +707,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public void postInit(FMLPostInitializationEvent e) {
         TinkersRebornModifiers.INSTANCE.postInit(e);
 
+        TinkersRebornRegistry.getMaterialIntegrations()
+            .forEach(MaterialIntegration::integrate);
         if (shard != null) {
             for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
                 ItemStack shardStack = shard.getNewPartWithMaterial(material.identifier);
@@ -714,8 +716,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
                 material.setShard(shardStack);
             }
         }
-        TinkersRebornRegistry.getMaterialIntegrations()
-            .forEach(MaterialIntegration::integrate);
         TinkersRebornRegistry.registerGemMeltingCasting(emeraldFluid, "Emerald", castGem);
         TinkersRebornRegistry.registerMelting(new ItemStack(Blocks.stone), stoneFluid, 18);
         TinkersRebornRegistry.registerMelting(new ItemStack(Blocks.cobblestone), stoneFluid, 18);
@@ -776,7 +776,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         if (TinkersRebornConfig.nerfVanillaBows) {
             MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaBowNerfHandler());
         }
-        
+
         proxy.postInit();
     }
 
