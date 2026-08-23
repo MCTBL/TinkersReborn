@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.library.manuals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -54,7 +55,58 @@ public abstract class AbstractManualPage {
         public float getScale() {
             return scale;
         }
+    }
 
+    public static class RenderString {
+
+        private final int x;
+        private final int y;
+        private final int w;
+        private final int h;
+        private final List<String> toolTip;
+
+        /**
+         * @param x
+         * @param y
+         * @param w
+         * @param h
+         * @param toolTip
+         */
+        public RenderString(int x, int y, int w, int h, String toolTip) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.toolTip = Arrays.asList(toolTip.split("\\\\n"));
+        }
+
+        public RenderString(int x, int y, int w, int h, List<String> toolTip) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.toolTip = toolTip;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public int getW() {
+            return w;
+        }
+
+        public int getH() {
+            return h;
+        }
+
+        public List<String> getToolTip() {
+            return toolTip;
+        }
     }
 
     public static FontRenderer fontRender = TinkersRebornGeneralProxyClient.manualFontRender;
@@ -64,6 +116,7 @@ public abstract class AbstractManualPage {
 
     protected final String name;
     protected final List<RenderStack> renderStacks = new ArrayList<>();
+    protected final List<RenderString> renderString = new ArrayList<>();
 
     protected AbstractManualPage(JsonObject json) {
         this.name = json.has("name") ? json.get("name")
@@ -73,6 +126,7 @@ public abstract class AbstractManualPage {
     public void renderPage(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
         int manualTicks, GuiManual manual) {
         this.renderStacks.clear();
+        this.renderString.clear();
         this.renderBackgroundLayer(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
         this.renderContentLayer(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
     }
@@ -100,6 +154,13 @@ public abstract class AbstractManualPage {
                     mouseX,
                     mouseY,
                     render == null ? fontRender : render);
+            }
+        }
+        for (RenderString s : this.renderString) {
+            if (s.getX() <= manualX && manualX <= s.getX() + s.getW()
+                && s.getY() <= manualY
+                && manualY <= s.getY() + s.getH()) {
+                manual.drawHoveringText(s.getToolTip(), mouseX, mouseY, fontRender);
             }
         }
     }

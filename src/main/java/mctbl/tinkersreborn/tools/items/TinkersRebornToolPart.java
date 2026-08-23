@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.tools.items;
 
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +74,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tootips, boolean detail) {
         TinkersRebornMaterial material = this.getMaterial(stack);
         IMaterialStats stats = material.getStats(this.allowType);
-        List<ITrait> allTraitsForStats = material.getAllTraitsForStats(this.allowType, false);
+        Collection<ITrait> allTraitsForStats = material.getAllTraitsForStats(this.allowType, false);
         if (stats != null) {
             tootips.add(ColorUtil.addUnderLine(stats.getLocalizedName()));
             tootips.addAll(stats.getLocalizedInfo());

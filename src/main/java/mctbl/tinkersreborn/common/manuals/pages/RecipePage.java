@@ -99,7 +99,7 @@ public class RecipePage extends AbstractManualPage {
         int manualTicks, GuiManual manual) {
         this.selectedRecipe = this.recipes[this.selectedIdx];
         if (manualTicks == 19) {
-            this.counter = (this.counter + 1) % this.selectedRecipe.varietyOfOre;
+            this.counter = (this.counter + 1) % Math.max(1, this.selectedRecipe.varietyOfOre);
         }
         super.renderPage(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
     }
