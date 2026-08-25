@@ -76,6 +76,19 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
         this.aspects.addAll(Arrays.asList(aspects));
     }
 
+    public List<String> getAspectsDesc() {
+        List<String> l = new ArrayList<>();
+
+        for (ModifierAspect a : this.aspects) {
+            String aspectDesc = a.getAspectDesc();
+            if (aspectDesc != null) {
+                l.add(aspectDesc);
+            }
+        }
+
+        return l;
+    }
+
     @Override
     public final boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException {
 

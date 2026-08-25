@@ -4,16 +4,17 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
 import com.google.common.collect.ImmutableList;
 
 import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 import mctbl.tinkersreborn.library.tools.modifiers.IModifierDisplay;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierTrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 public abstract class AbstractProjectileTrait extends ModifierTrait implements IProjectileTrait, IModifierDisplay {
 
@@ -41,7 +42,7 @@ public abstract class AbstractProjectileTrait extends ModifierTrait implements I
         Entity target, double impactSpeed) {
 
     }
-    
+
     @Override
     public List<List<ItemStack>> getItems() {
         ImmutableList.Builder<List<ItemStack>> builder = ImmutableList.builder();

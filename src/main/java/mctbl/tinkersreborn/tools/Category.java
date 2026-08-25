@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
+
 public class Category {
 
     public static Map<String, Category> categories = Maps.newHashMap();
@@ -34,4 +36,8 @@ public class Category {
         categories.put(name, this);
     }
 
+    @Override
+    public String toString() {
+        return TinkersRebornUtils.translate("tinkersreborn.category." + this.name);
+    }
 }

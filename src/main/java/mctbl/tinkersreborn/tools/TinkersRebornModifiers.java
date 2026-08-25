@@ -3,6 +3,21 @@ package mctbl.tinkersreborn.tools;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.monster.EntityPigZombie;
+import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntitySnowman;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -31,20 +46,6 @@ import mctbl.tinkersreborn.tools.modifiers.ModReinforced;
 import mctbl.tinkersreborn.tools.modifiers.ModSharpness;
 import mctbl.tinkersreborn.tools.modifiers.ModSilktouch;
 import mctbl.tinkersreborn.tools.modifiers.ModWebbed;
-import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntityIronGolem;
-import net.minecraft.entity.monster.EntityPigZombie;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class TinkersRebornModifiers {
 
@@ -56,7 +57,7 @@ public class TinkersRebornModifiers {
     public static AbstractModifier modDiamond;
     public static AbstractModifier modEmerald;
     public static AbstractModifier modFiery;
-     public static AbstractModifier modFins;
+    public static AbstractModifier modFins;
     public static AbstractModifier modHaste;
     // public static AbstractModifier modHarvestWidth;
     // public static AbstractModifier modHarvestHeight;
@@ -107,8 +108,9 @@ public class TinkersRebornModifiers {
         modFiery = new ModFiery();
         modFiery.addItem(Items.blaze_powder);
 
-         modFins = new ModFins();
-         modFins.addItem(Items.fish, 2, 1);
+        ItemStack fish = new ItemStack(Items.fish);
+        modFins = new ModFins();
+        modFins.addRecipeMatch(new RecipeMatch.ItemCombination(1, fish, fish));
 
         // modGlowing = registerModifier(new ModGlowing());
         // modGlowing.addRecipeMatch(new RecipeMatch.ItemCombination(1, glowstoneDust, new ItemStack(Items.ENDER_EYE),

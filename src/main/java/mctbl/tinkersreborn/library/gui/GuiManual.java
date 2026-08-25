@@ -80,7 +80,7 @@ public class GuiManual extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.manualTicks = (this.manualTicks + 1) % 20;
-        
+
         if (this.previousRenderPage != this.currentPage) {
             this.previousRenderPage = this.currentPage;
             this.mc.getSoundHandler()

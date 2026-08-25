@@ -146,7 +146,7 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
         if (length == 0) {
             return;
         }
-        if(manualTicks == 19) {
+        if (manualTicks == 19) {
             this.counter = (this.counter + 1) % length;
         }
         ItemStack stackToRender = this.renderStack[this.counter];

@@ -1,5 +1,13 @@
 package mctbl.tinkersreborn.common;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelSlime;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -28,13 +36,6 @@ import mctbl.tinkersreborn.common.model.SlimeRender;
 import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.ManualBookData;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelSlime;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
 
 public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCommon {
 

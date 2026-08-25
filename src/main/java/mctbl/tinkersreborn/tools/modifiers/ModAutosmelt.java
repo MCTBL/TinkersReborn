@@ -27,6 +27,7 @@ public class ModAutosmelt extends ModifierTrait {
     public ModAutosmelt() {
         super("mod_autosmelt", 0xFC0000);
 
+        this.aspects.clear();
         addAspects(
             new ModifierAspect.SingleAspect(this),
             new ModifierAspect.DataAspect(this),
