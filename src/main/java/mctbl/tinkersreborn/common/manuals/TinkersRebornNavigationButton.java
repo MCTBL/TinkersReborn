@@ -58,6 +58,7 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
     public String target;
     public String buttonStrKey;
     public int color;
+    public int counter = 0;
 
     public TinkersRebornNavigationButton(int id, ButtonSize bs, ItemStack s, String buttonStr, String target) {
         this(
@@ -145,8 +146,10 @@ public class TinkersRebornNavigationButton extends GuiManualButton {
         if (length == 0) {
             return;
         }
-        int counter = manualTicks / 20;
-        ItemStack stackToRender = this.renderStack[counter % length];
+        if(manualTicks == 19) {
+            this.counter = (this.counter + 1) % length;
+        }
+        ItemStack stackToRender = this.renderStack[this.counter];
         if (stackToRender == null) {
             return;
         }

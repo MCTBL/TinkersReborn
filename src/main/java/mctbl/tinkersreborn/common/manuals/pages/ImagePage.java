@@ -45,8 +45,8 @@ public class ImagePage extends TextPage {
                 this.imageWidth = image.getWidth();
             }
         } catch (Exception e) {
-            this.imageHeight = 170;
-            this.imageWidth = 144;
+            this.imageHeight = 1;
+            this.imageWidth = 1;
         }
         this.imageScale = Math.min(contentHeight * 1.0F / this.imageHeight, contentWidth * 1.0F / this.imageWidth);
     }
@@ -56,7 +56,7 @@ public class ImagePage extends TextPage {
         int manualTicks, GuiManual manual) {
         super.renderBackgroundLayer(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
         int drawX = pageX + contentWidth / 2 - (int) (imageWidth * this.imageScale / 2);
-        int drawY = pageY + (haveTitle ? fontRender.FONT_HEIGHT : 0);
+        int drawY = pageY + (haveTitle ? fontRender.FONT_HEIGHT + 1 : 0);
 
         GL11.glPushMatrix();
         GL11.glTranslatef(drawX, drawY, 0.0F);
@@ -89,7 +89,7 @@ public class ImagePage extends TextPage {
             fontRender.drawSplitString(
                 this.translatedText,
                 pageX,
-                pageY + (haveTitle ? fontRender.FONT_HEIGHT : 0) + (int) (this.imageHeight * this.imageScale),
+                pageY + (haveTitle ? fontRender.FONT_HEIGHT + 1 : 0) + (int) (this.imageHeight * this.imageScale),
                 180,
                 0x000000);
         }

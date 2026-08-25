@@ -1,20 +1,21 @@
 package mctbl.tinkersreborn.library.tools.traits;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
+
+import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
+import mctbl.tinkersreborn.library.tools.modifiers.IModifierDisplay;
+import mctbl.tinkersreborn.library.tools.modifiers.ModifierTrait;
+import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
-
-public abstract class AbstractProjectileTrait extends AbstractTrait implements IProjectileTrait {
-
-    protected AbstractProjectileTrait(String identifier, EnumChatFormatting color) {
-        super(identifier, color);
-    }
+public abstract class AbstractProjectileTrait extends ModifierTrait implements IProjectileTrait, IModifierDisplay {
 
     protected AbstractProjectileTrait(String identifier, int color) {
         super(identifier, color);
@@ -39,5 +40,19 @@ public abstract class AbstractProjectileTrait extends AbstractTrait implements I
     public void afterHit(EntityProjectileBase projectile, World world, ItemStack ammoStack, EntityLivingBase attacker,
         Entity target, double impactSpeed) {
 
+    }
+    
+    @Override
+    public List<List<ItemStack>> getItems() {
+        ImmutableList.Builder<List<ItemStack>> builder = ImmutableList.builder();
+
+        for (RecipeMatch rm : items) {
+            List<ItemStack> in = rm.getInputs();
+            if (!in.isEmpty()) {
+                builder.add(in);
+            }
+        }
+
+        return builder.build();
     }
 }

@@ -123,7 +123,7 @@ public class MaterialNavigationPage extends AbstractManualPage {
 
             List<AbstractManualPage> list = new ArrayList<>();
             list.add(new MaterialNavigationPage(definition.getData(), allMaterials));
-            allMaterials.forEach(m -> list.add(new BaseMaterialPage(m)));
+            allMaterials.forEach(m -> list.add(new MaterialPage(m)));
 
             return list;
         }

@@ -1,13 +1,5 @@
 package mctbl.tinkersreborn.common;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.model.ModelSlime;
-import net.minecraft.client.resources.IReloadableResourceManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -25,6 +17,7 @@ import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
 import mctbl.tinkersreborn.common.manuals.pages.CoverPage.CoverPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.ImagePage.ImagePageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.MaterialNavigationPage.MaterialNavigationPageProcessor;
+import mctbl.tinkersreborn.common.manuals.pages.ModifierNavigationPage.ModifierNavigationPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.NavigationPage.NavigationPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.RecipePage.RecipePageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.TextPage.TextPageProcessor;
@@ -35,6 +28,13 @@ import mctbl.tinkersreborn.common.model.SlimeRender;
 import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.ManualBookData;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.model.ModelSlime;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 
 public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCommon {
 
@@ -52,6 +52,7 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
         TinkersRebornManualDataBase.registerPageProcessor("image", new ImagePageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("toolsNavigation", new ToolsNavigationPageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("materialNavigation", new MaterialNavigationPageProcessor());
+        TinkersRebornManualDataBase.registerPageProcessor("modifierNavigation", new ModifierNavigationPageProcessor());
     }
 
     @Override

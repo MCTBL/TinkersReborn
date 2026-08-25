@@ -20,7 +20,7 @@ import mctbl.tinkersreborn.library.tools.traits.AbstractTraitLeveled;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class BaseMaterialPage extends AbstractManualPage {
+public class MaterialPage extends AbstractManualPage {
 
     protected final String title;
     protected String translatedTitle;
@@ -39,7 +39,7 @@ public class BaseMaterialPage extends AbstractManualPage {
     private static final MaterialStatusType[] StatsTypeOrder = new MaterialStatusType[] { MaterialStatusType.HEAD,
         MaterialStatusType.HANDLE, MaterialStatusType.EXTRA };
 
-    public BaseMaterialPage(TinkersRebornMaterial material) {
+    public MaterialPage(TinkersRebornMaterial material) {
         super(
             TinkersRebornUtils.jsonParser.parse(String.format(pattern, material.identifier))
                 .getAsJsonObject());
@@ -83,7 +83,7 @@ public class BaseMaterialPage extends AbstractManualPage {
     public void renderContentLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
         int manualTicks, GuiManual manual) {
         this.drawStrCenterAt(
-            ColorUtil.addUnderLine(this.material.localizedName()),
+            ColorUtil.addUnderLine(translatedTitle),
             pageX + contentWidth / 2,
             pageY,
             this.material.materialTextColor,

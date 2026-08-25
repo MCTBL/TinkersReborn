@@ -197,7 +197,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         return modifierAndTraitIdentifierMaps.get(identifier);
     }
 
-    public static Collection<IModifier> getAllModifier() {
+    public static List<IModifier> getAllModifier() {
         return ImmutableList.copyOf(modifierAndTraitIdentifierMaps.values());
     }
 

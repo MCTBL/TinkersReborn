@@ -26,7 +26,7 @@
           "text": "tinkersreborn.manuals.materialsandyou.jumptomaterials"
         },
         {
-          "to": "modifies",
+          "to": "modifierHomePage",
           "icon": "minecraft:redstone",
           "text": "tinkersreborn.manuals.materialsandyou.jumptomodifies"
         },
@@ -86,14 +86,18 @@
       "text": "tinkersreborn.manuals.materialsandyou.partchest"
     },
     {
-      "type": "text",
-      "text": "tinkersreborn.manuals.materialsandyou.repair1",
-      "title": "tinkersreborn.manuals.materialsandyou.repair.title"
+      "type": "image",
+      "image": "tinkersreborn:textures/gui/book/inventory_repair.png",
+      "text": "tinkersreborn.manuals.materialsandyou.repair",
+      "title": "tinkersreborn.manuals.materialsandyou.repair.title",
+      "align": "center"
     },
     {
       "type": "image",
-      "image": "tinkersreborn:textures/gui/book/inventory_repair.png",
-      "text": "tinkersreborn.manuals.materialsandyou.repair2"
+      "image": "tinkersreborn:textures/gui/book/part_swap.png",
+      "text": "tinkersreborn.manuals.materialsandyou.part_swap",
+      "title": "tinkersreborn.manuals.materialsandyou.part_swap.title",
+      "align": "center"
     },
     {
       "type": "toolsNavigation",
@@ -104,6 +108,11 @@
       "type": "materialNavigation",
       "title": "tinkersreborn.manuals.materialsandyou.material.title",
       "name": "materialHomePage"
+    },
+    {
+      "type": "modifierNavigation",
+      "title": "tinkersreborn.manuals.materialsandyou.modifier.title",
+      "name": "modifierHomePage"
     }
   ]
 }

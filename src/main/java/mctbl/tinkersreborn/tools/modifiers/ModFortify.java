@@ -1,10 +1,6 @@
 package mctbl.tinkersreborn.tools.modifiers;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-
+import mctbl.tinkersreborn.library.TinkerAPIException;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierAspect;
@@ -15,6 +11,10 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 public class ModFortify extends ToolModifier {
 
@@ -24,8 +24,7 @@ public class ModFortify extends ToolModifier {
         super("fortify" + material.identifier, material.materialTextColor);
 
         if (!material.hasStats(MaterialStatusType.HEAD)) {
-            // throw new TinkerAPIException(String.format("Trying to add a fortify-modifier for a material without tool
-            // stats: %s", material.getIdentifier()));
+             throw new TinkerAPIException(String.format("Trying to add a fortify-modifier for a material without tool stats: %s", material.identifier));
         }
 
         this.material = material;
@@ -48,6 +47,10 @@ public class ModFortify extends ToolModifier {
     public String getLocalizedDesc() {
         return String
             .format(TinkersRebornUtils.translate(String.format(LOC_Desc, "fortify")), material.localizedName());
+    }
+    
+    public static String getModifierName(){
+	return TinkersRebornUtils.translate(String.format(LOC_Name, "fortify"));
     }
 
     @Override
