@@ -532,7 +532,7 @@ modifier.fins.text=Let's take a fish... and strap it onto arrows. Of course! It 
 modifier.fins.effect=Projectiles ignore water\nLogical\nMakes sense
 
 // aspect
-modifier.aspect.needFreeModifier=Need free %s modifier each time
+modifier.aspect.needFreeModifier=Need %s free modifier each time
 modifier.aspect.multiLevel=Can apply %s times
 modifier.aspect.category=Can apply to %s
 modifier.aspect.single=Single apply
