@@ -78,6 +78,22 @@ public class ManualItem extends Item {
         }
     }
 
+    public ItemStack getNewManual(String name) {
+        // materialsandyou
+        ItemStack newBook = new ItemStack(this);
+        ManualBookData bookData = TinkersRebornManualDataBase.getBooks()
+            .get(name);
+        if (bookData != null) {
+            ManualBookDefinition bookDefinition = bookData.getDefinition();
+            NBTTagCompound newTag = new NBTTagCompound();
+            newTag.setInteger("color", bookDefinition.getColor());
+            newTag.setString("title", bookDefinition.getTitle());
+            newTag.setString("tooltip", bookDefinition.getTooltip());
+            newBook.setTagCompound(newTag);
+        }
+        return newBook;
+    }
+
     @Override
     public void registerIcons(IIconRegister register) {
         this.book = register.registerIcon("tinkersreborn:tinkerbook");
