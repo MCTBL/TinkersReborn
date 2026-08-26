@@ -801,7 +801,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             list.add(
                 String.format(
                     "%s: %s",
-                    HeadMaterialStats.LOC_Durability,
+                    TinkersStr.durability,
                     ColorUtil.addDarkRed(ColorUtil.addUnderLine(TinkersStr.broken.toString()))));
         } else {
             list.add(

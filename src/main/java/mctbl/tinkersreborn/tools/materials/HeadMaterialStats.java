@@ -15,16 +15,6 @@ import mctbl.tinkersreborn.util.TinkersStr;
 
 public class HeadMaterialStats extends AbstractMaterialStats {
 
-    public final static String LOC_Durability = TinkersStr.durability.toString();
-    public final static String LOC_MiningSpeed = TinkersStr.miningSpeed.toString();
-    public final static String LOC_Attack = TinkersStr.attack.toString();
-    public final static String LOC_HarvestLevel = TinkersStr.harvestLevel.toString();
-
-    public final static String LOC_DurabilityDesc = TinkersStr.durabilityDesc.toString();
-    public final static String LOC_MiningSpeedDesc = TinkersStr.miningSpeedDesc.toString();
-    public final static String LOC_AttackDesc = TinkersStr.attackDesc.toString();
-    public final static String LOC_HarvestLevelDesc = TinkersStr.harvestLevelDesc.toString();
-
     private int durability; // usually between 1 and 1000
     private int harvestLevel; // see MiningLevelHelper class
     private float attack; // usually between 0 and 10 (in 1/2 hearts, so divide by 2 for damage in hearts)
@@ -79,17 +69,20 @@ public class HeadMaterialStats extends AbstractMaterialStats {
     public List<String> getLocalizedDesc() {
         List<String> info = new ArrayList<>();
 
-        if (durability != 0) info.add(LOC_DurabilityDesc);
-        info.add(LOC_HarvestLevelDesc);
-        if (miningspeed != 0) info.add(LOC_MiningSpeedDesc);
-        if (attack != 0) info.add(LOC_AttackDesc);
+        if (durability != 0) info.add(TinkersStr.durabilityDesc.toString());
+        info.add(TinkersStr.harvestLevelDesc.toString());
+        if (miningspeed != 0) info.add(TinkersStr.miningSpeedDesc.toString());
+        if (attack != 0) info.add(TinkersStr.attackDesc.toString());
 
         return info;
     }
 
     public static String formatHarvestLevel(int harvestLevel) {
         MiningLevel miningLevel = MiningLevelHelper.getMiningLevel(harvestLevel);
-        return format(LOC_HarvestLevel, ColorUtil.encodeColor(miningLevel.color), miningLevel.getLocalization());
+        return format(
+            TinkersStr.harvestLevel.toString(),
+            ColorUtil.encodeColor(miningLevel.color),
+            miningLevel.getLocalization());
     }
 
     public static String harvestLevel(int harvestLevel) {
@@ -98,19 +91,22 @@ public class HeadMaterialStats extends AbstractMaterialStats {
     }
 
     public static String formatDurability(int durability) {
-        return format(LOC_Durability, COLOR_Durability, durability);
+        return format(TinkersStr.durability.toString(), COLOR_Durability, durability);
     }
 
     public static String formatDurability(int durability, int maxDurability) {
-        return String.format("%s: %s", LOC_Durability, ColorUtil.formatPartialAmount(durability, maxDurability));
+        return String.format(
+            "%s: %s",
+            TinkersStr.durability.toString(),
+            ColorUtil.formatPartialAmount(durability, maxDurability));
     }
 
     public static String formatMiningSpeed(float miningspeed) {
-        return format(LOC_MiningSpeed, COLOR_Speed, miningspeed);
+        return format(TinkersStr.miningSpeed.toString(), COLOR_Speed, miningspeed);
     }
 
     public static String formatAttack(float attack) {
-        return format(LOC_Attack, COLOR_Attack, attack);
+        return format(TinkersStr.attack.toString(), COLOR_Attack, attack);
     }
 
     @Override

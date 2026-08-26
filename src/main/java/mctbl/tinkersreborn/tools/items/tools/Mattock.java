@@ -108,7 +108,7 @@ public class Mattock extends HarvestTool {
             list.add(
                 String.format(
                     "%s: %s",
-                    HeadMaterialStats.LOC_Durability,
+                    TinkersStr.durability,
                     ColorUtil.addDarkRed(ColorUtil.addUnderLine(TinkersStr.broken.toString()))));
         } else {
             list.add(
