@@ -182,8 +182,8 @@ public class TinkersRebornModifiers {
         // === Skeleton (normal = skull:0, wither = skull:1) ===
         // 1.7.10 uses getSkeletonType() to differentiate: 0 = normal, 1 = wither
         TinkersRebornRegistry.registerHeadDrop(EntitySkeleton.class, entity -> {
-            if (entity instanceof EntitySkeleton) {
-                int type = ((EntitySkeleton) entity).getSkeletonType();
+            if (entity instanceof EntitySkeleton sele) {
+                int type = sele.getSkeletonType();
                 return new ItemStack(Items.skull, 1, type == 1 ? 1 : 0);
             }
             return new ItemStack(Items.skull, 1, 0);
@@ -201,9 +201,9 @@ public class TinkersRebornModifiers {
         // === Player → player head (skull:3, writes SkullOwner NBT for player identity) ===
         TinkersRebornRegistry.registerHeadDrop(EntityPlayerMP.class, entity -> {
             ItemStack stack = new ItemStack(Items.skull, 1, 3);
-            if (entity instanceof EntityPlayer) {
+            if (entity instanceof EntityPlayer player) {
                 NBTTagCompound ownerTag = new NBTTagCompound();
-                ownerTag.setString("Name", ((EntityPlayer) entity).getDisplayName());
+                ownerTag.setString("Name", player.getDisplayName());
                 stack.setTagInfo("SkullOwner", ownerTag);
             }
             return stack;

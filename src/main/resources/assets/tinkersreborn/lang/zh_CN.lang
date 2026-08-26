@@ -227,9 +227,9 @@ tinkersreborn.tool.arrow.desc=箭矢是弓所用的弹药。一个箭矢可以�
 tinkersreborn.tool.bolt=弩箭
 tinkersreborn.tool.bolt.desc=弩箭是十字弓所用的弹药。一个弩箭可以多次发射，并且它也可以像其他工具一样被强化。\n有几率能穿透敌人的装甲。
 tinkersreborn.tool.shortbow=短弓
-tinkersreborn.tool.shortbow.desc=短弓是种远程武器。向敌人快速精准地射出箭矢。\n使用匠魂的箭。
+tinkersreborn.tool.shortbow.desc=短弓是一种快速而灵活的武器，使用者在快速射箭的同时还能维持迅捷的移动。\n使用匠魂的箭。
 tinkersreborn.tool.longbow=长弓
-tinkersreborn.tool.longbow.desc=长弓是一个有力的远程武器。它能提供更高的伤害，但是射程要比短弓短。\n使用匠魂的箭。
+tinkersreborn.tool.longbow.desc=长弓是一种强劲的长射程武器，比起它较为短小的兄弟，它的伤害更高，但灵活性有所欠缺。\n使用匠魂的箭。
 tinkersreborn.tool.crossbow=十字弓
 tinkersreborn.tool.crossbow.desc=十字弓是一个装填速度缓慢但威力强劲的武器。它可以事先通过右键来装填好，之后任意时刻就可以直接发射。\n使用匠魂的弩箭。
 
