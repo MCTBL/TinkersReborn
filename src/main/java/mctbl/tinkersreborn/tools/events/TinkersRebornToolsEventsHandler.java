@@ -30,9 +30,9 @@ public class TinkersRebornToolsEventsHandler {
             // use this to prevent vailnila durability display
 
             for (int idx = e.toolTip.size() - 1; idx >= 0; idx--) {
-                if (e.toolTip.get(idx)
-                    .startsWith("Durability: ")) {
-                    e.toolTip.remove(e.toolTip.get(idx));
+                String tempStr = e.toolTip.get(idx);
+                if (tempStr != null && tempStr.startsWith("Durability: ")) {
+                    e.toolTip.remove(tempStr);
                     break;
                 }
             }
