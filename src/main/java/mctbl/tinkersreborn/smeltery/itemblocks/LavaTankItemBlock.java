@@ -1,7 +1,5 @@
 package mctbl.tinkersreborn.smeltery.itemblocks;
 
-import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
-
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -32,8 +30,9 @@ public class LavaTankItemBlock extends TinkersRebornItemBlock implements IFluidC
             NBTTagCompound liquidTag = stack.getTagCompound()
                 .getCompoundTag("Fluid");
             if (liquidTag != null) {
-                list.add(TinkersStr.tankToolToip1 + " " + translate(liquidTag.getString("FluidName")));
-                list.add(liquidTag.getInteger("Amount") + " " + TinkersRebornConfig.fluidUnit);
+                FluidStack fluidStack = FluidStack.loadFluidStackFromNBT(liquidTag);
+                list.add(TinkersStr.tankToolToip1 + " " + fluidStack.getLocalizedName());
+                list.add(fluidStack.amount + " " + TinkersRebornConfig.fluidUnit);
             }
         } else {
             list.add(TinkersStr.tankToolToip2.toString());

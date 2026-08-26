@@ -22,6 +22,8 @@ public interface IToolMod {
     /** Extra info to display in the tool station. Each entry adds a line. */
     List<String> getExtraInfo(ItemStack tool, NBTTagCompound modifierTag);
 
+    int getColor();
+
     /**
      * Return true to hide the trait from the user.
      * Useful for internal stuff.

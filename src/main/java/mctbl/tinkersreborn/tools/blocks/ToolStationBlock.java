@@ -15,8 +15,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.ToolStationLogic;
-import mctbl.tinkersreborn.tools.model.TableRender;
 
 public class ToolStationBlock extends TinkersRebornInventoryBlock implements ITinkersToolStationBlock {
 
@@ -83,7 +83,7 @@ public class ToolStationBlock extends TinkersRebornInventoryBlock implements ITi
 
     @Override
     public int getRenderType() {
-        return TableRender.model;
+        return TinkersRebornTools.proxy.getTableRenderId();
     }
 
     @Override

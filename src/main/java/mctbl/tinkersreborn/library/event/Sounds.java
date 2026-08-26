@@ -19,11 +19,17 @@ public class Sounds {
     public static final String saw = sound("little_saw");
     public static final String sizzle = sound("sizzle");
     public static final String sweep = sound("sweep");
+    public static final String crit_hit = sound("crit");
 
     public static final String stone_hit = sound("stone_hit");
     public static final String wood_hit = sound("wood_hit");
 
     public static final String crossbow_reload = sound("crossbow_reload");
+    public static final String chime = sound("chime");
+
+    public static final String toy_squeak = sound("toy_squeak");
+    public static final String nodamage = sound("nodamage");
+    public static final String turn_page = sound("turn_page");
 
     private static String sound(String name) {
         String soundName = TinkersReborn.MODID + ":" + name;

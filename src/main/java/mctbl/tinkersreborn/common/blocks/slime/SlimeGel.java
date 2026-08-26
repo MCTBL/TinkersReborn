@@ -42,18 +42,18 @@ public class SlimeGel extends TinkersRebornBlock {
     public void onEntityCollidedWithBlock(World world, int x, int y, int z, Entity entity) {
         if (entity.motionY < 0) {
             if (entity.motionY < -0.08F) {
-                Block var9 = this;
+                Block block = this;
                 world.playSoundEffect(
                     x + 0.5F,
                     y + 0.5F,
                     z + 0.5F,
-                    var9.stepSound.soundName,
-                    (var9.stepSound.getVolume()) / 2.0F,
-                    var9.stepSound.getPitch() * 0.65F);
+                    block.stepSound.getStepResourcePath(),
+                    (block.stepSound.getVolume()) / 2.0F,
+                    block.stepSound.getPitch() * 0.65F);
             }
             entity.motionY *= -1.2F;
-            if (entity instanceof EntityLivingBase) {
-                ((EntityLivingBase) entity).addPotionEffect(new PotionEffect(Potion.jump.id, 1, 2));
+            if (entity instanceof EntityLivingBase entityLiving) {
+                entityLiving.addPotionEffect(new PotionEffect(Potion.jump.id, 1, 2));
             }
         }
         entity.fallDistance = 0;

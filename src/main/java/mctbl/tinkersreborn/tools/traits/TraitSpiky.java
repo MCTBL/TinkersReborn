@@ -9,6 +9,8 @@ import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
+import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.particle.TinkersRebornParticle;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -47,14 +49,14 @@ public class TraitSpiky extends AbstractTrait {
 
             int oldHurtResistantTime = target.hurtResistantTime;
             if (attackEntitySecondary(damageSource, damage, target, true, false)) {
-                // TinkerTools.proxy.spawnEffectParticle(ParticleEffect.Type.HEART_CACTUS, target, 1);
+                TinkersReborn.proxy.spawnEffectParticle(TinkersRebornParticle.Type.HEART_CACTUS, target, 1);
             }
             target.hurtResistantTime = oldHurtResistantTime; // reset to old time
         }
     }
 
-    private boolean isThornsDamage(DamageSource damageSource) {
-        return damageSource instanceof EntityDamageSource
-            && ((EntityDamageSource) damageSource).damageType.equals("thorns");
+    public static boolean isThornsDamage(DamageSource damageSource) {
+        return damageSource instanceof EntityDamageSource eds
+            && (eds.damageType.equals("thorns") || eds.damageType.equals("cactus"));
     }
 }

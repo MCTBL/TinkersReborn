@@ -1,0 +1,226 @@
+package mctbl.tinkersreborn.library.manuals;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.item.ItemStack;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+
+import com.google.gson.JsonObject;
+
+import mctbl.tinkersreborn.common.TinkersRebornGeneralProxyClient;
+import mctbl.tinkersreborn.library.gui.GuiManual;
+
+public abstract class AbstractManualPage {
+
+    public static class RenderStack {
+
+        private final ItemStack stack;
+        private final int x;
+        private final int y;
+        private final float scale;
+
+        public RenderStack(ItemStack stack, int x, int y) {
+            this.stack = stack;
+            this.x = x;
+            this.y = y;
+            this.scale = 1.0F;
+        }
+
+        public RenderStack(ItemStack stack, int x, int y, float scale) {
+            this.stack = stack;
+            this.x = x;
+            this.y = y;
+            this.scale = scale;
+        }
+
+        public ItemStack getStack() {
+            return stack;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public float getScale() {
+            return scale;
+        }
+    }
+
+    public static class RenderString {
+
+        private final int x;
+        private final int y;
+        private final int w;
+        private final int h;
+        private final List<String> toolTip;
+
+        /**
+         * @param x
+         * @param y
+         * @param w
+         * @param h
+         * @param toolTip
+         */
+        public RenderString(int x, int y, int w, int h, String toolTip) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.toolTip = Arrays.asList(toolTip.split("\\\\n"));
+        }
+
+        public RenderString(int x, int y, int w, int h, List<String> toolTip) {
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.toolTip = toolTip;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public int getW() {
+            return w;
+        }
+
+        public int getH() {
+            return h;
+        }
+
+        public List<String> getToolTip() {
+            return toolTip;
+        }
+    }
+
+    public static FontRenderer fontRender = TinkersRebornGeneralProxyClient.manualFontRender;
+
+    public static final int contentWidth = 180;
+    public static final int contentHeight = 165;
+
+    protected final String name;
+    protected final List<RenderStack> renderStacks = new ArrayList<>();
+    protected final List<RenderString> renderString = new ArrayList<>();
+
+    protected AbstractManualPage(JsonObject json) {
+        this.name = json.has("name") ? json.get("name")
+            .getAsString() : null;
+    }
+
+    public void renderPage(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
+        int manualTicks, GuiManual manual) {
+        this.renderStacks.clear();
+        this.renderString.clear();
+        this.renderBackgroundLayer(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
+        this.renderContentLayer(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
+    }
+
+    public void renderBackgroundLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
+        int manualTicks, GuiManual manual) {}
+
+    public abstract void renderContentLayer(int pageX, int pageY, int manualMouseX, int manualMouseY,
+        float partialTicks, int manualTicks, GuiManual manual);
+
+    public abstract void setupTranslate();
+
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton, GuiManual manual) {}
+
+    public void drawToolTips(int mouseX, int mouseY, int manualX, int manualY, GuiManual manual) {
+        for (RenderStack s : this.renderStacks) {
+            if (s.getX() <= manualX && manualX <= s.getX() + 16 * s.getScale()
+                && s.getY() <= manualY
+                && manualY <= s.getY() + 16 * s.getScale()) {
+                ItemStack stack = s.getStack();
+                FontRenderer render = stack.getItem()
+                    .getFontRenderer(stack);
+                manual.drawHoveringText(
+                    stack.getTooltip(manual.mc.thePlayer, false),
+                    mouseX,
+                    mouseY,
+                    render == null ? fontRender : render);
+            }
+        }
+        for (RenderString s : this.renderString) {
+            if (s.getX() <= manualX && manualX <= s.getX() + s.getW()
+                && s.getY() <= manualY
+                && manualY <= s.getY() + s.getH()) {
+                manual.drawHoveringText(s.getToolTip(), mouseX, mouseY, fontRender);
+            }
+        }
+    }
+
+    protected void drawStrCenterAt(String str, int x, int y) {
+        this.drawStrCenterAt(str, x, y, 1.0F, 0x000000, false);
+    }
+
+    protected void drawStrCenterAt(String str, int x, int y, int color) {
+        this.drawStrCenterAt(str, x, y, 1.0F, color, false);
+    }
+
+    protected void drawStrCenterAt(String str, int x, int y, int color, boolean shadow) {
+        this.drawStrCenterAt(str, x, y, 1.0F, color, shadow);
+    }
+
+    protected void drawStrCenterAt(String str, int x, int y, float scale) {
+        this.drawStrCenterAt(str, x, y, scale, 0x000000, false);
+    }
+
+    protected void drawStrCenterAt(String str, int x, int y, float scale, int color, boolean shadow) {
+        fontRender.drawString(
+            str,
+            (int) (x / scale - fontRender.getStringWidth(str) * 1.0F / 2),
+            (int) ((y - fontRender.FONT_HEIGHT * 1.0F / 2) / scale),
+            color,
+            shadow);
+    }
+
+    protected void setUpForRenderItem() {
+        this.setUpForRenderItem(2.0F);
+    }
+
+    protected void setUpForRenderItem(float scale) {
+        GL11.glPushMatrix();
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glScalef(scale, scale, 1.0F);
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        RenderHelper.enableGUIStandardItemLighting();
+    }
+
+    protected void backUpForRenderItem() {
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GL11.glPopAttrib();
+        GL11.glPopMatrix();
+    }
+
+    protected void renderItemStackIntoPage(ItemStack stack, int x, int y, GuiManual manual) {
+        FontRenderer fontRenderer = fontRender;
+        TextureManager renderEngine = manual.mc.getTextureManager();
+
+        GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+        GL11.glPushMatrix();
+        manual.renderItem.zLevel = 100;
+        manual.renderItem.renderItemAndEffectIntoGUI(fontRenderer, renderEngine, stack, x, y);
+        if (stack.stackSize > 1) manual.renderItem
+            .renderItemOverlayIntoGUI(fontRenderer, renderEngine, stack, x, y, String.valueOf(stack.stackSize));
+        manual.renderItem.zLevel = 0;
+        GL11.glPopMatrix();
+        GL11.glPopAttrib();
+    }
+}

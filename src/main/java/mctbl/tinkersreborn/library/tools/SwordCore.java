@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 
 import com.google.common.collect.ImmutableSet;
 
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.tools.Category;
 
 public abstract class SwordCore extends ToolCore {
@@ -19,6 +20,7 @@ public abstract class SwordCore extends ToolCore {
     protected SwordCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
         this.categoryTags.add(Category.WEAPON);
+        this.setCreativeTab(TinkersRebornRegistry.weaponsTab);
 
         // extended compatibility
         this.setHarvestLevel("sword", 0);

@@ -1,8 +1,7 @@
 package mctbl.tinkersreborn.library.gui;
 
-import javax.annotation.Nonnull;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
@@ -32,7 +31,7 @@ public class GuiButtonItem<T> extends GuiButton {
 
     private GuiMultiModule parent;
 
-    public GuiButtonItem(int buttonId, int x, int y, String displayName, @Nonnull T data, GuiMultiModule parent) {
+    public GuiButtonItem(int buttonId, int x, int y, String displayName, T data, GuiMultiModule parent) {
         super(buttonId, x, y, 18, 18, displayName);
 
         this.icon = null;
@@ -40,7 +39,7 @@ public class GuiButtonItem<T> extends GuiButton {
         this.parent = parent;
     }
 
-    public GuiButtonItem(int buttonId, int x, int y, ItemStack icon, @Nonnull T data, GuiMultiModule parent) {
+    public GuiButtonItem(int buttonId, int x, int y, ItemStack icon, T data, GuiMultiModule parent) {
         super(buttonId, x, y, 18, 18, icon.getDisplayName());
 
         this.icon = icon;
@@ -86,6 +85,8 @@ public class GuiButtonItem<T> extends GuiButton {
 
             drawIcon(mc);
         }
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glDisable(GL11.GL_BLEND);
     }
 
     protected void drawIcon(Minecraft mc) {
@@ -99,6 +100,8 @@ public class GuiButtonItem<T> extends GuiButton {
             } else {
                 parent.renderItemIntoGui(icon, xPosition + 1, yPosition + 1);
             }
+        } else {
+            Gui.func_146110_a(xPosition, yPosition, 54, 0, 18, 18, 256, 256);
         }
     }
 }

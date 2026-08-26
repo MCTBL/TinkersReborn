@@ -40,34 +40,51 @@ import static mctbl.tinkersreborn.tools.TinkersRebornTraits.slimeyGreen;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.spiky;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.splintering;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.splitting;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.squeaky;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.stiff;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.stonebound;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.tasty;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.writable;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.writable2;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
+import net.minecraft.util.WeightedRandomChestContent;
+import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.crafting.SharpeningKitRepairRecipe;
+import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.utils.MiningLevelHelper;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.utils.MaterialIntegration;
 import mctbl.tinkersreborn.tools.blocks.CastChestBlock;
@@ -76,12 +93,21 @@ import mctbl.tinkersreborn.tools.blocks.PartBuilderBlock;
 import mctbl.tinkersreborn.tools.blocks.PartChestBlock;
 import mctbl.tinkersreborn.tools.blocks.ToolForgeBlock;
 import mctbl.tinkersreborn.tools.blocks.ToolStationBlock;
+import mctbl.tinkersreborn.tools.config.TinkersRebornHarvestLevelConfig;
+import mctbl.tinkersreborn.tools.config.TinkersRebornMaterialConfig;
 import mctbl.tinkersreborn.tools.entity.CastChestLogic;
 import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
+import mctbl.tinkersreborn.tools.entity.EntityArrow;
+import mctbl.tinkersreborn.tools.entity.EntityBolt;
 import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
 import mctbl.tinkersreborn.tools.entity.ToolForgeLogic;
 import mctbl.tinkersreborn.tools.entity.ToolStationLogic;
+import mctbl.tinkersreborn.tools.events.TinkersRebornToolsEventsHandler;
+import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaBowNerfHandler;
+import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaHoeNerfHandler;
+import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaSwordNerfHandler;
+import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaToolNerfEvent;
 import mctbl.tinkersreborn.tools.itemblocks.CastChestItemBlock;
 import mctbl.tinkersreborn.tools.itemblocks.PartBuilderItemBlock;
 import mctbl.tinkersreborn.tools.itemblocks.PartChestItemBlock;
@@ -112,7 +138,7 @@ import mctbl.tinkersreborn.tools.items.tools.Rapier;
 import mctbl.tinkersreborn.tools.items.tools.Scythe;
 import mctbl.tinkersreborn.tools.items.tools.ShortBow;
 import mctbl.tinkersreborn.tools.items.tools.Shovel;
-import mctbl.tinkersreborn.tools.items.tools.Vinehammer;
+import mctbl.tinkersreborn.tools.items.tools.Veinhammer;
 import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
@@ -128,6 +154,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         clientSide = "mctbl.tinkersreborn.tools.TinkersRebornToolsProxyClient",
         serverSide = "mctbl.tinkersreborn.tools.TinkersRebornToolsProxyCommon")
     public static TinkersRebornToolsProxyCommon proxy;
+
+    public static Set<Item> toolWhitelist = new HashSet<>();
 
     // Crafting blocks
     public static Block toolStation;
@@ -189,7 +217,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore lumberAxe;
     public static ToolCore scythe;
     public static ToolCore cleaver;
-    public static ToolCore vineHammer;
+    public static ToolCore veinHammer;
 
     public static ToolCore broadSword;
     public static ToolCore longSword;
@@ -203,6 +231,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     // other items
     public static Item paperStack;
+    public static Item bloodyBone;
     public static Item slimeCrystal;
     public static Item searedBrick;
     public static Item cobaltIngot;
@@ -264,6 +293,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornFluid leadFluid;
     public static TinkersRebornFluid emeraldFluid;
     public static TinkersRebornFluid aluminumFluid;
+    public static TinkersRebornFluid alubrassFluid;
+    public static TinkersRebornFluid stoneFluid;
 
     public static TinkersRebornMaterial woodMaterial;
     public static TinkersRebornMaterial stoneMaterial;
@@ -285,6 +316,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornMaterial blueSlimeMaterial;
     public static TinkersRebornMaterial pigIronMaterial;
     public static TinkersRebornMaterial endStoneMaterial;
+    public static TinkersRebornMaterial spongeMaterial;
 
     public static TinkersRebornMaterial leadMaterial;
     public static TinkersRebornMaterial silverMaterial;
@@ -308,7 +340,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ItemStack castShard;
     public static ItemStack castIngot;
     public static ItemStack castNugget;
-    // public static ItemStack castGem;
+    public static ItemStack castGem;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -317,8 +349,6 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         FMLCommonHandler.instance()
             .bus()
             .register(tre);
-
-        MinecraftForge.EVENT_BUS.register(new TinkersRebornProjectileRenderEvents());
 
         toolStation = new ToolStationBlock();
         GameRegistry.registerBlock(toolStation, ToolStationItemBlock.class, toolStation.getUnlocalizedName());
@@ -350,7 +380,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         arrowShaft = new TinkersRebornToolPart("arrow_shaft", "ArrowShaft", VALUE_Ingot * 2, MaterialStatusType.SHAFT);
         axeHead = new TinkersRebornToolPart("axe_head", "AxeHead", VALUE_Ingot * 2);
         battlesignHead = new TinkersRebornToolPart("battlesign_head", "SignHead", VALUE_Ingot * 3);
-        binding = new TinkersRebornToolPart("binding", "Binding", VALUE_Ingot);
+        binding = new TinkersRebornToolPart("binding", "Binding", VALUE_Ingot, MaterialStatusType.EXTRA);
         bowLimb = new TinkersRebornToolPart("bow_limb", "BowLimb", VALUE_Ingot * 3, MaterialStatusType.BOW);
         chiselHead = new TinkersRebornToolPart("chisel_head", "ChiselHead", VALUE_Ingot * 2);
         crossbar = new TinkersRebornToolPart("crossbar", "Crossbar", VALUE_Ingot);
@@ -371,14 +401,14 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         lumberaxeHead = new TinkersRebornToolPart("lumberaxe_head", "LumberAxeHead", VALUE_Ingot * 8);
         mediumGuard = new TinkersRebornToolPart("medium_guard", "MediumGuard", VALUE_Ingot);
         pickaxeHead = new TinkersRebornToolPart("pickaxe_head", "PickaxeHead", VALUE_Ingot * 2);
-        rod = new TinkersRebornToolPart("rod", "ToolRod", VALUE_Ingot);
+        rod = new TinkersRebornToolPart("rod", "ToolRod", VALUE_Ingot, MaterialStatusType.HANDLE);
         scytheHead = new TinkersRebornToolPart("scythe_head", "ScytheHead", VALUE_Ingot * 8);
         shard = new TinkersRebornToolPart("shard", "ToolShard", VALUE_Shard);
         shovelHead = new TinkersRebornToolPart("shovel_head", "ShovelHead", VALUE_Ingot * 2);
         shuriken = new TinkersRebornToolPart("shuriken", "Shuriken", VALUE_Ingot * 2);
         swordBlade = new TinkersRebornToolPart("sword_blade", "SwordBlade", VALUE_Ingot * 2);
-        toughbind = new TinkersRebornToolPart("toughbind", "ToughBinding", VALUE_Ingot * 3);
-        toughrod = new TinkersRebornToolPart("toughrod", "ToughRod", VALUE_Ingot * 3);
+        toughbind = new TinkersRebornToolPart("toughbind", "ToughBinding", VALUE_Ingot * 3, MaterialStatusType.EXTRA);
+        toughrod = new TinkersRebornToolPart("toughrod", "ToughRod", VALUE_Ingot * 3, MaterialStatusType.HANDLE);
         kamaHead = new TinkersRebornToolPart("kama_head", "KamaHead", VALUE_Ingot * 2);
         sharpeningKit = new SharpeningKit("sharpening_kit", "SharpeningKit");
         bowString = new BowString();
@@ -408,7 +438,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         patternAndCast.addNewPatterntype(pickaxeHead);
         patternAndCast.addNewPatterntype(rod);
         patternAndCast.addNewPatterntype(scytheHead);
-        // patternAndCast.addNewPatterntype(shard);
+        patternAndCast.addNewPatterntype(shard);
         patternAndCast.addNewPatterntype(shovelHead);
         patternAndCast.addNewPatterntype(shuriken);
         patternAndCast.addNewPatterntype(swordBlade);
@@ -519,10 +549,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         TinkersRebornRegistry.registerTool(cleaver);
         TinkersRebornRegistry.registerToolForgeCrafting(cleaver);
 
-        vineHammer = new Vinehammer();
-        GameRegistry.registerItem(vineHammer, vineHammer.getUnlocalizedName());
-        TinkersRebornRegistry.registerTool(vineHammer);
-        TinkersRebornRegistry.registerToolForgeCrafting(vineHammer);
+        veinHammer = new Veinhammer();
+        GameRegistry.registerItem(veinHammer, veinHammer.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(veinHammer);
+        TinkersRebornRegistry.registerToolForgeCrafting(veinHammer);
 
         arrow = new Arrow();
         GameRegistry.registerItem(arrow, arrow.getUnlocalizedName());
@@ -559,6 +589,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         reinforcement = new MaterialItem("Reinforcement", "reinforcement");
 
         paperStack = new MaterialItem("PaperStack", "paperstack");
+        bloodyBone = new MaterialItem("BloodyBone", "bloodybone");
         searedBrick = new MaterialItem("SearedBrick", "searedbrick");
         cobaltIngot = new MaterialItem("CobaltIngot", "cobaltingot");
         arditeIngot = new MaterialItem("ArditeIngot", "arditeingot");
@@ -603,6 +634,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(silkyJewel, silkyJewel.getUnlocalizedName());
         GameRegistry.registerItem(necroticBone, necroticBone.getUnlocalizedName());
         GameRegistry.registerItem(reinforcement, reinforcement.getUnlocalizedName());
+        GameRegistry.registerItem(bloodyBone, bloodyBone.getUnlocalizedName());
         GameRegistry.registerItem(paperStack, paperStack.getUnlocalizedName());
         GameRegistry.registerItem(searedBrick, searedBrick.getUnlocalizedName());
         GameRegistry.registerItem(cobaltIngot, cobaltIngot.getUnlocalizedName());
@@ -640,9 +672,14 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(patternAndCast, patternAndCast.getUnlocalizedName());
 
         this.oreDictRegistry();
-        MiningLevelHelper.init();
+        MiningLevelHelper.preInit();
 
         TinkersRebornModifiers.INSTANCE.preInit(e);
+
+        EntityRegistry.registerModEntity(EntityArrow.class, "arrow", 10, TinkersReborn.instance, 64, 1, false);
+        EntityRegistry.registerModEntity(EntityBolt.class, "bolt", 11, TinkersReborn.instance, 64, 1, false);
+
+        proxy.preInit();
     }
 
     @Override
@@ -654,18 +691,25 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         castShard = Pattern.newStackWithToolPart(shard);
         castIngot = Pattern.newStackWithIdentifier(Pattern.CAST_INGOT);
         castNugget = Pattern.newStackWithIdentifier(Pattern.CAST_NUGGET);
+        castGem = Pattern.newStackWithIdentifier(Pattern.CAST_GEM);
 
         TinkersRebornRegistry.getMaterialIntegrations()
             .forEach(MaterialIntegration::preInit);
 
         TinkersRebornRegistry.addFluidForCast();
 
-        proxy.initialize();
+        this.registerCraftingRecipes();
+
+        proxy.init();
     }
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
         TinkersRebornModifiers.INSTANCE.postInit(e);
+
+        TinkersRebornRegistry.getMaterialIntegrations()
+            .forEach(MaterialIntegration::integrate);
+        TinkersRebornRegistry.removeHiddenMaterial();
 
         if (shard != null) {
             for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
@@ -674,8 +718,68 @@ public class TinkersRebornTools implements ITinkersRebornModule {
                 material.setShard(shardStack);
             }
         }
-        TinkersRebornRegistry.getMaterialIntegrations()
-            .forEach(MaterialIntegration::integrate);
+        TinkersRebornRegistry.registerGemMeltingCasting(emeraldFluid, "Emerald", castGem);
+        TinkersRebornRegistry.registerMelting(new ItemStack(Blocks.stone), stoneFluid, 18);
+        TinkersRebornRegistry.registerMelting(new ItemStack(Blocks.cobblestone), stoneFluid, 18);
+
+        TinkersRebornMaterialConfig.postInit();
+        TinkersRebornHarvestLevelConfig.postInit();
+        if (TinkersRebornConfig.nerfVanillaTools) {
+            findToolsFromConfig();
+
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaToolNerfEvent());
+
+            // replace vanilla tools with tinker tools in bonus chests
+            ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.wooden_pickaxe));
+            ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.wooden_axe));
+            ItemStack starterPick = ToolBuilderHelper.buildTool(
+                "Starter Pickaxe",
+                pickaxeHead.getNewPartWithMaterial(woodMaterial),
+                binding.getNewPartWithMaterial(woodMaterial),
+                rod.getNewPartWithMaterial(woodMaterial));
+            ItemStack starterAxe = ToolBuilderHelper.buildTool(
+                "Starter Hatchet",
+                axeHead.getNewPartWithMaterial(woodMaterial),
+                binding.getNewPartWithMaterial(woodMaterial),
+                rod.getNewPartWithMaterial(woodMaterial));
+            if (starterPick != null)
+                ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(starterPick, 1, 1, 5));
+            if (starterAxe != null)
+                ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(starterAxe, 1, 1, 5));
+
+            // same with stone tools
+            ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.stone_axe));
+            ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.stone_pickaxe));
+            ItemStack stonePick = ToolBuilderHelper.buildTool(
+                "Starter Pickaxe",
+                pickaxeHead.getNewPartWithMaterial(stoneMaterial),
+                binding.getNewPartWithMaterial(woodMaterial),
+                rod.getNewPartWithMaterial(woodMaterial));
+            ItemStack stoneAxe = ToolBuilderHelper.buildTool(
+                "Starter Hatchet",
+                axeHead.getNewPartWithMaterial(stoneMaterial),
+                binding.getNewPartWithMaterial(woodMaterial),
+                rod.getNewPartWithMaterial(woodMaterial));
+            if (stonePick != null)
+                ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(stonePick, 1, 1, 5));
+            if (stoneAxe != null)
+                ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(stoneAxe, 1, 1, 5));
+        }
+
+        // no hoes for you
+        if (TinkersRebornConfig.nerfVanillaHoes) {
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaHoeNerfHandler());
+        }
+
+        if (TinkersRebornConfig.nerfVanillaSwords) {
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaSwordNerfHandler());
+        }
+
+        if (TinkersRebornConfig.nerfVanillaBows) {
+            MinecraftForge.EVENT_BUS.register(new TinkersRebornVanillaBowNerfHandler());
+        }
+
+        proxy.postInit();
     }
 
     /**
@@ -686,6 +790,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         woodMaterial.addItem("stickWood", 1, VALUE_Shard);
         woodMaterial.addItem("plankWood", 1, VALUE_Ingot);
         woodMaterial.addItem("logWood", 1, VALUE_Ingot * 4);
+        woodMaterial.setRepresentativeItem(Blocks.planks);
         woodMaterial.addTrait(ecological);
 
         stoneMaterial = new TinkersRebornMaterial("Stone", 0x7F7F7F).setCraftable(true);
@@ -708,8 +813,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         cactusMaterial.addTrait(spiky);
 
         obsidianMaterial = new TinkersRebornMaterial("Obsidian", 0xAA7FF5).setCraftable(true);
-        obsidianFluid = TinkersRebornFluid
-            .createMolten(obsidianMaterial.identifier, obsidianMaterial.materialTextColor, obsidianMaterial.identifier);
+        obsidianFluid = TinkersRebornFluid.createMolten(
+            obsidianMaterial.identifier,
+            obsidianMaterial.materialTextColor,
+            obsidianMaterial.identifier,
+            350);
         obsidianMaterial.addItem("obsidian", 1, VALUE_Ingot);
         obsidianMaterial.setRepresentativeItem(Blocks.obsidian);
         obsidianMaterial.addTrait(duritos);
@@ -726,7 +834,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         endStoneMaterial.setRepresentativeItem(Blocks.end_stone);
         endStoneMaterial.addTrait(alien, MaterialStatusType.HEAD);
         endStoneMaterial.addTrait(enderference);
-        endStoneMaterial.addTrait(enderference, MaterialStatusType.PROJECTILE);
+
+        spongeMaterial = new TinkersRebornMaterial("Sponge", 0xCACC4E).setCraftable(true);
+        spongeMaterial.addItem(Blocks.sponge, VALUE_Ingot);
+        spongeMaterial.setRepresentativeItem(Blocks.sponge);
+        spongeMaterial.addTrait(squeaky);
 
         boneMaterial = new TinkersRebornMaterial("Bone", 0xEDEBCA).setCraftable(true);
         boneMaterial.addItem("bone", 1, VALUE_Ingot);
@@ -738,17 +850,20 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         boneMaterial.addTrait(fractured);
 
         paperMaterial = new TinkersRebornMaterial("Paper", 0xFFFFFF).setCraftable(true);
-        paperMaterial.addItem("paper", 1, VALUE_Fragment);
+        paperMaterial.addItem(Items.paper, 1, VALUE_Fragment);
+        paperMaterial.addItem(paperStack, 1, VALUE_Ingot);
         paperMaterial.setRepresentativeItem(Items.paper);
         paperMaterial.addTrait(writable2, MaterialStatusType.HEAD);
         paperMaterial.addTrait(writable);
 
         slimeMaterial = new TinkersRebornMaterial("Slime", 0x6EB065).setCraftable(true);
-        slimeMaterial.addItem("slimecrystalGreen", 1, VALUE_Ingot);
+        slimeMaterial.addItem("slimeCrystalGreen", 1, VALUE_Ingot);
+        slimeMaterial.setRepresentativeItem(slimeCrystal);
         slimeMaterial.addTrait(slimeyGreen);
 
         blueSlimeMaterial = new TinkersRebornMaterial("BlueSlime", 0x66AEB0).setCraftable(true);
-        blueSlimeMaterial.addItem("slimecrystalBlue", 1, VALUE_Ingot);
+        blueSlimeMaterial.addItem("slimeCrystalBlue", 1, VALUE_Ingot);
+        blueSlimeMaterial.setRepresentativeItem(blueSlimeCrystal);
         blueSlimeMaterial.addTrait(slimeyBlue);
 
         ironMaterial = new TinkersRebornMaterial("Iron", 0xDADADA);
@@ -815,28 +930,28 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         alumiteMaterial.addCommonItems("Alumite");
         alumiteMaterial.addTrait(duritos);
 
-        steelMaterial = new TinkersRebornMaterial("Steel", 0xA0A0A0);
+        steelMaterial = new TinkersRebornMaterial("Steel", 0xA0A0A0, true);
         steelFluid = TinkersRebornFluid
             .createMolten(steelMaterial.identifier, steelMaterial.materialTextColor, steelMaterial.identifier, 681);
         steelMaterial.addCommonItems("Steel");
         steelMaterial.addTrait(sharp, MaterialStatusType.HEAD);
         steelMaterial.addTrait(stiff);
 
-        leadMaterial = new TinkersRebornMaterial("Lead", 0x4D4968);
+        leadMaterial = new TinkersRebornMaterial("Lead", 0x4D4968, true);
         leadFluid = TinkersRebornFluid
             .createMolten(leadMaterial.identifier, leadMaterial.materialTextColor, leadMaterial.identifier, 400);
         leadMaterial.addCommonItems("Lead");
         leadMaterial.addTrait(poisonous);
         leadMaterial.addTrait(heavy);
 
-        silverMaterial = new TinkersRebornMaterial("Silver", 0xD1ECF6);
+        silverMaterial = new TinkersRebornMaterial("Silver", 0xD1ECF6, true);
         silverFluid = TinkersRebornFluid
             .createMolten(silverMaterial.identifier, silverMaterial.materialTextColor, silverMaterial.identifier, 480);
         silverMaterial.addTrait(holy);
 
-        bloodBoneMaterial = new TinkersRebornMaterial("BloodBone", 0xC70000).setCraftable(true);
+        bloodBoneMaterial = new TinkersRebornMaterial("BloodyBone", 0xC70000).setCraftable(true);
         bloodBoneMaterial.addItem("boneBloodied", 1, VALUE_Ingot);
-        // bloodBoneMaterial.setRepresentativeItem(TinkerCommons.matBloodyBone);
+        bloodBoneMaterial.setRepresentativeItem(TinkersRebornTools.bloodyBone);
         bloodBoneMaterial.addTrait(raging2, MaterialStatusType.HEAD);
         bloodBoneMaterial.addTrait(splintering, MaterialStatusType.HEAD);
         bloodBoneMaterial.addTrait(raging);
@@ -882,7 +997,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         goldFluid = TinkersRebornFluid.createMolten("gold", 0xFFD700, "gold", 532);
         tinFluid = TinkersRebornFluid.createMolten("tin", 0xE6E6FA, "tin", 350);
         emeraldFluid = TinkersRebornFluid.createMolten("emerald", 0x17DD62, "emerald", 500);
-        aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xCCCCCC, "aluminum", 330);
+        aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xE88989, "aluminum", 330);
+        alubrassFluid = TinkersRebornFluid.createMolten("alubrass", 0xF0D467, "alubrass", 330);
+        stoneFluid = TinkersRebornFluid.createMolten("stone", 0x2B2B2B, "stone", 800);
 
         this.registerBaseMaterialsStats();
         this.registerBowMaterialsStats();
@@ -973,6 +1090,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             new HeadMaterialStats(420, 4, 3.23F, 3.23F),
             new HandleMaterialStats(0.85F, 0),
             new ExtraMaterialStats(42));
+        spongeMaterial.addStats(
+            new HeadMaterialStats(1050, 0, 0.0F, 0.51F),
+            new HandleMaterialStats(1.20f, 250),
+            new ExtraMaterialStats(250));
 
         leadMaterial.addStats(
             new HeadMaterialStats(434, 1, 3.5F, 5.25F),
@@ -1003,6 +1124,26 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     private void registerBowMaterialsStats() {
         woodMaterial.addStats(new BowMaterialStats(1f, 1f, 0));
+        cactusMaterial.addStats(new BowMaterialStats(1.05f, 0.9f, 0));
+        boneMaterial.addStats(new BowMaterialStats(0.95f, 1.15f, 0));
+        paperMaterial.addStats(new BowMaterialStats(1.5f, 0.4f, -2f));
+
+        slimeMaterial.addStats(new BowMaterialStats(0.85f, 1.3f, 0));
+        blueSlimeMaterial.addStats(new BowMaterialStats(1.05f, 1f, 0));
+
+        cobaltMaterial.addStats(new BowMaterialStats(0.75f, 1.3f, 3f));
+        arditeMaterial.addStats(new BowMaterialStats(0.45f, 0.8f, 1f));
+        manyullynMaterial.addStats(new BowMaterialStats(0.65f, 1.2f, 4f));
+        ironMaterial.addStats(new BowMaterialStats(0.5f, 1.5f, 7f));
+        pigIronMaterial.addStats(new BowMaterialStats(0.6f, 1.4f, 7f));
+        bloodBoneMaterial.addStats(new BowMaterialStats(0.95f, 1.15f, 0));
+        copperMaterial.addStats(new BowMaterialStats(0.6f, 1.45f, 5f));
+        bronzeMaterial.addStats(new BowMaterialStats(0.55f, 1.5f, 6f));
+        leadMaterial.addStats(new BowMaterialStats(0.4f, 1.3f, 3f));
+        silverMaterial.addStats(new BowMaterialStats(1.2f, 0.8f, 2f));
+        steelMaterial.addStats(new BowMaterialStats(0.4f, 2f, 9f));
+        alumiteMaterial.addStats(new BowMaterialStats(0.4f, 1.5f, 8f));
+        spongeMaterial.addStats(new BowMaterialStats(1.15f, 0.75f, 0));
     }
 
     private void registerMaterialIntegrations() {
@@ -1023,33 +1164,36 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(null, null, goldFluid, "Gold"));
         integrate(new MaterialIntegration(null, tinFluid, "Tin"));
         integrate(new MaterialIntegration(null, aluminumFluid, "Aluminum"));
+        integrate(new MaterialIntegration(null, alubrassFluid, "AluminumBrass"));
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.bloodFluid, null));
-        integrate(new MaterialIntegration(null, null, emeraldFluid, "Emerald"));
+        integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.enderFluid, null));
+        integrate(new MaterialIntegration(null, null, emeraldFluid, null));
 
-        integrate(new MaterialIntegration(woodMaterial, null, null));
-        integrate(new MaterialIntegration(stoneMaterial, null, null));
-        integrate(new MaterialIntegration(flintMaterial, null, null));
-        integrate(new MaterialIntegration(cactusMaterial, null, null));
-        integrate(new MaterialIntegration(boneMaterial, null, null));
-        integrate(new MaterialIntegration(netherrackMaterial, null, null));
-        integrate(new MaterialIntegration(endStoneMaterial, null, null));
-        integrate(new MaterialIntegration(paperMaterial, null, null));
-        integrate(new MaterialIntegration(slimeMaterial, null, null));
-        integrate(new MaterialIntegration(blueSlimeMaterial, null, null));
+        integrate(new MaterialIntegration(woodMaterial));
+        integrate(new MaterialIntegration(stoneMaterial, stoneFluid));
+        integrate(new MaterialIntegration(flintMaterial));
+        integrate(new MaterialIntegration(cactusMaterial));
+        integrate(new MaterialIntegration(boneMaterial));
+        integrate(new MaterialIntegration(netherrackMaterial));
+        integrate(new MaterialIntegration(endStoneMaterial));
+        integrate(new MaterialIntegration(spongeMaterial));
+        integrate(new MaterialIntegration(paperMaterial));
+        integrate(new MaterialIntegration(slimeMaterial));
+        integrate(new MaterialIntegration(blueSlimeMaterial));
 
-        integrate(new MaterialIntegration(stringMaterial, null, null));
-        integrate(new MaterialIntegration(vineMaterial, null, null));
-        integrate(new MaterialIntegration(slimeVineMaterial, null, null));
+        integrate(new MaterialIntegration(stringMaterial));
+        integrate(new MaterialIntegration(vineMaterial));
+        integrate(new MaterialIntegration(slimeVineMaterial));
 
-        integrate(new MaterialIntegration(blazeMaterial, null, null));
-        integrate(new MaterialIntegration(reedMaterial, null, null));
-        integrate(new MaterialIntegration(iceMaterial, null, null));
+        integrate(new MaterialIntegration(blazeMaterial));
+        integrate(new MaterialIntegration(reedMaterial));
+        integrate(new MaterialIntegration(iceMaterial));
 
-        integrate(new MaterialIntegration(featherMaterial, null, null));
-        integrate(new MaterialIntegration(leafMaterial, null, null));
-        integrate(new MaterialIntegration(slimeleafMaterial, null, null));
+        integrate(new MaterialIntegration(featherMaterial));
+        integrate(new MaterialIntegration(leafMaterial));
+        integrate(new MaterialIntegration(slimeleafMaterial));
 
-        integrate(new MaterialIntegration(bloodBoneMaterial, null, null));
+        integrate(new MaterialIntegration(bloodBoneMaterial));
     }
 
     private void oreDictRegistry() {
@@ -1067,6 +1211,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         OreDictionary.registerOre("ingotAluminum", new ItemStack(aluminumIngot));
         OreDictionary.registerOre("ingotAluminium", new ItemStack(aluminumIngot));
         OreDictionary.registerOre("ingotBronze", new ItemStack(bronzeIngot));
+        OreDictionary.registerOre("ingotAluminumBrass", new ItemStack(aluBrassIngot));
         OreDictionary.registerOre("ingotAluminiumBrass", new ItemStack(aluBrassIngot));
         OreDictionary.registerOre("ingotAlumite", new ItemStack(alumiteIngot));
         OreDictionary.registerOre("ingotSteel", new ItemStack(steelIngot));
@@ -1101,6 +1246,149 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         OreDictionary.registerOre("slimeball", new ItemStack(glueBall));
 
         OreDictionary.registerOre("boneWithered", new ItemStack(necroticBone));
+        OreDictionary.registerOre("boneBloodied", new ItemStack(bloodyBone));
+
+        OreDictionary.registerOre("blockObsidian", new ItemStack(Blocks.obsidian));
+
+        OreDictionary.registerOre("slimeCrystalGreen", new ItemStack(slimeCrystal));
+        OreDictionary.registerOre("slimeCrystalBlue", new ItemStack(blueSlimeCrystal));
     }
 
+    private void registerCraftingRecipes() {
+        ItemStack paper = new ItemStack(Items.paper);
+        ItemStack blankPattern = Pattern.newStackWithIdentifier(Pattern.PATTERN_BLANK);
+        ItemStack blankPattern4 = blankPattern.copy();
+        blankPattern4.stackSize = 4;
+
+        ItemStack chest = new ItemStack(Blocks.chest);
+        ItemStack smelteryBrick = new ItemStack(TinkersRebornSmeltery.smelteryBlock);
+        ItemStack toolStationBlock = new ItemStack(toolStation);
+
+        // for sharpening kit crafting repair recipe
+        GameRegistry.addRecipe(new SharpeningKitRepairRecipe());
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(blankPattern4, "Ss", "sS", 's', "plankWood", 'S', "stickWood"));
+        GameRegistry.addRecipe(new ItemStack(paperStack), "AA", "AA", 'A', paper);
+
+        GameRegistry.addShapedRecipe(
+            toolStationBlock,
+            "A ",
+            "B ",
+            'A',
+            blankPattern,
+            'B',
+            new ItemStack(Blocks.crafting_table));
+
+        for (int i = 0; i < ToolForgeBlock.materials.length; i++) {
+            String str = ToolForgeBlock.materials[i];
+            GameRegistry.addRecipe(
+                new ShapedOreRecipe(
+                    new ItemStack(toolForge, 1, i),
+                    "AAA",
+                    "BCB",
+                    "B B",
+                    'A',
+                    smelteryBrick,
+                    'B',
+                    "block" + Character.toUpperCase(str.charAt(0)) + str.substring(1),
+                    'C',
+                    toolStationBlock));
+        }
+
+        for (int i = 0; i < PartBuilderBlock.materials.length; i++) {
+            GameRegistry.addShapedRecipe(
+                new ItemStack(partBuilder, 1, i),
+                "A ",
+                "B ",
+                'A',
+                blankPattern,
+                'B',
+                new ItemStack(Blocks.log, 1, i));
+        }
+
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(castChest, " p ", "scs", "   ", 'p', blankPattern, 'c', chest, 's', "stickWood"));
+        TinkersRebornRegistry.getAllToolParts()
+            .forEach(
+                p -> GameRegistry.addRecipe(
+                    new ShapedOreRecipe(partChest, " p ", "scs", "   ", 'p', p, 'c', chest, 's', "stickWood")));
+        GameRegistry.addShapelessRecipe(new ItemStack(craftingStation), new ItemStack(Blocks.crafting_table));
+
+        GameRegistry.addShapedRecipe(
+            new ItemStack(mossball),
+            "AAA",
+            "AAA",
+            "AAA",
+            'A',
+            new ItemStack(Blocks.mossy_cobblestone));
+        GameRegistry
+            .addShapedRecipe(new ItemStack(mossball), "AAA", "AAA", "AAA", 'A', new ItemStack(Blocks.stonebrick, 1, 1));
+
+        GameRegistry.addShapedRecipe(
+            new ItemStack(lavaCrystal),
+            "ABA",
+            "BCB",
+            "ABA",
+            'A',
+            new ItemStack(Items.blaze_rod),
+            'B',
+            new ItemStack(Items.fire_charge),
+            'C',
+            new ItemStack(Items.lava_bucket));
+        GameRegistry.addShapedRecipe(
+            new ItemStack(lavaCrystal),
+            "ABA",
+            "BCB",
+            "ABA",
+            'A',
+            new ItemStack(Items.fire_charge),
+            'B',
+            new ItemStack(Items.blaze_rod),
+            'C',
+            new ItemStack(Items.lava_bucket));
+
+        GameRegistry.addShapedRecipe(
+            new ItemStack(silkyCloth),
+            "AAA",
+            "ABA",
+            "AAA",
+            'A',
+            new ItemStack(Items.string),
+            'B',
+            new ItemStack(Items.gold_nugget));
+        GameRegistry.addShapedRecipe(
+            new ItemStack(silkyJewel),
+            " A ",
+            "ABA",
+            " A ",
+            'A',
+            new ItemStack(silkyCloth),
+            'B',
+            new ItemStack(Items.emerald));
+    }
+
+    private static void findToolsFromConfig() {
+        // cycle through all items
+        for (Object identifier : Item.itemRegistry.getKeys()) {
+            Object item = Item.itemRegistry.getObject(identifier);
+            // do we care about this item?
+            if (!(item instanceof ItemTool || item instanceof ItemHoe
+                || item instanceof ItemSword
+                || item instanceof ItemBow)) continue;
+
+            String mod = identifier.toString()
+                .split(":")[0]; // should always be non-null... I think
+
+            // whitelist
+            if (TinkersRebornConfig.excludedToolsIsWhitelist) {
+                // on the whitelist?
+                if (TinkersRebornConfig.excludedModTools.contains(mod)
+                    || TinkersRebornConfig.excludedTools.contains(identifier)) toolWhitelist.add((Item) item);
+            } else {
+                // blacklist
+                if (!TinkersRebornConfig.excludedModTools.contains(mod)
+                    && !TinkersRebornConfig.excludedTools.contains(identifier)) toolWhitelist.add((Item) item);
+            }
+        }
+    }
 }

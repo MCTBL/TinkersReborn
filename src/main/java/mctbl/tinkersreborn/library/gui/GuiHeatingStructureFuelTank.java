@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -15,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.utils.FuelInfo;
+import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
 
@@ -46,20 +46,18 @@ public class GuiHeatingStructureFuelTank extends GuiMultiModule {
     }
 
     public static void drawFluidIcon(int x, int y, int width, int height, float zLevel, Fluid fluid) {
-        if (fluid == null) return;
+        if (fluid == null || width <= 0 || height <= 0) return;
 
         IIcon icon = fluid.getStillIcon();
         if (icon == null) return;
 
-        int color = fluid.getColor();
+        drawFluidIcon(x, y, width, height, zLevel, icon, fluid.getColor());
+    }
+
+    private static void drawFluidIcon(int x, int y, int width, int height, float zLevel, IIcon icon, int color) {
         float r = (float) (color >> 16 & 255) / 255.0F;
         float g = (float) (color >> 8 & 255) / 255.0F;
         float b = (float) (color & 255) / 255.0F;
-
-        double uMin = icon.getMinU();
-        double uMax = icon.getMaxU();
-        double vMin = icon.getMinV();
-        double vMax = icon.getMaxV();
 
         Minecraft.getMinecraft()
             .getTextureManager()
@@ -71,10 +69,33 @@ public class GuiHeatingStructureFuelTank extends GuiMultiModule {
 
         Tessellator tessellator = Tessellator.instance;
         tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x, y + height, zLevel, uMin, vMax); // 左下
-        tessellator.addVertexWithUV(x + width, y + height, zLevel, uMax, vMax); // 右下
-        tessellator.addVertexWithUV(x + width, y, zLevel, uMax, vMin); // 右上
-        tessellator.addVertexWithUV(x, y, zLevel, uMin, vMin); // 左上
+
+        int remainingHeight = height;
+        while (remainingHeight > 0) {
+            int renderHeight = Math.min(16, remainingHeight);
+            int renderY = y + remainingHeight - renderHeight;
+            double minV = icon.getInterpolatedV(16 - renderHeight);
+            double maxV = icon.getMaxV();
+
+            int remainingWidth = width;
+            int renderX = x;
+            while (remainingWidth > 0) {
+                int renderWidth = Math.min(16, remainingWidth);
+                double minU = icon.getMinU();
+                double maxU = icon.getInterpolatedU(renderWidth);
+
+                tessellator.addVertexWithUV(renderX, renderY + renderHeight, zLevel, minU, maxV);
+                tessellator.addVertexWithUV(renderX + renderWidth, renderY + renderHeight, zLevel, maxU, maxV);
+                tessellator.addVertexWithUV(renderX + renderWidth, renderY, zLevel, maxU, minV);
+                tessellator.addVertexWithUV(renderX, renderY, zLevel, minU, minV);
+
+                renderX += renderWidth;
+                remainingWidth -= renderWidth;
+            }
+
+            remainingHeight -= renderHeight;
+        }
+
         tessellator.draw();
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -82,8 +103,15 @@ public class GuiHeatingStructureFuelTank extends GuiMultiModule {
     }
 
     public static void drawFluidIcon(int x, int y, int width, int height, float zLevel, FluidStack fluidStack) {
-        if (fluidStack == null) return;
-        drawFluidIcon(x, y, width, height, zLevel, fluidStack.getFluid());
+        if (fluidStack == null || width <= 0 || height <= 0) return;
+
+        Fluid fluid = fluidStack.getFluid();
+        if (fluid == null) return;
+
+        IIcon icon = fluid.getStillIcon();
+        if (icon == null) return;
+
+        drawFluidIcon(x, y, width, height, zLevel, icon, fluid.getColor(fluidStack));
     }
 
     /**
@@ -92,7 +120,7 @@ public class GuiHeatingStructureFuelTank extends GuiMultiModule {
     protected void drawFuelTooltip(int mouseX, int mouseY) {
         List<String> text = new ArrayList<>();
         FluidStack fuel = fuelInfo.fluid;
-        text.add(EnumChatFormatting.WHITE + TinkersRebornUtils.translate("gui.smeltery.fuel"));
+        text.add(ColorUtil.addWhite(TinkersStr.smelteryFuel.toString()));
         if (fuel != null) {
             text.add(fuel.getLocalizedName());
 

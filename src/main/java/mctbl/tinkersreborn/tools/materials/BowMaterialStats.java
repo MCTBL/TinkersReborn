@@ -3,7 +3,10 @@ package mctbl.tinkersreborn.tools.materials;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraftforge.common.config.Configuration;
+
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
+import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
@@ -26,9 +29,9 @@ public class BowMaterialStats extends AbstractMaterialStats {
      * damage as a flat damage-reward for using materials that are slower, but
      * flexible, like metals.
      */
-    public final float bonusDamage;
-    public final float drawspeed;
-    public final float range;
+    private float bonusDamage;
+    private float drawspeed;
+    private float range;
 
     /**
      * @param bonusDamage
@@ -39,6 +42,18 @@ public class BowMaterialStats extends AbstractMaterialStats {
         this.bonusDamage = bonusDamage;
         this.drawspeed = drawspeed;
         this.range = range;
+    }
+
+    public float getBonusDamage() {
+        return bonusDamage;
+    }
+
+    public float getDrawspeed() {
+        return drawspeed;
+    }
+
+    public float getRange() {
+        return range;
     }
 
     @Override
@@ -83,6 +98,40 @@ public class BowMaterialStats extends AbstractMaterialStats {
 
     public static String formatDamage(float bonusDamage) {
         return format(LOC_Damage, COLOR_Damage, bonusDamage);
+    }
+
+    @Override
+    public void writeToCfg(Configuration cfg, String categotry) {
+        String key = categotry + "."
+            + this.getIdentifier()
+                .toString()
+                .toLowerCase();
+        cfg.get(key, "bonusDamage", this.bonusDamage)
+            .getDouble();
+        cfg.get(key, "drawspeed", this.drawspeed)
+            .getDouble();
+        cfg.get(key, "range", this.range)
+            .getDouble();
+    }
+
+    @Override
+    public IMaterialStats readFromCfg(Configuration cfg, String categotry) {
+        String key = categotry + "."
+            + this.getIdentifier()
+                .toString()
+                .toLowerCase();
+        this.bonusDamage = (float) cfg.get(key, "bonusDamage", this.bonusDamage)
+            .getDouble();
+        this.drawspeed = (float) cfg.get(key, "drawspeed", this.drawspeed)
+            .getDouble();
+        this.range = (float) cfg.get(key, "range", this.range)
+            .getDouble();
+        return this;
+    }
+
+    @Override
+    public IMaterialStats getNewStatsFromCfg(Configuration cfg, String categotry) {
+        return new BowMaterialStats(0, 0, 0).readFromCfg(cfg, categotry);
     }
 
 }

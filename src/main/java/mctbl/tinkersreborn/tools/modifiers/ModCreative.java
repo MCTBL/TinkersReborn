@@ -13,6 +13,11 @@ public class ModCreative extends AbstractModifier {
     }
 
     @Override
+    public int getColor() {
+        return 0;
+    }
+
+    @Override
     public boolean isHidden() {
         return true;
     }

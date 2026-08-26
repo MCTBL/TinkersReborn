@@ -16,6 +16,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
@@ -32,6 +33,7 @@ import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.util.AmmoHelper;
 import mctbl.tinkersreborn.util.TextureHelper;
@@ -40,11 +42,12 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public abstract class BowCore extends ToolCore {
 
-    protected static final UUID LAUNCHER_BONUS_DAMAGE = UUID.fromString("066b8892-d2ac-4bae-ac22-26f9f91a02ee");
-    protected static final UUID LAUNCHER_DAMAGE_MODIFIER = UUID.fromString("4f76565a-3845-4a09-ba8f-92a37937a7c3");
+    protected static final UUID LAUNCHER_BONUS_DAMAGE = UUID.fromString("1E380EAF-3090-48B4-9756-164975C32DF9");
+    protected static final UUID LAUNCHER_DAMAGE_MODIFIER = UUID.fromString("B66BCBCC-0B2B-4FFA-8588-7CEA18860DEE");
 
     protected BowCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
+        this.setCreativeTab(TinkersRebornRegistry.projectileTab);
         this.categoryTags.add(Category.LAUNCHER);
     }
 
@@ -134,6 +137,11 @@ public abstract class BowCore extends ToolCore {
             if (TextureHelper.itemTextureExists(tempPath)) {
                 this.effectIcons.put(m.getIdentifier(), register.registerIcon(tempPath));
             }
+            for (int idx = 1; idx <= 3; idx++) {
+                if (TextureHelper.itemTextureExists(tempPath + "_" + idx)) {
+                    this.effectIcons.put(m.getIdentifier() + "_" + idx, register.registerIcon(tempPath + "_" + idx));
+                }
+            }
         }
 
         emptyIcon = register.registerIcon("tinkersreborn:blankface");
@@ -152,6 +160,15 @@ public abstract class BowCore extends ToolCore {
                 this.allIcons.get(renderPass),
                 materialId,
                 this.getDrawbackProgress(stack, player));
+        } else if (renderPass > this.getPartAmonuntForRender()) {
+            // Effects
+            List<NBTTagCompound> modifiersList = ToolTagsHelper.getModifiersList(stack);
+            ModifierNBT tag = ModifierNBT.readTag(modifiersList.get(renderPass - this.getPartAmonuntForRender()));
+            int step = Math.round(this.getDrawbackProgress(stack, player) * 3);
+            step = Math.max(0, step);
+            String tempKey = tag.identifier + (step != 0 ? "_" + step : "");
+
+            return this.effectIcons.getOrDefault(tempKey, this.effectIcons.get(tag.identifier));
         }
         return this.getIcon(stack, renderPass);
     }

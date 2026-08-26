@@ -2,7 +2,9 @@ package mctbl.tinkersreborn.common;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.SoundType;
@@ -12,7 +14,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.WeightedRandomChestContent;
 import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.common.ChestGenHooks;
@@ -22,16 +27,19 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.client.StepSoundSlime;
 import mctbl.tinkersreborn.common.blocks.ConsecratedSoil;
+import mctbl.tinkersreborn.common.blocks.DryingRackBlock;
 import mctbl.tinkersreborn.common.blocks.GravelOre;
 import mctbl.tinkersreborn.common.blocks.GraveyardSoil;
 import mctbl.tinkersreborn.common.blocks.Grout;
@@ -47,7 +55,10 @@ import mctbl.tinkersreborn.common.blocks.slime.SlimeLeaves;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeSapling;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeTallGrass;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
+import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
+import mctbl.tinkersreborn.common.events.TinkersRebornMobEventHandler;
+import mctbl.tinkersreborn.common.events.TinkersRebornPlayerHandler;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
 import mctbl.tinkersreborn.common.itemblocks.MetalOreItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeGelItemBlock;
@@ -57,14 +68,28 @@ import mctbl.tinkersreborn.common.itemblocks.SlimeSaplingItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeTallGrassItem;
 import mctbl.tinkersreborn.common.itemblocks.TinkersRebornMetalItemBlock;
 import mctbl.tinkersreborn.common.items.GoldenHead;
+import mctbl.tinkersreborn.common.items.HeartCanister;
+import mctbl.tinkersreborn.common.items.Jerky;
+import mctbl.tinkersreborn.common.items.ManualItem;
+import mctbl.tinkersreborn.common.items.StrangeFood;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.items.FilledBucket;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.FancyEntityItem;
+import mctbl.tinkersreborn.tools.items.Pattern;
+import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.RecipeRemover;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.world.gen.SlimeIslandGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornSurfaceOreGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornWorldGenerator;
+import mctbl.tinkersreborn.world.village.ComponentSmeltery;
+import mctbl.tinkersreborn.world.village.ComponentToolWorkshop;
+import mctbl.tinkersreborn.world.village.VillageSmelteryHandler;
+import mctbl.tinkersreborn.world.village.VillageToolWorkshopHandler;
 
 public class TinkersRebornGeneral implements ITinkersRebornModule {
 
@@ -73,9 +98,10 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         serverSide = "mctbl.tinkersreborn.common.TinkersRebornGeneralProxyCommon")
     public static TinkersRebornGeneralProxyCommon proxy;
 
-    public static Item tinkersBucket;
+    public static FilledBucket tinkersBucket;
     public static Block stoneTorch;
     public static Item goldHead;
+    public static Item jerky;
     public static Block metalBlock;
     public static Block slimeSand;
     public static Block grout;
@@ -94,14 +120,21 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static SlimeSapling slimeSapling;
 
     public static TinkersRebornFluid bloodFluid;
+    public static TinkersRebornFluid enderFluid;
 
     // Ores
     public static Block oreSlag;
     public static Block oreGravel;
+    public static Block dryingRack;
 
     // Chest hooks
     public static ChestGenHooks tinkerHouseChest;
     public static ChestGenHooks tinkerHousePatterns;
+    public static ChestGenHooks tinkerHouseParts;
+
+    public static Item heartCanister;
+    public static Item strangeFood;
+    public static Item manualItem;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -113,6 +146,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         goldHead = new GoldenHead(4, 1.2F, false);
         GameRegistry.registerItem(goldHead, goldHead.getUnlocalizedName());
+
+        jerky = new Jerky(Loader.isModLoaded("HungerOverhaul") || Loader.isModLoaded("fc_food"));
+        GameRegistry.registerItem(jerky, jerky.getUnlocalizedName());
 
         metalBlock = new TinkersRebornMetalBlock(Material.iron, 10.0F);
         GameRegistry.registerBlock(metalBlock, TinkersRebornMetalItemBlock.class, metalBlock.getUnlocalizedName());
@@ -158,6 +194,20 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(oreGravel, GravelOreItem.class, oreGravel.getUnlocalizedName());
 
         bloodFluid = new TinkersRebornFluid("blood", 0xFF0000, "blood");
+        enderFluid = new TinkersRebornFluid("ender", 0x0B4D42, "ender");
+
+        dryingRack = new DryingRackBlock();
+        GameRegistry.registerBlock(dryingRack, dryingRack.getUnlocalizedName());
+        GameRegistry.registerTileEntity(DryingRackLogic.class, dryingRack.getUnlocalizedName());
+
+        heartCanister = new HeartCanister();
+        GameRegistry.registerItem(heartCanister, heartCanister.getUnlocalizedName());
+
+        strangeFood = new StrangeFood();
+        GameRegistry.registerItem(strangeFood, strangeFood.getUnlocalizedName());
+
+        manualItem = new ManualItem();
+        GameRegistry.registerItem(manualItem, manualItem.getUnlocalizedName());
 
         // Vanilla stack sizes
         Items.wooden_door.setMaxStackSize(16);
@@ -167,26 +217,34 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         Items.cake.setMaxStackSize(16);
 
         oreRegistry();
+
+        proxy.preInit();
+
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornPlayerHandler());
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornMobEventHandler());
     }
 
     @Override
     public void init(FMLInitializationEvent e) {
         if (!TinkersRebornConfig.disableAllRecipes) {
-            // craftingTableRecipes();
-            // addRecipesForFurnace();
+            craftingTableRecipes();
+            addRecipesForFurnace();
         }
-        this.addLoot();
         this.createEntities();
-        proxy.initialize();
+        this.registerDrying();
+        this.registerVillageStructures();
+        proxy.init();
 
         GameRegistry.registerWorldGenerator(new TinkersRebornWorldGenerator(), 0);
         MinecraftForge.TERRAIN_GEN_BUS.register(new TinkersRebornSurfaceOreGen());
         GameRegistry.registerWorldGenerator(new SlimeIslandGen(slimePool, 2), 2);
+
     }
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
-
+        addLoot();
+        proxy.postInit();
     }
 
     private void oreRegistry() {
@@ -201,7 +259,6 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         OreDictionary.registerOre("oreIron", new ItemStack(oreGravel, 1, 0));
         OreDictionary.registerOre("oreGold", new ItemStack(oreGravel, 1, 1));
-        OreDictionary.registerOre("oreCobalt", new ItemStack(oreGravel, 1, 5));
         OreDictionary.registerOre("oreCopper", new ItemStack(oreGravel, 1, 2));
         OreDictionary.registerOre("oreTin", new ItemStack(oreGravel, 1, 3));
         OreDictionary.registerOre("oreAluminum", new ItemStack(oreGravel, 1, 4));
@@ -229,6 +286,126 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         // Vanilla stuff
         OreDictionary.registerOre("slimeball", new ItemStack(Items.slime_ball));
         OreDictionary.registerOre("blockGlass", new ItemStack(Blocks.glass));
+    }
+
+    private static void addLoot() {
+        tinkerHouseChest = ChestGenHooks.getInfo("TinkersRebornHouse");
+        tinkerHouseChest.setMin(3);
+        tinkerHouseChest.setMax(8);
+        tinkerHouseChest.addItem(new WeightedRandomChestContent(new ItemStack(heartCanister, 1, 1), 1, 1, 2));
+        tinkerHouseChest
+            .addItem(new WeightedRandomChestContent(new ItemStack(TinkersRebornTools.searedBrick), 2, 8, 12));
+        tinkerHouseChest
+            .addItem(new WeightedRandomChestContent(Pattern.newStackWithIdentifier(Pattern.PATTERN_BLANK), 1, 3, 10));
+        tinkerHouseChest.addItem(new WeightedRandomChestContent(new ItemStack(Items.iron_ingot), 1, 3, 5));
+        tinkerHouseChest.addItem(new WeightedRandomChestContent(new ItemStack(Items.gold_ingot), 1, 2, 2));
+
+        tinkerHousePatterns = ChestGenHooks.getInfo("TinkersRebornPatterns");
+        tinkerHousePatterns.setMin(TinkersRebornConfig.generatePatternNumber[0]);
+        tinkerHousePatterns.setMax(TinkersRebornConfig.generatePatternNumber[1]);
+        TinkersRebornTools.patternAndCast.getAllPatternType()
+            .forEach(
+                part -> tinkerHousePatterns.addItem(
+                    new WeightedRandomChestContent(
+                        Pattern.newStackWithIdentifier(part),
+                        1,
+                        part.equals(Pattern.PATTERN_BLANK) ? 5 : 1,
+                        part.equals(Pattern.PATTERN_BLANK) ? 60 : 12)));
+
+        tinkerHouseParts = ChestGenHooks.getInfo("TinkersRebornParts");
+        tinkerHouseParts.setMin(TinkersRebornConfig.generateToolPartNumber[0]);
+        tinkerHouseParts.setMax(TinkersRebornConfig.generateToolPartNumber[1]);
+
+        List<TinkersRebornMaterial> allowMaterialList = Arrays.asList(TinkersRebornConfig.generateToolPartMaterials)
+            .stream()
+            .map(TinkersRebornUtils::sanitizeLocalizationString)
+            .map(TinkersRebornRegistry::getMaterialByIdentifier)
+            .collect(Collectors.toList());
+        for (TinkersRebornToolPart part : TinkersRebornRegistry.getAllToolParts()) {
+            for (int idx = 0; idx < allowMaterialList.size(); idx++) {
+                TinkersRebornMaterial material = allowMaterialList.get(idx);
+                if (material.getStats(part.allowType) != null) {
+                    ItemStack stack = part.getNewPartWithMaterial(material);
+                    if (stack != null) {
+                        int weight = TinkersRebornConfig.generateToolPartMaterialsWeights[idx];
+                        tinkerHouseParts.addItem(new WeightedRandomChestContent(stack, 1, 1, weight));
+                    }
+                }
+
+            }
+        }
+    }
+
+    private void registerVillageStructures() {
+        if (!TinkersRebornConfig.addToVillages) return;
+
+        VillagerRegistry.instance()
+            .registerVillageCreationHandler(new VillageToolWorkshopHandler());
+        MapGenStructureIO.func_143031_a(ComponentToolWorkshop.class, "TinkersReborn:ToolWorkshop");
+
+        if (TinkersRebornConfig.generateVillageSmeltery) {
+            VillagerRegistry.instance()
+                .registerVillageCreationHandler(new VillageSmelteryHandler());
+            MapGenStructureIO.func_143031_a(ComponentSmeltery.class, "TinkersReborn:Smeltery");
+        }
+    }
+
+    private void createEntities() {
+        EntityRegistry
+            .registerModEntity(FancyEntityItem.class, "Tinkers Fancy Item", 0, TinkersReborn.instance, 32, 5, true);
+        EntityRegistry.registerModEntity(BlueSlime.class, "BlueSlime", 1, TinkersReborn.instance, 64, 3, true);
+        EntityRegistry.registerModEntity(KingBlueSlime.class, "KingSlime", 2, TinkersReborn.instance, 64, 3, true);
+
+        if (TinkersRebornConfig.naturalSlimeSpawn > 0) {
+            Type[] biomeTypes = { Type.FOREST, Type.PLAINS, Type.MOUNTAIN, Type.HILLS, Type.SWAMP, Type.JUNGLE,
+                Type.WASTELAND };
+            Set<BiomeGenBase> set = new HashSet<>();
+            for (Type t : biomeTypes) {
+                set.addAll(Arrays.asList(BiomeDictionary.getBiomesForType(t)));
+            }
+            EntityRegistry.addSpawn(
+                BlueSlime.class,
+                TinkersRebornConfig.naturalSlimeSpawn,
+                4,
+                20,
+                EnumCreatureType.monster,
+                set.toArray(new BiomeGenBase[0]));
+        }
+    }
+
+    private void registerDrying() {
+        // Jerky
+        int time = 20 * 60 * 5;
+        TinkersRebornRegistry.registerDryingRecipe(Items.beef, new ItemStack(jerky, 1, 0), time);
+        TinkersRebornRegistry.registerDryingRecipe(Items.chicken, new ItemStack(jerky, 1, 1), time);
+        TinkersRebornRegistry.registerDryingRecipe(Items.porkchop, new ItemStack(jerky, 1, 2), time);
+        TinkersRebornRegistry.registerDryingRecipe(Items.fish, new ItemStack(jerky, 1, 4), time);
+        TinkersRebornRegistry.registerDryingRecipe(Items.rotten_flesh, new ItemStack(jerky, 1, 5), time);
+        TinkersRebornRegistry.registerDryingRecipe(new ItemStack(strangeFood, 1, 0), new ItemStack(jerky, 1, 6), time);
+        TinkersRebornRegistry.registerDryingRecipe(new ItemStack(strangeFood, 1, 1), new ItemStack(jerky, 1, 7), time);
+
+        // Sapling to dead bush
+        TinkersRebornRegistry.registerDryingRecipe("treeSapling", new ItemStack(Blocks.deadbush), 20 * 60 * 6);
+    }
+
+    private void craftingTableRecipes() {
+        ItemStack sandBlock = new ItemStack(Blocks.sand);
+        ItemStack dirtBlock = new ItemStack(Blocks.dirt);
+        ItemStack gravelBlock = new ItemStack(Blocks.gravel);
+        ItemStack clayBlock = new ItemStack(Blocks.clay);
+        ItemStack searedBrick = new ItemStack(TinkersRebornTools.searedBrick, 1);
+        ItemStack boneMeal = new ItemStack(Items.dye, 1, 15);
+        ItemStack flesh = new ItemStack(Items.rotten_flesh);
+        ItemStack stoneRod = TinkersRebornTools.rod.getNewPartWithMaterial("stone");
+        ItemStack graveyardSoilBlock = new ItemStack(graveyardSoil);
+        ItemStack consecratedSoilBlock = new ItemStack(consecratedSoil);
+        ItemStack emptyHeartCanister = new ItemStack(heartCanister, 1, 0);
+        ItemStack greenSlimeSand = new ItemStack(slimeSand, 1, 0);
+        ItemStack blueSlimeSand = new ItemStack(slimeSand, 1, 1);
+        ItemStack greenSlimeBall = new ItemStack(Items.slime_ball);
+        ItemStack blueSlimeBall = new ItemStack(strangeFood);
+
+        // Vanilla stuff
         RecipeRemover.removeShapedRecipe(new ItemStack(Blocks.sticky_piston));
         RecipeRemover.removeShapedRecipe(new ItemStack(Items.magma_cream));
         RecipeRemover.removeShapedRecipe(new ItemStack(Items.lead));
@@ -245,33 +422,67 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
                 Items.string,
                 'S',
                 "slimeball"));
+
+        // Jack o'Latern Recipe - Stone Torch
+        GameRegistry.addRecipe(
+            new ItemStack(Blocks.lit_pumpkin, 1, 0),
+            "p",
+            "s",
+            'p',
+            new ItemStack(Blocks.pumpkin),
+            's',
+            new ItemStack(stoneTorch));
+        // Stone Torch Recipe
+        GameRegistry
+            .addRecipe(new ItemStack(stoneTorch, 4), "p", "w", 'p', new ItemStack(Items.coal, 1), 'w', stoneRod);
+
+        GameRegistry
+            .addRecipe(new ItemStack(grout, 8), "ABA", "BCB", "ABA", 'A', sandBlock, 'B', gravelBlock, 'C', clayBlock);
+        GameRegistry
+            .addShapelessRecipe(new ItemStack(grout, 2), sandBlock, gravelBlock, new ItemStack(Items.clay_ball));
+        GameRegistry.addSmelting(new ItemStack(grout, 1), searedBrick, 0);
+
+        GameRegistry.addShapelessRecipe(graveyardSoilBlock, dirtBlock, flesh, boneMeal);
+        GameRegistry.addSmelting(graveyardSoilBlock, consecratedSoilBlock, 0);
+        GameRegistry.addRecipe(new ShapedOreRecipe(dryingRack, "WWW", 'W', "slabWood"));
+
+        GameRegistry.addRecipe(new ShapedOreRecipe(emptyHeartCanister, "AA", "AA", 'A', "ingotAluminum"));
+        GameRegistry.addShapelessRecipe(
+            new ItemStack(heartCanister, 1, 2),
+            emptyHeartCanister,
+            new ItemStack(heartCanister, 1, 1));
+        GameRegistry.addShapelessRecipe(
+            new ItemStack(heartCanister, 1, 4),
+            emptyHeartCanister,
+            new ItemStack(heartCanister, 1, 3));
+        GameRegistry.addShapelessRecipe(
+            new ItemStack(heartCanister, 1, 6),
+            emptyHeartCanister,
+            new ItemStack(heartCanister, 1, 5));
+        GameRegistry
+            .addShapedRecipe(greenSlimeSand, "AA ", "AA ", "BC ", 'A', greenSlimeBall, 'B', sandBlock, 'C', dirtBlock);
+        GameRegistry
+            .addShapedRecipe(blueSlimeSand, "AA ", "AA ", "BC ", 'A', blueSlimeBall, 'B', sandBlock, 'C', dirtBlock);
     }
 
-    private void addLoot() {
-        // TODO add some loot to village
-    }
+    private void addRecipesForFurnace() {
+        ItemStack greenSlimeSand = new ItemStack(slimeSand, 1, 0);
+        ItemStack blueSlimeSand = new ItemStack(slimeSand, 1, 1);
 
-    private void createEntities() {
-        EntityRegistry
-            .registerModEntity(FancyEntityItem.class, "Tinkers Fancy Item", 0, TinkersReborn.instance, 32, 5, true);
-        EntityRegistry.registerModEntity(BlueSlime.class, "Tinkers Blue Slime", 1, TinkersReborn.instance, 64, 5, true);
-        EntityRegistry
-            .registerModEntity(KingBlueSlime.class, "Tinkers King Slime", 2, TinkersReborn.instance, 64, 5, true);
-
-        if (TinkersRebornConfig.naturalSlimeSpawn > 1) {
-            Type[] biomeTypes = { Type.FOREST, Type.PLAINS, Type.MOUNTAIN, Type.HILLS, Type.SWAMP, Type.JUNGLE,
-                Type.WASTELAND };
-            Set<BiomeGenBase> set = new HashSet<>();
-            for (Type t : biomeTypes) {
-                set.addAll(Arrays.asList(BiomeDictionary.getBiomesForType(t)));
+        String[] oreDict = new String[] { "Cobalt", "Ardite", "Copper", "Tin", "Aluminum", "Aluminium", "Iron",
+            "Gold" };
+        for (String ore : oreDict) {
+            for (ItemStack oreBlock : OreDictionary.getOres("ore" + ore)) {
+                if (FurnaceRecipes.smelting()
+                    .getSmeltingResult(oreBlock) == null) {
+                    for (ItemStack oreIngot : OreDictionary.getOres("ingot" + ore)) {
+                        GameRegistry.addSmelting(oreBlock, oreIngot, 0);
+                    }
+                }
             }
-            EntityRegistry.addSpawn(
-                BlueSlime.class,
-                TinkersRebornConfig.naturalSlimeSpawn,
-                4,
-                20,
-                EnumCreatureType.monster,
-                set.toArray(new BiomeGenBase[0]));
         }
+
+        GameRegistry.addSmelting(greenSlimeSand, new ItemStack(TinkersRebornTools.slimeCrystal), 0);
+        GameRegistry.addSmelting(blueSlimeSand, new ItemStack(TinkersRebornTools.blueSlimeCrystal), 0);
     }
 }

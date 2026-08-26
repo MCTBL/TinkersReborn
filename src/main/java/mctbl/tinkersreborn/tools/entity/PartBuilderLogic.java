@@ -9,6 +9,8 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.tools.gui.GuiPartBuilder;
 import mctbl.tinkersreborn.tools.inventory.ContainerPartBuilder;
@@ -30,6 +32,7 @@ public class PartBuilderLogic extends TinkersRebornInventoryLogic implements ISi
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiPartBuilder(inventoryplayer, this, world, x, y, z);
     }

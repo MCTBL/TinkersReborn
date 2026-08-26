@@ -157,7 +157,8 @@ public class TinkersRebornParticle extends EntityFX {
         HEART_CACTUS(8, 0),
         HEART_ELECTRO(16, 0),
         HEART_BLOOD(24, 0),
-        HEART_ARMOR(32, 0);
+        HEART_ARMOR(32, 0),
+        HEART(40, 0);
 
         int x, y;
 

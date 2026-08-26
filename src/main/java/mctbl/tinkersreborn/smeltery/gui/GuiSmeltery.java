@@ -1,11 +1,19 @@
 package mctbl.tinkersreborn.smeltery.gui;
 
+import static cpw.mods.fml.common.Optional.Interface;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -14,9 +22,16 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
+import mctbl.tinkersreborn.library.gui.GuiButtonItem;
 import mctbl.tinkersreborn.library.gui.GuiElement;
+import mctbl.tinkersreborn.library.gui.GuiElementScalable;
 import mctbl.tinkersreborn.library.gui.GuiHeatingStructureFuelTank;
 import mctbl.tinkersreborn.library.gui.GuiSmelterySideInventory;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
@@ -24,20 +39,37 @@ import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.IGuiLiquidTank;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
+import mctbl.tinkersreborn.smeltery.network.SmelteryButtonClicked;
 import mctbl.tinkersreborn.smeltery.network.SmelteryFluidClicked;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
 
-public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiquidTank {
+@SideOnly(Side.CLIENT)
+@Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
+public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiHandler, IGuiLiquidTank {
 
     public static final ResourceLocation BACKGROUND = new ResourceLocation(
         TinkersReborn.MODID,
         "textures/gui/smeltery.png");
 
-    protected GuiElement scala = new GuiElement(176, 76, 52, 52, 256, 256);
+    protected GuiElement scala = new GuiElement(176, 107, 80, 80, 256, 256);
+    protected GuiElementScalable flame = new GuiElementScalable(176, 187, 14, 14, 256, 256);
+    protected final int fuelStartX = 116;
+    protected final int fuelStartY = 32;
+    protected final int fuelWidth = 16;
+    protected final int fuelHeight = 64;
+
+    protected final int fluidStartX = 8;
+    protected final int fluidStartY = 16;
+    protected final int fluidWidth = 80;
+    protected final int fluidHeight = 80;
+
+    protected final int fuelProgressStartX = 117;
+    protected final int fuelProgressStartY = 29;
 
     protected final GuiSmelterySideInventory sideinventory;
     protected final SmelteryLogic smeltery;
+    protected GuiButtonItem<ItemStack> fillButton;
 
     public GuiSmeltery(ContainerSmeltery container, SmelteryLogic smeltery) {
         super(container);
@@ -51,6 +83,8 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
             smeltery.getSizeInventory(),
             container.calcColumns());
         addModule(sideinventory);
+
+        this.ySize = 197;
     }
 
     // this is the same for both structures, but the superclass does not have (nor
@@ -67,6 +101,18 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
     }
 
     @Override
+    public void initGui() {
+        super.initGui();
+        this.fillButton = new GuiButtonItem<ItemStack>(
+            0,
+            93 + cornerX,
+            46 + cornerY,
+            new ItemStack(Items.bucket),
+            null,
+            this);
+    }
+
+    @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         // we don't need to add the corner since the mouse is already reletive to the
         // corner
@@ -79,15 +125,38 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
         mouseY -= cornerY;
 
         // Liquids
-        List<String> tooltip = getTankTooltip(smeltery, mouseX, mouseY, 8, 16, 60, 68);
+        List<String> tooltip = getTankTooltip(
+            smeltery,
+            mouseX,
+            mouseY,
+            fluidStartX,
+            fluidStartY,
+            fluidStartX + fluidWidth,
+            fluidStartY + fluidHeight);
         if (tooltip != null) {
             this.drawHoveringText(tooltip, mouseX, mouseY, this.fontRendererObj);
         }
 
         // Fuel tooltips
-        if (71 <= mouseX && mouseX < 83 && 16 <= mouseY && mouseY < 68) {
-            drawFuelTooltip(mouseX, mouseY);
+        if (fuelStartX <= mouseX && mouseX < fuelStartX + fuelWidth
+            && fuelStartY <= mouseY
+            && mouseY < fuelStartY + fuelHeight) {
+            this.drawFuelTooltip(mouseX, mouseY);
         }
+
+        if (fillButton.func_146115_a()) {
+            this.drawHoveringText(
+                Arrays.asList(TinkersStr.smtleteryFillOrClear.toString()),
+                mouseX,
+                mouseY,
+                this.fontRendererObj);
+        }
+    }
+
+    @Override
+    protected void drawPlayerInventoryName() {
+        String localizedName = Minecraft.getMinecraft().thePlayer.inventory.getInventoryName();
+        this.fontRendererObj.drawString(TinkersRebornUtils.translate(localizedName), 8, this.ySize - 96 + 2, 0x404040);
     }
 
     @Override
@@ -97,17 +166,20 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
         // draw liquids
-        drawGuiTank(smeltery, 8 + cornerX, 16 + cornerY, scala.w, scala.h, this.zLevel);
+        drawGuiTank(smeltery, fluidStartX + cornerX, fluidStartY + cornerY, scala.w, scala.h, this.zLevel);
 
         // update fuel info
         fuelInfo = smeltery.getFuelDisplay();
-        drawFuel(71, 16, 12, 52);
+        drawFuel(fuelStartX, fuelStartY, fuelWidth, fuelHeight);
 
         // draw the scala
         this.mc.getTextureManager()
             .bindTexture(BACKGROUND);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        scala.draw(8 + cornerX, 16 + cornerY);
+        int h = (int) ((flame.h + 1) * (smeltery.fuelReleaseTicks * 1.0F / Math.max(smeltery.fuelTotalTicks, 1)));
+        flame.drawScaledYReverse(fuelProgressStartX + cornerX, fuelProgressStartY + cornerY, h);
+        scala.draw(fluidStartX + cornerX, fluidStartY + cornerY);
+        fillButton.drawButton(mc, mouseX, mouseY);
     }
 
     private void drawGuiTank(SmelteryLogic liquids, int x, int y, int w, int height, float zLevel) {
@@ -130,8 +202,20 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (mouseButton == 0) {
-            handleTankClick(smeltery, mouseX - cornerX, mouseY - cornerY, 8, 16, 60, 68);
+            handleTankClick(
+                smeltery,
+                mouseX - cornerX,
+                mouseY - cornerY,
+                fluidStartX,
+                fluidStartY,
+                fluidStartX + fluidWidth,
+                fluidStartY + fluidHeight);
         }
+        if (this.fillButton.func_146115_a()) {
+            this.fillButton.func_146113_a(this.mc.getSoundHandler());
+            TinkerNetwork.sendToServer(new SmelteryButtonClicked(isShiftKeyDown()));
+        }
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -329,5 +413,35 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements IGuiLiqu
 
         // standard display stuff: bucket amounts
         amountToString(amount, text);
+    }
+
+    // NEI
+    @Override
+    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+        return currentVisibility;
+    }
+
+    @Override
+    public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
+        int guiXStart = guiLeft - sideinventory.xSize + 4;
+        int guiXEnd = guiLeft + xSize - 4;
+        int guiYStart = guiTop + 4;
+        int guiYEnd = guiTop + ySize - 4;
+        return x + w >= guiXStart && x <= guiXEnd && y + h >= guiYStart && y <= guiYEnd;
     }
 }

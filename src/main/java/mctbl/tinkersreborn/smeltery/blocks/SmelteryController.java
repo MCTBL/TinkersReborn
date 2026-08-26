@@ -15,8 +15,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
-import mctbl.tinkersreborn.smeltery.model.SmelteryRender;
 
 public class SmelteryController extends TinkersRebornMultiBlock {
 
@@ -38,7 +38,7 @@ public class SmelteryController extends TinkersRebornMultiBlock {
 
     @Override
     public int getRenderType() {
-        return SmelteryRender.smelteryModel;
+        return TinkersRebornSmeltery.proxy.getSmelteryRender();
     }
 
     @Override

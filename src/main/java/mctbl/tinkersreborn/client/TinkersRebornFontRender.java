@@ -1,7 +1,10 @@
 package mctbl.tinkersreborn.client;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -14,27 +17,79 @@ import mctbl.tinkersreborn.util.ColorUtil;
 
 public class TinkersRebornFontRender extends FontRenderer {
 
-    private int state = 0;
-    private int red;
-    private int green;
-    private int blue;
+    protected int state = 0;
+    protected int red;
+    protected int green;
+    protected int blue;
+    protected boolean needShadow;
+    private static final String NEWLINE_REGEX_SEQUENCE = "\\\\n";
+
+    protected static final Map<Character, String> COLOR_MAP = new HashMap<Character, String>();
 
     public TinkersRebornFontRender(GameSettings gameSettingsIn, ResourceLocation location,
         TextureManager textureManagerIn) {
         super(gameSettingsIn, location, textureManagerIn, true);
+        COLOR_MAP.put('0', ColorUtil.encodeColor(0x000000));
+        COLOR_MAP.put('1', ColorUtil.encodeColor(0x0000AA));
+        COLOR_MAP.put('2', ColorUtil.encodeColor(0x00AA00));
+        COLOR_MAP.put('3', ColorUtil.encodeColor(0x00AAAA));
+        COLOR_MAP.put('4', ColorUtil.encodeColor(0xAA0000));
+        COLOR_MAP.put('5', ColorUtil.encodeColor(0xAA00AA));
+        COLOR_MAP.put('6', ColorUtil.encodeColor(0xFFAA00));
+        COLOR_MAP.put('7', ColorUtil.encodeColor(0xAAAAAA));
+        COLOR_MAP.put('8', ColorUtil.encodeColor(0x555555));
+        COLOR_MAP.put('9', ColorUtil.encodeColor(0x5555FF));
+        COLOR_MAP.put('a', ColorUtil.encodeColor(0x55FF55));
+        COLOR_MAP.put('b', ColorUtil.encodeColor(0x55FFFF));
+        COLOR_MAP.put('c', ColorUtil.encodeColor(0xFF5555));
+        COLOR_MAP.put('d', ColorUtil.encodeColor(0xFF55FF));
+        COLOR_MAP.put('e', ColorUtil.encodeColor(0xFFFF55));
+        COLOR_MAP.put('f', ColorUtil.encodeColor(0xFFFFFF));
     }
 
     @Override
     public List<String> listFormattedStringToWidth(String str, int wrapWidth) {
-        return Arrays.asList(
-            this.wrapFormattedStringToWidth(str, wrapWidth)
-                .split("\n"));
+        return Arrays.stream(str.split(NEWLINE_REGEX_SEQUENCE))
+            .flatMap(
+                line -> Arrays.stream(
+                    this.wrapFormattedStringToWidth(line, wrapWidth)
+                        .split("\n")))
+            .collect(Collectors.toList());
     }
 
     @Override
     public int drawStringWithShadow(String text, int x, int y, int color) {
-        // TODO now shadow render have error
-        return super.drawString(text, x, y, color, false);
+        this.needShadow = true;
+        int l = super.drawString(
+            this.changeMCFormatToTinkersColor(text),
+            x + 1,
+            y + 1,
+            (color & 16579836) >> 2 | color & -16777216,
+            false);
+        this.needShadow = false;
+        return Math.max(super.drawString(text, x, y, color, false), l);
+    }
+
+    protected String changeMCFormatToTinkersColor(String input) {
+        if (input == null || input.isEmpty() || !input.contains("§")) {
+            return input;
+        }
+
+        StringBuilder sb = new StringBuilder(input.length() + 8);
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (c == '§' && i + 1 < input.length()) {
+                char next = Character.toLowerCase(input.charAt(i + 1));
+                String replacement = COLOR_MAP.get(next);
+                if (replacement != null) {
+                    sb.append(replacement);
+                    i += 1;
+                    continue;
+                }
+            }
+            sb.append(c);
+        }
+        return sb.toString();
     }
 
     @Override
@@ -45,13 +100,13 @@ public class TinkersRebornFontRender extends FontRenderer {
             int value = letter & 0xFF;
             switch (state) {
                 case 0:
-                    red = value;
+                    red = value >> (this.needShadow ? 2 : 0);
                     break;
                 case 1:
-                    green = value;
+                    green = value >> (this.needShadow ? 2 : 0);
                     break;
                 case 2:
-                    blue = value;
+                    blue = value >> (this.needShadow ? 2 : 0);
                     break;
                 default:
                     this.setColor(1f, 1f, 1f, 1f);
@@ -201,8 +256,9 @@ public class TinkersRebornFontRender extends FontRenderer {
     /**
      * Checks if the char code is a hexadecimal character, used to set colour.
      */
-    private static boolean isFormatColor(char colorChar) {
+    protected static boolean isFormatColor(char colorChar) {
         return colorChar >= 48 && colorChar <= 57 || colorChar >= 97 && colorChar <= 102
             || colorChar >= 65 && colorChar <= 70;
     }
+
 }

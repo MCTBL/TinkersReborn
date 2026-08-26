@@ -56,7 +56,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
 
     protected final List<ModifierAspect> aspects = new LinkedList<>();
 
-    public AbstractModifier(String identifier) {
+    protected AbstractModifier(String identifier) {
         this.identifier = TinkersRebornUtils.sanitizeLocalizationString(identifier);
 
         TinkersRebornRegistry.addModifierAndTrait(this);
@@ -74,6 +74,19 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
 
     protected void addAspects(ModifierAspect... aspects) {
         this.aspects.addAll(Arrays.asList(aspects));
+    }
+
+    public List<String> getAspectsDesc() {
+        List<String> l = new ArrayList<>();
+
+        for (ModifierAspect a : this.aspects) {
+            String aspectDesc = a.getAspectDesc();
+            if (aspectDesc != null) {
+                l.add(aspectDesc);
+            }
+        }
+
+        return l;
     }
 
     @Override
@@ -270,12 +283,12 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
     protected static boolean attackEntitySecondary(DamageSource source, float damage, Entity entity,
         boolean ignoreInvulv, boolean resetInvulv, boolean noKnockback) {
         Optional<EntityLivingBase> entityLivingBase = Optional.of(entity)
-            .filter(e -> e instanceof EntityLivingBase)
+            .filter(EntityLivingBase.class::isInstance)
             .map(e -> (EntityLivingBase) e);
         Optional<IAttributeInstance> knockbackAttribute = entityLivingBase
             .map(living -> living.getEntityAttribute(SharedMonsterAttributes.knockbackResistance))
             .filter(attribute -> attribute.getModifier(ANTI_KNOCKBACK_MOD.getID()) == null);
-        float oldLastDamage = entityLivingBase.map(living -> EntityLivingBaseReflector.getLastDamage(living))
+        float oldLastDamage = entityLivingBase.map(EntityLivingBaseReflector::getLastDamage)
             .orElse(0f);
 
         if (noKnockback) {

@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
@@ -226,7 +225,7 @@ public abstract class RecipeMatch {
 
             List<ItemStack> nonNullStacks = new ArrayList<>(Collections.nCopies(stacks.length, null));
             for (int i = 0; i < stacks.length; i++) {
-                if (stacks[i].stackSize != 0) {
+                if (!isStackEmpty(stacks[i])) {
                     nonNullStacks.set(i, stacks[i].copy());
                 }
             }
@@ -245,7 +244,7 @@ public abstract class RecipeMatch {
             Set<Integer> needed = new HashSet<>();
 
             for (int i = 0; i < itemStacks.size(); i++) {
-                if (itemStacks.get(i).stackSize != 0) {
+                if (!isStackEmpty(itemStacks.get(i))) {
                     needed.add(i);
                 }
             }
@@ -302,9 +301,11 @@ public abstract class RecipeMatch {
             // transform "Requires 2 Cobblestone" into "2x require 1 Cobblestone" since the
             // oredictEntry only contains stacksize 1 usually
             ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
-            oredictEntry.forEach(
-                stack -> IntStream.range(0, amountNeeded)
-                    .forEach(i -> builder.add(stack)));
+            for (ItemStack stack : this.oredictEntry) {
+                for (int i = 0; i < this.amountNeeded; i++) {
+                    builder.add(stack);
+                }
+            }
             return builder.build();
         }
 

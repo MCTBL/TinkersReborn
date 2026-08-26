@@ -11,7 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -54,13 +53,11 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
     public static final String TAG_LAUNCHER = "launcher";
     public static final String TAG_POWER = "power";
 
-    protected static final UUID PROJECTILE_POWER_MODIFIER = UUID.fromString("c6aefc21-081a-4c4a-b076-8f9d6cef9122");
+    protected static final UUID PROJECTILE_POWER_MODIFIER = UUID.fromString("28D447FF-51E4-4A80-A898-3BD7D9CFA21E");
     // projectiles tend to land about this far from any given block face
     private static final AxisAlignedBB ON_BLOCK_AABB = AxisAlignedBB
         .getBoundingBox(-0.05D, -0.05D, -0.05D, 0.05D, 0.05D, 0.05D);
 
-    // public TinkerProjectileHandler tinkerProjectile = new
-    // TinkerProjectileHandler();
     private ItemStack ammoStack = null; // parent
     private ItemStack launcherStack = null; // launcher
     private float power = 1f; // power
@@ -229,7 +226,6 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
         // deal damage if we have everything
         if (item.getItem() instanceof ToolCore && this.shootingEntity instanceof EntityLivingBase) {
             EntityLivingBase attacker = (EntityLivingBase) this.shootingEntity;
-            // EntityLivingBase target = (EntityLivingBase) raytraceResult.entityHit;
 
             // find the actual itemstack in the players inventory
             ItemStack inventoryItem = AmmoHelper.getMatchingItemstackFromInventory(item, attacker, false);
@@ -280,6 +276,8 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
                     if (this.isBurning() && !(entityHit instanceof EntityEnderman)) {
                         entityHit.setFire(5);
                     }
+
+                    // TODO should we play sound for shooter when hit?
                 }
                 if (brokenStateDiffers) {
                     toggleBroken(inventoryItem);
@@ -287,8 +285,7 @@ public class EntityProjectileBase extends EntityArrow implements IEntityAddition
 
                 // remove stats from projectile
                 // apply stats from projectile
-                if (item.getItem() instanceof IProjectile) {
-                    assert projectileAttributes != null;
+                if (item.getItem() instanceof AmmoCore) {
                     attacker.getAttributeMap()
                         .removeAttributeModifiers(projectileAttributes);
                 }

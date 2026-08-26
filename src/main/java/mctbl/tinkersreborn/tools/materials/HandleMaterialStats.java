@@ -3,7 +3,10 @@ package mctbl.tinkersreborn.tools.materials;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraftforge.common.config.Configuration;
+
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
+import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
@@ -16,8 +19,8 @@ public class HandleMaterialStats extends AbstractMaterialStats {
     public final static String LOC_MultiplierDesc = "tinkersreborn.stat.handle.modifier.desc";
     public final static String LOC_DurabilityDesc = "tinkersreborn.stat.handle.durability.desc";
 
-    public final float multiplier; // how good the material is for handles. 0.0 - 1.0
-    public final int durability; // usually between -500 and 500
+    private float multiplier; // how good the material is for handles. 0.0 - 1.0
+    private int durability; // usually between -500 and 500
 
     /**
      * @param multiplier
@@ -26,6 +29,14 @@ public class HandleMaterialStats extends AbstractMaterialStats {
     public HandleMaterialStats(float modifier, int durability) {
         this.multiplier = modifier;
         this.durability = durability;
+    }
+
+    public float getMultiplier() {
+        return multiplier;
+    }
+
+    public int getDurability() {
+        return durability;
     }
 
     @Override
@@ -66,4 +77,33 @@ public class HandleMaterialStats extends AbstractMaterialStats {
         return format(LOC_Durability, COLOR_Durability, durability);
     }
 
+    @Override
+    public void writeToCfg(Configuration cfg, String categotry) {
+        String key = categotry + "."
+            + this.getIdentifier()
+                .toString()
+                .toLowerCase();
+        cfg.get(key, "multiplier", this.multiplier)
+            .getDouble();
+        cfg.get(key, "durability", this.durability)
+            .getInt();
+    }
+
+    @Override
+    public IMaterialStats readFromCfg(Configuration cfg, String categotry) {
+        String key = categotry + "."
+            + this.getIdentifier()
+                .toString()
+                .toLowerCase();
+        this.multiplier = (float) cfg.get(key, "multiplier", this.multiplier)
+            .getDouble();
+        this.durability = cfg.get(key, "durability", this.durability)
+            .getInt();
+        return this;
+    }
+
+    @Override
+    public IMaterialStats getNewStatsFromCfg(Configuration cfg, String categotry) {
+        return new HandleMaterialStats(0, 0).readFromCfg(cfg, categotry);
+    }
 }

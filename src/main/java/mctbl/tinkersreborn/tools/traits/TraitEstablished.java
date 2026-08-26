@@ -16,29 +16,16 @@ public class TraitEstablished extends AbstractTrait {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    // @SubscribeEvent
-    // public void onXpDrop(LivingDropsEvent event) {
-    // for (EntityItem item : event.drops) {
-    // LOG.info(
-    // "name {} * {}",
-    // item.getEntityItem()
-    // .getDisplayName(),
-    // item.getEntityItem().stackSize);
-    // }
-    // }
-
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         EntityPlayer player = event.getPlayer();
-        if (player != null) {
-            if (ToolTagsHelper.hasModifier(player.getHeldItem(), identifier)) {
-                float r = random.nextFloat();
-                int expToDrop = event.getExpToDrop();
-                // 30% chance for 1 bonus xp
-                if (r < 0.33f || (expToDrop == 0 && r < 0.03f)) {
-                    // LOG.info("Nice !TraitEstablished gives you extra EXP!");
-                    event.setExpToDrop(expToDrop + 1);
-                }
+        if (player != null && ToolTagsHelper.hasModifier(player.getHeldItem(), identifier)) {
+            float r = random.nextFloat();
+            int expToDrop = event.getExpToDrop();
+            // 30% chance for 1 bonus xp
+            if (r < 0.33f || (expToDrop == 0 && r < 0.03f)) {
+                // LOG.info("Nice !TraitEstablished gives you extra EXP!");
+                event.setExpToDrop(expToDrop + 1);
             }
         }
     }

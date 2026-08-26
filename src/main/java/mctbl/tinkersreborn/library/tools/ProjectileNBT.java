@@ -27,8 +27,8 @@ public class ProjectileNBT extends ToolNBT {
         float modifier = 0f;
         for (ShaftMaterialStats shaft : shafts) {
             if (shaft != null) {
-                dur += shaft.bonusAmmo;
-                modifier += shaft.modifier;
+                dur += shaft.getBonusAmmo();
+                modifier += shaft.getModifier();
             }
         }
 
@@ -50,8 +50,8 @@ public class ProjectileNBT extends ToolNBT {
         float accuracy = 0f;
         for (FletchingMaterialStats fletching : fletchings) {
             if (fletching != null) {
-                modifier += fletching.modifier;
-                accuracy += fletching.accuracy;
+                modifier += fletching.getModifier();
+                accuracy += fletching.getAccuracy();
             }
         }
 

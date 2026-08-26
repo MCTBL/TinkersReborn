@@ -3,8 +3,6 @@ package mctbl.tinkersreborn.library.gui;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -138,9 +136,6 @@ public class GuiWidgetTabs extends GuiWidget {
                 actualTab = toDraw[1];
             }
 
-            // todo: draw all the tabs first and then all the itemstacks so it doesn't have
-            // to switch texture in between all the time
-
             // rebind texture from drawing an itemstack
             Minecraft.getMinecraft()
                 .getTextureManager()
@@ -149,35 +144,9 @@ public class GuiWidgetTabs extends GuiWidget {
 
             ItemStack icon = icons.get(i);
             if (icon != null) {
-                drawItemStack(icon, x + (actualTab.w - 16) / 2, y + (actualTab.h - 16) / 2);
+                GL11.glEnable(GL11.GL_DEPTH_TEST);
+                this.parent.drawItemStack(icon, x + (actualTab.w - 16) / 2, y + (actualTab.h - 16) / 2, null);
             }
         }
-    }
-
-    // guiContainer.drawItemStack
-    private void drawItemStack(ItemStack stack, int x, int y) {
-        RenderItem itemRender = this.parent.getRenderItem();
-
-        GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GL11.glTranslatef(0.0F, 0.0F, 32.0F);
-
-        RenderHelper.enableGUIStandardItemLighting();
-
-        itemRender.zLevel = 200;
-        itemRender.renderItemAndEffectIntoGUI(
-            stack.getItem()
-                .getFontRenderer(stack),
-            Minecraft.getMinecraft()
-                .getTextureManager(),
-            stack,
-            x,
-            y);
-        itemRender.zLevel = 0.0F;
-
-        RenderHelper.disableStandardItemLighting();
-
-        GL11.glPopMatrix();
     }
 }

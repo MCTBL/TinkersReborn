@@ -12,7 +12,7 @@ import mctbl.tinkersreborn.library.tools.traits.AbstractTrait;
 
 public class TraitHeavy extends AbstractTrait {
 
-    protected static final UUID KNOCKBACK_MODIFIER = UUID.fromString("cca17597-84ae-44fe-bf98-ca08a9047079");
+    protected static final UUID KNOCKBACK_MODIFIER = UUID.fromString("1EAFEDF2-1597-4E12-B13D-AAA2B08527CD");
 
     public TraitHeavy() {
         super("heavy", 0x4D4968);

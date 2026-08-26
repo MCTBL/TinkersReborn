@@ -33,7 +33,10 @@ import net.minecraftforge.event.world.BlockEvent;
 
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
+import mctbl.tinkersreborn.common.particle.Particles;
+import mctbl.tinkersreborn.common.particle.TinkersRebornParticle.Type;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.AmmoCore;
@@ -43,6 +46,7 @@ import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.Category;
+import mctbl.tinkersreborn.tools.network.ToolBreakAnimationPacket;
 
 public class ToolTagsHelper {
 
@@ -254,6 +258,28 @@ public class ToolTagsHelper {
 
     public static ToolNBT getToolOriginStats(NBTTagCompound root) {
         return new ToolNBT(getToolOriginDataNBTSafe(root));
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Leveling
+     */
+    public static NBTTagCompound getToolLevelingNBTSafe(ItemStack tool) {
+        return getToolLevelingNBTSafe(getTagSafe(tool));
+    }
+
+    /**
+     * @param stack
+     * @return tool -> TinkersRebornTool -> Leveling
+     */
+    public static NBTTagCompound getToolLevelingNBTSafe(NBTTagCompound compound) {
+        return getTagSafe(getToolBaseNBTSafe(compound), ToolTags.TAG_LEVEL_BASE);
+    }
+
+    public static void setToolLevelingNBTSafe(NBTTagCompound baseCompound, NBTTagCompound levelingCompound) {
+        if (getToolLevelingNBTSafe(baseCompound) != levelingCompound) {
+            getToolBaseNBTSafe(baseCompound).setTag(ToolTags.TAG_LEVEL_BASE, levelingCompound);
+        }
     }
 
     // stats
@@ -548,8 +574,8 @@ public class ToolTagsHelper {
 
     public static float getActualMiningSpeed(ItemStack stack) {
         float speed = getMiningSpeedStat(stack);
-        if (!TinkersRebornUtils.isStackEmpty(stack) && stack.getItem() instanceof ToolCore) {
-            speed *= ((ToolCore) stack.getItem()).miningSpeedModifier();
+        if (!TinkersRebornUtils.isStackEmpty(stack) && stack.getItem() instanceof ToolCore tool) {
+            speed *= tool.miningSpeedModifier();
         }
         return speed;
     }
@@ -561,15 +587,7 @@ public class ToolTagsHelper {
         tag.setBoolean(ToolTags.BROKEN, true);
 
         if (entity instanceof EntityPlayerMP player) {
-            // this
-            player.playSound("entity.item.break", 0.8F, 0.8F + entity.worldObj.rand.nextFloat() * 0.4F);
-
-            // or this
-            // player.worldObj.playSound(player.posX, player.posY, player.posZ,
-            // "entity.item.break", 0.8F,
-            // 0.8F + entity.worldObj.rand.nextFloat() * 0.4F, false);
-
-            player.renderBrokenItemStack(stack);
+            TinkerNetwork.sendTo(new ToolBreakAnimationPacket(stack), player);
         }
     }
 
@@ -888,7 +906,7 @@ public class ToolTagsHelper {
                 if (isCritical) {
                     player.onCriticalHit(target);
                     // not sure
-                    sound = "entity.player.attack.crit";
+                    sound = Sounds.crit_hit;
                 }
 
                 // "magical" critical damage? (aka caused by modifiers)
@@ -924,28 +942,28 @@ public class ToolTagsHelper {
                 player.addExhaustion(0.3f);
 
                 if (player.getEntityWorld() instanceof WorldServer world && damageDealt > 2f) {
-                    int k = (int) (damageDealt * 0.5);
-                    for (int i = 0; i < k; i++) {
-                        world.spawnParticle(
-                            "damageIndicator",
-                            targetEntity.posX + 0.5D - random.nextDouble(),
-                            targetEntity.posY + targetEntity.height * 0.5D * random.nextDouble(),
-                            targetEntity.posZ + 0.5D - random.nextDouble(),
-                            0.2D,
-                            0.2D,
-                            0.2D);
-                    }
+                    TinkersReborn.proxy.spawnParticle(
+                        Particles.EFFECT,
+                        world,
+                        targetEntity.posX + 0.5D - random.nextDouble(),
+                        targetEntity.posY + targetEntity.height * 0.5D * random.nextDouble(),
+                        targetEntity.posZ + 0.5D - random.nextDouble(),
+                        0.2D,
+                        0.2D,
+                        0.2D,
+                        Math.min((int) (damageDealt * 0.5), 5),
+                        Type.HEART.ordinal());
                 }
 
             } else if (!isProjectile) {
                 tool.reduceDurabilityOnHit(stack, null, damage);
             }
         } else {
-            sound = "entity.player.attack.nodamage";
+            sound = Sounds.nodamage;
         }
 
         if (player != null && sound != null && !player.worldObj.isRemote) {
-            player.playSound(sound, 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F);
+            Sounds.playSoundForPlayer(player, sound, 0.8F, 0.8F + player.worldObj.rand.nextFloat() * 0.4F);
         }
 
         return true;

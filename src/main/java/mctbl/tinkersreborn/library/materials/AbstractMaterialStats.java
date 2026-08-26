@@ -34,5 +34,4 @@ public abstract class AbstractMaterialStats implements IMaterialStats {
     public static String format(String s, String color, String data) {
         return String.format(formatBase, TinkersRebornUtils.translate(s), color, data);
     }
-
 }

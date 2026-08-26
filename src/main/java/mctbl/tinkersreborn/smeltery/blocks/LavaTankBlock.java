@@ -25,10 +25,10 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.IServantLogic;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
 import mctbl.tinkersreborn.smeltery.items.FilledBucket;
-import mctbl.tinkersreborn.smeltery.model.TankRender;
 
 public class LavaTankBlock extends BlockContainer {
 
@@ -121,7 +121,7 @@ public class LavaTankBlock extends BlockContainer {
 
     @Override
     public int getRenderType() {
-        return TankRender.tankModelID;
+        return TinkersRebornSmeltery.proxy.getTankRender();
     }
 
     @Override

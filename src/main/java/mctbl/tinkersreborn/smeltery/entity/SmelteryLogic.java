@@ -11,9 +11,13 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -23,6 +27,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -41,8 +46,10 @@ import mctbl.tinkersreborn.library.event.TinkerSmelteryEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
+import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
+import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 import mctbl.tinkersreborn.smeltery.network.SmelteryFluidUpdatePacket;
 import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -52,6 +59,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public static final DamageSource smelteryDamage = new DamageSource("smeltery").setFireDamage();
 
     private static final int MAX_SMELTERY_SIZE = 7;
+    private static final int BUCKET_INPUT_SLOT = 0;
+    private static final int BUCKET_OUTPUT_SLOT = 1;
     public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
     protected static final int ALLOYING_PER_TICK = 10; // how much liquid can be created per tick to make alloys
     public static final String MOLTEN_METAL_LIST = "MoltenMetal";
@@ -63,6 +72,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     public int currentMoltenMetalAmount;
     public int blocksPerLayer;
     public int multiLayers;
+
+    public IInventory buckets = new InventoryBasic("smeltery.bucket", false, 2);
 
     public SmelteryLogic() {
         super("smeltery");
@@ -574,6 +585,7 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiSmeltery((ContainerSmeltery) getGuiContainer(inventoryplayer, world, x, y, z), this);
     }
@@ -693,5 +705,93 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
             .collect(Collectors.toList());
         collect.add(new FluidTankInfo(null, this.maxMoltenMetalAmount - this.currentMoltenMetalAmount));
         return collect.toArray(new FluidTankInfo[] {});
+    }
+
+    public void fillOrClearBucket(boolean isShiftClick, EntityPlayer player) {
+        ItemStack bucket = buckets.getStackInSlot(BUCKET_INPUT_SLOT);
+        if (bucket == null || buckets.getStackInSlot(BUCKET_OUTPUT_SLOT) != null) {
+            return;
+        }
+
+        if (bucket.getItem() instanceof FilledBucket || FluidContainerRegistry.isFilledContainer(bucket)) {
+            emptyContainerIntoSmeltery(bucket, isShiftClick, player);
+            return;
+        }
+
+        if (FluidContainerRegistry.isEmptyContainer(bucket)) {
+            fillContainerFromSmeltery(bucket, isShiftClick, player);
+        }
+    }
+
+    private void emptyContainerIntoSmeltery(ItemStack bucket, boolean isShiftClick, EntityPlayer player) {
+        FluidStack containedFluid;
+        ItemStack emptyContainer;
+
+        // FilledBucket uses NBT to distinguish fluids, which FluidContainerRegistry ignores in 1.7.10.
+        if (bucket.getItem() instanceof FilledBucket filledBucket) {
+            TinkersRebornFluid fluid = filledBucket.getFluidStackInBucket(bucket);
+            if (fluid == null) {
+                return;
+            }
+
+            containedFluid = new FluidStack(fluid, FluidContainerRegistry.BUCKET_VOLUME);
+            emptyContainer = new ItemStack(Items.bucket);
+        } else {
+            containedFluid = FluidContainerRegistry.getFluidForFilledItem(bucket);
+            emptyContainer = FluidContainerRegistry.drainFluidContainer(bucket);
+        }
+
+        if (containedFluid == null || emptyContainer == null) {
+            return;
+        }
+
+        int accepted = this.fill(containedFluid, false);
+        if (accepted != containedFluid.amount) {
+            return;
+        }
+
+        this.fill(containedFluid, true);
+        finishContainerOperation(emptyContainer, isShiftClick, player);
+    }
+
+    private void fillContainerFromSmeltery(ItemStack bucket, boolean isShiftClick, EntityPlayer player) {
+        FluidStack availableFluid = this.getFluid();
+        if (availableFluid == null || availableFluid.amount <= 0) {
+            return;
+        }
+
+        ItemStack filledContainer = FluidContainerRegistry.fillFluidContainer(availableFluid, bucket);
+        int drainAmount = FluidContainerRegistry.getContainerCapacity(availableFluid, bucket);
+
+        if (filledContainer == null && availableFluid.getFluid() instanceof TinkersRebornFluid fluid) {
+            filledContainer = TinkersRebornGeneral.tinkersBucket.getNewFluidBucketWithMaterial(fluid.identifier);
+            drainAmount = FluidContainerRegistry.BUCKET_VOLUME;
+        }
+
+        if (filledContainer == null || drainAmount <= 0) {
+            return;
+        }
+
+        FluidStack drainedFluid = this.drain(drainAmount, false);
+        if (drainedFluid == null || drainedFluid.amount != drainAmount) {
+            return;
+        }
+
+        this.drain(drainAmount, true);
+        finishContainerOperation(filledContainer, isShiftClick, player);
+    }
+
+    private void finishContainerOperation(ItemStack result, boolean isShiftClick, EntityPlayer player) {
+        boolean returnedToPlayer = false;
+        if (isShiftClick && player != null) {
+            returnedToPlayer = player.inventory.addItemStackToInventory(result);
+            player.inventory.markDirty();
+        }
+
+        if (!returnedToPlayer) {
+            buckets.setInventorySlotContents(BUCKET_OUTPUT_SLOT, result);
+        }
+
+        buckets.decrStackSize(BUCKET_INPUT_SLOT, 1);
     }
 }

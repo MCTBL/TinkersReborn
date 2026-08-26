@@ -13,6 +13,7 @@ import net.minecraft.item.ItemSpade;
 import com.google.common.collect.ImmutableSet;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.tools.Category;
 
 public abstract class HarvestTool extends ToolCore {
@@ -99,6 +100,7 @@ public abstract class HarvestTool extends ToolCore {
 
     protected HarvestTool(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
+        this.setCreativeTab(TinkersRebornRegistry.toolsTab);
         this.categoryTags.add(Category.HARVEST);
         this.categoryTags.add(Category.TOOL);
     }

@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
+import mctbl.tinkersreborn.library.TinkerAPIException;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierAspect;
@@ -24,8 +25,10 @@ public class ModFortify extends ToolModifier {
         super("fortify" + material.identifier, material.materialTextColor);
 
         if (!material.hasStats(MaterialStatusType.HEAD)) {
-            // throw new TinkerAPIException(String.format("Trying to add a fortify-modifier for a material without tool
-            // stats: %s", material.getIdentifier()));
+            throw new TinkerAPIException(
+                String.format(
+                    "Trying to add a fortify-modifier for a material without tool stats: %s",
+                    material.identifier));
         }
 
         this.material = material;
@@ -50,10 +53,14 @@ public class ModFortify extends ToolModifier {
             .format(TinkersRebornUtils.translate(String.format(LOC_Desc, "fortify")), material.localizedName());
     }
 
+    public static String getModifierName() {
+        return TinkersRebornUtils.translate(String.format(LOC_Name, "fortify"));
+    }
+
     @Override
     public void applyEffect(NBTTagCompound rootCompound, NBTTagCompound modifierTag) {
         HeadMaterialStats stats = material.getStats(MaterialStatusType.HEAD);
-        ToolTagsHelper.setHarvestLevelStat(rootCompound, stats.harvestLevel);
+        ToolTagsHelper.setHarvestLevelStat(rootCompound, stats.getHarvestLevel());
 
         // Remove other fortify modifiers, only the last one applies
         NBTTagList tagList = ToolTagsHelper.getModifiersTagList(rootCompound);

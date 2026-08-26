@@ -2,6 +2,8 @@ package mctbl.tinkersreborn.library.tools.modifiers;
 
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
+import java.util.Arrays;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
@@ -36,13 +38,15 @@ public abstract class ModifierAspect {
         this.parent = null;
     }
 
-    public ModifierAspect(IModifier parent) {
+    protected ModifierAspect(IModifier parent) {
         this.parent = parent;
     }
 
     public abstract boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException;
 
     public abstract void updateNBT(NBTTagCompound root, NBTTagCompound modifierTag);
+
+    public abstract String getAspectDesc();
 
     /**
      * The modifier requires sufficient free modifier sto be present.
@@ -81,6 +85,11 @@ public abstract class ModifierAspect {
             NBTTagCompound statsTag = ToolTagsHelper.getToolDataNBTSafe(root);
             int used = statsTag.getInteger(ToolTags.USEDMODIFIERS) + requiredModifiers;
             statsTag.setInteger(ToolTags.USEDMODIFIERS, used);
+        }
+
+        @Override
+        public String getAspectDesc() {
+            return String.format(translate("modifier.aspect.needFreeModifier"), this.requiredModifiers);
         }
     }
 
@@ -147,6 +156,11 @@ public abstract class ModifierAspect {
             data.identifier = parent.getIdentifier();
             data.color = color;
             data.write(modifierTag);
+        }
+
+        @Override
+        public String getAspectDesc() {
+            return null;
         }
     }
 
@@ -245,6 +259,11 @@ public abstract class ModifierAspect {
 
             return data;
         }
+
+        @Override
+        public String getAspectDesc() {
+            return this.levelAspect.getAspectDesc();
+        }
     }
 
     /**
@@ -272,6 +291,11 @@ public abstract class ModifierAspect {
         @Override
         public void updateNBT(NBTTagCompound root, NBTTagCompound modifierTag) {
             // no extra information needed
+        }
+
+        @Override
+        public String getAspectDesc() {
+            return String.format(translate("modifier.aspect.category"), Arrays.toString(this.category));
         }
     }
 
@@ -333,6 +357,11 @@ public abstract class ModifierAspect {
         public void updateNBT(NBTTagCompound root, NBTTagCompound modifierTag) {
             // no extra information needed, taken care of by base modifier
         }
+
+        @Override
+        public String getAspectDesc() {
+            return translate("modifier.aspect.single");
+        }
     }
 
     /**
@@ -375,6 +404,11 @@ public abstract class ModifierAspect {
             ModifierNBT data = ModifierNBT.readTag(modifierTag);
             data.level = Math.min(data.level + 1, maxLevel);
             data.write(modifierTag);
+        }
+
+        @Override
+        public String getAspectDesc() {
+            return String.format(translate("modifier.aspect.multiLevel"), this.maxLevel);
         }
     }
 }

@@ -18,11 +18,11 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingBlockLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
 import mctbl.tinkersreborn.smeltery.entity.FaucetLogic;
-import mctbl.tinkersreborn.smeltery.model.CastingBlockRender;
 
 public class SearedBlock extends TinkersRebornInventoryBlock {
 
@@ -85,7 +85,7 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
     /* Rendering */
     @Override
     public int getRenderType() {
-        return CastingBlockRender.searedModel;
+        return TinkersRebornSmeltery.proxy.getCastingBlockRender();
     }
 
     @Override
@@ -228,12 +228,7 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
 
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
-        return switch (metadata) {
-            case 0 -> new CastingTableLogic();
-            case 1 -> new FaucetLogic();
-            case 2 -> new CastingBasinLogic();
-            default -> null;
-        };
+        return this.createTileEntity(world, metadata);
     }
 
 }

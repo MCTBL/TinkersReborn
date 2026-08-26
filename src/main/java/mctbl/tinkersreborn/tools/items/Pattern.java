@@ -178,7 +178,7 @@ public class Pattern extends Item implements IPattern {
 
     public boolean isCast(ItemStack stack) {
         return !this.getIdentifier(stack)
-            .equals("pattern_blank");
+            .equals(PATTERN_BLANK);
     }
 
     // NBT

@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import mctbl.tinkersreborn.library.TinkerGuiException;
+import mctbl.tinkersreborn.library.tools.ProjectileLauncherNBT;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierAspect;
@@ -48,7 +49,8 @@ public class ModHaste extends ToolModifier {
             applyHarvestBoost(modData, data, level);
         }
 
-        // attack speed: each total level adds 0.2 to the modifier, though individual redstone piece above the level add
+        // attack speed: each total level adds 0.2 to the modifier, though individual
+        // redstone piece above the level add
         // 0.004 each
         // so in short: 0.004 per redstone
         if (weapon) {
@@ -58,11 +60,12 @@ public class ModHaste extends ToolModifier {
         data.write(ToolTagsHelper.getToolDataNBTSafe(rootCompound));
 
         // bow speed:
-        // if(launcher) {
-        // ProjectileLauncherNBT launcherData = new ProjectileLauncherNBT(TagUtil.getToolTag(rootCompound));
-        // launcherData.drawSpeed += launcherData.drawSpeed * getDrawspeedBonus(modData);
-        // TagUtil.setToolTag(rootCompound, launcherData.get());
-        // }
+        if (launcher) {
+            ProjectileLauncherNBT launcherData = new ProjectileLauncherNBT(
+                ToolTagsHelper.getToolDataNBTSafe(rootCompound));
+            launcherData.drawSpeed += launcherData.drawSpeed * getDrawspeedBonus(modData);
+            launcherData.write(ToolTagsHelper.getToolDataNBTSafe(rootCompound));
+        }
     }
 
     protected void applyHarvestBoost(ModifierNBT.IntegerNBT modData, ToolNBT data, int level) {

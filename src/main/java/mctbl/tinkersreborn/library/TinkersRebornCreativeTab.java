@@ -17,6 +17,7 @@ public class TinkersRebornCreativeTab extends CreativeTabs {
         return this;
     }
 
+    @Override
     public ItemStack getIconItemStack() {
         return display;
     }

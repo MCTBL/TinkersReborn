@@ -71,6 +71,13 @@ public final class ToolTags {
 
     public static final String INTERNALPREFIX = "_internal_render";
 
+    // tool leveling
+    public static final String TAG_LEVEL_BASE = "Leveling";
+    public static final String TAG_EXP = "ToolEXP";
+    public static final String TAG_LEVEL = "ToolLevel";
+    public static final String TAG_BOOST_EXP = "HeadEXP"; // HeadEXP for downwards compatibility
+    public static final String TAG_IS_BOOSTED = "HarvestLevelModified";
+
     private ToolTags() {}
 
 }

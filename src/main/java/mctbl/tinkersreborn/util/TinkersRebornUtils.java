@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockOre;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,6 +20,8 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
 
+import com.google.gson.JsonParser;
+
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 
@@ -27,6 +31,7 @@ public class TinkersRebornUtils {
         "#,###,###.##",
         DecimalFormatSymbols.getInstance(Locale.US));
     public static final DecimalFormat dfPercent = new DecimalFormat("#%");
+    public static final JsonParser jsonParser = new JsonParser();
 
     /**
      * Removes all whitespaces from the given string and makes it lowerspace.
@@ -201,4 +206,44 @@ public class TinkersRebornUtils {
     public static float transferKelvinToCelsius(int kelvin) {
         return kelvin - 273.15F;
     }
+
+    public static boolean isOreBlock(World world, BlockPos pos) {
+        if (world == null) return false;
+
+        Block block = world.getBlock(pos.x, pos.y, pos.z);
+        int meta = world.getBlockMetadata(pos.x, pos.y, pos.z);
+
+        return isOreBlock(block, meta);
+    }
+
+    // TODO is worth to cache this?
+    public static boolean isOreBlock(Block block, int meta) {
+        if (block == null) return false;
+
+        ItemStack stack = new ItemStack(block, 1, meta);
+        if (stack.getItem() != null) {
+            for (int id : OreDictionary.getOreIDs(stack)) {
+                String name = OreDictionary.getOreName(id);
+                if (name.startsWith("ore")) {
+                    return true;
+                }
+            }
+        }
+
+        if (block instanceof BlockOre) return true;
+
+        String tool = block.getHarvestTool(meta);
+        int level = block.getHarvestLevel(meta);
+        return "pickaxe".equals(tool) && level >= 2;
+    }
+
+    public static int ceilDiv(int x, int y) {
+        final int q = x / y;
+        // if the signs are the same and modulo not zero, round up
+        if ((x ^ y) >= 0 && (q * y != x)) {
+            return q + 1;
+        }
+        return q;
+    }
+
 }

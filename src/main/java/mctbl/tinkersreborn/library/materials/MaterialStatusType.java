@@ -5,7 +5,6 @@ import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
-import mctbl.tinkersreborn.tools.materials.ProjectileMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ShaftMaterialStats;
 import mctbl.tinkersreborn.tools.materials.StringMaterialStats;
 
@@ -17,7 +16,6 @@ public enum MaterialStatusType {
 
     BOW(BowMaterialStats.class),
     STRING(StringMaterialStats.class),
-    PROJECTILE(ProjectileMaterialStats.class),
     SHAFT(ShaftMaterialStats.class),
     FLETCHING(FletchingMaterialStats.class);
 

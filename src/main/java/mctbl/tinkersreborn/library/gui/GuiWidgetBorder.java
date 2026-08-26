@@ -41,11 +41,11 @@ public class GuiWidgetBorder extends GuiWidget {
     }
 
     public void updateParent(GuiModule gui) {
-        gui.guiLeftBias(-borderLeft.w);
-        gui.guiTopBias(-borderTop.h);
+        gui.guiLeft += -borderLeft.w;
+        gui.guiTop += -borderTop.h;
 
-        gui.xSizeBias(+borderLeft.w + borderRight.w);
-        gui.ySizeBias(+borderTop.h + borderBottom.h);
+        gui.xSize += (+borderLeft.w + borderRight.w);
+        gui.ySize += (+borderTop.h + borderBottom.h);
     }
 
     @Override

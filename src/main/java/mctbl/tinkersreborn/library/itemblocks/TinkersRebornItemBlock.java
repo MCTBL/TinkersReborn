@@ -4,15 +4,12 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import com.google.gson.annotations.SerializedName;
-
 import mctbl.tinkersreborn.TinkersReborn;
 
 public class TinkersRebornItemBlock extends ItemBlock {
 
     public String[] blockType;
 
-    @SerializedName(value = "secondUnlocalizedName")
     public String unlocalizedName;
     public String append;
 
@@ -31,12 +28,14 @@ public class TinkersRebornItemBlock extends ItemBlock {
         this.append = "." + appendToEnd;
     }
 
+    @Override
     public int getMetadata(int meta) {
         return meta;
     }
 
+    @Override
     public String getUnlocalizedName(ItemStack itemstack) {
-        if (this.blockType.length == 1) {
+        if (this.blockType.length <= 1) {
             return this.unlocalizedName;
         }
         int pos = itemstack.getItemDamage();

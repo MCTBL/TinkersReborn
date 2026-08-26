@@ -31,17 +31,17 @@ import mctbl.tinkersreborn.util.TinkersRebornUtils;
 public abstract class TinkersRebornInventoryLogic extends TileEntity implements IInventory, ITinkersRebornIFacingLogic {
 
     public Random rand = TinkersReborn.random;
-    public ForgeDirection faceDirection;
+    public ForgeDirection faceDirection = ForgeDirection.UNKNOWN;
 
     protected ItemStack[] inventory;
     protected String invName;
     protected int stackSizeLimit;
 
-    public TinkersRebornInventoryLogic(int invSize) {
+    protected TinkersRebornInventoryLogic(int invSize) {
         this(invSize, 64);
     }
 
-    public TinkersRebornInventoryLogic(int invSize, int maxStackSize) {
+    protected TinkersRebornInventoryLogic(int invSize, int maxStackSize) {
         inventory = new ItemStack[invSize];
         stackSizeLimit = maxStackSize;
     }

@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagList;
 
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.TinkersStr;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class CastChestItemBlock extends ItemBlock {
 
@@ -34,7 +35,7 @@ public class CastChestItemBlock extends ItemBlock {
     @Override
     public void addInformation(ItemStack itemStack, EntityPlayer player, List<String> list, boolean isDetail) {
         if (TinkersRebornUtils.isShiftKeyDown()) {
-            List<ItemStack> inventoryFromNBT = this.readInventoryFromNBT(itemStack.getTagCompound());
+            List<ItemStack> inventoryFromNBT = this.readInventoryFromNBT(ToolTagsHelper.getTagSafe(itemStack));
             for (ItemStack stack : inventoryFromNBT) {
                 list.add("- " + stack.getDisplayName() + " x " + stack.stackSize);
             }

@@ -13,6 +13,9 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.particle.Particles;
+
 public abstract class SlimeBase extends EntitySlime implements IMob {
 
     /**
@@ -78,8 +81,8 @@ public abstract class SlimeBase extends EntitySlime implements IMob {
         this.motionY = 0.05 * getSlimeSize() + 0.37;
 
         if (this.isPotionActive(Potion.jump)) {
-            this.motionY += (float) (this.getActivePotionEffect(Potion.jump)
-                .getAmplifier() + 1) * 0.1F;
+            this.motionY += (this.getActivePotionEffect(Potion.jump)
+                .getAmplifier() + 1.0F) * 0.1F;
         }
 
         if (this.isSprinting()) {
@@ -234,4 +237,37 @@ public abstract class SlimeBase extends EntitySlime implements IMob {
         return Math.min(0.05F * (float) this.getSlimeSize(), 0.3f);
     }
 
+    @Override
+    protected String getSlimeParticle() {
+        return "";
+    }
+
+    @Override
+    public void onUpdate() {
+        boolean wasOnGround = this.onGround;
+
+        super.onUpdate();
+
+        if (this.worldObj.isRemote && this.onGround && !wasOnGround) {
+            int size = this.getSlimeSize();
+
+            for (int i = 0; i < size * 8; i++) {
+                float angle = this.rand.nextFloat() * (float) Math.PI * 2.0F;
+                float distance = this.rand.nextFloat() * 0.5F + 0.5F;
+
+                float offsetX = MathHelper.sin(angle) * size * 0.5F * distance;
+                float offsetZ = MathHelper.cos(angle) * size * 0.5F * distance;
+
+                TinkersReborn.proxy.spawnParticle(
+                    Particles.BLUE_SLIME,
+                    this.worldObj,
+                    this.posX + offsetX,
+                    this.boundingBox.minY,
+                    this.posZ + offsetZ,
+                    0.0D,
+                    0.0D,
+                    0.0D);
+            }
+        }
+    }
 }

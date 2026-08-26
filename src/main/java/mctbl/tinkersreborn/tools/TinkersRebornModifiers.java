@@ -34,8 +34,8 @@ import mctbl.tinkersreborn.tools.modifiers.ModBlasting;
 import mctbl.tinkersreborn.tools.modifiers.ModCreative;
 import mctbl.tinkersreborn.tools.modifiers.ModDiamond;
 import mctbl.tinkersreborn.tools.modifiers.ModEmerald;
-import mctbl.tinkersreborn.tools.modifiers.ModExtraModifier;
 import mctbl.tinkersreborn.tools.modifiers.ModFiery;
+import mctbl.tinkersreborn.tools.modifiers.ModFins;
 import mctbl.tinkersreborn.tools.modifiers.ModFortify;
 import mctbl.tinkersreborn.tools.modifiers.ModHaste;
 import mctbl.tinkersreborn.tools.modifiers.ModKnockback;
@@ -57,8 +57,7 @@ public class TinkersRebornModifiers {
     public static AbstractModifier modDiamond;
     public static AbstractModifier modEmerald;
     public static AbstractModifier modFiery;
-    // public static AbstractModifier modFins;
-    // public static AbstractModifier modGlowing;
+    public static AbstractModifier modFins;
     public static AbstractModifier modHaste;
     // public static AbstractModifier modHarvestWidth;
     // public static AbstractModifier modHarvestHeight;
@@ -74,7 +73,6 @@ public class TinkersRebornModifiers {
     public static AbstractModifier modWebbed;
     public static AbstractModifier modSmite;
     public static AbstractModifier modSoulbound;
-    public static AbstractModifier modEndearment;
     public static AbstractModifier modIncognito;
     public static AbstractModifier modCreative;
 
@@ -85,7 +83,6 @@ public class TinkersRebornModifiers {
 
     public void init(FMLInitializationEvent e) {
         ItemStack tnt = new ItemStack(Blocks.tnt);
-        ItemStack glowstoneDust = new ItemStack(Items.glowstone_dust);
 
         modBaneOfArthopods = new ModAntiMonsterType(
             "bane_of_arthopods",
@@ -111,8 +108,9 @@ public class TinkersRebornModifiers {
         modFiery = new ModFiery();
         modFiery.addItem(Items.blaze_powder);
 
-        // modFins = new ModFins();
-        // modFins.addItem("fish", 2, 1);
+        ItemStack fish = new ItemStack(Items.fish);
+        modFins = new ModFins();
+        modFins.addRecipeMatch(new RecipeMatch.ItemCombination(1, fish, fish));
 
         // modGlowing = registerModifier(new ModGlowing());
         // modGlowing.addRecipeMatch(new RecipeMatch.ItemCombination(1, glowstoneDust, new ItemStack(Items.ENDER_EYE),
@@ -149,9 +147,6 @@ public class TinkersRebornModifiers {
         modSharpness.addItem("gemQuartz");
         modSharpness.addItem("blockQuartz", 1, 4);
 
-        // modShulking = new ModShulking();
-        // modShulking.addItem(Items.CHORUS_FRUIT_POPPED);
-
         modSilktouch = new ModSilktouch();
         modSilktouch.addItem(TinkersRebornTools.silkyJewel, 1, 1);
 
@@ -163,12 +158,6 @@ public class TinkersRebornModifiers {
 
         modSmite = new ModAntiMonsterType("smite", 0xE8D500, 5, 24, EnumCreatureAttribute.UNDEAD);
         modSmite.addItem(new ItemStack(TinkersRebornGeneral.consecratedSoil), 1, 1);
-
-        modEndearment = new ModExtraModifier();
-        modEndearment.addItem(new ItemStack(Items.skull, 1, 5), 1, 1);
-
-        // modIncognito = registerModifier(new ModIncognito());
-        // modIncognito.addItem(new ItemStack(Blocks.SPONGE, 1, 1), 1, 1);
 
         modCreative = new ModCreative();
         modCreative.addItem(TinkersRebornTools.creativeModifier, 1, 1);

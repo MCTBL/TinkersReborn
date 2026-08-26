@@ -19,7 +19,9 @@ import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
+import mctbl.tinkersreborn.library.smeltery.CastingRecipe;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
+import mctbl.tinkersreborn.smeltery.blocks.CastingChannelBlock;
 import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
 import mctbl.tinkersreborn.smeltery.blocks.GlueBlock;
 import mctbl.tinkersreborn.smeltery.blocks.LavaTankBlock;
@@ -28,12 +30,14 @@ import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryController;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryDrain;
 import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
+import mctbl.tinkersreborn.smeltery.entity.CastingChannelLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
 import mctbl.tinkersreborn.smeltery.entity.FaucetLogic;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
+import mctbl.tinkersreborn.smeltery.itemblocks.CastingChannelItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.FurnaceControllerItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
@@ -104,6 +108,10 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.registerTileEntity(FaucetLogic.class, "tinkersreborn.Faucet");
         GameRegistry.registerTileEntity(CastingBasinLogic.class, "tinkersreborn.CastingBasin");
 
+        castingChannel = new CastingChannelBlock();
+        GameRegistry.registerBlock(castingChannel, CastingChannelItemBlock.class, castingChannel.getUnlocalizedName());
+        GameRegistry.registerTileEntity(CastingChannelLogic.class, "tinkersreborn.CastingChannel");
+
         TinkersRebornRegistry.registerFuel(new FluidStack(FluidRegistry.LAVA, 50), 100);
     }
 
@@ -111,17 +119,17 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     public void init(FMLInitializationEvent e) {
         this.craftingTableRecipes();
 
-        this.registerMeltingCasting();
+        this.registerMeltingRecipe();
+        this.registerTableAndBasinCasting();
+        this.registerBoltCoreCasting();
+        TinkersRebornRegistry.registerEntityMelting();
 
         proxy.initialize();
     }
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
-
-        TinkersRebornRegistry.registerEntityMelting();
         this.registerAlloys();
-        this.registerBoltCoreCasting();
     }
 
     /**
@@ -134,8 +142,49 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         TinkersRebornRegistry.registerTableCasting(BoltCoreCastingRecipe.INSTANCE);
     }
 
-    private void craftingTableRecipes() {
+    private void registerTableAndBasinCasting() {
+        TinkersRebornRegistry.registerTableCasting(
+            new ItemStack(Items.ender_pearl),
+            TinkersRebornTools.castGem,
+            TinkersRebornGeneral.enderFluid,
+            250);
 
+        TinkersRebornRegistry.registerTableCasting(
+            new CastingRecipe(
+                new ItemStack(TinkersRebornTools.bloodyBone),
+                RecipeMatch.ofNBT(new ItemStack(Items.bone)),
+                TinkersRebornGeneral.bloodFluid,
+                200,
+                true,
+                false));
+
+        TinkersRebornRegistry
+            .registerBasinCasting(new ItemStack(smelteryBlock, 1, 2), null, TinkersRebornTools.stoneFluid, 144);
+        TinkersRebornRegistry.registerBasinCasting(
+            new CastingRecipe(
+                new ItemStack(smelteryBlock, 1, 1),
+                RecipeMatch.of(Blocks.cobblestone),
+                TinkersRebornTools.stoneFluid,
+                72,
+                true,
+                false));
+        TinkersRebornRegistry.registerBasinCasting(
+            new ItemStack(TinkersRebornTools.searedBrick),
+            TinkersRebornTools.castIngot,
+            TinkersRebornTools.stoneFluid,
+            36);
+
+        TinkersRebornRegistry.registerBasinCasting(
+            new CastingRecipe(
+                new ItemStack(TinkersRebornTools.reinforcement),
+                RecipeMatch.of(TinkersRebornTools.largeplate.getNewPartWithMaterial(TinkersRebornTools.ironMaterial)),
+                TinkersRebornTools.obsidianFluid,
+                1152,
+                true,
+                false));
+    }
+
+    private void craftingTableRecipes() {
         // Define
         String[] patSurround = { "###", "#m#", "###" };
         ItemStack searedBrick = new ItemStack(TinkersRebornTools.searedBrick, 1);
@@ -175,7 +224,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.addRecipe(new ItemStack(castingChannel, 4, 0), "b b", "bbb", 'b', searedBrick); // Channel
     }
 
-    private void registerMeltingCasting() {
+    private void registerMeltingRecipe() {
         int bucket = 1000;
 
         // Water
@@ -188,8 +237,8 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             .registerMelting(new MeltingRecipe(RecipeMatch.of(Items.snowball, bucket / 8), water, 301));
 
         // bloooooood
-        // TinkersRebornRegistry.registerMelting(Items.rotten_flesh, TinkerFluids.blood, 40);
-        // TinkersRebornTools.obsidianFluid
+        TinkersRebornRegistry.registerMelting(Items.rotten_flesh, TinkersRebornGeneral.bloodFluid, 40);
+        TinkersRebornRegistry.registerMelting(Items.ender_pearl, TinkersRebornGeneral.enderFluid, 250);
 
         // obsidian
         TinkersRebornRegistry.registerMelting(
@@ -262,10 +311,22 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             TinkersRebornTools.aluminumFluid,
             TinkersRebornTools.ironFluid)) {
             TinkersRebornRegistry.registerAlloy(
-                new FluidStack(TinkersRebornTools.alumiteFluid, 144),
-                new FluidStack(TinkersRebornTools.aluminumFluid, 144),
-                new FluidStack(TinkersRebornTools.ironFluid, 144),
-                new FluidStack(TinkersRebornTools.obsidianFluid, 288));
+                new FluidStack(TinkersRebornTools.alumiteFluid, 1),
+                new FluidStack(TinkersRebornTools.aluminumFluid, 1),
+                new FluidStack(TinkersRebornTools.ironFluid, 1),
+                new FluidStack(TinkersRebornTools.obsidianFluid, 2));
+        }
+
+        // 1 ingot copper + 3 ingot aluminum = 4 alumbrass
+        // 144 + 144 * 3 = 144 * 4
+        if (TinkersRebornRegistry.isIntegrated(
+            TinkersRebornTools.aluminumFluid,
+            TinkersRebornTools.copperFluid,
+            TinkersRebornTools.alubrassFluid)) {
+            TinkersRebornRegistry.registerAlloy(
+                new FluidStack(TinkersRebornTools.alubrassFluid, 4),
+                new FluidStack(TinkersRebornTools.copperFluid, 1),
+                new FluidStack(TinkersRebornTools.aluminumFluid, 3));
         }
     }
 }

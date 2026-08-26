@@ -6,11 +6,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkPosition;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import org.joml.Vector3i;
-
 import com.google.common.collect.AbstractIterator;
 
-public class BlockPos extends Vector3i implements Comparable<BlockPos> {
+public class BlockPos implements Comparable<BlockPos> {
+
+    public int x;
+    public int y;
+    public int z;
 
     public static BlockPos of(int x, int y, int z) {
         return new BlockPos(x, y, z);
@@ -28,12 +30,21 @@ public class BlockPos extends Vector3i implements Comparable<BlockPos> {
         super();
     }
 
+    public BlockPos set(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        return this;
+    }
+
     public BlockPos(int x, int y, int z) {
-        super(x, y, z);
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public BlockPos(ChunkPosition chunkPosition) {
-        super(chunkPosition.chunkPosX, chunkPosition.chunkPosY, chunkPosition.chunkPosZ);
+        this(chunkPosition.chunkPosX, chunkPosition.chunkPosY, chunkPosition.chunkPosZ);
     }
 
     public int getX() {
@@ -149,12 +160,6 @@ public class BlockPos extends Vector3i implements Comparable<BlockPos> {
     }
 
     @Override
-    public BlockPos set(int x, int y, int z) {
-        super.set(x, y, z);
-        return this;
-    }
-
-    @Override
     public String toString() {
         return "(" + x + ", " + y + ", " + z + ")";
     }
@@ -234,12 +239,31 @@ public class BlockPos extends Vector3i implements Comparable<BlockPos> {
         }
     }
 
-    @Override
     public BlockPos add(int x, int y, int z) {
         BlockPos newPos = new BlockPos(this.x, this.y, this.z);
         newPos.x += x;
         newPos.y += y;
         newPos.z += z;
         return newPos;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof BlockPos)) return false;
+        BlockPos other = (BlockPos) obj;
+        return x == other.x && y == other.y && z == other.z;
+    }
+
+    public boolean equals(int x, int y, int z) {
+        return this.x == x && this.y == y && this.z == z;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        result = 31 * result + z;
+        return result;
     }
 }

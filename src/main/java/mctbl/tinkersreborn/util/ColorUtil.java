@@ -5,6 +5,8 @@ import java.awt.Color;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.MathHelper;
 
+import mctbl.tinkersreborn.TinkersRebornConfig;
+
 public class ColorUtil {
 
     public static int MARKER = 0xE700;
@@ -171,11 +173,25 @@ public class ColorUtil {
     }
 
     public static String encodeColor(int r, int g, int b) {
-        return String.format(
-            "%c%c%c",
-            ((char) (MARKER + (r & 0xFF))),
-            ((char) (MARKER + (g & 0xFF))),
-            ((char) (MARKER + (b & 0xFF))));
+        return TinkersRebornConfig.isAngelicaLoaded
+            ? String.format("&#%06X", (r & 0xFF) << 16 | (g & 0xFF) << 8 | (b & 0xFF))
+            : String.format(
+                "%c%c%c",
+                ((char) (MARKER + (r & 0xFF))),
+                ((char) (MARKER + (g & 0xFF))),
+                ((char) (MARKER + (b & 0xFF))));
+    }
+
+    public static String toHexString(int rgb) {
+        return String.format("0x%06X", rgb & 0x00FFFFFF);
+    }
+
+    public static int fromHexString(String str) {
+        return Integer.parseInt(
+            str.toLowerCase()
+                .replace("0x", "")
+                .replace("#", ""),
+            16);
     }
 
     public static String formatPartialAmount(int value, int max) {

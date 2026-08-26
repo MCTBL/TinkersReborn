@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.tools.modifiers;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierAspect;
 import mctbl.tinkersreborn.library.tools.modifiers.ToolModifier;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
@@ -25,7 +26,9 @@ public class ModDiamond extends ToolModifier {
         float miningSpeed = ToolTagsHelper.getMiningSpeedStat(rootCompound);
 
         ToolTagsHelper.setDurabilityStat(rootCompound, durability + 500);
-        ToolTagsHelper.setHarvestLevelStat(rootCompound, Math.max(harvestLevel, 3)); // deault OBSIDIAN level
+        if (TinkersRebornConfig.diamondAndEmeraldCanIncreaseHarvestLevel) {
+            ToolTagsHelper.setHarvestLevelStat(rootCompound, Math.max(harvestLevel, 3)); // deault OBSIDIAN level
+        }
         ToolTagsHelper.setAttackStat(rootCompound, attack + 1.0F);
         ToolTagsHelper.setMiningSpeed(rootCompound, miningSpeed + 0.5F);
     }

@@ -22,7 +22,7 @@ import mctbl.tinkersreborn.library.inventory.slots.SlotWrapper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 @SideOnly(Side.CLIENT)
-public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler {
+public class GuiMultiModule extends GuiContainer {
 
     protected List<GuiModule> modules = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     public int realWidth;
     public int realHeight;
 
-    public GuiMultiModule(ContainerMultiModule container) {
+    public GuiMultiModule(ContainerMultiModule<?> container) {
         super(container);
 
         realWidth = -1;
@@ -94,7 +94,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
             // set correct state for the module
             GL11.glPushMatrix();
             GL11.glTranslatef(-this.guiLeft, -this.guiTop, 0.0F);
-            GL11.glTranslatef(module.guiLeft(), module.guiTop(), 0.0F);
+            GL11.glTranslatef(module.guiLeft, module.guiTop, 0.0F);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -112,7 +112,7 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     }
 
     protected void drawContainerName() {
-        ContainerMultiModule multiContainer = (ContainerMultiModule) this.inventorySlots;
+        ContainerMultiModule<?> multiContainer = (ContainerMultiModule<?>) this.inventorySlots;
         String localizedName = multiContainer.getInventoryDisplayName();
         if (localizedName != null) {
             this.fontRendererObj.drawString(localizedName, 8, 6, 0x404040);
@@ -122,11 +122,6 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     protected void drawPlayerInventoryName() {
         String localizedName = Minecraft.getMinecraft().thePlayer.inventory.getInventoryName();
         this.fontRendererObj.drawString(TinkersRebornUtils.translate(localizedName), 8, this.ySize - 96 + 2, 0x404040);
-    }
-
-    @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height) {
-        super.setWorldAndResolution(mc, width, height);
     }
 
     @Override
@@ -151,15 +146,13 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     }
 
     private void syncSlotPositions() {
-        for (Object obj : this.inventorySlots.inventorySlots) {
-            Slot slot = (Slot) obj;
+        for (Slot slot : this.inventorySlots.inventorySlots) {
             GuiModule module = getModuleForSlot(slot.slotNumber);
             if (module == null) {
                 continue;
             }
 
-            if (slot instanceof SlotWrapper) {
-                SlotWrapper wrapper = (SlotWrapper) slot;
+            if (slot instanceof SlotWrapper wrapper) {
                 wrapper.xDisplayPosition = wrapper.parent.xDisplayPosition;
                 wrapper.yDisplayPosition = wrapper.parent.yDisplayPosition;
 
@@ -171,7 +164,9 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         }
     }
 
+    @Override
     public boolean func_146978_c(int left, int top, int right, int bottom, int pointX, int pointY) {
+        // isPointInRegion
         pointX -= this.cornerX;
         pointY -= this.cornerY;
         return pointX >= left - 1 && pointX < left + right + 1 && pointY >= top - 1 && pointY < top + bottom + 1;
@@ -181,13 +176,13 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         module.updatePosition(this.cornerX, this.cornerY, this.realWidth, this.realHeight);
         module.mc = this.mc;
 
-        if (module.guiLeft() < this.guiLeft) {
-            this.xSize += this.guiLeft - module.guiLeft();
-            this.guiLeft = module.guiLeft();
+        if (module.guiLeft < this.guiLeft) {
+            this.xSize += this.guiLeft - module.guiLeft;
+            this.guiLeft = module.guiLeft;
         }
-        if (module.guiTop() < this.guiTop) {
-            this.ySize += this.guiTop - module.guiTop();
-            this.guiTop = module.guiTop();
+        if (module.guiTop < this.guiTop) {
+            this.ySize += this.guiTop - module.guiTop;
+            this.guiTop = module.guiTop;
         }
         if (module.guiRight() > this.guiLeft + this.xSize) {
             xSize = module.guiRight() - this.guiLeft;
@@ -200,10 +195,8 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         GuiModule module = getModuleForPoint(mouseX, mouseY);
-        if (module != null) {
-            if (module.handleMouseClicked(mouseX, mouseY, mouseButton)) {
-                return;
-            }
+        if (module != null && module.handleMouseClicked(mouseX, mouseY, mouseButton)) {
+            return;
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
@@ -211,10 +204,8 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         GuiModule module = getModuleForPoint(mouseX, mouseY);
-        if (module != null) {
-            if (module.handleMouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)) {
-                return;
-            }
+        if (module != null && module.handleMouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)) {
+            return;
         }
 
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
@@ -223,8 +214,8 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
     protected GuiModule getModuleForPoint(int x, int y) {
         for (GuiModule module : modules) {
             if (this.func_146978_c(
-                module.guiLeft(),
-                module.guiTop(),
+                module.guiLeft,
+                module.guiTop,
                 module.guiRight(),
                 module.guiBottom(),
                 x + this.cornerX,
@@ -250,8 +241,8 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
         return null;
     }
 
-    protected ContainerMultiModule getContainer() {
-        return (ContainerMultiModule) inventorySlots;
+    protected ContainerMultiModule<?> getContainer() {
+        return (ContainerMultiModule<?>) inventorySlots;
     }
 
     public void renderItemIntoGui(ItemStack stack, int xPos, int yPos) {
@@ -264,37 +255,5 @@ public class GuiMultiModule extends GuiContainer { // implements INEIGuiHandler 
 
     public FontRenderer getFontRender() {
         return this.fontRendererObj;
-    }
-
-    public int guiLeft() {
-        return this.guiLeft;
-    }
-
-    public void guiLeftBias(int bias) {
-        this.guiLeft += bias;
-    }
-
-    public int guiTop() {
-        return this.guiTop;
-    }
-
-    public void guiTopBias(int bias) {
-        this.guiTop += bias;
-    }
-
-    public int xSize() {
-        return this.xSize;
-    }
-
-    public void xSizeBias(int bias) {
-        this.xSize += bias;
-    }
-
-    public int ySize() {
-        return this.ySize;
-    }
-
-    public void ySizeBias(int bias) {
-        this.ySize += bias;
     }
 }

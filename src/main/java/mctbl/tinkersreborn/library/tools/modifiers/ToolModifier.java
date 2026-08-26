@@ -15,7 +15,7 @@ public abstract class ToolModifier extends AbstractModifier implements IModifier
 
     protected int color;
 
-    public ToolModifier(String identifier, int color) {
+    protected ToolModifier(String identifier, int color) {
         super(identifier);
 
         this.color = color;

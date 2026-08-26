@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -14,9 +15,11 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -30,9 +33,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.crafting.AlloyRecipe;
+import mctbl.tinkersreborn.library.manuals.TinkersRebornRecipeHolder;
+import mctbl.tinkersreborn.library.manuals.TinkersRebornRecipeHolder.RecipeType;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial.RenderMaterial;
@@ -41,6 +50,7 @@ import mctbl.tinkersreborn.library.smeltery.ICastingRecipe;
 import mctbl.tinkersreborn.library.smeltery.PreferenceCastingRecipe;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.utils.DryingRecipe;
 import mctbl.tinkersreborn.library.utils.HeadDropCallback;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
@@ -52,7 +62,7 @@ import mctbl.tinkersreborn.tools.items.Pattern;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class TinkersRebornRegistry {
+public class TinkersRebornRegistry implements ITinkersRebornModule {
 
     public static TinkersRebornRegistry instance = new TinkersRebornRegistry();
 
@@ -61,6 +71,7 @@ public class TinkersRebornRegistry {
     public static TinkersRebornCreativeTab blockTab;
     public static TinkersRebornCreativeTab toolsTab;
     public static TinkersRebornCreativeTab weaponsTab;
+    public static TinkersRebornCreativeTab projectileTab;
     public static TinkersRebornCreativeTab partsTab;
     public static TinkersRebornCreativeTab miscTab;
 
@@ -71,7 +82,7 @@ public class TinkersRebornRegistry {
     protected static final List<ToolCore> toolForgeCrafting = new ArrayList<>();
 
     protected static final List<TinkersRebornMaterial> allMaterialsList = new ArrayList<>();
-    protected static final Map<String, TinkersRebornMaterial> materialIdentifierMaps = new HashMap<>();
+    protected static final Map<String, TinkersRebornMaterial> materialIdentifierMaps = new LinkedHashMap<>();
     protected static final Map<String, RenderMaterial> renderMaterials = new HashMap<>();
 
     protected static final Map<String, IModifier> modifierAndTraitIdentifierMaps = new LinkedHashMap<>();
@@ -94,19 +105,43 @@ public class TinkersRebornRegistry {
 
     protected static final Map<Fluid, Set<Pair<String, Integer>>> knownOreFluids = new HashMap<>();
 
-    public void preInit() {
-        this.initCreativeTab();
-        this.initRegistry();
+    protected static final List<DryingRecipe> dryingRegistry = new ArrayList<>();
 
+    protected static final Map<String, Object> manualIcons = new HashMap<>();
+    protected static final Map<String, TinkersRebornRecipeHolder[]> recipeIcons = new HashMap<>();
+
+    @Override
+    public void preInit(FMLPreInitializationEvent e) {
+        initCreativeTab();
+        this.initRegistry();
+    }
+
+    @Override
+    public void init(FMLInitializationEvent e) {
+        // Nothing
+    }
+
+    @Override
+    public void postInit(FMLPostInitializationEvent e) {
+        setCreativeTab();
     }
 
     private void initCreativeTab() {
-        // TODO remember init after postInit to switch TinkersReborn's Item
-        blockTab = new TinkersRebornCreativeTab("TinkersRebornBlocks").init(new ItemStack(Items.cookie));
-        toolsTab = new TinkersRebornCreativeTab("TinkersRebornTools").init(new ItemStack(Items.flint_and_steel));
-        weaponsTab = new TinkersRebornCreativeTab("TinkersRebornWeapons").init(new ItemStack(Items.diamond_boots));
-        partsTab = new TinkersRebornCreativeTab("TinkersRebornParts").init(new ItemStack(Items.bow));
-        miscTab = new TinkersRebornCreativeTab("TinkersRebornMisc").init(new ItemStack(Items.iron_pickaxe));
+        blockTab = new TinkersRebornCreativeTab("TinkersRebornBlocks");
+        toolsTab = new TinkersRebornCreativeTab("TinkersRebornTools");
+        weaponsTab = new TinkersRebornCreativeTab("TinkersRebornWeapons");
+        projectileTab = new TinkersRebornCreativeTab("TinkersRebornProjectile");
+        partsTab = new TinkersRebornCreativeTab("TinkersRebornParts");
+        miscTab = new TinkersRebornCreativeTab("TinkersRebornMisc");
+    }
+
+    private static void setCreativeTab() {
+        blockTab.init(new ItemStack(TinkersRebornGeneral.goldHead));
+        toolsTab.init(TinkersRebornTools.pickaxe.getToolForRender());
+        weaponsTab.init(TinkersRebornTools.broadSword.getToolForRender());
+        projectileTab.init(TinkersRebornTools.arrow.getToolForRender());
+        partsTab.init(TinkersRebornTools.pickaxeHead.getNewPartWithMaterial(TinkersRebornTools.woodMaterial));
+        miscTab.init(new ItemStack(TinkersRebornGeneral.heartCanister, 1, 2));
     }
 
     private void initRegistry() {
@@ -162,7 +197,7 @@ public class TinkersRebornRegistry {
         return modifierAndTraitIdentifierMaps.get(identifier);
     }
 
-    public static Collection<IModifier> getAllModifier() {
+    public static List<IModifier> getAllModifier() {
         return ImmutableList.copyOf(modifierAndTraitIdentifierMaps.values());
     }
 
@@ -181,6 +216,10 @@ public class TinkersRebornRegistry {
 
     public static TinkersRebornToolPart getToolPartByPartName(String name) {
         return toolPartNameMap.getOrDefault(name, null);
+    }
+
+    public static Collection<TinkersRebornToolPart> getAllToolParts() {
+        return toolPartNameMap.values();
     }
 
     /**
@@ -454,13 +493,10 @@ public class TinkersRebornRegistry {
     public static void registerToolpartMeltingCasting(TinkersRebornMaterial material) {
         // melt ALL the toolparts n stuff. Also cast them.
         Fluid fluid = material.getFluid();
-        for (TinkersRebornToolPart toolPart : TinkersRebornRegistry.toolPartNameMap.values()) {
-            if (toolPart == TinkersRebornTools.boltCore) {
-                continue;
-            }
-
+        for (String type : TinkersRebornTools.patternAndCast.getAllPatternType()) {
+            TinkersRebornToolPart toolPart = TinkersRebornRegistry.toolPartNameMap.get(type);
             ItemStack stack = toolPart.getNewPartWithMaterial(material);
-            ItemStack cast = Pattern.newStackWithToolPart(toolPart);
+            ItemStack cast = Pattern.newStackWithIdentifier(type);
 
             if (fluid != null && stack != null) {
                 // melting
@@ -478,20 +514,20 @@ public class TinkersRebornRegistry {
         }
 
         // same for shard
-        if (TinkersRebornTools.castShard != null) {
-            ItemStack stack = TinkersRebornTools.shard.getNewPartWithMaterial(material);
+        ItemStack shardStack = TinkersRebornTools.shard.getNewPartWithMaterial(material);
+        if (TinkersRebornTools.castShard != null && shardStack != null) {
             int cost = TinkersRebornTools.shard.cost;
 
             if (fluid != null) {
                 // melting
-                registerMelting(stack, fluid, cost);
+                registerMelting(shardStack, fluid, cost);
                 // casting
-                registerTableCasting(stack, TinkersRebornTools.castShard, fluid, cost);
+                registerTableCasting(shardStack, TinkersRebornTools.castShard, fluid, cost);
             }
             // register cast creation from the toolparts
             for (FluidStack fs : fluidForCast) {
                 registerTableCasting(
-                    new CastingRecipe(TinkersRebornTools.castShard, RecipeMatch.ofNBT(stack), fs, true, true));
+                    new CastingRecipe(TinkersRebornTools.castShard, RecipeMatch.ofNBT(shardStack), fs, true, true));
             }
         }
     }
@@ -577,6 +613,26 @@ public class TinkersRebornRegistry {
         }
     }
 
+    public static void registerGemMeltingCasting(Fluid fluid, String oreSuffix, ItemStack gemCast) {
+        String gemOre = "gem" + oreSuffix;
+        String blockOre = "block" + oreSuffix;
+        String rawOre = "ore" + oreSuffix;
+
+        registerMelting(new MeltingRecipe(RecipeMatch.of(gemOre, TinkersRebornMaterial.VALUE_Gem), fluid));
+
+        registerMelting(new MeltingRecipe(RecipeMatch.of(blockOre, TinkersRebornMaterial.VALUE_Gem * 9), fluid));
+
+        registerMelting(
+            new MeltingRecipe(
+                RecipeMatch.of(rawOre, (int) (TinkersRebornMaterial.VALUE_Gem * TinkersRebornConfig.oreToIngotRatio)),
+                fluid));
+
+        registerTableCasting(
+            new PreferenceCastingRecipe(gemOre, RecipeMatch.ofNBT(gemCast), fluid, TinkersRebornMaterial.VALUE_Gem));
+
+        registerBasinCasting(new PreferenceCastingRecipe(blockOre, null, fluid, TinkersRebornMaterial.VALUE_Gem * 9));
+    }
+
     /**
      * Adds a fluid to the knownOreFluids list, adding recipes for each combination
      * 
@@ -593,6 +649,16 @@ public class TinkersRebornRegistry {
         }
 
         knownOreFluids.put(fluid, knownOres);
+    }
+
+    public static void removeHiddenMaterial() {
+        materialIdentifierMaps.entrySet()
+            .removeIf(
+                e -> e.getValue()
+                    .isHidden());
+
+        allMaterialsList.clear();
+        allMaterialsList.addAll(materialIdentifierMaps.values());
     }
 
     public static List<TinkersRebornMaterial> getAllMaterialList() {
@@ -637,8 +703,17 @@ public class TinkersRebornRegistry {
         return null;
     }
 
+    public static List<ICastingRecipe> getTableCasting() {
+        return ImmutableList.copyOf(tableCastRegistry);
+    }
+
+    public static List<ICastingRecipe> getBasinCasting() {
+        return ImmutableList.copyOf(basinCastRegistry);
+    }
+
     public static void addFluidForCast() {
         fluidForCast.add(new FluidStack(TinkersRebornTools.goldFluid, TinkersRebornMaterial.VALUE_Ingot * 2));
+        fluidForCast.add(new FluidStack(TinkersRebornTools.alubrassFluid, TinkersRebornMaterial.VALUE_Ingot * 2));
     }
 
     /**
@@ -708,19 +783,29 @@ public class TinkersRebornRegistry {
             return;
         }
         entityMeltingRegistry.put(name, liquid);
-        TinkersReborn.LOG.info(
-            "Registered entity melting for {} into {} mB of {}",
-            clazz.getSimpleName(),
-            liquid.amount,
-            liquid.getLocalizedName());
+        if (TinkersRebornConfig.debug) {
+            TinkersReborn.LOG.info(
+                "Registered entity melting for {} into {} mB of {}",
+                clazz.getSimpleName(),
+                liquid.amount,
+                liquid.getLocalizedName());
+        }
     }
 
     public static FluidStack getMeltingForEntity(Entity entity) {
         String name = EntityList.classToStringMapping.get(entity.getClass());
+        return getMeltingForEntity(name);
+    }
+
+    public static FluidStack getMeltingForEntity(String name) {
         FluidStack fluidStack = entityMeltingRegistry.get(name);
         // check if the fluid is the correct one to use
         return Optional.ofNullable(fluidStack)
             .orElse(null);
+    }
+
+    public static Map<String, FluidStack> getAllEntityMelting() {
+        return ImmutableMap.copyOf(entityMeltingRegistry);
     }
 
     public static void registerAlloy(FluidStack result, FluidStack... inputs) {
@@ -780,5 +865,210 @@ public class TinkersRebornRegistry {
 
     public static List<AlloyRecipe> getAlloys() {
         return ImmutableList.copyOf(alloyRegistry);
+    }
+
+    /**
+     * @return The list of all drying rack recipes
+     */
+    public static List<DryingRecipe> getAllDryingRecipes() {
+        return ImmutableList.copyOf(dryingRegistry);
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param input  Input ItemStack
+     * @param output Output ItemStack
+     * @param time   Recipe time in ticks
+     */
+    public static void registerDryingRecipe(ItemStack input, ItemStack output, int time) {
+        if (TinkersRebornUtils.isStackEmpty(output) || TinkersRebornUtils.isStackEmpty(input)) {
+            return;
+        }
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Item(input, 1), output, time));
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param input  Input Item
+     * @param output Output ItemStack
+     * @param time   Recipe time in ticks
+     */
+    public static void registerDryingRecipe(Item input, ItemStack output, int time) {
+        if (TinkersRebornUtils.isStackEmpty(output) || input == null) {
+            return;
+        }
+
+        ItemStack stack = new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE);
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Item(stack, 1), output, time));
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param input  Input Item
+     * @param output Output Item
+     * @param time   Recipe time in ticks
+     */
+    public static void registerDryingRecipe(Item input, Item output, int time) {
+        if (output == null || input == null) {
+            return;
+        }
+
+        ItemStack stack = new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE);
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Item(stack, 1), new ItemStack(output), time));
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param input  Input Block
+     * @param output Output Block
+     * @param time   Recipe time in ticks
+     */
+    public static void registerDryingRecipe(Block input, Block output, int time) {
+        if (output == null || input == null) {
+            return;
+        }
+
+        ItemStack stack = new ItemStack(input, 1, OreDictionary.WILDCARD_VALUE);
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Item(stack, 1), new ItemStack(output), time));
+    }
+
+    /**
+     * Adds a new drying recipe
+     *
+     * @param oredict Input ore dictionary entry
+     * @param output  Output ItemStack
+     * @param time    Recipe time in ticks
+     */
+    public static void registerDryingRecipe(String oredict, ItemStack output, int time) {
+        if (TinkersRebornUtils.isStackEmpty(output) || oredict == null) {
+            return;
+        }
+
+        addDryingRecipe(new DryingRecipe(new RecipeMatch.Oredict(oredict, 1), output, time));
+    }
+
+    public static void addDryingRecipe(DryingRecipe recipe) {
+        // if(new TinkerRegisterEvent.DryingRackRegisterEvent(recipe).fire()) {
+        dryingRegistry.add(recipe);
+        // }
+        // else {
+        // try {
+        // String input = recipe.input.getInputs().stream().findFirst().map(ItemStack::getUnlocalizedName).orElse("?");
+        // String output = recipe.getResult().getUnlocalizedName();
+        // log.debug("Registration of drying rack recipe for " + output + " from " + input + " has been cancelled by
+        // event");
+        // } catch(Exception e) {
+        // log.error("Error when logging drying rack event", e);
+        // }
+        // }
+    }
+
+    /**
+     * Gets the drying time for a drying recipe
+     *
+     * @param input Input ItemStack
+     * @return Output drying time, or -1 if no recipe is found
+     */
+    public static int getDryingTime(ItemStack input) {
+        for (DryingRecipe r : dryingRegistry) {
+            if (r.matches(input)) {
+                return r.getTime();
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Gets the result for a drying recipe
+     *
+     * @param input Input ItemStack
+     * @return Output A copy of the output ItemStack, or Itemstack.EMPTY if no recipe is found
+     */
+    public static ItemStack getDryingResult(ItemStack input) {
+        for (DryingRecipe r : dryingRegistry) {
+            if (r.matches(input)) {
+                return r.getResult();
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean checkHadManualIconRegistered(String name) {
+        return manualIcons.containsKey(name);
+    }
+
+    public static void registerManualIcon(String name, ItemStack stack) {
+        manualIcons.put(name, stack);
+    }
+
+    public static void registerManualIcon(String name, ItemStack[] stacks) {
+        manualIcons.computeIfAbsent(name, k -> stacks);
+    }
+
+    public static Object getManualIcon(String name) {
+        return manualIcons.get(name);
+    }
+
+    public static ItemStack getOrRegisterManualIcon(String name) {
+        if (!checkHadManualIconRegistered(name)) {
+            registerManualIcon(name, getItemStackFromString(name));
+        }
+        return (ItemStack) getManualIcon(name);
+    }
+
+    public static ItemStack getItemStackFromString(String name) {
+        String[] icon = name.split(":");
+        String iconStackName = name;
+        int iconDamage = 0;
+        if (icon.length == 3) {
+            iconStackName = icon[0] + ":" + icon[1];
+            iconDamage = Integer.parseInt(icon[2]);
+        }
+        return new ItemStack((Item) Item.itemRegistry.getObject(iconStackName), 1, iconDamage);
+    }
+
+    public static ItemStack getOrRegisterManualIcon(String name, ItemStack stack) {
+        if (!checkHadManualIconRegistered(name)) {
+            registerManualIcon(name, stack);
+        }
+        return (ItemStack) getManualIcon(name);
+    }
+
+    public static TinkersRebornRecipeHolder[] getOrRegisterRecipeIcon(String name) {
+        if (!recipeIcons.containsKey(name)) {
+            ItemStack outPutStack = getOrRegisterManualIcon(name);
+            List<TinkersRebornRecipeHolder> recipes = new ArrayList<>();
+            for (IRecipe i : CraftingManager.getInstance()
+                .getRecipeList()) {
+                ItemStack output = i.getRecipeOutput();
+                if (output != null && output.isItemEqual(outPutStack)) recipes.add(new TinkersRebornRecipeHolder(i));
+            }
+
+            for (Entry<ItemStack, ItemStack> t : FurnaceRecipes.smelting()
+                .getSmeltingList()
+                .entrySet()) {
+                if (t.getValue()
+                    .isItemEqual(outPutStack)) recipes.add(new TinkersRebornRecipeHolder(t.getKey(), t.getValue()));
+            }
+
+            recipeIcons.put(name, recipes.toArray(new TinkersRebornRecipeHolder[] {}));
+        }
+        return recipeIcons.get(name);
+    }
+
+    public static TinkersRebornRecipeHolder[] registerTinkersRebornToolRecipeIcon(String name, ItemStack[][] inputs,
+        ItemStack output, RecipeType type) {
+        if (!recipeIcons.containsKey(name)) {
+            getOrRegisterManualIcon(name, output);
+            recipeIcons
+                .put(name, new TinkersRebornRecipeHolder[] { new TinkersRebornRecipeHolder(inputs, output, type) });
+        }
+        return recipeIcons.get(name);
     }
 }

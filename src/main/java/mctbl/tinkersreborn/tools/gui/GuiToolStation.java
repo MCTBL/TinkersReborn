@@ -2,10 +2,12 @@ package mctbl.tinkersreborn.tools.gui;
 
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
+import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -23,6 +25,10 @@ import org.lwjgl.util.Point;
 
 import com.google.common.collect.Lists;
 
+import codechicken.nei.VisiblityData;
+import codechicken.nei.api.INEIGuiHandler;
+import codechicken.nei.api.TaggedInventoryArea;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
@@ -52,7 +58,8 @@ import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 @SideOnly(Side.CLIENT)
-public class GuiToolStation extends GuiTinkerStation {
+@Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
+public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(
         TinkersReborn.MODID,
@@ -108,7 +115,7 @@ public class GuiToolStation extends GuiTinkerStation {
         this.addModule(traitInfo);
 
         toolInfo.yOffset = 5;
-        traitInfo.yOffset = toolInfo.ySize() + 9;
+        traitInfo.yOffset = toolInfo.ySize + 9;
 
         this.ySize = 174;
 
@@ -122,7 +129,7 @@ public class GuiToolStation extends GuiTinkerStation {
         toolInfo.xOffset = 2;
         toolInfo.yOffset = beamC.h + panelDecorationL.h;
         traitInfo.xOffset = toolInfo.xOffset;
-        traitInfo.yOffset = toolInfo.yOffset + toolInfo.ySize() + 4;
+        traitInfo.yOffset = toolInfo.yOffset + toolInfo.ySize + 4;
 
         super.initGui();
         Keyboard.enableRepeatEvents(true);
@@ -137,7 +144,7 @@ public class GuiToolStation extends GuiTinkerStation {
         textField.setMaxStringLength(40);
 
         for (GuiModule module : modules) {
-            module.guiTopBias(+4);
+            module.yOffset = 4;
         }
 
         updateGUI();
@@ -375,7 +382,7 @@ public class GuiToolStation extends GuiTinkerStation {
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         for (int i = 0; i < Table_slot_count; i++) {
             Slot slot = inventorySlots.getSlot(i);
-            if (slot instanceof SlotToolStationIn && (!((SlotToolStationIn) slot).isDormant() || slot.getHasStack())) {
+            if (slot instanceof SlotToolStationIn s && (!s.isDormant() || slot.getHasStack())) {
                 SlotBorder
                     .draw(x + this.cornerX + slot.xDisplayPosition - 1, y + this.cornerY + slot.yDisplayPosition - 1);
             }
@@ -412,16 +419,16 @@ public class GuiToolStation extends GuiTinkerStation {
 
         this.mc.getTextureManager()
             .bindTexture(BACKGROUND);
-        x = buttons.guiLeft() - beamL.w;
+        x = buttons.guiLeft - beamL.w;
         y = cornerY;
         // draw the beams at the top
         x += beamL.draw(x, y);
-        x += beamC.drawScaledX(x, y, buttons.xSize());
+        x += beamC.drawScaledX(x, y, buttons.xSize);
         beamR.draw(x, y);
 
-        x = toolInfo.guiLeft() - beamL.w;
+        x = toolInfo.guiLeft - beamL.w;
         x += beamL.draw(x, y);
-        x += beamC.drawScaledX(x, y, toolInfo.xSize());
+        x += beamC.drawScaledX(x, y, toolInfo.xSize);
         beamR.draw(x, y);
 
         // draw the decoration for the buttons
@@ -435,10 +442,10 @@ public class GuiToolStation extends GuiTinkerStation {
         }
 
         // draw the decorations for the panels
-        panelDecorationL.draw(toolInfo.guiLeft() + 5, toolInfo.guiTop() - panelDecorationL.h);
-        panelDecorationR.draw(toolInfo.guiRight() - 5 - panelDecorationR.w, toolInfo.guiTop() - panelDecorationR.h);
-        panelDecorationL.draw(traitInfo.guiLeft() + 5, traitInfo.guiTop() - panelDecorationL.h);
-        panelDecorationR.draw(traitInfo.guiRight() - 5 - panelDecorationR.w, traitInfo.guiTop() - panelDecorationR.h);
+        panelDecorationL.draw(toolInfo.guiLeft + 5, toolInfo.guiTop - panelDecorationL.h);
+        panelDecorationR.draw(toolInfo.guiRight() - 5 - panelDecorationR.w, toolInfo.guiTop - panelDecorationR.h);
+        panelDecorationL.draw(traitInfo.guiLeft + 5, traitInfo.guiTop - panelDecorationL.h);
+        panelDecorationR.draw(traitInfo.guiRight() - 5 - panelDecorationR.w, traitInfo.guiTop - panelDecorationR.h);
 
         // continue as usual and hope that the drawing state is not completely wrecked
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
@@ -560,5 +567,35 @@ public class GuiToolStation extends GuiTinkerStation {
         toolInfo.setText(message);
         traitInfo.setCaption(null);
         traitInfo.setText();
+    }
+
+    // NEI
+    @Override
+    public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+        return currentVisibility;
+    }
+
+    @Override
+    public Iterable<Integer> getItemSpawnSlots(GuiContainer gui, ItemStack item) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<TaggedInventoryArea> getInventoryAreas(GuiContainer gui) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public boolean handleDragNDrop(GuiContainer gui, int mousex, int mousey, ItemStack draggedStack, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean hideItemPanelSlot(GuiContainer gui, int x, int y, int w, int h) {
+        int guiXStart = guiLeft - buttons.xSize + 4;
+        int guiXEnd = guiLeft + xSize + toolInfo.xSize - 4;
+        int guiYStart = guiTop + 4;
+        int guiYEnd = guiTop + ySize - 4;
+        return x + w >= guiXStart && x <= guiXEnd && y + h >= guiYStart && y <= guiYEnd;
     }
 }

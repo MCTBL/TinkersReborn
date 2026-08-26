@@ -19,8 +19,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
-import mctbl.tinkersreborn.tools.model.ChestRender;
 
 public class PartChestBlock extends TinkersRebornInventoryBlock implements ITinkersToolStationBlock {
 
@@ -65,7 +65,7 @@ public class PartChestBlock extends TinkersRebornInventoryBlock implements ITink
 
     @Override
     public int getRenderType() {
-        return ChestRender.model;
+        return TinkersRebornTools.proxy.getChestRenderId();
     }
 
     @Override

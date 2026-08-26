@@ -29,7 +29,7 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
         // we basically always want the level1 one to be associated with the modifier used
         IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(name);
         if (modifier != null) {
-            if (modifier instanceof AbstractTraitLeveled && ((AbstractTraitLeveled) modifier).levels > this.levels) {
+            if (modifier instanceof AbstractTraitLeveled m && m.levels > this.levels) {
                 TinkersRebornRegistry.addModifierAndTrait(this);
             }
         } else {
@@ -98,5 +98,9 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
     @Override
     public String getTooltip(NBTTagCompound modifierTag, boolean detailed) {
         return getLeveledTooltip(modifierTag, detailed);
+    }
+
+    public int getLevels() {
+        return levels;
     }
 }

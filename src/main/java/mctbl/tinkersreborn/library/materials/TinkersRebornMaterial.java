@@ -1,14 +1,16 @@
 package mctbl.tinkersreborn.library.materials;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -30,12 +32,12 @@ import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
+import mctbl.tinkersreborn.library.utils.RecipeUtil;
 import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HandleMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
-import mctbl.tinkersreborn.tools.materials.ProjectileMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ShaftMaterialStats;
 import mctbl.tinkersreborn.tools.materials.StringMaterialStats;
 import mctbl.tinkersreborn.util.ColorUtil;
@@ -105,6 +107,8 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     // public final int materialId;
     public int materialTextColor = 0xffffff; // used in tooltips and other text. Saved in NBT.
 
+    private boolean isHidden;
+
     // we use a specific map for 2 reasons:
     // * A Map so we can obtain the stats we want quickly
     // * the linked map to ensure the order when iterating
@@ -117,6 +121,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public static final TinkersRebornMaterial UNKNOWN = new TinkersRebornMaterial("unknown", EnumChatFormatting.WHITE);
+
     static {
         UNKNOWN.addStats(new HeadMaterialStats(1, 1, 1, 0));
         UNKNOWN.addStats(new HandleMaterialStats(1f, 0));
@@ -125,7 +130,6 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         UNKNOWN.addStats(new StringMaterialStats(1f));
         UNKNOWN.addStats(new ShaftMaterialStats(1f, 0));
         UNKNOWN.addStats(new FletchingMaterialStats(1f, 1f));
-        UNKNOWN.addStats(new ProjectileMaterialStats());
     }
 
     public TinkersRebornMaterial(String identifier, EnumChatFormatting textColor) {
@@ -133,7 +137,10 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public TinkersRebornMaterial(String identifier, int color) {
-        // this.materialId = id;
+        this(identifier, color, false);
+    }
+
+    public TinkersRebornMaterial(String identifier, int color, boolean isHidden) {
         this.identifier = TinkersRebornUtils.sanitizeLocalizationString(identifier); // lowercases and removes
         this.localizationIdentifier = String.format(LOC_Name, this.identifier);
 
@@ -148,6 +155,8 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         this.materialTextColor = color;
         this.statsMap = new LinkedHashMap<>();
         this.traits = LinkedHashMultimap.create();
+
+        this.isHidden = isHidden;
     }
 
     public TinkersRebornMaterial addStats(IMaterialStats m) {
@@ -165,6 +174,7 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     @SuppressWarnings("unchecked")
+    @Nullable
     public <T extends IMaterialStats> T getStats(MaterialStatusType t) {
         Class<? extends IMaterialStats> statusClass = t.getStatusClass();
         IMaterialStats obj = this.statsMap.get(t);
@@ -242,6 +252,14 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public ItemStack getRepresentativeItem() {
+        if (representativeOre != null && !representativeOre.isEmpty()) {
+            ItemStack ore = RecipeUtil.getPreference(representativeOre);
+
+            if (!TinkersRebornUtils.isStackEmpty(ore)) {
+                return ore;
+            }
+        }
+
         return representativeItem;
     }
 
@@ -299,12 +317,17 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         return false;
     }
 
-    public List<ITrait> getAllTraitsForStats(MaterialStatusType staus) {
-        List<ITrait> list = new ArrayList<>(this.traits.get(staus));
-        if (staus != null) {
-            list.addAll(this.traits.get(null));
+    public Collection<ITrait> getAllTraitsForStats(MaterialStatusType staus) {
+        return this.getAllTraitsForStats(staus, true);
+    }
+
+    public Collection<ITrait> getAllTraitsForStats(MaterialStatusType staus, boolean includeNull) {
+        Set<ITrait> set = new HashSet<>();
+        set.addAll(this.traits.get(staus));
+        if (includeNull && staus != null) {
+            set.addAll(this.traits.get(null));
         }
-        return list;
+        return set;
     }
 
     /**
@@ -345,10 +368,29 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
         return this;
     }
 
+    public boolean isHidden() {
+        return this.isHidden;
+    }
+
+    public TinkersRebornMaterial setVisible() {
+        this.isHidden = false;
+        return this;
+    }
+
     public static final class RenderMaterial extends TinkersRebornMaterial {
 
         public RenderMaterial(String identifier, int color) {
             super(identifier, color);
+        }
+
+        @Override
+        public String localizedName() {
+            return "";
+        }
+
+        @Override
+        public String localizedPrefix() {
+            return "";
         }
     }
 }

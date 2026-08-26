@@ -46,6 +46,7 @@ public enum TinkersStr {
     partCrafterMaterialValue("gui.partbuilder.material_value"),
     partCrafterMaterialCantMakePart("gui.partbuilder.material_cant_make"),
 
+    smelteryFuel("gui.smeltery.fuel"),
     smelteryFuelHeat("gui.smeltery.fuel.heat"),
     smelteryFuelEmpty("gui.smeltery.fuel.empty"),
 
@@ -58,6 +59,7 @@ public enum TinkersStr {
     smtleteryNoFuel("gui.smeltery.progress.no_fuel"),
     smtleteryNoHeat("gui.smeltery.progress.no_heat"),
     smtleteryNoSpace("gui.smeltery.progress.no_space"),
+    smtleteryFillOrClear("gui.smeltery.fill_clear"),
 
     smtleteryCapacity("gui.smeltery.capacity"),
     smtleteryCapacityAvailable("gui.smeltery.capacity_available"),
@@ -75,7 +77,57 @@ public enum TinkersStr {
     mattockAxeHarvestLevelDesc("mattock.axelevel"),
     mattockShovelHarvestLevelDesc("mattock.shovellevel"),
 
-    ;
+    tooltipMiningxp("tooltip.level.miningxp"),
+    tooltipBoosted("tooltip.level.boosted"),
+    tooltipSkillLevel("tooltip.level.skilllevel"),
+    tooltipSkillxp("tooltip.level.skillxp"),
+
+    accessory("item.accessory"),
+    crafting("item.crafting"),
+    canister("canister"),
+    canisterRed1("canister.red1"),
+    canisterRed2("canister.red2"),
+    canisterYellow1("canister.yellow1"),
+    canisterYellow2("canister.yellow2"),
+    canisterGreen1("canister.green1"),
+    canisterGreen2("canister.green2"),
+
+    // nerf vanilla
+    uselessTool1("tooltip.uselessTool1"),
+    uselessTool2("tooltip.uselessTool2"),
+    uselessBow1("tooltip.uselessBow1"),
+    uselessHoe1("tooltip.uselessHoe1"),
+    uselessWeapon1("tooltip.uselessWeapon1"),
+
+    // foods
+    strangefood1("tooltip.strangefood1"),
+    strangefood2("tooltip.strangefood2"),
+    strangefood3("tooltip.strangefood3"),
+    strangefood4("tooltip.strangefood4"),
+    strangefood5("tooltip.strangefood5"),
+    strangefood6("tooltip.strangefood6"),
+    strangefood7("tooltip.strangefood7"),
+
+    // NEI
+    neiDryingrack("nei.dryingrack"),
+    neiDryingrackDuration("nei.dryingrack.duration"),
+    neiMelting("nei.melting"),
+    neiAlloying("nei.alloying"),
+    neiCastingtable("nei.castingtable"),
+    neiCastingbasin("nei.castingbasin"),
+    neiCoolDownDuration("nei.casting.cooldown.duration"),
+    neiEntitySmeltery("nei.entityMelting"),
+
+    // Waila
+    wailaEmpty("waila.empty"),
+    wailaLiquidtag("waila.liquidtag"),
+    wailaAmounttag("waila.amounttag"),
+    wailaProgress("waila.progress"),
+    wailaContains("waila.contains"),
+    wailaSubtanks("waila.subtanks"),
+    wailaInvalidstructure("waila.invalidstructure"),
+    wailaDrying("waila.drying"),
+    wailaDryingProgress("waila.dryingProgress"),;
 
     static String modPrefix = TinkersReborn.MODID;
     String localization;

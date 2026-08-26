@@ -6,6 +6,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.gui.GuiToolForge;
 import mctbl.tinkersreborn.tools.inventory.ContainerToolForge;
@@ -31,6 +33,7 @@ public class ToolForgeLogic extends ToolStationLogic {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiToolForge(inventoryplayer, world, BlockPos.of(x, y, z), this);
     }

@@ -57,7 +57,9 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
         // output slot
         out = new SlotToolStationOut(i, 124, 38, this);
         addSlotToContainer(out);
+
         this.addPlayerInventory(playerInventory, 8, 84 + 8);
+        this.addPlayerArmor(playerInventory, 152, 19);
 
         onCraftMatrixChanged(playerInventory);
 

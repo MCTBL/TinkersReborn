@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Multimap;
 
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 import mctbl.tinkersreborn.library.materials.AbstractMaterialStats;
 import mctbl.tinkersreborn.tools.TinkersRebornTraits;
@@ -44,6 +45,7 @@ public abstract class AmmoCore extends ToolCore {
 
     protected AmmoCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
+        this.setCreativeTab(TinkersRebornRegistry.projectileTab);
         durabilityPerAmmo = 10;
     }
 
@@ -177,7 +179,7 @@ public abstract class AmmoCore extends ToolCore {
             }
         }
 
-        float attack = ToolTagsHelper.getActualAttackDamage(stack, player);
+        float attack = ToolTagsHelper.calcCutoffDamage(ToolTagsHelper.getActualToolAttack(stack), this.damageCutoff());
         list.add(HeadMaterialStats.formatAttack(attack));
         list.add(FletchingMaterialStats.formatAccuracy(ProjectileNBT.from(stack).accuracy));
 
