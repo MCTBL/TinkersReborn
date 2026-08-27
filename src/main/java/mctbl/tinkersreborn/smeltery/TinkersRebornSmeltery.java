@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -73,6 +74,8 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
+
+        MinecraftForge.EVENT_BUS.register(new TinkersRebornSmelteryEvents());
 
         glueBlock = new GlueBlock();
         GameRegistry.registerBlock(glueBlock, glueBlock.getUnlocalizedName());

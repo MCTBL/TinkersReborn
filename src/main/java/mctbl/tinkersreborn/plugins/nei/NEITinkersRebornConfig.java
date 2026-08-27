@@ -1,10 +1,12 @@
 package mctbl.tinkersreborn.plugins.nei;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 
 public class NEITinkersRebornConfig implements IConfigureNEI {
@@ -30,6 +32,14 @@ public class NEITinkersRebornConfig implements IConfigureNEI {
         API.addRecipeCatalyst(
             new ItemStack(TinkersRebornSmeltery.searedBlock, 1, 2),
             RecipeHandlerCastingBasin.RECIPEID);
+
+        TinkersRebornRegistry.getAllFluidMap()
+            .values()
+            .forEach(fluid -> {
+                if (fluid.getBlock() != null) {
+                    API.hideItem(new ItemStack(Item.getItemFromBlock(fluid.getBlock())));
+                }
+            });
     }
 
     @Override

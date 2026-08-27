@@ -79,14 +79,26 @@ tinkersreborn.bucket=%%material桶
 tinkersreborn.moltenFluid=熔融%%material
 
 fluid.blue_slime=蓝史莱姆
+fluid.molten_iron=熔融铁
+fluid.molten_cobalt=熔融钴
+fluid.molten_ardite=熔融阿迪特
+fluid.molten_manyullyn=熔融玛玉灵
+fluid.molten_copper=熔融铜
+fluid.molten_bronze=熔融青铜
+fluid.molten_alumite=熔融耐酸铝
+fluid.molten_steel=熔融钢
+fluid.molten_pigiron=熔融生铁
+fluid.molten_obsidian=熔融黑曜石
+fluid.molten_lead=熔融铅
+fluid.molten_silver=熔融银
+fluid.molten_gold=熔融金
+fluid.molten_tin=熔融锡
+fluid.molten_aluminum=熔融铝
+fluid.molten_alubrass=熔融铝黄铜
 fluid.blood=血
 fluid.ender=熔融末影珍珠
-fluid.molten_gold=金
-fluid.molten_emerald=绿宝石
-fluid.molten_tin=锡
-fluid.molten_aluminum=铝
-fluid.molten_stone=石
-fluid.molten_alubrass=铝黄铜
+fluid.molten_emerald=熔融绿宝石
+fluid.molten_stone=熔融石
 
 // Items
 tinkersreborn.material.Mossball.name=苔藓球

@@ -16,24 +16,23 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
     public IIcon stillIcon;
     public IIcon flowIcon;
     private TinkersRebornFluid fluid = null;
-    String unlocalizedName;
 
     public TinkersRebornFluidBlock(TinkersRebornFluid fluid, Material material, String unlocalizedName) {
         super(fluid, material);
         this.fluid = fluid;
-        this.unlocalizedName = "fluid." + unlocalizedName;
+        this.setBlockName(unlocalizedName);
         this.lightOpacity = this.fluid.getTemperature() > 300 ? 255 : 0;
         this.lightValue = this.fluid.getTemperature() > 300 ? 15 : 0;
     }
 
     @Override
-    public String getUnlocalizedName() {
-        return this.unlocalizedName;
+    public String getLocalizedName() {
+        return this.fluid.getLocalizedName();
     }
 
     @Override
-    public String getLocalizedName() {
-        return this.fluid.getLocalizedName();
+    public String getUnlocalizedName() {
+        return this.fluid.getUnlocalizedName();
     }
 
     @Override

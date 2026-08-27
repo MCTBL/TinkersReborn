@@ -79,14 +79,26 @@ tinkersreborn.bucket=%%material Bucket
 tinkersreborn.moltenFluid=Molten %%material
 
 fluid.blue_slime=Blue Slime
+fluid.molten_iron=Molten Iron
+fluid.molten_cobalt=Molten Cobalt
+fluid.molten_ardite=Molten Ardite
+fluid.molten_manyullyn=Molten Manyullyn
+fluid.molten_copper=Molten Copper
+fluid.molten_bronze=Molten Bronze
+fluid.molten_alumite=Molten Alumite
+fluid.molten_steel=Molten Steel
+fluid.molten_pigiron=Molten Pig Iron
+fluid.molten_obsidian=Molten Obsidian
+fluid.molten_lead=Molten Lead
+fluid.molten_silver=Molten Silver
+fluid.molten_gold=Molten Gold
+fluid.molten_tin=Molten Tin
+fluid.molten_aluminum=Molten Aluminum
+fluid.molten_alubrass=Molten Aluminum Brass
 fluid.blood=Blood
-fluid.ender=Ender
-fluid.molten_gold=Gold
-fluid.molten_emerald=Emerald
-fluid.molten_tin=Tin
-fluid.molten_aluminum=Aluminum
-fluid.molten_stone=Stone
-fluid.molten_alubrass=Aluminum Brass
+fluid.ender=Molten Ender
+fluid.molten_emerald=Molten Emerald
+fluid.molten_stone=Molten Stone
 
 // Items
 tinkersreborn.material.Mossball.name=Ball of Moss
