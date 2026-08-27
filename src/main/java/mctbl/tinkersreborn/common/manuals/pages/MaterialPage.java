@@ -118,7 +118,7 @@ public class MaterialPage extends AbstractManualPage {
             MaterialStatusType statusType = StatsTypeOrder[i];
             // head and handle
             IMaterialStats stats = this.material.getStats(statusType);
-            Collection<ITrait> allTraitsForStats = this.material.getAllTraitsForStats(statusType, true);
+            Collection<ITrait> allTraitsForStats = this.material.getAllTraitsForStats(statusType);
             if (stats != null) {
                 fontRender.drawString(
                     ColorUtil.addUnderLine(stats.getLocalizedName()),
@@ -168,7 +168,7 @@ public class MaterialPage extends AbstractManualPage {
         MaterialStatusType statusType = StatsTypeOrder[2];
         // head and handle
         IMaterialStats stats = this.material.getStats(statusType);
-        Collection<ITrait> allTraitsForStats = this.material.getAllTraitsForStats(statusType, true);
+        Collection<ITrait> allTraitsForStats = this.material.getAllTraitsForStats(statusType);
         if (stats != null) {
             fontRender.drawString(
                 ColorUtil.addUnderLine(stats.getLocalizedName()),

@@ -15,11 +15,11 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
     protected final String name;
     protected final int levels;
 
-    public AbstractTraitLeveled(String identifier, int color, int maxLevels, int levels) {
+    protected AbstractTraitLeveled(String identifier, int color, int maxLevels, int levels) {
         this(identifier, String.valueOf(levels), color, maxLevels, levels);
     }
 
-    public AbstractTraitLeveled(String identifier, String suffix, int color, int maxLevels, int levels) {
+    protected AbstractTraitLeveled(String identifier, String suffix, int color, int maxLevels, int levels) {
         super(identifier + suffix, color);
         this.name = identifier;
 
@@ -30,10 +30,10 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
         IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(name);
         if (modifier != null) {
             if (modifier instanceof AbstractTraitLeveled m && m.levels > this.levels) {
-                TinkersRebornRegistry.addModifierAndTrait(this);
+                TinkersRebornRegistry.addModifierAndTraitAlias(this, name);
             }
         } else {
-            TinkersRebornRegistry.addModifierAndTrait(this);
+            TinkersRebornRegistry.addModifierAndTraitAlias(this, name);
         }
 
         aspects.clear();
@@ -57,7 +57,7 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
         NBTTagList tagList = ToolTagsHelper.getModifiersTagList(rootCompound);
         ToolTagsHelper.setModifiersTagList(rootCompound, tagList);
 
-        NBTTagCompound tag = ToolTagsHelper.getModifierTag(rootCompound, getIdentifier());
+        NBTTagCompound tag = ToolTagsHelper.getModifierTag(rootCompound, getModifierIdentifier());
 
         if (tag.hasNoTags()) {
             tagList.appendTag(tag);
@@ -71,6 +71,11 @@ public abstract class AbstractTraitLeveled extends AbstractTrait {
 
             applyModifierEffect(rootCompound);
         }
+    }
+
+    @Override
+    public String getModifierIdentifier() {
+        return name;
     }
 
     /**

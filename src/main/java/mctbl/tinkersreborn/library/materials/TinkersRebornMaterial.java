@@ -2,7 +2,6 @@ package mctbl.tinkersreborn.library.materials;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -318,16 +317,11 @@ public class TinkersRebornMaterial extends RecipeMatchRegistry {
     }
 
     public Collection<ITrait> getAllTraitsForStats(MaterialStatusType staus) {
-        return this.getAllTraitsForStats(staus, true);
-    }
-
-    public Collection<ITrait> getAllTraitsForStats(MaterialStatusType staus, boolean includeNull) {
-        Set<ITrait> set = new HashSet<>();
-        set.addAll(this.traits.get(staus));
-        if (includeNull && staus != null) {
-            set.addAll(this.traits.get(null));
+        Collection<ITrait> specificTraits = this.traits.get(staus);
+        if (!specificTraits.isEmpty()) {
+            return ImmutableList.copyOf(specificTraits);
         }
-        return set;
+        return ImmutableList.copyOf(this.traits.get(null));
     }
 
     /**

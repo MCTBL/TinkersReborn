@@ -57,6 +57,11 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
         return identifier;
     }
 
+    /** The identifier used for the shared modifier data stored on the tool. */
+    public String getModifierIdentifier() {
+        return identifier;
+    }
+
     @Override
     public String getLocalizedName() {
         return TinkersRebornUtils.translate(String.format(LOC_Name, getIdentifier()));
@@ -152,7 +157,7 @@ public abstract class AbstractTrait extends AbstractModifier implements ITrait {
 
     public void updateNBTforTrait(NBTTagCompound modifierTag, int newColor) {
         ModifierNBT data = ModifierNBT.readTag(modifierTag);
-        data.identifier = this.getIdentifier();
+        data.identifier = this.getModifierIdentifier();
         data.color = newColor;
         // we ensure at least lvl1 for compatibility with the level-aspect
         if (data.level == 0) {

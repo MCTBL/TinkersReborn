@@ -334,28 +334,6 @@ public class ToolBuilderHelper {
         ItemStack copyToCheck = tinkersItem.buildItem(ToolTagsHelper.fromTagToMaterial(materialList));
         // this includes traits
         NBTTagList modifiers = ToolTagsHelper.getModifiersTagList(toolStack);
-        // for (int i = 0; i < modifiers.tagCount(); i++) {
-        // String id = modifiers.getStringTagAt(i);
-        // IModifier mod = TinkersRebornRegistry.getModifier(id);
-        //
-        // boolean canApply = false;
-        // try {
-        // // will throw an exception if it can't apply
-        // canApply = mod != null && mod.canApply(copyToCheck, copyToCheck);
-        // } catch (TinkerGuiException e) {
-        // // try again with more modifiers, in case something modified them (tinkers tool
-        // // leveling)
-        // // ensure that free modifiers are present (
-        // if (ToolTagsHelper.getFreeModifiers(copyToCheck) < TinkersRebornConfig.defaultModifiers) {
-        // ItemStack copyWithModifiers = copyToCheck.copy();
-        // ToolTagsHelper.setFreeModifiers(toolStack, TinkersRebornConfig.defaultModifiers);
-        // canApply = mod.canApply(copyWithModifiers, copyWithModifiers);
-        // }
-        // }
-        // if (!canApply) {
-        // throw new TinkerGuiException();
-        // }
-        // }
 
         final NBTTagList modifierList = (NBTTagList) modifiers.copy();
         for (int i = 0; i < modifierList.tagCount(); i++) {
@@ -484,11 +462,14 @@ public class ToolBuilderHelper {
         ToolTagsHelper.setBroken(tool, broken);
 
         // validate: cap must be >= used
-        int slots = ToolTagsHelper.getModifierSlots(tool);
-        int used = ToolTagsHelper.getUsedModifiers(tool);
-        if (slots < used) {
+        int extraModifier = ToolTagsHelper.getExtraModifier(tool);
+        int modifierSlots = ToolTagsHelper.getModifierSlots(tool);
+        int usedModifiers = ToolTagsHelper.getUsedModifiers(tool);
+        if (modifierSlots + extraModifier < usedModifiers) {
             throw new TinkerGuiException(
-                String.format(TinkersRebornUtils.translate("gui.error.not_enough_modifiers"), used - slots));
+                String.format(
+                    TinkersRebornUtils.translate("gui.error.not_enough_modifiers"),
+                    usedModifiers - (modifierSlots + extraModifier)));
         }
     }
 
@@ -510,7 +491,7 @@ public class ToolBuilderHelper {
 
         IModifier newTrait = TinkersRebornRegistry.getModifierAndTrait(trait.getIdentifier());
 
-        if (newTrait == null || !(newTrait instanceof AbstractTrait)) {
+        if (!(newTrait instanceof AbstractTrait)) {
             TinkersReborn.LOG.error("addTrait: No matching modifier for the Trait {} present", trait.getIdentifier());
             return;
         }
@@ -520,7 +501,7 @@ public class ToolBuilderHelper {
         NBTTagList tagList = ToolTagsHelper.getModifiersTagList(rootCompound);
         ToolTagsHelper.setModifiersTagList(rootCompound, tagList);
 
-        NBTTagCompound traitTag = ToolTagsHelper.getModifierTag(rootCompound, traitModifier.getIdentifier());
+        NBTTagCompound traitTag = ToolTagsHelper.getModifierTag(rootCompound, traitModifier.getModifierIdentifier());
         if (traitTag.hasNoTags()) {
             traitTag = new NBTTagCompound();
             traitModifier.updateNBT(traitTag);

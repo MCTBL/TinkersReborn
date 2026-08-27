@@ -24,7 +24,7 @@ public class TraitCrude extends AbstractTraitLeveled {
         boolean isCritical) {
         boolean hasArmor = target.getTotalArmorValue() > 0;
         if (!hasArmor) {
-            NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(tool, identifier);
+            NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(tool, name);
             // 5% *BASE* damage boost against unarmed targets!
             newDamage += damage * bonusModifier(modifierTag);
         }

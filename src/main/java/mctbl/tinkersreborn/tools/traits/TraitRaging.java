@@ -18,7 +18,7 @@ public class TraitRaging extends AbstractTraitLeveled {
     @Override
     public float damage(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damage, float newDamage,
         boolean isCritical) {
-        ModifierNBT data = new ModifierNBT(ToolTagsHelper.getModifierTag(tool, identifier));
+        ModifierNBT data = new ModifierNBT(ToolTagsHelper.getModifierTag(tool, name));
         float healthRatio = player.getHealth() / player.getMaxHealth();
         newDamage += (leveledDamage * data.level) * (1 - healthRatio);
         // LOG.info(

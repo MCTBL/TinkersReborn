@@ -123,7 +123,7 @@ public class BowMaterialPage extends AbstractManualPage {
                 stats = this.material.getStats(statusType);
             } while (stats == null && statsIndex < StatsTypeOrder.length);
             if (stats != null) {
-                allTraitsForStats = this.material.getAllTraitsForStats(statusType, true);
+                allTraitsForStats = this.material.getAllTraitsForStats(statusType);
                 fontRender.drawString(
                     ColorUtil.addUnderLine(stats.getLocalizedName()),
                     pageX + textStartX,
@@ -179,7 +179,7 @@ public class BowMaterialPage extends AbstractManualPage {
                 stats = this.material.getStats(statusType);
             } while (stats == null && statsIndex < StatsTypeOrder.length);
             if (stats != null) {
-                allTraitsForStats = this.material.getAllTraitsForStats(statusType, true);
+                allTraitsForStats = this.material.getAllTraitsForStats(statusType);
                 fontRender.drawString(
                     ColorUtil.addUnderLine(stats.getLocalizedName()),
                     pageX + textStartX,

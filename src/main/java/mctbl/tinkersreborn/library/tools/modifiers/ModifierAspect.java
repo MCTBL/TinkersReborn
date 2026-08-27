@@ -70,7 +70,7 @@ public abstract class ModifierAspect {
             int modifierSlots = ToolTagsHelper.getModifierSlots(stack);
             int usedModifiers = ToolTagsHelper.getUsedModifiers(stack);
 
-            if (modifierSlots - extraModifier < requiredModifiers + usedModifiers) {
+            if (modifierSlots + extraModifier < requiredModifiers + usedModifiers) {
                 String error = String.format(translate("gui.error.not_enough_modifiers"), requiredModifiers);
                 // also returns false if the tooltag is missing
                 throw new TinkerGuiException(error);
