@@ -404,8 +404,11 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemstack) {
         // reset heat if set to null or a different item
-        if (TinkersRebornUtils.isStackEmpty(itemstack) || (!TinkersRebornUtils.isStackEmpty(getStackInSlot(slot))
-            && !ItemStack.areItemStacksEqual(itemstack, getStackInSlot(slot)))) {
+        // 加边界保护：itemTemperatures 可能尚未与 inventory 同步扩容（例如结构尚未构建完成）
+        if (slot < itemTemperatures.length
+            && (TinkersRebornUtils.isStackEmpty(itemstack)
+                || (!TinkersRebornUtils.isStackEmpty(getStackInSlot(slot))
+                    && !ItemStack.areItemStacksEqual(itemstack, getStackInSlot(slot))))) {
             itemTemperatures[slot] = 0;
         }
         super.setInventorySlotContents(slot, itemstack);

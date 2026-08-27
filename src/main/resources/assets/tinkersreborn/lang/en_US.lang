@@ -554,6 +554,7 @@ tinkersreborn.gui.partbuilder.material_value=Material Value: %s
 tinkersreborn.gui.partbuilder.material_cant_make=Material %s can't make %s
 
 tinkersreborn.gui.smeltery.name=Smeltery
+tinkersreborn.gui.furnace.name=Furnace
 tinkersreborn.gui.smeltery.fuel=Fuel
 tinkersreborn.gui.smeltery.fuel.empty=No fuel found
 tinkersreborn.gui.smeltery.fuel.invalid=§4%s is not a valid smeltery fuel!

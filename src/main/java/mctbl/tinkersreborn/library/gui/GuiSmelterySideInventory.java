@@ -1,12 +1,12 @@
 package mctbl.tinkersreborn.library.gui;
 
+import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
-import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
 import mctbl.tinkersreborn.util.TinkersStr;
 

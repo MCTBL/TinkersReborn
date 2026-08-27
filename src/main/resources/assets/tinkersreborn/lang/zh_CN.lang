@@ -477,6 +477,7 @@ tinkersreborn.gui.partbuilder.material_value=材料价值：%s
 tinkersreborn.gui.partbuilder.material_cant_make=材料 %s 无法制作 %s
 
 tinkersreborn.gui.smeltery.name=冶炼炉
+tinkersreborn.gui.furnace.name=焦黑熔炉
 tinkersreborn.gui.smeltery.fuel=燃料
 tinkersreborn.gui.smeltery.fuel.empty=没有燃料
 tinkersreborn.gui.smeltery.fuel.invalid=§4%s不是有效的冶炼厂燃烧燃料！

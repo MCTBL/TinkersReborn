@@ -178,11 +178,11 @@ public class GuiSideInventory extends GuiModule {
         updateSlots();
     }
 
-    private int getDisplayedRows() {
+    int getDisplayedRows() {
         return slider.height / slot.h;
     }
 
-    private int getTotalRows() {
+    int getTotalRows() {
         int total = slotCount / columns;
         if (slotCount % columns != 0) {
             total++;
@@ -191,7 +191,7 @@ public class GuiSideInventory extends GuiModule {
         return total;
     }
 
-    private int calcCappedYSize(int max) {
+    int calcCappedYSize(int max) {
         int h = slot.h * getTotalRows();
 
         h = border.getHeightWithBorder(h);

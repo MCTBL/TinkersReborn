@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.smeltery;
 
+import mctbl.tinkersreborn.smeltery.entity.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -29,14 +30,6 @@ import mctbl.tinkersreborn.smeltery.blocks.SearedBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryController;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryDrain;
-import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
-import mctbl.tinkersreborn.smeltery.entity.CastingChannelLogic;
-import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
-import mctbl.tinkersreborn.smeltery.entity.FaucetLogic;
-import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
-import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
-import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
-import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.itemblocks.CastingChannelItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.FurnaceControllerItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
@@ -95,6 +88,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             .registerBlock(furnaceController, FurnaceControllerItemBlock.class, furnaceController.getUnlocalizedName());
 
         GameRegistry.registerTileEntity(SmelteryLogic.class, "tinkersreborn.Smeltery");
+        GameRegistry.registerTileEntity(FurnaceLogic.class, "tinkersreborn.Furnace");
         GameRegistry.registerTileEntity(SmelteryDrainLogic.class, "tinkersreborn.SmelteryDrain");
         GameRegistry.registerTileEntity(MultiServantLogic.class, "tinkersreborn.Servants");
 

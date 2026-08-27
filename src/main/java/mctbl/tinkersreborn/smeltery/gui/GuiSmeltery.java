@@ -155,8 +155,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
 
     @Override
     protected void drawPlayerInventoryName() {
-        String localizedName = Minecraft.getMinecraft().thePlayer.inventory.getInventoryName();
-        this.fontRendererObj.drawString(TinkersRebornUtils.translate(localizedName), 8, this.ySize - 96 + 2, 0x404040);
+        super.drawPlayerInventoryName();
     }
 
     @Override
@@ -362,7 +361,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
 
     /**
      * Adds information to the tooltip based on the fluid amount
-     * 
+     *
      * @param amount Fluid amount
      * @param text   Text to add information to.
      */
