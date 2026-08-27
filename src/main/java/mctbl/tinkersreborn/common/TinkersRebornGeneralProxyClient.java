@@ -22,6 +22,7 @@ import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
 import mctbl.tinkersreborn.common.events.HealthBarRenderer;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornManualDataBase;
+import mctbl.tinkersreborn.common.manuals.pages.BowMaterialNavigationPage.BowMaterialNavigationPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.CoverPage.CoverPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.ImagePage.ImagePageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.MaterialNavigationPage.MaterialNavigationPageProcessor;
@@ -54,6 +55,8 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
         TinkersRebornManualDataBase.registerPageProcessor("toolsNavigation", new ToolsNavigationPageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("materialNavigation", new MaterialNavigationPageProcessor());
         TinkersRebornManualDataBase.registerPageProcessor("modifierNavigation", new ModifierNavigationPageProcessor());
+        TinkersRebornManualDataBase
+            .registerPageProcessor("bowMaterialNavigation", new BowMaterialNavigationPageProcessor());
     }
 
     @Override
