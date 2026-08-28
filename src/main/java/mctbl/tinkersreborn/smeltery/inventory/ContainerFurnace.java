@@ -10,13 +10,13 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
 
     protected ContainerSideInventory<FurnaceLogic> sideInventory;
     protected int oldFuel = 0;
-    protected int oldFuelTotla = 0;
+    protected int oldFuelTotal = 0;
     protected int[] oldHeats;
 
-    public ContainerFurnace(InventoryPlayer inventoryPlayer,FurnaceLogic tile) {
+    public ContainerFurnace(InventoryPlayer inventoryPlayer, FurnaceLogic tile) {
         super(tile);
 
-        sideInventory = new ContainerSideInventory<>(tile,118, 18, 4);
+        sideInventory = new ContainerFurnaceSideInventory(tile, 0, 0, 4);
         addSubContainer(sideInventory, false);
         addPlayerInventory(inventoryPlayer, 8, 115);
 
@@ -38,7 +38,6 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
 
-        // update fuel only when switching between none and some
         int fuel = tile.fuelReleaseTicks;
         if (fuel != oldFuel) {
             for (ICrafting crafter : this.crafters) {
@@ -47,15 +46,15 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
             oldFuel = fuel;
         }
 
-        int fuelTotla = tile.fuelTotalTicks;
-        if (fuelTotla != oldFuelTotla) {
+        int fuelTotal = tile.fuelTotalTicks;
+        if (fuelTotal != oldFuelTotal) {
             for (ICrafting crafter : this.crafters) {
-                crafter.sendProgressBarUpdate(this, 1, fuelTotla);
+                crafter.sendProgressBarUpdate(this, 1, fuelTotal);
             }
-            oldFuelTotla = fuelTotla;
+            oldFuelTotal = fuelTotal;
         }
 
-        // send changed heats
+        // 同步变化的加热进度
         for (int i = 0; i < oldHeats.length; i++) {
             int temp = tile.getTemperature(i);
             if (temp != oldHeats[i]) {
@@ -69,12 +68,10 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
 
     @Override
     public void updateProgressBar(int id, int data) {
-        // 0 is fuel
+        // 0/1 是燃料，其余是加热进度
         if (id == 0 || id == 1) {
             tile.updateFuelFromPacket(id, data);
         } else {
-            // id = index of the melting progress to update + 1, if 0 its the fuel boolean
-            // data = temperature
             tile.updateTemperatureFromPacket(id - 2, data);
         }
     }

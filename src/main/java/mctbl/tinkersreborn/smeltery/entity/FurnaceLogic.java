@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
@@ -8,16 +10,27 @@ import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
 import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerFurnace;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
+
+import java.util.List;
+
+import static mctbl.tinkersreborn.TinkersRebornConfig.heatItemsTickrateFurnace;
 
 public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
 
-    private static final int MAX_FURNACE_SIZE = 15;
+    private static final int MAX_FURNACE_SIZE = 7;
 
     /** [0] = 空腔最高点，[1] = 空腔最低点，由 {@link #measureCavity(BlockPos)} 填入 */
     protected final BlockPos[] drains = new BlockPos[2];
@@ -33,13 +46,118 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
 
     @Override
     public int getInventoryStackLimit() {
-        return 1;
+        return 64;
     }
 
     @Override
     public void updateEntity() {
+        if (this.worldObj.isRemote) return;
 
+        if (tickCounter == 0 || needsUpdate) {
+            this.needsUpdate = false;
+            checkWholeStructureValid();
+            isHeating = false;
+        } else if (getActive()) {
+            if (tickCounter % heatItemsTickrateFurnace == 0){
+                heatItems();
+            }
+            if (this.needsFuel) {
+                this.consumeFuel();
+            }// we gradually check if the inside of the smeltery is blocked (for performance
+            // reasons)
+            if (this.tickCounter == 0) {
+                // called every second, we check every 15s or so
+                if (++this.secondCounter >= 15) {
+                    this.secondCounter = 0;
+                    this.checkWholeStructureValid();
+                } else {
+                    this.checkSteppingingValid();
+                }
+            }
+        }
+
+        this.tickCounter = (this.tickCounter + 1) % 20;
     }
+
+    @Override
+    protected void heatItems() {
+        boolean heatedItem = false;
+        boolean triedRefuel = false;
+        for (int i = 0; i < getSizeInventory(); i++) {
+            ItemStack stack = getStackInSlot(i);
+            if (!TinkersRebornUtils.isStackEmpty(stack)) {
+                // heat item if possible
+                if (itemTempRequired[i] > 0) {
+                    // fuel is present, turn up the heat
+                    if (fuelReleaseTicks > 0) {
+                        // if the temperature is high enough for the slot
+                        if (canHeat(i)) {
+                            // are we done heating?
+                            if (itemTemperatures[i] >= itemTempRequired[i]) {
+                                if (onItemFinishedHeating(stack, i)) {
+                                    itemTemperatures[i] = 0;
+                                    itemTempRequired[i] = 0;
+                                }
+                            }
+                            // otherwise turn up the heat
+                            else {
+                                itemTemperatures[i] += heatSlot(i);
+                                heatedItem = true;
+                            }
+                        }
+                    } else if (!triedRefuel) {
+                        // out of fuel, try to consume more right now
+                        // so we don't miss this tick's heating
+                        this.needsFuel = true;
+                        this.consumeFuel();
+                        triedRefuel = true;
+                        if (fuelReleaseTicks > 0) {
+                            // fuel acquired, retry this slot
+                            i--;
+                            continue;
+                        }
+                        // truly out of fuel, nothing more we can do
+                        break;
+                    } else {
+                        // already tried refueling this tick and failed, give up
+                        break;
+                    }
+                }
+            } else {
+                itemTemperatures[i] = 0;
+            }
+        }
+
+        if (heatedItem) {
+            fuelReleaseTicks--;
+        }
+        updateIfChanged(heatedItem);
+    }
+
+    @Override
+    public boolean canHeat(int index) {
+        ItemStack stack = getStackInSlot(index);
+        return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+    }
+
+    @Override
+    protected int heatSlot(int i) {
+        return 40;
+    }
+
+    @Override
+    protected void setTempRequiredForSlot(int index, int heat) {
+        if (index < itemTempRequired.length) {
+            ItemStack stack = getStackInSlot(index);
+            if (stack != null) {
+                itemTempRequired[index] = heat * stack.stackSize;
+                return;
+            }
+            itemTempRequired[index] = heat;
+        }
+    }
+
+    // This is how you get blisters
 
     /**
      * Calculate the heat required for the given slot
@@ -48,7 +166,17 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
      */
     @Override
     protected void updateTempRequired(int index) {
-
+        ItemStack stack = getStackInSlot(index);
+        if (!TinkersRebornUtils.isStackEmpty(stack)) {
+            if (FurnaceRecipes.smelting().getSmeltingResult(stack) != null) {
+                setTempRequiredForSlot(index, 1000);
+                if (fuelReleaseTicks <= 0) {
+                    consumeFuel();
+                }
+                return;
+            }
+        }
+        setTempRequiredForSlot(index, 0);
     }
 
     /**
@@ -60,7 +188,23 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
      */
     @Override
     protected boolean onItemFinishedHeating(ItemStack stack, int slot) {
+        ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(stack);
+        if (result != null) {
+            result = result.copy();
+            int amount = result.stackSize == 0 ? 1 : result.stackSize;
+            result.stackSize = stack.stackSize * amount;
+            setInventorySlotContents(slot, result);
+            return true;
+        }
         return false;
+    }
+
+    @Override
+    public float getProgress(int index) {
+        if (index >= itemTemperatures.length) {
+            return 0f;
+        }
+        return Math.min(1f, (float) itemTemperatures[index] / itemTempRequired[index]);
     }
 
     /**

@@ -18,6 +18,7 @@ public class TinkersRebornConfig {
     public static String TOOLS = "Tools";
     public static String ALLOWEDTOOLS = "Allowedtools";
     public static String SMELTERY = "Smeltery";
+    public static String FURNACE = "FURNACE";
     public static String TOOLLEVELING = "ToolLeveling";
 
     public static boolean debug;
@@ -86,6 +87,7 @@ public class TinkersRebornConfig {
 
     public static double oreToIngotRatio;
     public static int heatItemsTickrateSmeltery;
+    public static int heatItemsTickrateFurnace;
 
     public static String[] fluidIgnore;
 
@@ -375,6 +377,13 @@ public class TinkersRebornConfig {
             "heatItemsTickrateSmeltery",
             4,
             "The tickrate at which items are heated and alloys are created in the smeltery. Defaults to every 4th tick.")
+            .getInt();
+
+        heatItemsTickrateFurnace = config.get(
+            FURNACE,
+            "heatItemsTickrateFurnace",
+            4,
+            "The tickrate at which items are heated and alloys are created in the furnace. Defaults to every 4th tick.")
             .getInt();
 
         entityMelting = config

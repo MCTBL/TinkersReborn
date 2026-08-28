@@ -81,6 +81,8 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
             itemstack.stackSize = getInventoryStackLimit();
         }
 
+        this.markDirty();
+
         if (worldObj != null && worldObj.isRemote) {
             worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
         }
@@ -92,12 +94,14 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
             if (inventory[slot].stackSize <= quantity) {
                 ItemStack stack = inventory[slot];
                 inventory[slot] = null;
+                this.markDirty();
                 return stack;
             }
             ItemStack split = inventory[slot].splitStack(quantity);
             if (inventory[slot].stackSize == 0) {
                 inventory[slot] = null;
             }
+            this.markDirty();
             return split;
         } else {
             return null;

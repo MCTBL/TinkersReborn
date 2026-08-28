@@ -1,18 +1,17 @@
 package mctbl.tinkersreborn.library.gui;
 
 import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
-import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
-import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
+import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
 import mctbl.tinkersreborn.util.TinkersStr;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public class GuiFurnaceSideInventory extends GuiSideInventory{
-    public static final ResourceLocation SLOT_LOCATION = GuiSmeltery.BACKGROUND;
+    public static final ResourceLocation SLOT_LOCATION = GuiFurnace.BACKGROUND;
 
     protected final FurnaceLogic furnace;
 
@@ -173,10 +172,6 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
                     bar = unprogressBar;
                     progress = 1;
                     tooltip = TinkersStr.smtleteryNoFuel.toString();
-                } else if (progress < 0) {
-                    bar = unprogressBar;
-                    progress = 1f;
-                    tooltip = TinkersStr.smtleteryNoHeat.toString();
                 } else if ((progress > 1f && progress < 2f) || progress == Float.POSITIVE_INFINITY) {
                     progress = 1f;
                 } else if (progress > 2f) {
@@ -185,9 +180,8 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
                     tooltip = TinkersStr.smtleteryNoSpace.toString();
                 }
 
-                int height = 3 + Math.round(progress * (bar.h - 1));
-                int x = slot.xDisplayPosition - 8;
-                int y = slot.yDisplayPosition - height;
+                float x = slot.xDisplayPosition - 8;
+                float y = slot.yDisplayPosition - 2 - bar.h;
 
                 if (tooltip != null && x + guiLeft <= mouseX
                     && x + guiLeft + bar.w > mouseX
@@ -196,7 +190,7 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
                     tooltipText = tooltip;
                 }
 
-                drawTexturedModalRect(x, y, bar.x, bar.y, bar.w, height);
+                drawTexturedModalRect(x, y, bar.x, bar.y, bar.w, bar.h,progress);
             }
         }
 
@@ -209,6 +203,32 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
         }
 
         RenderHelper.enableStandardItemLighting();
+    }
+
+    public void drawTexturedModalRect(float x, float y, float textureX, float textureY, float width, float height,
+        float progress) {
+        if (progress < 0f) progress = 0f;
+        if (progress > 1f) progress = 1f;
+
+        float visibleHeight = height * progress;
+        if (visibleHeight <= 0f) return;
+
+        float f = 0.00390625F;
+
+        float u1 = textureX * f;
+        float u2 = (textureX + width) * f;
+        float v1 = (textureY + height - visibleHeight) * f;
+        float v2 = (textureY + height) * f;
+
+        float screenTop = y + height - visibleHeight;
+
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV(x, screenTop + visibleHeight, this.zLevel, u1, v2);
+        tessellator.addVertexWithUV(x + width, screenTop + visibleHeight, this.zLevel, u2, v2);
+        tessellator.addVertexWithUV(x + width, screenTop, this.zLevel, u2, v1);
+        tessellator.addVertexWithUV(x, screenTop, this.zLevel, u1, v1);
+        tessellator.draw();
     }
 
 }
