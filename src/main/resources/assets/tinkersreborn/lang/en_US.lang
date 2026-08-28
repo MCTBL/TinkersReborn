@@ -553,6 +553,17 @@ modifier.aspect.single=Single apply
 tinkersreborn.gui.general.temperature.celsius=%s°C
 tinkersreborn.gui.general.temperature.kelvin=%sK
 tinkersreborn.gui.error=ERROR
+tinkersreborn.gui.error.wrong_material_part=One or multiple items have an unsupported material for this tool.
+tinkersreborn.gui.error.not_enough_durability=Not enough durability to replace parts!\n%d more durability required.
+tinkersreborn.gui.error.not_enough_modifiers=Not enough Modifiers. (%d needed)
+tinkersreborn.gui.error.single_modifier=%s can only be applied once.
+tinkersreborn.gui.error.max_level_modifier=Maximum Level for %s already reached.
+tinkersreborn.gui.error.no_modifier_for_item=No modifier found for %s.
+tinkersreborn.gui.error.already_has_extratrait=The tool already has an embossment, it can only have one.
+tinkersreborn.gui.error.incompatible_modifiers=Modifiers %s and %s cannot be applied together
+tinkersreborn.gui.error.incompatible_trait=Modifier %s can not be used together with trait %s
+tinkersreborn.gui.error.incompatible_enchantments=Modifier %s cannot be combined with enchantment %s
+tinkersreborn.gui.error.no_rename=This tool cannot be renamed
 tinkersreborn.gui.warning=WARNING
 
 tinkersreborn.gui.toolstation.repair.title=Repair & Modify

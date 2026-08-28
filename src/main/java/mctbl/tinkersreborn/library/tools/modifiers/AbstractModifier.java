@@ -37,6 +37,7 @@ import mctbl.tinkersreborn.library.tools.IToolMod;
 import mctbl.tinkersreborn.library.utils.EntityLivingBaseReflector;
 import mctbl.tinkersreborn.library.utils.RecipeMatchRegistry;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -107,7 +108,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
                 if (!canApplyTogether(trait) || !trait.canApplyTogether(this)) {
                     throw new TinkerGuiException(
                         String.format(
-                            translate("gui.error.incompatible_trait"),
+                            TinkersStr.errorIncompatibleTrait.toString(),
                             this.getLocalizedName(),
                             trait.getLocalizedName()));
                 }
@@ -124,7 +125,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
                 if (!canApplyTogether(mod) || !mod.canApplyTogether(this)) {
                     throw new TinkerGuiException(
                         String.format(
-                            translate("gui.error.incompatible_modifiers"),
+                            TinkersStr.errorIncompatibleEnchantments.toString(),
                             this.getLocalizedName(),
                             mod.getLocalizedName()));
                 }
@@ -152,7 +153,7 @@ public abstract class AbstractModifier extends RecipeMatchRegistry implements IM
                 String enchName = translate(enchantment.getName());
                 throw new TinkerGuiException(
                     String.format(
-                        translate("gui.error.incompatible_enchantments"),
+                        TinkersStr.errorIncompatibleEnchantments.toString(),
                         iToolMod.getLocalizedName(),
                         enchName));
             }

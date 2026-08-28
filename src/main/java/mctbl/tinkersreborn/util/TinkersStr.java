@@ -31,7 +31,19 @@ public enum TinkersStr {
     ammoName("stat.ammo.name"),
 
     // gui
+    generalHover("gui.general.hover"),
+
     errorTitle("gui.error"),
+    errorNotEnoughDurability("gui.error.not_enough_durability"),
+    errorNotEnoughModifier("gui.error.not_enough_modifiers"),
+    errorNoModifierForItem("gui.error.no_modifier_for_item"),
+    errorMaxLevelModifier("gui.error.max_level_modifier"),
+    errorSingleModifier("gui.error.single_modifier"),
+    errorIncompatibleTrait("gui.error.incompatible_trait"),
+    errorIncompatibleEnchantments("gui.error.incompatible_enchantments"),
+    errorNoRename("gui.error.no_rename"),
+    errorWrongMaterialPart("gui.error.wrong_material_part"),
+
     warningTitle("gui.warning"),
     partCrafterTitle("gui.partcrafter.title"),
     guiCelsius("gui.general.temperature.celsius"),

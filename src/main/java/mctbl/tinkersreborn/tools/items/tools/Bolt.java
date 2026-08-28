@@ -29,7 +29,6 @@ import mctbl.tinkersreborn.library.tools.AmmoCore;
 import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.library.tools.ProjectileNBT;
-import mctbl.tinkersreborn.library.tools.ToolCore.MaterialReplacement;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;

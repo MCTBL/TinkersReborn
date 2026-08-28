@@ -1,7 +1,6 @@
 package mctbl.tinkersreborn.library.crafting;
 
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.isStackEmpty;
-import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +13,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.enchantment.Enchantment;
@@ -50,6 +48,7 @@ import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
 import mctbl.tinkersreborn.tools.modifiers.ModFortify;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -120,7 +119,7 @@ public class ToolBuilderHelper {
      *                            applied. Contains extra-information why the
      *                            process failed.
      */
-    @Nonnull
+    @Nullable
     public static ItemStack tryModifyTool(List<ItemStack> input, ItemStack toolStack, boolean removeItems)
         throws TinkerGuiException {
         ItemStack copy = toolStack.copy();
@@ -184,8 +183,9 @@ public class ToolBuilderHelper {
         for (int i = 0; i < input.size(); i++) {
             if (!isStackEmpty(input.get(i)) && ItemStack.areItemStacksEqual(input.get(i), stacks.get(i))) {
                 if (!appliedModifiers.isEmpty()) {
-                    String error = translate(
-                        "gui.error.no_modifier_for_item",
+
+                    String error = String.format(
+                        TinkersStr.errorNoModifierForItem.toString(),
                         input.get(i)
                             .getDisplayName());
                     throw new TinkerGuiException(error);
@@ -329,8 +329,9 @@ public class ToolBuilderHelper {
         }
 
         // check that each material is still compatible with each modifier
-        ToolCore tinkersItem = (ToolCore) toolStack.getItem();
-        ItemStack copyToCheck = tinkersItem.buildItem(ToolTagsHelper.fromTagToMaterial(materialList));
+        // ToolCore tinkersItem = (ToolCore) toolStack.getItem();
+        // ItemStack copyToCheck = tinkersItem.buildItem(ToolTagsHelper.fromTagToMaterial(materialList));
+
         // this includes traits
         NBTTagList modifiers = ToolTagsHelper.getModifiersTagList(toolStack);
 
@@ -360,7 +361,7 @@ public class ToolBuilderHelper {
         // would not be broken
         if (output.getItemDamage() > output.getMaxDamage()) {
             String error = String
-                .format(translate("gui.error.not_enough_durability"), output.getItemDamage() - output.getMaxDamage());
+                .format(TinkersStr.errorNotEnoughDurability.toString(), output.getItemDamage() - output.getMaxDamage());
             throw new TinkerGuiException(error);
         }
 
@@ -463,7 +464,6 @@ public class ToolBuilderHelper {
             String identifier = modifiers.getString(ToolTags.IDENTIFIER);
             IModifier modifier = TinkersRebornRegistry.getModifierAndTrait(identifier);
             if (modifier == null) {
-                TinkersReborn.LOG.debug("Missing modifier: {}", identifier);
                 continue;
             }
             ToolTagsHelper.getModifiersTagList(baseTag)
@@ -483,7 +483,7 @@ public class ToolBuilderHelper {
         if (modifierSlots + extraModifier < usedModifiers) {
             throw new TinkerGuiException(
                 String.format(
-                    TinkersRebornUtils.translate("gui.error.not_enough_modifiers"),
+                    TinkersStr.errorNotEnoughModifier.toString(),
                     usedModifiers - (modifierSlots + extraModifier)));
         }
     }

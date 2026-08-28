@@ -1,7 +1,6 @@
 package mctbl.tinkersreborn.tools.inventory;
 
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.isStackEmpty;
-import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +33,7 @@ import mctbl.tinkersreborn.tools.inventory.slots.SlotToolStationIn;
 import mctbl.tinkersreborn.tools.inventory.slots.SlotToolStationOut;
 import mctbl.tinkersreborn.tools.network.ToolStationSelectionPacket;
 import mctbl.tinkersreborn.tools.network.ToolStationTextPacket;
+import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogic> {
@@ -331,7 +331,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
 
         ItemStack result = tool.copy();
         if (ToolTagsHelper.isToolNoRenaem(result)) {
-            throw new TinkerGuiException(translate("gui.error.no_rename"));
+            throw new TinkerGuiException(TinkersStr.errorNoRename.toString());
         }
 
         if (toolName.isEmpty()) {
