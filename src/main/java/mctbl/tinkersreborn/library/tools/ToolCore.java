@@ -301,8 +301,88 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         return this.categoryTags.contains(tag);
     }
 
+    /** Returns the logical material slots stored in the tool NBT. */
+    public List<ToolPartRecord> getToolMaterialParts() {
+        return this.getToolComponentsParts();
+    }
+
+    /**
+     * Returns the material changes represented by a physical tool part.
+     * <p>
+     * Most parts contain one material and therefore map component {@code i} to
+     * material slot {@code i}. Composite parts, such as a bolt core, can override
+     * this method and update multiple material slots atomically.
+     */
+    public List<MaterialReplacement> getMaterialReplacements(ItemStack part) {
+        if (TinkersRebornUtils.isStackEmpty(part) || !(part.getItem() instanceof IToolPart toolPart)) {
+            return Collections.emptyList();
+        }
+
+        TinkersRebornMaterial material = toolPart.getMaterial(part);
+        List<ToolPartRecord> buildParts = this.getToolComponentsParts();
+        List<ToolPartRecord> materialParts = this.getToolMaterialParts();
+        List<MaterialReplacement> replacements = new ArrayList<>();
+
+        int size = Math.min(buildParts.size(), materialParts.size());
+        for (int i = 0; i < size; i++) {
+            ToolPartRecord buildPart = buildParts.get(i);
+            ToolPartRecord materialPart = materialParts.get(i);
+            if (buildPart.isValid(part) && materialPart.isValidMaterial(material)) {
+                TinkersRebornMaterial headMaterial = materialPart.statusType() == MaterialStatusType.HEAD ? material
+                    : null;
+                replacements.add(
+                    new MaterialReplacement(
+                        i,
+                        new int[] { i },
+                        new TinkersRebornMaterial[] { material },
+                        headMaterial));
+            }
+        }
+        return replacements;
+    }
+
     public List<ToolPartRecord> getToolComponentsParts() {
         return ImmutableList.copyOf(this.componentsParts);
+    }
+
+    public static final class MaterialReplacement {
+
+        private final int componentIndex;
+        private final int[] materialIndices;
+        private final TinkersRebornMaterial[] materials;
+        private final TinkersRebornMaterial headMaterial;
+
+        public MaterialReplacement(int componentIndex, int[] materialIndices, TinkersRebornMaterial[] materials,
+            TinkersRebornMaterial headMaterial) {
+            if (materialIndices.length != materials.length) {
+                throw new IllegalArgumentException("Material replacement indices and materials must have equal size");
+            }
+            this.componentIndex = componentIndex;
+            this.materialIndices = materialIndices;
+            this.materials = materials;
+            this.headMaterial = headMaterial;
+        }
+
+        public int componentIndex() {
+            return componentIndex;
+        }
+
+        public int size() {
+            return materialIndices.length;
+        }
+
+        public int materialIndex(int index) {
+            return materialIndices[index];
+        }
+
+        public TinkersRebornMaterial material(int index) {
+            return materials[index];
+        }
+
+        @Nullable
+        public TinkersRebornMaterial headMaterial() {
+            return headMaterial;
+        }
     }
 
     public String getUnlocalizedToolName() {
@@ -571,14 +651,15 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public void addMaterialTraits(NBTTagCompound root, List<TinkersRebornMaterial> materials) {
-        int size = this.componentsParts.size();
+        List<ToolPartRecord> toolMaterialParts = this.getToolMaterialParts();
+        int size = toolMaterialParts.size();
         // safety
         if (materials.size() < size) {
             size = materials.size();
         }
         // add corresponding traits per material usage
         for (int i = 0; i < size; i++) {
-            ToolPartRecord required = this.componentsParts.get(i);
+            ToolPartRecord required = toolMaterialParts.get(i);
             TinkersRebornMaterial material = materials.get(i);
             for (ITrait trait : required.getApplicableTraitsForMaterial(material)) {
                 ToolBuilderHelper.addTrait(root, trait, material.materialTextColor);
@@ -864,7 +945,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     protected void getTooltipComponents(ItemStack stack, EntityPlayer player, List<String> tootips) {
-        List<ToolPartRecord> partList = this.getToolComponentsParts();
+        List<ToolPartRecord> partList = this.getToolMaterialParts();
         List<TinkersRebornMaterial> materialList = ToolTagsHelper.getToolBaseMaterialsList(stack);
         int idxMax = Math.min(partList.size(), materialList.size());
 

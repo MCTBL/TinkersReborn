@@ -6,7 +6,10 @@ import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,8 +25,6 @@ import net.minecraft.nbt.NBTTagString;
 
 import com.google.common.collect.Sets;
 
-import gnu.trove.map.TIntIntMap;
-import gnu.trove.map.hash.TIntIntHashMap;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.TinkerGuiException;
@@ -36,6 +37,7 @@ import mctbl.tinkersreborn.library.tools.IRepairable;
 import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.library.tools.ITrait;
 import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.library.tools.ToolCore.MaterialReplacement;
 import mctbl.tinkersreborn.library.tools.ToolCore.ToolPartRecord;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
@@ -250,7 +252,9 @@ public class ToolBuilderHelper {
         // technically we don't need a deep copy here, but meh. less code.
         final List<ItemStack> toolParts = TinkersRebornUtils.copyItemStackList(inputItems);
 
-        TIntIntMap assigned = new TIntIntHashMap();
+        Map<Integer, MaterialReplacement> assigned = new LinkedHashMap<>();
+        Set<Integer> assignedComponents = new HashSet<>();
+        Set<Integer> assignedMaterialSlots = new HashSet<>();
         ToolCore tool = (ToolCore) toolStack.getItem();
         // materiallist has to be copied because it affects the actual NBT on the tool
         // if it's changed
@@ -269,37 +273,30 @@ public class ToolBuilderHelper {
                 return null;
             }
 
-            int candidate = -1;
-            // find an applicable slot in the tool structure corresponding to the toolparts
-            // position
-            List<ToolPartRecord> pms = tool.getToolComponentsParts();
-            for (int j = 0; j < pms.size(); j++) {
-                ToolPartRecord pmt = pms.get(j);
-                String partMat = ((IToolPart) part.getItem()).getMaterial(part).identifier;
-                String currentMat = materialList.getStringTagAt(j);
-                // is valid and not the same material?
-                if (pmt.isValid(part) && !partMat.equals(currentMat)) {
-                    // part not taken up by previous part already?
-                    if (!assigned.valueCollection()
-                        .contains(j)) {
-                        candidate = j;
-                        // if a tool has multiple of the same parts we may want to replace another one
-                        // as the currently selected
-                        // for that purpose we only allow to overwrite the current selection if the
-                        // input slot is a later one than the current one
-                        if (i <= j) {
-                            break;
-                        }
-                    }
+            MaterialReplacement candidate = null;
+            for (MaterialReplacement replacement : tool.getMaterialReplacements(part)) {
+                if (assignedComponents.contains(replacement.componentIndex())
+                    || !canUseReplacement(replacement, materialList, assignedMaterialSlots)) {
+                    continue;
+                }
+
+                candidate = replacement;
+                // Preserve the old selection behaviour for tools with duplicate parts: an
+                // input in an earlier station slot prefers the matching earlier component.
+                if (i <= replacement.componentIndex()) {
+                    break;
                 }
             }
 
             // if this part is a head type, capture its material for later fortify
             // comparison
-            if (candidate >= 0) {
-                ToolPartRecord pmt = pms.get(candidate);
-                if (pmt.statusType() == MaterialStatusType.HEAD) {
-                    newHeadMaterial = ((IToolPart) part.getItem()).getMaterial(part);
+            if (candidate != null) {
+                if (candidate.headMaterial() != null) {
+                    newHeadMaterial = candidate.headMaterial();
+                }
+                assignedComponents.add(candidate.componentIndex());
+                for (int j = 0; j < candidate.size(); j++) {
+                    assignedMaterialSlots.add(candidate.materialIndex(j));
                 }
             }
             // no assignment found for a part. Invalid input.
@@ -317,17 +314,19 @@ public class ToolBuilderHelper {
         // We now know which parts to replace with which inputs. Yay. Now we only have
         // to do so.
         // to do so we simply switch out the materials used and rebuild the tool
-        assigned.forEachEntry((i, j) -> {
-            String mat = ((IToolPart) toolParts.get(i)
-                .getItem()).getMaterial(toolParts.get(i)).identifier;
-            materialList.func_150304_a(j, new NBTTagString(mat));
+        for (Map.Entry<Integer, MaterialReplacement> entry : assigned.entrySet()) {
+            int inputIndex = entry.getKey();
+            MaterialReplacement replacement = entry.getValue();
+            for (int j = 0; j < replacement.size(); j++) {
+                materialList
+                    .func_150304_a(replacement.materialIndex(j), new NBTTagString(replacement.material(j).identifier));
+            }
             if (removeItems) {
-                if (i < toolPartsIn.size() && !isStackEmpty(toolPartsIn.get(i))) {
-                    toolPartsIn.get(i).stackSize -= 1;
+                if (inputIndex < toolPartsIn.size() && !isStackEmpty(toolPartsIn.get(inputIndex))) {
+                    toolPartsIn.get(inputIndex).stackSize -= 1;
                 }
             }
-            return true;
-        });
+        }
 
         // check that each material is still compatible with each modifier
         ToolCore tinkersItem = (ToolCore) toolStack.getItem();
@@ -368,6 +367,22 @@ public class ToolBuilderHelper {
         return output;
     }
 
+    private static boolean canUseReplacement(MaterialReplacement replacement, NBTTagList materialList,
+        Set<Integer> assignedMaterialSlots) {
+        boolean changesMaterial = false;
+        for (int i = 0; i < replacement.size(); i++) {
+            int materialIndex = replacement.materialIndex(i);
+            if (materialIndex < 0 || materialIndex >= materialList.tagCount()
+                || assignedMaterialSlots.contains(materialIndex)) {
+                return false;
+            }
+            if (!replacement.material(i).identifier.equals(materialList.getStringTagAt(materialIndex))) {
+                changesMaterial = true;
+            }
+        }
+        return changesMaterial;
+    }
+
     /**
      * Rebuilds a tool from its raw data, material info and applied modifiers
      *
@@ -383,7 +398,7 @@ public class ToolBuilderHelper {
         boolean broken = ToolTagsHelper.isBroken(tool);
         // Recalculate tool base stats from material stats
         List<TinkersRebornMaterial> materials = ToolTagsHelper.getToolBaseMaterialsList(tool);
-        List<ToolPartRecord> pms = tinkersItem.getToolComponentsParts();
+        List<ToolPartRecord> pms = tinkersItem.getToolMaterialParts();
 
         // ensure all needed Stats are present
         while (materials.size() < pms.size()) {
