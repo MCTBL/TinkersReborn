@@ -8,12 +8,12 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 public class TraitWritable extends AbstractTraitLeveled {
 
     public TraitWritable(int levels) {
-        super("writable", String.valueOf(levels), 0xffffff, 3, levels);
+        super("writable", String.valueOf(levels), 0xffffff, 3, 1);
     }
 
     @Override
     public void applyModifierEffect(NBTTagCompound rootCompound) {
-        // yaaay, modifiers
-        ToolTagsHelper.setExtraModifier(rootCompound, ToolTagsHelper.getModifierSlots(rootCompound) + 1);
+        int modifiers = ToolTagsHelper.getExtraModifier(rootCompound) + levels;
+        ToolTagsHelper.setExtraModifier(rootCompound, Math.max(0, modifiers));
     }
 }

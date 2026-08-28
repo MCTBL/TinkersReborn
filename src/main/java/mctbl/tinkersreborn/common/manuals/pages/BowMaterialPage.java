@@ -15,17 +15,15 @@ import mctbl.tinkersreborn.library.materials.IMaterialStats;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.ITrait;
-import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.traits.AbstractTraitLeveled;
+import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class MaterialPage extends AbstractManualPage {
+public class BowMaterialPage extends AbstractManualPage {
 
     protected final String title;
     protected String translatedTitle;
-    protected final String text;
-    protected String translatedText;
     protected final List<ItemStack> staticStacks;
     protected final List<ItemStack> loopToolStacks;
     protected static final int stackInOnePage = 8;
@@ -34,17 +32,16 @@ public class MaterialPage extends AbstractManualPage {
 
     protected final TinkersRebornMaterial material;
 
-    private static final String pattern = "{'name':%s}";
+    private static final String pattern = "{'name':bow%s}";
 
-    private static final MaterialStatusType[] StatsTypeOrder = new MaterialStatusType[] { MaterialStatusType.HEAD,
-        MaterialStatusType.HANDLE, MaterialStatusType.EXTRA };
+    private static final MaterialStatusType[] StatsTypeOrder = new MaterialStatusType[] { MaterialStatusType.BOW,
+        MaterialStatusType.SHAFT, MaterialStatusType.FLETCHING, MaterialStatusType.STRING };
 
-    public MaterialPage(TinkersRebornMaterial material) {
+    protected BowMaterialPage(TinkersRebornMaterial material) {
         super(
             TinkersRebornUtils.jsonParser.parse(String.format(pattern, material.identifier))
                 .getAsJsonObject());
         this.title = String.format("material.%s.name", material.identifier);
-        this.text = String.format("material.%s.flavour", material.identifier);
         this.material = material;
         this.staticStacks = new ArrayList<>();
         this.staticStacks.add(material.getRepresentativeItem());
@@ -58,11 +55,11 @@ public class MaterialPage extends AbstractManualPage {
                 .add(TinkersRebornRegistry.getOrRegisterManualIcon("tinkersreborn:tile.tinkersreborn.SearedBlock:2"));
         }
         this.loopToolStacks = new ArrayList<>();
-        for (ToolCore core : TinkersRebornRegistry.getAllTools()) {
-            ItemStack tempTool = core.buildTool(material, null);
-            if (tempTool != null) {
-                TinkersRebornRegistry.getOrRegisterManualIcon(core.toolTypeName + "." + material.identifier, tempTool);
-                loopToolStacks.add(tempTool);
+        for (TinkersRebornToolPart part : TinkersRebornRegistry.getAllToolParts()) {
+            ItemStack newPart = part.getNewPartWithMaterial(material);
+            if (newPart != null) {
+                TinkersRebornRegistry.getOrRegisterManualIcon(part.partName + "." + material.identifier, newPart);
+                loopToolStacks.add(newPart);
             }
         }
     }
@@ -78,6 +75,11 @@ public class MaterialPage extends AbstractManualPage {
             this.counter = 0;
         }
         super.renderPage(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
+    }
+
+    @Override
+    public void setupTranslate() {
+        this.translatedTitle = TinkersRebornUtils.translate(this.title);
     }
 
     @Override
@@ -107,19 +109,21 @@ public class MaterialPage extends AbstractManualPage {
             idx++;
         }
 
+        int statsIndex = 0;
         int textStartX = isLeft ? 28 : 12;
         int textStartY = 15;
-        for (int i = 0; i < 2; i++) {
-            if (i == 1 && this.translatedText != null && !this.translatedText.isEmpty()) {
-                fontRender
-                    .drawSplitString(this.translatedText, pageX + textStartX + 70, pageY + textStartY, 70, 0x000000);
-            }
 
-            MaterialStatusType statusType = StatsTypeOrder[i];
-            // head and handle
-            IMaterialStats stats = this.material.getStats(statusType);
-            Collection<ITrait> allTraitsForStats = this.material.getAllTraitsForStats(statusType);
+        for (int i = 0; i < 2 && statsIndex < StatsTypeOrder.length; i++) {
+            MaterialStatusType statusType = null;
+            IMaterialStats stats = null;
+            Collection<ITrait> allTraitsForStats = null;
+            do {
+                statusType = StatsTypeOrder[statsIndex++];
+                // head and handle
+                stats = this.material.getStats(statusType);
+            } while (stats == null && statsIndex < StatsTypeOrder.length);
             if (stats != null) {
+                allTraitsForStats = this.material.getAllTraitsForStats(statusType);
                 fontRender.drawString(
                     ColorUtil.addUnderLine(stats.getLocalizedName()),
                     pageX + textStartX,
@@ -164,62 +168,58 @@ public class MaterialPage extends AbstractManualPage {
 
         textStartX += 85;
         textStartY = 15;
-        // extra and extra text
-        MaterialStatusType statusType = StatsTypeOrder[2];
-        // head and handle
-        IMaterialStats stats = this.material.getStats(statusType);
-        Collection<ITrait> allTraitsForStats = this.material.getAllTraitsForStats(statusType);
-        if (stats != null) {
-            fontRender.drawString(
-                ColorUtil.addUnderLine(stats.getLocalizedName()),
-                pageX + textStartX,
-                pageY + textStartY,
-                0x000000);
-            textStartY += fontRender.FONT_HEIGHT;
-            for (String line : stats.getLocalizedInfo()) {
-                fontRender.drawString(line, pageX + textStartX, pageY + textStartY, 0x000000);
-                textStartY += fontRender.FONT_HEIGHT;
-            }
-            textStartY += fontRender.FONT_HEIGHT;
 
-            for (ITrait t : allTraitsForStats) {
-                String traitName = t.getLocalizedName();
-                if (t instanceof AbstractTraitLeveled leveled) {
-                    traitName = traitName + " " + TinkersRebornUtils.getRomanNumeral(leveled.getLevels());
-                }
-
+        for (int i = 0; i < 2 && statsIndex < StatsTypeOrder.length; i++) {
+            MaterialStatusType statusType = null;
+            IMaterialStats stats = null;
+            Collection<ITrait> allTraitsForStats = null;
+            do {
+                statusType = StatsTypeOrder[statsIndex++];
+                // head and handle
+                stats = this.material.getStats(statusType);
+            } while (stats == null && statsIndex < StatsTypeOrder.length);
+            if (stats != null) {
+                allTraitsForStats = this.material.getAllTraitsForStats(statusType);
                 fontRender.drawString(
-                    ColorUtil.addUnderLine(traitName),
+                    ColorUtil.addUnderLine(stats.getLocalizedName()),
                     pageX + textStartX,
                     pageY + textStartY,
-                    t.getColor(),
-                    true);
-                String traitColor = ColorUtil.encodeColor(t.getColor());
-                this.renderString.add(
-                    new RenderString(
-                        textStartX,
-                        textStartY,
-                        70,
-                        fontRender.FONT_HEIGHT,
-                        Arrays.asList(
-                            t.getLocalizedDesc()
-                                .split("\\\\n"))
-                            .stream()
-                            .map(s -> traitColor + s)
-                            .collect(Collectors.toList())));
+                    0x000000);
+                textStartY += fontRender.FONT_HEIGHT;
+                for (String line : stats.getLocalizedInfo()) {
+                    fontRender.drawString(line, pageX + textStartX, pageY + textStartY, 0x000000);
+                    textStartY += fontRender.FONT_HEIGHT;
+                }
+                textStartY += fontRender.FONT_HEIGHT;
+
+                for (ITrait t : allTraitsForStats) {
+                    String traitName = t.getLocalizedName();
+                    if (t instanceof AbstractTraitLeveled leveled) {
+                        traitName = traitName + " " + TinkersRebornUtils.getRomanNumeral(leveled.getLevels());
+                    }
+                    fontRender.drawString(
+                        ColorUtil.addUnderLine(traitName),
+                        pageX + textStartX,
+                        pageY + textStartY,
+                        t.getColor(),
+                        true);
+                    String traitColor = ColorUtil.encodeColor(t.getColor());
+                    this.renderString.add(
+                        new RenderString(
+                            textStartX,
+                            textStartY,
+                            70,
+                            fontRender.FONT_HEIGHT,
+                            Arrays.asList(
+                                t.getLocalizedDesc()
+                                    .split("\\\\n"))
+                                .stream()
+                                .map(s -> traitColor + s)
+                                .collect(Collectors.toList())));
+                    textStartY += fontRender.FONT_HEIGHT;
+                }
                 textStartY += fontRender.FONT_HEIGHT;
             }
-        }
-
-    }
-
-    @Override
-    public void setupTranslate() {
-        this.translatedTitle = TinkersRebornUtils.translate(this.title);
-        if (TinkersRebornUtils.canTranslate(this.text)) {
-            this.translatedText = ColorUtil.addItalic(
-                "\"" + TinkersRebornUtils.translate(this.text)
-                    .replace("\\n", "\\n\\n") + "\"");
         }
     }
 

@@ -1279,6 +1279,12 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             'B',
             new ItemStack(Blocks.crafting_table));
 
+        // materials and you
+        GameRegistry.addShapelessRecipe(
+            TinkersRebornGeneral.manualItem.getNewManual("materialsandyou"),
+            blankPattern,
+            new ItemStack(Items.book));
+
         for (int i = 0; i < ToolForgeBlock.materials.length; i++) {
             String str = ToolForgeBlock.materials[i];
             GameRegistry.addRecipe(

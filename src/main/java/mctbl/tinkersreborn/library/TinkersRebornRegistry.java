@@ -193,6 +193,17 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         modifierAndTraitIdentifierMaps.put(trait.getIdentifier(), trait);
     }
 
+    /**
+     * Registers an alternate identifier for a modifier or trait.
+     * <p>
+     * Leveled traits use this to expose all concrete traits (for example
+     * {@code magnetic1} and {@code magnetic2}) through one shared modifier data
+     * identifier ({@code magnetic}).
+     */
+    public static void addModifierAndTraitAlias(IModifier trait, String alias) {
+        modifierAndTraitIdentifierMaps.put(alias, trait);
+    }
+
     public static IModifier getModifierAndTrait(String identifier) {
         return modifierAndTraitIdentifierMaps.get(identifier);
     }

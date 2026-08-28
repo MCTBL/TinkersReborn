@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -32,13 +33,14 @@ public class TinkersRebornUtils {
         DecimalFormatSymbols.getInstance(Locale.US));
     public static final DecimalFormat dfPercent = new DecimalFormat("#%");
     public static final JsonParser jsonParser = new JsonParser();
+    public static final Pattern regex = Pattern.compile(" ");
 
     /**
      * Removes all whitespaces from the given string and makes it lowerspace.
      */
     public static String sanitizeLocalizationString(String string) {
-        return string.toLowerCase(Locale.US)
-            .replaceAll(" ", "");
+        return regex.matcher(string.toLowerCase(Locale.US))
+            .replaceAll("");
     }
 
     public static String translate(String string) {

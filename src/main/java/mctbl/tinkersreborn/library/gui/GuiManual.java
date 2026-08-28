@@ -75,6 +75,11 @@ public class GuiManual extends GuiScreen {
         this.backgroundR = ((backGroundColor >> 16) & 0xFF) / 255.0f;
         this.backgroundG = ((backGroundColor >> 8) & 0xFF) / 255.0f;
         this.backgroundB = (backGroundColor & 0xFF) / 255.0f;
+
+        this.buttonNextPage = new TinkersRebornTurnPageButton(1, COVER_WIDTH * 2 - 40, 172, ButtonType.nextPage);
+        this.buttonPreviousPage = new TinkersRebornTurnPageButton(2, 22, 172, ButtonType.previousPage);
+        this.buttonHomePage = new TinkersRebornTurnPageButton(3, 4, 5, ButtonType.homePage);
+        this.buttonBackToJumpFrom = new TinkersRebornTurnPageButton(4, COVER_WIDTH - 9, 178, ButtonType.backToJumpFrom);
     }
 
     @Override
@@ -154,11 +159,6 @@ public class GuiManual extends GuiScreen {
 
         this.guiLeft = (this.width - renderedWidth) / 2;
         this.guiTop = (this.height - renderedHeight) / 2;
-
-        this.buttonNextPage = new TinkersRebornTurnPageButton(1, COVER_WIDTH * 2 - 40, 172, ButtonType.nextPage);
-        this.buttonPreviousPage = new TinkersRebornTurnPageButton(2, 22, 172, ButtonType.previousPage);
-        this.buttonHomePage = new TinkersRebornTurnPageButton(3, 4, 5, ButtonType.homePage);
-        this.buttonBackToJumpFrom = new TinkersRebornTurnPageButton(4, COVER_WIDTH - 9, 178, ButtonType.backToJumpFrom);
 
         this.bookTotalPages = this.bookData.getPages()
             .size();

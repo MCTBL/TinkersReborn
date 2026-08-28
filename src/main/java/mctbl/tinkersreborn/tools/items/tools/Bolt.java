@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.tools.items.tools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +27,7 @@ import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.tools.AmmoCore;
 import mctbl.tinkersreborn.library.tools.IModifier;
+import mctbl.tinkersreborn.library.tools.IToolPart;
 import mctbl.tinkersreborn.library.tools.ProjectileNBT;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
@@ -35,6 +37,7 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.TinkersRebornTraits;
 import mctbl.tinkersreborn.tools.entity.EntityBolt;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
+import mctbl.tinkersreborn.tools.items.BoltCore;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
 import mctbl.tinkersreborn.tools.materials.HeadMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ShaftMaterialStats;
@@ -47,14 +50,14 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 public class Bolt extends AmmoCore {
 
     private final List<ToolPartRecord> boltPart = Arrays.asList(
-        new ToolPartRecord(null, MaterialStatusType.SHAFT, "_bolt_shaft"),
-        new ToolPartRecord(null, MaterialStatusType.HEAD, "_bolt_head"),
-        new ToolPartRecord(null, MaterialStatusType.FLETCHING, "_bolt_fletching"));
+        new ToolPartRecord(TinkersRebornTools.boltCore, MaterialStatusType.SHAFT, "_bolt_shaft"),
+        new ToolPartRecord(TinkersRebornTools.boltCore, MaterialStatusType.HEAD, "_bolt_head"),
+        new ToolPartRecord(TinkersRebornTools.fletching, MaterialStatusType.FLETCHING, "_bolt_fletching"));
 
     public Bolt() {
         super("Bolt", 2);
 
-        this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.boltCore, MaterialStatusType.HEAD, ""));
+        this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.boltCore, MaterialStatusType.SHAFT, ""));
         this.componentsParts.add(new ToolPartRecord(TinkersRebornTools.fletching, MaterialStatusType.FLETCHING, ""));
 
         this.addCategory(Category.NO_MELEE, Category.PROJECTILE);
@@ -65,7 +68,7 @@ public class Bolt extends AmmoCore {
 
     @Override
     public ItemStack buildTool(TinkersRebornMaterial material, String toolName) {
-        if (!material.hasStats(MaterialStatusType.HEAD) && !material.isCastable()) {
+        if (!material.hasStats(MaterialStatusType.HEAD) || !material.isCastable()) {
             return null;
         }
         List<ItemStack> list = new ArrayList<>();
@@ -85,7 +88,7 @@ public class Bolt extends AmmoCore {
                 .statusType();
 
             for (TinkersRebornMaterial material : TinkersRebornRegistry.getAllMaterialList()) {
-                if (allowType == MaterialStatusType.HEAD && !material.isCastable()) {
+                if (allowType == MaterialStatusType.HEAD || !material.isCastable()) {
                     continue;
                 }
                 if (material.hasStats(allowType)) {
@@ -256,6 +259,44 @@ public class Bolt extends AmmoCore {
         } while (item.getItemDamage() > 0);
 
         return item;
+    }
+
+    @Override
+    public List<ToolPartRecord> getToolMaterialParts() {
+        return boltPart;
+    }
+
+    @Override
+    public List<MaterialReplacement> getMaterialReplacements(ItemStack part) {
+        if (TinkersRebornUtils.isStackEmpty(part)) {
+            return Collections.emptyList();
+        }
+
+        if (part.getItem() == TinkersRebornTools.boltCore) {
+            BoltCore boltCore = (BoltCore) part.getItem();
+            TinkersRebornMaterial shaft = boltCore.getMaterial(part);
+            TinkersRebornMaterial head = boltCore.getHeadMaterial(part);
+
+            if (!shaft.hasStats(MaterialStatusType.SHAFT) || !head.hasStats(MaterialStatusType.HEAD)
+                || !head.isCastable()) {
+                return Collections.emptyList();
+            }
+
+            return Collections.singletonList(
+                new MaterialReplacement(0, new int[] { 0, 1 }, new TinkersRebornMaterial[] { shaft, head }, head));
+        }
+
+        if (part.getItem() == TinkersRebornTools.fletching) {
+            TinkersRebornMaterial fletching = ((IToolPart) part.getItem()).getMaterial(part);
+            if (!fletching.hasStats(MaterialStatusType.FLETCHING)) {
+                return Collections.emptyList();
+            }
+
+            return Collections.singletonList(
+                new MaterialReplacement(1, new int[] { 2 }, new TinkersRebornMaterial[] { fletching }, null));
+        }
+
+        return Collections.emptyList();
     }
 
     @Override

@@ -26,6 +26,7 @@ import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.leveling.CommandLevelUpTool;
+import mctbl.tinkersreborn.library.tools.leveling.CommandModifierChange;
 import mctbl.tinkersreborn.plugins.nei.TinkersRebornNEIEventHandler;
 import mctbl.tinkersreborn.plugins.waila.TinkersRebornWaila;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
@@ -91,5 +92,6 @@ public class TinkersReborn {
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         if (TinkersRebornConfig.toolLevelingEnable) event.registerServerCommand(new CommandLevelUpTool());
+        event.registerServerCommand(new CommandModifierChange());
     }
 }

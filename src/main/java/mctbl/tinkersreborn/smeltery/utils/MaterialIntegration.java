@@ -155,7 +155,7 @@ public class MaterialIntegration {
                 fluid,
                 fluid.getTemperature() > 300 ? Material.lava : Material.water,
                 fluid.getUnlocalizedName());
-            GameRegistry.registerBlock(tinkersRebornFluidBlock, tinkersRebornFluidBlock.getUnlocalizedName());
+            GameRegistry.registerBlock(tinkersRebornFluidBlock, fluid.getUnlocalizedName());
         }
     }
 }

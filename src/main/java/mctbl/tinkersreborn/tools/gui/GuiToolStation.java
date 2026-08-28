@@ -1,7 +1,5 @@
 package mctbl.tinkersreborn.tools.gui;
 
-import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -258,7 +256,7 @@ public class GuiToolStation extends GuiTinkerStation implements INEIGuiHandler {
                     if (!TinkersRebornUtils.isStackEmpty(slotStack) && slotStack.getItem() instanceof IToolPart itp) {
                         if (tpr.isValidItem(itp)) {
                             // the item has an invalid material
-                            warning(translate("gui.error.wrong_material_part"));
+                            warning(TinkersStr.errorWrongMaterialPart.toString());
                         }
                     }
                 }

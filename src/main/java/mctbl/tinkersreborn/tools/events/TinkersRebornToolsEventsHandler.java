@@ -67,6 +67,8 @@ public class TinkersRebornToolsEventsHandler {
         // we now manually check if this requiremnet is fulfilled
         String toolStr = event.block.getHarvestTool(event.metadata);
         ItemStack tool = event.entityPlayer.getCurrentEquippedItem();
+        int toolLevel = (tool != null && tool.getItem() != null) ? tool.getItem()
+            .getHarvestLevel(tool, toolStr) : -1;
 
         Block block = event.block;
         int hlvl = event.block.getHarvestLevel(event.metadata);
@@ -75,11 +77,7 @@ public class TinkersRebornToolsEventsHandler {
         // tool requires a harvest level, but does the material require a tool?
         // if tool harvestlevel less then level needed
         if (hlvl > 0 && block.getMaterial()
-            .isToolNotRequired()
-            && tool != null
-            && tool.getItem() != null
-            && tool.getItem()
-                .getHarvestLevel(tool, toolStr) < hlvl) {
+            .isToolNotRequired() && toolLevel < hlvl) {
             event.setCanceled(true);
             return;
         }

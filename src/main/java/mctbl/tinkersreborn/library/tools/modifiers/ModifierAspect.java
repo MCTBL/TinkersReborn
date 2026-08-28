@@ -13,7 +13,7 @@ import mctbl.tinkersreborn.library.tools.IModifier;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT.IntegerNBT;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.util.ColorUtil;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -70,8 +70,8 @@ public abstract class ModifierAspect {
             int modifierSlots = ToolTagsHelper.getModifierSlots(stack);
             int usedModifiers = ToolTagsHelper.getUsedModifiers(stack);
 
-            if (modifierSlots - extraModifier < requiredModifiers + usedModifiers) {
-                String error = String.format(translate("gui.error.not_enough_modifiers"), requiredModifiers);
+            if (modifierSlots + extraModifier < requiredModifiers + usedModifiers) {
+                String error = String.format(TinkersStr.errorNotEnoughModifier.toString(), requiredModifiers);
                 // also returns false if the tooltag is missing
                 throw new TinkerGuiException(error);
             }
@@ -340,9 +340,7 @@ public abstract class ModifierAspect {
                 if (ToolTagsHelper.hasModifier(original, parent.getIdentifier())) {
                     // error, can't apply if it already had it
                     throw new TinkerGuiException(
-                        String.format(
-                            TinkersRebornUtils.translate("gui.error.single_modifier"),
-                            parent.getLocalizedName()));
+                        String.format(TinkersStr.errorSingleModifier.toString(), parent.getLocalizedName()));
                 } else {
                     // original didn't have it, we can apply it once therefore, no error
                     return false;
@@ -391,9 +389,7 @@ public abstract class ModifierAspect {
             // new level would be above max level
             if (levelNew >= maxLevel) {
                 throw new TinkerGuiException(
-                    String.format(
-                        TinkersRebornUtils.translate("gui.error.max_level_modifier"),
-                        parent.getLocalizedName()));
+                    String.format(TinkersStr.errorMaxLevelModifier.toString(), parent.getLocalizedName()));
             }
 
             return true;

@@ -134,7 +134,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
     public static Item heartCanister;
     public static Item strangeFood;
-    public static Item manualItem;
+    public static ManualItem manualItem;
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
@@ -435,6 +435,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         // Stone Torch Recipe
         GameRegistry
             .addRecipe(new ItemStack(stoneTorch, 4), "p", "w", 'p', new ItemStack(Items.coal, 1), 'w', stoneRod);
+
+        // flint
+        GameRegistry.addShapelessRecipe(new ItemStack(Items.flint), gravelBlock, gravelBlock, gravelBlock);
 
         GameRegistry
             .addRecipe(new ItemStack(grout, 8), "ABA", "BCB", "ABA", 'A', sandBlock, 'B', gravelBlock, 'C', clayBlock);

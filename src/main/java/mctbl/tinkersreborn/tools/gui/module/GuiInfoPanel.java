@@ -24,6 +24,7 @@ import mctbl.tinkersreborn.library.gui.GuiMultiModule;
 import mctbl.tinkersreborn.library.gui.GuiWidgetBorder;
 import mctbl.tinkersreborn.library.gui.GuiWidgetSlider;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.TinkersStr;
 
 public class GuiInfoPanel extends GuiModule {
 
@@ -258,7 +259,7 @@ public class GuiInfoPanel extends GuiModule {
             && mouseY < guiTop + 5 + fontRenderer.FONT_HEIGHT) {
             int w = MathHelper.clamp_int(this.width - mouseX - 12, 10, 200);
             drawHoveringText(
-                fontRenderer.listFormattedStringToWidth(TinkersRebornUtils.translate("gui.general.hover"), w),
+                fontRenderer.listFormattedStringToWidth(TinkersStr.generalHover.toString(), w),
                 mouseX - guiLeft,
                 mouseY - guiTop,
                 this.fontRenderer);

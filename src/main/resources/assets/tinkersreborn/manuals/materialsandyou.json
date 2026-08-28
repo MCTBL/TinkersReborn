@@ -31,14 +31,14 @@
           "text": "tinkersreborn.manuals.materialsandyou.jumptomodifies"
         },
         {
+          "to": "bowmaterialsHomePage",
+          "icon": "minecraft:bow",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptobowmaterials"
+        },
+        {
           "to": "smeltery",
           "icon": "tinkersreborn:tinkersreborn.SmelteryController",
           "text": "tinkersreborn.manuals.materialsandyou.jumptosmeltery"
-        },
-        {
-          "to": "bowmaterials",
-          "icon": "minecraft:bow",
-          "text": "tinkersreborn.manuals.materialsandyou.jumptobowmaterials"
         }
       ],
       "size": "large",
@@ -113,6 +113,11 @@
       "type": "modifierNavigation",
       "title": "tinkersreborn.manuals.materialsandyou.modifier.title",
       "name": "modifierHomePage"
+    },
+    {
+      "type": "bowMaterialNavigation",
+      "title": "tinkersreborn.manuals.materialsandyou.bowmaterials.title",
+      "name": "bowmaterialsHomePage"
     }
   ]
 }

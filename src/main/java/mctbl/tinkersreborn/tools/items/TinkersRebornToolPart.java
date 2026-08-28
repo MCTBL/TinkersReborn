@@ -74,7 +74,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     public void addInformation(ItemStack stack, EntityPlayer player, List<String> tootips, boolean detail) {
         TinkersRebornMaterial material = this.getMaterial(stack);
         IMaterialStats stats = material.getStats(this.allowType);
-        Collection<ITrait> allTraitsForStats = material.getAllTraitsForStats(this.allowType, false);
+        Collection<ITrait> allTraitsForStats = material.getAllTraitsForStats(this.allowType);
         if (stats != null) {
             tootips.add(ColorUtil.addUnderLine(stats.getLocalizedName()));
             tootips.addAll(stats.getLocalizedInfo());

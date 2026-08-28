@@ -34,7 +34,7 @@ public class TraitMagnetic extends AbstractTraitLeveled {
     public void afterBlockBreak(ItemStack tool, World world, Block block, BlockPos pos, EntityLivingBase player,
         boolean wasEffective) {
         if (!player.worldObj.isRemote) {
-            ModifierNBT data = new ModifierNBT(ToolTagsHelper.getModifierTag(tool, identifier));
+            ModifierNBT data = new ModifierNBT(ToolTagsHelper.getModifierTag(tool, name));
             TinkersEntityProperties.getProps(player)
                 .apply(MAGNETIC_KEY, 60, data.level);
         }
@@ -44,7 +44,7 @@ public class TraitMagnetic extends AbstractTraitLeveled {
     public void onHit(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damage,
         boolean isCritical) {
         if (!player.worldObj.isRemote) {
-            ModifierNBT data = new ModifierNBT(ToolTagsHelper.getModifierTag(tool, identifier));
+            ModifierNBT data = new ModifierNBT(ToolTagsHelper.getModifierTag(tool, name));
             TinkersEntityProperties.getProps(player)
                 .apply(MAGNETIC_KEY, 60, data.level);
         }

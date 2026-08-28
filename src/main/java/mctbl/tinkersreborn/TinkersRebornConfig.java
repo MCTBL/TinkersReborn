@@ -145,8 +145,8 @@ public class TinkersRebornConfig {
             .get(
                 GENERAL,
                 "Mining Levels",
-                new String[] { "§7tile.stone.name", "§fIron", "§4item.redstone.name", "#5C1BBDtile.obsidian.name",
-                    "§9Cobalt", "§5Manyullyn" },
+                new String[] { "§7tile.stone.name", "§fmaterial.iron.name", "§4item.redstone.name",
+                    "#5C1BBDtile.obsidian.name", "§9material.cobalt.name", "§5material.manyullyn.name" },
                 "Mining levels")
             .getStringList();
         fluidUnit = config.get(GENERAL, "Fluid unit", "mB", "Only for display")
