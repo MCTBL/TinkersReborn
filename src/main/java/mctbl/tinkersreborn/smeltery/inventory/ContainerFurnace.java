@@ -54,7 +54,6 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
             oldFuelTotal = fuelTotal;
         }
 
-        // 同步变化的加热进度
         for (int i = 0; i < oldHeats.length; i++) {
             int temp = tile.getTemperature(i);
             if (temp != oldHeats[i]) {
@@ -68,7 +67,6 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
 
     @Override
     public void updateProgressBar(int id, int data) {
-        // 0/1 是燃料，其余是加热进度
         if (id == 0 || id == 1) {
             tile.updateFuelFromPacket(id, data);
         } else {

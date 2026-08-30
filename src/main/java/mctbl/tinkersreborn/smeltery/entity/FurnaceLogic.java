@@ -1,7 +1,5 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
-import mctbl.tinkersreborn.common.TinkersRebornGeneral;
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
@@ -9,22 +7,14 @@ import mctbl.tinkersreborn.smeltery.blocks.LavaTankBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
 import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerFurnace;
-import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-
-import java.util.List;
 
 import static mctbl.tinkersreborn.TinkersRebornConfig.heatItemsTickrateFurnace;
 
@@ -32,10 +22,8 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
 
     private static final int MAX_FURNACE_SIZE = 7;
 
-    /** [0] = 空腔最高点，[1] = 空腔最低点，由 {@link #measureCavity(BlockPos)} 填入 */
-    protected final BlockPos[] drains = new BlockPos[2];
+    protected final BlockPos[] CavityBox = new BlockPos[2];
 
-    // 空腔包围盒（检测后填充）
     private int cavityMinX, cavityMaxX;
     private int cavityMinY, cavityMaxY;
     private int cavityMinZ, cavityMaxZ;
@@ -157,7 +145,6 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
         }
     }
 
-    // This is how you get blisters
 
     /**
      * Calculate the heat required for the given slot
@@ -207,12 +194,6 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
         return Math.min(1f, (float) itemTemperatures[index] / itemTempRequired[index]);
     }
 
-    /**
-     * 结构检测主流程：
-     * 1. 计算空腔的最大大小，并把最高点 / 最低点填入 drains
-     * 2. 遍历包裹空腔的外壳的所有方块，检查方块有效性
-     * 3. 根据检测结果初始化主方块
-     */
     @Override
     public void checkWholeStructureValid() {
         if (this.worldObj.isRemote) return;
@@ -221,18 +202,14 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
             .offset(this.getForgeDirection()
                 .getOpposite());
 
-        // 1. 计算空腔的最大大小，并把最高点 / 最低点填入 drains
         this.measureCavity(center);
 
-        // 2. 遍历包裹空腔的外壳的所有方块，检查方块有效性
         boolean valid = this.checkShellValid();
 
-        // 3. 初始化主方块
         if (valid) {
             this.minPos = BlockPos.of(cavityMinX, cavityMinY, cavityMinZ);
             this.maxPos = BlockPos.of(cavityMaxX, cavityMaxY, cavityMaxZ);
             this.setActive(true);
-            // 内部方块数 = 长 × 高 × 宽（min/max 都含边界，所以各维 +1）
             int innerBlockCount = (cavityMaxX - cavityMinX + 1)
                 * (cavityMaxY - cavityMinY + 1)
                 * (cavityMaxZ - cavityMinZ + 1);
@@ -245,19 +222,12 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
         this.worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
-    /**
-     * 计算空腔的最大大小。
-     * 沿 X/Z 轴扩展找墙体，沿 Y 轴找空腔的顶 / 底，
-     * 最终把空腔的最高点、最低点填入 drains。
-     */
     private void measureCavity(BlockPos center) {
-        // X 轴
         int xd1 = 1, xd2 = 1;
         for (int idx = 1; idx < MAX_FURNACE_SIZE; idx++) {
             if (this.worldObj.isAirBlock(center.x - xd1, center.y, center.z)) xd1++;
             else if (this.worldObj.isAirBlock(center.x + xd2, center.y, center.z)) xd2++;
 
-            // 单侧撞墙时重新居中
             if (xd1 - xd2 > 1) {
                 xd1--;
                 center.x--;
@@ -270,7 +240,6 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
             }
         }
 
-        // Z 轴
         int zd1 = 1, zd2 = 1;
         for (int i = 1; i < MAX_FURNACE_SIZE; i++) {
             if (this.worldObj.isAirBlock(center.x, center.y, center.z - zd1)) zd1++;
@@ -293,24 +262,18 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
         this.cavityMinZ = center.z - zd1 + 1;
         this.cavityMaxZ = center.z + zd2 - 1;
 
-        // Y 轴：沿中心柱向上 / 向下找空腔的顶 / 底
         int up = 0;
         while (up < MAX_FURNACE_SIZE && this.worldObj.isAirBlock(center.x, center.y + up, center.z)) up++;
         int down = 0;
         while (down < MAX_FURNACE_SIZE && this.worldObj.isAirBlock(center.x, center.y - down - 1, center.z)) down++;
 
-        this.cavityMaxY = center.y + up - 1; // 最高点 Y
-        this.cavityMinY = center.y - down;   // 最低点 Y
+        this.cavityMaxY = center.y + up - 1;
+        this.cavityMinY = center.y - down;
 
-        // 把空腔的最高点、最低点填入 drains
-        this.drains[0] = BlockPos.of(center.x, cavityMaxY, center.z); // 最高点
-        this.drains[1] = BlockPos.of(center.x, cavityMinY, center.z); // 最低点
+        this.CavityBox[0] = BlockPos.of(center.x, cavityMaxY, center.z);
+        this.CavityBox[1] = BlockPos.of(center.x, cavityMinY, center.z);
     }
 
-    /**
-     * 遍历包裹空腔的外壳的所有方块，逐一检查方块有效性。
-     * 外壳 = 空腔包围盒向外扩展一格的 6 个面 + 12 条棱 + 8 个角。
-     */
     private boolean checkShellValid() {
         if (cavityMinX > cavityMaxX || cavityMinY > cavityMaxY || cavityMinZ > cavityMaxZ) {
             return false;
@@ -322,7 +285,7 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
                     boolean interior = x >= cavityMinX && x <= cavityMaxX
                         && y >= cavityMinY && y <= cavityMaxY
                         && z >= cavityMinZ && z <= cavityMaxZ;
-                    if (interior) continue; // 跳过空腔内部，只检查外壳
+                    if (interior) continue;
                     Block block = this.worldObj.getBlock(x, y, z);
                     if (block instanceof FurnaceController) {
                         if (x == this.xCoord && y == this.yCoord && z == this.zCoord){
@@ -341,26 +304,17 @@ public class FurnaceLogic extends TinkersRebornMultiBlockInvenotryLogic {
         return true;
     }
 
-    /**
-     * 检查外壳方块的方块有效性（留空待实现）。
-     *
-     * @return 该位置的方块是否为有效的墙体 / 底部 / 顶部方块
-     */
+
     private boolean isValidStructureBlock(Block block) {
         return block instanceof SmelteryBlock;
     }
 
-    /**
-     * check one block inside of structure
-     */
+
     @Override
     public void checkSteppingingValid() {
         super.checkSteppingingValid();
     }
 
-    /**
-     * steep to next inner block need to check valid
-     */
     @Override
     public void stepNextInnerPos() {
         super.stepNextInnerPos();
