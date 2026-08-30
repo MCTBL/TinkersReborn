@@ -58,7 +58,6 @@ public class GuiFurnace extends GuiHeatingStructureFuelTank implements INEIGuiHa
     public void updateScreen() {
         super.updateScreen();
 
-        // 冶炼炉结构变化（熔炼槽数量改变）时关闭界面
         if (furnace == null || furnace.getSizeInventory() != sideinventory.inventorySlots.inventorySlots.size()) {
             this.mc.thePlayer.closeScreen();
         }
@@ -68,11 +67,9 @@ public class GuiFurnace extends GuiHeatingStructureFuelTank implements INEIGuiHa
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         super.drawGuiContainerForegroundLayer(mouseX, mouseY);
 
-        // 把鼠标坐标换算成主模块相对坐标
         mouseX -= cornerX;
         mouseY -= cornerY;
 
-        // 燃料 tooltip
         if (fuelStartX <= mouseX && mouseX < fuelStartX + fuelWidth
             && fuelStartY <= mouseY
             && mouseY < fuelStartY + fuelHeight) {
@@ -86,11 +83,9 @@ public class GuiFurnace extends GuiHeatingStructureFuelTank implements INEIGuiHa
 
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 
-        // 刷新燃料信息并绘制燃料槽
         fuelInfo = furnace.getFuelDisplay();
         drawFuel(fuelStartX, fuelStartY, fuelWidth, fuelHeight);
 
-        // 绘制火焰进度条
         this.mc.getTextureManager()
             .bindTexture(BACKGROUND);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

@@ -194,7 +194,6 @@ public class GuiSideInventory extends GuiModule {
     int calcCappedYSize(int max) {
         int h = slot.h * getTotalRows();
 
-        h = border.getHeightWithBorder(h);
 
         if (shouldDrawName()) {
             h += textBackground.h;

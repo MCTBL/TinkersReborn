@@ -71,7 +71,7 @@ public class GoldenHead extends ItemFood {
     @Override
     @SideOnly(Side.CLIENT)
     /**
-     * returns a list of items with the same ID, but different meta (eg: dye returns 16 items)
+     * returns a list of items with the same ID, but different mode (eg: dye returns 16 items)
      */
     public void getSubItems(Item b, CreativeTabs par2CreativeTabs, List<ItemStack> list) {
         list.add(new ItemStack(b, 1, 0));

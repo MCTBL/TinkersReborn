@@ -21,7 +21,7 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
     protected GuiElement noMeltBar = new GuiElementScalable(185, 201, 3, 16);
     public GuiFurnaceSideInventory(GuiMultiModule parent, Container container, FurnaceLogic furnace, int slotCount,
                                    int columns) {
-        super(parent, container, slotCount, columns, false, false);
+        super(parent, container, slotCount, columns, false, true);
         this.furnace = furnace;
 
         GuiElement.defaultTexH = 256;
@@ -36,10 +36,45 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
         return false;
     }
 
+//    @Override
+//    public void updatePosition(int parentX, int parentY, int parentSizeX, int parentSizeY) {
+//        // at most as big as the parent
+//        this.ySize = calcCappedYSize(parentSizeY) ;
+//        // slider needed?
+//        if (getDisplayedRows() < getTotalRows()) {
+//            slider.enable();
+//            this.xSize = columns * slot.w + slider.width + 2 * border.w;
+//        } else {
+//            slider.disable();
+//            this.xSize = columns * slot.w + border.w * 2;
+//        }
+//
+//        // update position
+//        super.updatePosition(parentX + 118, parentY + 18, this.xSize, this.ySize);
+//
+//        // move it a bit
+//        this.guiTop += yOffset;
+//
+//        border.setPosition(guiLeft, guiTop);
+//        border.setSize(xSize, ySize);
+//
+//        int y = guiTop + border.h;
+//        int h = ySize - border.h * 2;
+//
+//        if (shouldDrawName()) {
+//            y += textBackground.h;
+//            h -= textBackground.h;
+//        }
+//        slider.setPosition(guiLeft + columns * slot.w + border.w, y);
+//        slider.setSize(h);
+//        slider.setSliderParameters(0, getTotalRows() - getDisplayedRows(), 1);
+//
+//        updateSlots();
+//    }
     @Override
     public void updatePosition(int parentX, int parentY, int parentSizeX, int parentSizeY) {
         // at most as big as the parent
-        this.ySize = calcCappedYSize(parentSizeY / 2 + slot.w) ;
+        this.ySize = calcCappedYSize(parentSizeY - 10);
         // slider needed?
         if (getDisplayedRows() < getTotalRows()) {
             slider.enable();
@@ -50,7 +85,7 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
         }
 
         // update position
-        super.updatePosition(parentX + 118, parentY + 18, this.xSize, this.ySize);
+        super.updatePosition(parentX, parentY, parentSizeX, parentSizeY);
 
         // connected needs to move to the side
         if (connected) {
@@ -87,51 +122,48 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
 
         updateSlots();
     }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        guiLeft += border.w;
-        guiTop += border.h;
-
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager()
-            .bindTexture(GUI_INVENTORY);
-
-        int x = guiLeft;// + border.w;
-        int y = guiTop;// + border.h;
-        int midW = xSize - border.w * 2;
-        int midH = ySize - border.h * 2;
-
-        //border.draw();
-
-        if (shouldDrawName()) {
-            textBackground.drawScaledX(x, y, midW);
-            y += textBackground.h;
-        }
-
-        this.mc.getTextureManager()
-            .bindTexture(GUI_INVENTORY);
-        drawSlots(x, y);
-
-        if (slider.isEnabled()) {
-            slider.update(mouseX, mouseY, !isMouseOverFullSlot(mouseX, mouseY) && isMouseInModule(mouseX, mouseY));
-            slider.draw();
-
-            updateSlots();
-        }
-
-        guiLeft -= border.w;
-        guiTop -= border.h;
-    }
+//    @Override
+//    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+//        guiLeft += border.w;
+//        guiTop += border.h;
+//
+//        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+//        this.mc.getTextureManager()
+//            .bindTexture(GUI_INVENTORY);
+//
+//        int x = guiLeft;// + border.w;
+//        int y = guiTop;// + border.h;
+//        int midW = xSize - border.w * 2;
+//        int midH = ySize - border.h * 2;
+//
+//        //border.draw();
+//
+//        if (shouldDrawName()) {
+//            textBackground.drawScaledX(x, y, midW);
+//            y += textBackground.h;
+//        }
+//
+//        this.mc.getTextureManager()
+//            .bindTexture(GUI_INVENTORY);
+//        drawSlots(x, y);
+//
+//        if (slider.isEnabled()) {
+//            slider.update(mouseX, mouseY, !isMouseOverFullSlot(mouseX, mouseY) && isMouseInModule(mouseX, mouseY));
+//            slider.draw();
+//
+//            updateSlots();
+//        }
+//
+//        guiLeft -= border.w;
+//        guiTop -= border.h;
+//    }
 
     @Override
     protected void updateSlots() {
         // adjust for the heat bar
-        xOffset += 4 + 118 ;
-        yOffset += 18;
+        xOffset += 4;
         super.updateSlots();
-        xOffset -= 4 + 118;
-        yOffset -= 18;
+        xOffset -= 4;
     }
 
     @Override
@@ -210,8 +242,7 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
         if (progress < 0f) progress = 0f;
         if (progress > 1f) progress = 1f;
 
-        float visibleHeight = height * progress;
-        if (visibleHeight <= 0f) return;
+        float visibleHeight = 1 + Math.round(progress * (height - 1));
 
         float f = 0.00390625F;
 
