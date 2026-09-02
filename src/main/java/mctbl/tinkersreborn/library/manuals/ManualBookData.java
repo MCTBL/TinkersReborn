@@ -37,7 +37,7 @@ public class ManualBookData {
         for (int i = 0; i < this.pages.size(); i++) {
             AbstractManualPage p = this.pages.get(i);
             if (p.name != null && !p.name.isEmpty()) {
-                this.indexMap.put(p.name, i);
+                this.indexMap.putIfAbsent(p.name, i);
             }
         }
     }
