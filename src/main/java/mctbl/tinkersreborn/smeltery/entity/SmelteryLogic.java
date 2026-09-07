@@ -516,7 +516,8 @@ public class SmelteryLogic extends TinkersRebornMultiBlockInvenotryLogic impleme
     protected boolean validWallBlock(Block b) {
         return b == TinkersRebornSmeltery.smelteryController || b == TinkersRebornSmeltery.smelteryDrain
             || b == TinkersRebornSmeltery.smelteryBlock
-            || b == TinkersRebornSmeltery.lavaTank;
+            || b == TinkersRebornSmeltery.lavaTank
+            || b == TinkersRebornSmeltery.soulGlass;
     }
 
     protected boolean validBottomBlock(Block b) {

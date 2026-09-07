@@ -35,10 +35,10 @@ public class TinkersRebornBlock extends Block {
     public String getUnlocalizedName() {
         return this.unlocalizedName;
     }
-    
+
     @Override
     public Block setBlockName(String name) {
-	this.unlocalizedName = name;
+        this.unlocalizedName = name;
         return this;
     }
 

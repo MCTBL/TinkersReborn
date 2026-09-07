@@ -41,7 +41,6 @@ import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.itemblocks.CastingChannelItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.FurnaceControllerItemBlock;
-import mctbl.tinkersreborn.smeltery.itemblocks.GlassItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryControllerItemBlock;
@@ -64,13 +63,11 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     public static Block glueBlock;
 
     // TODO
-     public static Block clearGlass;
-     public static Block soulGlass;
+    public static Block clearGlass;
+    public static Block soulGlass;
     // public static Block stainedGlassClear;
     // public static Block glassPane;
     // public static Block stainedGlassClearPane;
-     
-     
 
     @SidedProxy(
         clientSide = "mctbl.tinkersreborn.smeltery.TinkersRebornSmelteryProxyClient",
@@ -123,11 +120,11 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         clearGlass = new GlassConnected("clear", true);
         GameRegistry.registerBlock(clearGlass, clearGlass.getUnlocalizedName());
         OreDictionary.registerOre("blockGlass", new ItemStack(clearGlass));
-        
-        soulGlass = new GlassConnected("soul", true);
+
+        soulGlass = new GlassConnected("soul", true, true);
         GameRegistry.registerBlock(soulGlass, soulGlass.getUnlocalizedName());
         OreDictionary.registerOre("blockGlass", new ItemStack(soulGlass));
-        
+
         TinkersRebornRegistry.registerFuel(new FluidStack(FluidRegistry.LAVA, 50), 100);
     }
 

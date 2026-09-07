@@ -2,28 +2,39 @@ package mctbl.tinkersreborn.smeltery.blocks;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
+import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 
 public class GlassConnected extends TinkersRebornBlock {
-    
+
     protected String folder;
     private final int renderPass;
+    private final boolean canPlayerPass;
 
     public GlassConnected(String location, boolean hasAlpha) {
-	super(Material.glass);
+        this(location, hasAlpha, false);
+    }
+
+    public GlassConnected(String location, boolean hasAlpha, boolean canPlayerPass) {
+        super(Material.glass);
         this.stepSound = soundTypeGlass;
         this.folder = location;
         this.renderPass = hasAlpha ? 1 : 0;
@@ -31,13 +42,14 @@ public class GlassConnected extends TinkersRebornBlock {
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.icons = new IIcon[16];
         this.unlocalizedName = location + "GlassBlock";
+        this.canPlayerPass = canPlayerPass;
     }
-    
+
     @Override
     public String getUnlocalizedName() {
         return TinkersReborn.MODID + "." + this.unlocalizedName;
     }
-    
+
     @Override
     public void getSubBlocks(Item block, CreativeTabs tab, List<ItemStack> list) {
         list.add(new ItemStack(block, 1, 0));
@@ -57,7 +69,7 @@ public class GlassConnected extends TinkersRebornBlock {
     public int getRenderBlockPass() {
         return renderPass;
     }
-    
+
     /**
      * This is checked to see if the texture should connect to this block
      * 
@@ -65,75 +77,73 @@ public class GlassConnected extends TinkersRebornBlock {
      * @param y
      * @param z
      * @param block ID this block is asking to connect to (may be 0 if there is no block)
-     * @param meta Metadata of the block this block is trying to connect to
+     * @param meta  Metadata of the block this block is trying to connect to
      * @return true if should connect
      */
-    public boolean shouldConnectToBlock(IBlockAccess blockAccess, int x, int y, int z, Block block,
-            int meta) {
+    public boolean shouldConnectToBlock(IBlockAccess blockAccess, int x, int y, int z, Block block, int meta) {
         return block == this;
     }
-    
+
     @Override
     public boolean shouldSideBeRendered(IBlockAccess blockAccess, int x, int y, int z, int meta) {
-        return blockAccess.getBlock(x, y,  z) != this && super.shouldSideBeRendered(blockAccess, x, y, z, meta);
+        return blockAccess.getBlock(x, y, z) != this && super.shouldSideBeRendered(blockAccess, x, y, z, meta);
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
         return icons[0];
     }
-    
+
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int meta) {
         return blockAccess.getBlockMetadata(x, y, z) == 15 ? icons[0]
-                : getConnectedBlockTexture(blockAccess, x, y, z, meta, icons);
+            : getConnectedBlockTexture(blockAccess, x, y, z, meta, icons);
     }
 
-    public IIcon getConnectedBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int meta,
-            IIcon[] icons) {
+    public IIcon getConnectedBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int meta, IIcon[] icons) {
         boolean isOpenUp = false, isOpenDown = false, isOpenLeft = false, isOpenRight = false;
 
         switch (meta) {
             case 0:
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x - 1, y, z),
-                        blockAccess.getBlockMetadata(x - 1, y, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x - 1, y, z),
+                    blockAccess.getBlockMetadata(x - 1, y, z))) {
                     isOpenDown = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x + 1, y, z),
-                        blockAccess.getBlockMetadata(x + 1, y, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x + 1, y, z),
+                    blockAccess.getBlockMetadata(x + 1, y, z))) {
                     isOpenUp = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y, z - 1),
-                        blockAccess.getBlockMetadata(x, y, z - 1))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y, z - 1),
+                    blockAccess.getBlockMetadata(x, y, z - 1))) {
                     isOpenLeft = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y, z + 1),
-                        blockAccess.getBlockMetadata(x, y, z + 1))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y, z + 1),
+                    blockAccess.getBlockMetadata(x, y, z + 1))) {
                     isOpenRight = true;
                 }
 
@@ -171,42 +181,42 @@ public class GlassConnected extends TinkersRebornBlock {
                 break;
             case 1:
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x - 1, y, z),
-                        blockAccess.getBlockMetadata(x - 1, y, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x - 1, y, z),
+                    blockAccess.getBlockMetadata(x - 1, y, z))) {
                     isOpenDown = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x + 1, y, z),
-                        blockAccess.getBlockMetadata(x + 1, y, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x + 1, y, z),
+                    blockAccess.getBlockMetadata(x + 1, y, z))) {
                     isOpenUp = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y, z - 1),
-                        blockAccess.getBlockMetadata(x, y, z - 1))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y, z - 1),
+                    blockAccess.getBlockMetadata(x, y, z - 1))) {
                     isOpenLeft = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y, z + 1),
-                        blockAccess.getBlockMetadata(x, y, z + 1))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y, z + 1),
+                    blockAccess.getBlockMetadata(x, y, z + 1))) {
                     isOpenRight = true;
                 }
 
@@ -244,42 +254,42 @@ public class GlassConnected extends TinkersRebornBlock {
                 break;
             case 2:
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y - 1, z),
-                        blockAccess.getBlockMetadata(x, y - 1, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y - 1, z),
+                    blockAccess.getBlockMetadata(x, y - 1, z))) {
                     isOpenDown = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y + 1, z),
-                        blockAccess.getBlockMetadata(x, y + 1, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y + 1, z),
+                    blockAccess.getBlockMetadata(x, y + 1, z))) {
                     isOpenUp = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x - 1, y, z),
-                        blockAccess.getBlockMetadata(x - 1, y, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x - 1, y, z),
+                    blockAccess.getBlockMetadata(x - 1, y, z))) {
                     isOpenLeft = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x + 1, y, z),
-                        blockAccess.getBlockMetadata(x + 1, y, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x + 1, y, z),
+                    blockAccess.getBlockMetadata(x + 1, y, z))) {
                     isOpenRight = true;
                 }
 
@@ -317,42 +327,42 @@ public class GlassConnected extends TinkersRebornBlock {
                 break;
             case 3:
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y - 1, z),
-                        blockAccess.getBlockMetadata(x, y - 1, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y - 1, z),
+                    blockAccess.getBlockMetadata(x, y - 1, z))) {
                     isOpenDown = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y + 1, z),
-                        blockAccess.getBlockMetadata(x, y + 1, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y + 1, z),
+                    blockAccess.getBlockMetadata(x, y + 1, z))) {
                     isOpenUp = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x - 1, y, z),
-                        blockAccess.getBlockMetadata(x - 1, y, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x - 1, y, z),
+                    blockAccess.getBlockMetadata(x - 1, y, z))) {
                     isOpenLeft = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x + 1, y, z),
-                        blockAccess.getBlockMetadata(x + 1, y, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x + 1, y, z),
+                    blockAccess.getBlockMetadata(x + 1, y, z))) {
                     isOpenRight = true;
                 }
 
@@ -390,42 +400,42 @@ public class GlassConnected extends TinkersRebornBlock {
                 break;
             case 4:
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y - 1, z),
-                        blockAccess.getBlockMetadata(x, y - 1, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y - 1, z),
+                    blockAccess.getBlockMetadata(x, y - 1, z))) {
                     isOpenDown = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y + 1, z),
-                        blockAccess.getBlockMetadata(x, y + 1, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y + 1, z),
+                    blockAccess.getBlockMetadata(x, y + 1, z))) {
                     isOpenUp = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y, z - 1),
-                        blockAccess.getBlockMetadata(x, y, z - 1))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y, z - 1),
+                    blockAccess.getBlockMetadata(x, y, z - 1))) {
                     isOpenLeft = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y, z + 1),
-                        blockAccess.getBlockMetadata(x, y, z + 1))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y, z + 1),
+                    blockAccess.getBlockMetadata(x, y, z + 1))) {
                     isOpenRight = true;
                 }
 
@@ -463,42 +473,42 @@ public class GlassConnected extends TinkersRebornBlock {
                 break;
             case 5:
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y - 1, z),
-                        blockAccess.getBlockMetadata(x, y - 1, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y - 1, z),
+                    blockAccess.getBlockMetadata(x, y - 1, z))) {
                     isOpenDown = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y + 1, z),
-                        blockAccess.getBlockMetadata(x, y + 1, z))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y + 1, z),
+                    blockAccess.getBlockMetadata(x, y + 1, z))) {
                     isOpenUp = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y, z - 1),
-                        blockAccess.getBlockMetadata(x, y, z - 1))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y, z - 1),
+                    blockAccess.getBlockMetadata(x, y, z - 1))) {
                     isOpenLeft = true;
                 }
 
                 if (shouldConnectToBlock(
-                        blockAccess,
-                        x,
-                        y,
-                        z,
-                        blockAccess.getBlock(x, y, z + 1),
-                        blockAccess.getBlockMetadata(x, y, z + 1))) {
+                    blockAccess,
+                    x,
+                    y,
+                    z,
+                    blockAccess.getBlock(x, y, z + 1),
+                    blockAccess.getBlockMetadata(x, y, z + 1))) {
                     isOpenRight = true;
                 }
 
@@ -538,7 +548,15 @@ public class GlassConnected extends TinkersRebornBlock {
 
         return icons[0];
     }
-    
+
+    @Override
+    public TileEntity createTileEntity(World world, int metadata) {
+        if (this.canPlayerPass) {
+            return new MultiServantLogic();
+        }
+        return null;
+    }
+
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
         icons[0] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass");
@@ -558,9 +576,19 @@ public class GlassConnected extends TinkersRebornBlock {
         icons[14] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_3_r");
         icons[15] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_4");
     }
-    
+
     @Override
     public boolean canPlaceTorchOnTop(World world, int x, int y, int z) {
         return true;
+    }
+
+    @Override
+    public void addCollisionBoxesToList(World worldIn, int x, int y, int z, AxisAlignedBB mask,
+        List<AxisAlignedBB> list, Entity collider) {
+        if (this.canPlayerPass && collider instanceof EntityPlayer) {
+            return;
+        }
+
+        super.addCollisionBoxesToList(worldIn, x, y, z, mask, list, collider);
     }
 }

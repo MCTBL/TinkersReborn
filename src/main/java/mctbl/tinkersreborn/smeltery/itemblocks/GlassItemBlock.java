@@ -1,7 +1,8 @@
 package mctbl.tinkersreborn.smeltery.itemblocks;
 
-import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 import net.minecraft.block.Block;
+
+import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 
 public class GlassItemBlock extends TinkersRebornItemBlock {
 
