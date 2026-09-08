@@ -97,15 +97,15 @@ public class GlassConnected extends TinkersRebornBlock {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int meta) {
+    public IIcon getIcon(IBlockAccess blockAccess, int x, int y, int z, int side) {
         return blockAccess.getBlockMetadata(x, y, z) == 15 ? icons[0]
-            : getConnectedBlockTexture(blockAccess, x, y, z, meta, icons);
+            : getConnectedBlockTexture(blockAccess, x, y, z, side, icons);
     }
 
-    public IIcon getConnectedBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int meta, IIcon[] icons) {
+    public IIcon getConnectedBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side, IIcon[] icons) {
         boolean isOpenUp = false, isOpenDown = false, isOpenLeft = false, isOpenRight = false;
 
-        switch (meta) {
+        switch (side) {
             case 0:
                 if (shouldConnectToBlock(
                     blockAccess,
