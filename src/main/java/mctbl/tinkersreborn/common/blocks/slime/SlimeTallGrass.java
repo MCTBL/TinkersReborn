@@ -79,7 +79,7 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
 
     @SideOnly(Side.CLIENT)
     /**
-     * returns a list of blocks with the same ID, but different meta (eg: wood
+     * returns a list of blocks with the same ID, but different mode (eg: wood
      * returns 4 blocks)
      */
     public void getSubBlocks(Block b, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {

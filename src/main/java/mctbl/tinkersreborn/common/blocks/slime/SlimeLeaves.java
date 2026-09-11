@@ -108,7 +108,7 @@ public class SlimeLeaves extends BlockLeaves {
             int dropChance = 35;
 
             /*
-             * if ((meta & 3) == 3) { j1 = 40; }
+             * if ((mode & 3) == 3) { j1 = 40; }
              */
 
             if (fortune > 0) {
@@ -134,7 +134,7 @@ public class SlimeLeaves extends BlockLeaves {
                 }
             }
 
-            // if ((meta & 3) == 0 && world.rand.nextInt(dropChance) == 0) {
+            // if ((mode & 3) == 0 && world.rand.nextInt(dropChance) == 0) {
             // this.dropBlockAsItem(world, x, y, z, new ItemStack(TinkerWorld.strangeFood, 1, 0));
             // }
         }

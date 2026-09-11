@@ -12,6 +12,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
+import mctbl.tinkersreborn.library.entity.IMasterLogic;
+import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
 
 public class FurnaceController extends TinkersRebornMultiBlock {
 
@@ -55,13 +57,14 @@ public class FurnaceController extends TinkersRebornMultiBlock {
     @Override
     public TileEntity createNewTileEntity(World world, int metadata) {
         // TODO
-        return null;
+        return new FurnaceLogic();
     }
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entityliving, ItemStack stack) {
         // TODO
         super.onBlockPlacedBy(world, x, y, z, entityliving, stack);
+        ((IMasterLogic) world.getTileEntity(x, y, z)).checkWholeStructureValid();
         // ((SmelteryLogic) world.getTileEntity(x, y, z)).checkValidPlacement();
     }
 }
