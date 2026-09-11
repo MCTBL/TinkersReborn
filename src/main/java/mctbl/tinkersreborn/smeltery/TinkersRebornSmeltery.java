@@ -22,9 +22,24 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.smeltery.CastingRecipe;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
-import mctbl.tinkersreborn.smeltery.blocks.*;
-import mctbl.tinkersreborn.smeltery.entity.*;
-import mctbl.tinkersreborn.smeltery.itemblocks.*;
+import mctbl.tinkersreborn.smeltery.blocks.CastingChannelBlock;
+import mctbl.tinkersreborn.smeltery.blocks.ColoredGlassConnected;
+import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
+import mctbl.tinkersreborn.smeltery.blocks.GlassConnected;
+import mctbl.tinkersreborn.smeltery.blocks.GlueBlock;
+import mctbl.tinkersreborn.smeltery.blocks.LavaTankBlock;
+import mctbl.tinkersreborn.smeltery.blocks.SearedBlock;
+import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
+import mctbl.tinkersreborn.smeltery.blocks.SmelteryController;
+import mctbl.tinkersreborn.smeltery.blocks.SmelteryDrain;
+import mctbl.tinkersreborn.smeltery.itemblocks.CastingChannelItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.ColoredGlassItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.FurnaceControllerItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryControllerItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryDrainItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryItemBlock;
 import mctbl.tinkersreborn.smeltery.utils.BoltCoreCastingRecipe;
 import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
@@ -43,8 +58,9 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     public static Block glueBlock;
 
     // TODO
-    // public static Block clearGlass;
-    // public static Block stainedGlassClear;
+    public static Block clearGlass;
+    public static Block soulGlass;
+    public static Block coloredGlassClear;
     // public static Block glassPane;
     // public static Block stainedGlassClearPane;
 
@@ -100,6 +116,19 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         castingChannel = new CastingChannelBlock();
         GameRegistry.registerBlock(castingChannel, CastingChannelItemBlock.class, castingChannel.getUnlocalizedName());
         GameRegistry.registerTileEntity(CastingChannelLogic.class, "tinkersreborn.CastingChannel");
+
+        clearGlass = new GlassConnected("clear", true);
+        GameRegistry.registerBlock(clearGlass, clearGlass.getUnlocalizedName());
+        // OreDictionary.registerOre("blockGlass", new ItemStack(clearGlass));
+
+        soulGlass = new GlassConnected("soul", true, true);
+        GameRegistry.registerBlock(soulGlass, soulGlass.getUnlocalizedName());
+        OreDictionary.registerOre("blockGlass", soulGlass);
+
+        coloredGlassClear = new ColoredGlassConnected();
+        GameRegistry
+            .registerBlock(coloredGlassClear, ColoredGlassItemBlock.class, coloredGlassClear.getUnlocalizedName());
+        OreDictionary.registerOre("blockGlass", coloredGlassClear);
 
         TinkersRebornRegistry.registerFuel(new FluidStack(FluidRegistry.LAVA, 50), 100);
     }

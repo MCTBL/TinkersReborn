@@ -20,7 +20,7 @@ public abstract class TinkersRebornMultiBlock extends TinkersRebornInventoryBloc
 
     protected IIcon sideIcon;
 
-    public TinkersRebornMultiBlock() {
+    protected TinkersRebornMultiBlock() {
         super(Material.rock);
         this.setHardness(3F);
         this.setResistance(20F);
@@ -37,18 +37,18 @@ public abstract class TinkersRebornMultiBlock extends TinkersRebornInventoryBloc
     @Override
     public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
         TileEntity logic = world.getTileEntity(x, y, z);
-        if (logic instanceof IServantLogic) {
-            ((IServantLogic) logic).notifyMasterOfChange();
-        } else if (logic instanceof IMasterLogic) {
-            ((IMasterLogic) logic).notifyChange(null, x, y, z);
+        if (logic instanceof IServantLogic servant) {
+            servant.notifyMasterOfChange();
+        } else if (logic instanceof IMasterLogic master) {
+            master.notifyChange(null, x, y, z);
         }
     }
 
     @Override
     public void breakBlock(World world, int x, int y, int z, Block blockID, int meta) {
         TileEntity logic = world.getTileEntity(x, y, z);
-        if (logic instanceof IServantLogic) {
-            ((IServantLogic) logic).notifyMasterOfChange();
+        if (logic instanceof IServantLogic servant) {
+            servant.notifyMasterOfChange();
         }
         super.breakBlock(world, x, y, z, blockID, meta);
     }
@@ -64,10 +64,10 @@ public abstract class TinkersRebornMultiBlock extends TinkersRebornInventoryBloc
             BlockPos offset = BlockPos.of(x, y, z)
                 .offset(dir);
             TileEntity te = world.getTileEntity(offset.x, offset.y, offset.z);
-            if (te instanceof IMasterLogic) {
+            if (te instanceof IMasterLogic m) {
                 TileEntity servant = world.getTileEntity(x, y, z);
-                if (servant instanceof IServantLogic) {
-                    ((IMasterLogic) te).notifyChange((IServantLogic) servant, x, y, z);
+                if (servant instanceof IServantLogic s) {
+                    m.notifyChange(s, x, y, z);
                     break;
                 }
             }

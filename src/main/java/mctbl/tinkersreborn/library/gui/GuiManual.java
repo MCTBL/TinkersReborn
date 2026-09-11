@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -260,14 +261,16 @@ public class GuiManual extends GuiScreen {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) {
-        // right arrow is 205
-        // left arrow is 203
-        if (keyCode == 205) {
-            this.currentPage = Math.min(this.bookTotalPages - 1, this.currentPage + 2);
-        } else if (keyCode == 203) {
-            this.currentPage = Math.max(0, this.currentPage - 2);
-        } else {
-            super.keyTyped(typedChar, keyCode);
+        switch (keyCode) {
+            case Keyboard.KEY_RIGHT -> this.currentPage = Math.min(this.bookTotalPages - 1, this.currentPage + 2);
+            case Keyboard.KEY_D -> this.currentPage = Math.min(this.bookTotalPages - 1, this.currentPage + 2);
+            case Keyboard.KEY_LEFT -> this.currentPage = Math.max(0, this.currentPage - 2);
+            case Keyboard.KEY_A -> this.currentPage = Math.max(0, this.currentPage - 2);
+            case Keyboard.KEY_E -> {
+                this.mc.displayGuiScreen((GuiScreen) null);
+                this.mc.setIngameFocus();
+            }
+            default -> super.keyTyped(typedChar, keyCode);
         }
     }
 
