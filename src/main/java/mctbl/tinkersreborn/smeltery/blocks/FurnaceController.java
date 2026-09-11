@@ -1,7 +1,5 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
-import mctbl.tinkersreborn.library.entity.IMasterLogic;
-import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +12,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
+import mctbl.tinkersreborn.library.entity.IMasterLogic;
+import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
 
 public class FurnaceController extends TinkersRebornMultiBlock {
 

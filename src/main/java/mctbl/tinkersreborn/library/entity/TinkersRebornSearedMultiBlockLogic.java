@@ -1,25 +1,26 @@
 package mctbl.tinkersreborn.library.entity;
 
-import mctbl.tinkersreborn.TinkersRebornConfig;
-import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
-import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.List;
+import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
+import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 
-public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic{
+public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic {
 
     private static final int MAX_SMELTERY_SIZE = 7;
     public int blocksPerLayer;
     public int multiLayers;
     private Block controller;
 
-    protected TinkersRebornSearedMultiBlockLogic(String name,Block block) {
+    protected TinkersRebornSearedMultiBlockLogic(String name, Block block) {
         super(name);
         this.controller = block;
     }
@@ -52,9 +53,9 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
 
     protected void heatItemsPost() {}
 
-    protected void tickPre(){};
+    protected void tickPre() {};
 
-    protected void tickPost(){};
+    protected void tickPost() {};
 
     protected abstract boolean hasTopLayer();
 
@@ -129,48 +130,48 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
         int yd2 = 1;
 
         List<BlockPos> tempValidBlockList = new ArrayList<>();
-//        while (checkUpper || checkLower) {
-//            if (checkUpper && isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
-//                yd1++;
-//                validLayerCount++;
-//            } else {
-//                checkUpper = false;
-//            }
-//            if (checkLower) {
-//                if (isValidLayer(center, range, center.y - yd2, tempValidBlockList)) {
-//                    yd2++;
-//                    validLayerCount++;
-//                    continue;
-//                } else if (isValidBottom(center, range, center.y - yd2, tempValidBlockList)) {
-//                    hasBottmLayer = true;
-//                }
-//                checkLower = false;
-//            }
-//        }
-//
-//        if (hasBottmLayer && validLayerCount > 0 && !this.lavaTanks.isEmpty()) {
-//            this.activeLavaTank = this.lavaTanks.get(0);
-//            this.setActive(true);
-//
-//            this.minPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
-//            this.maxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
-//
-//            this.adjustLayers();
-//
-//            for (BlockPos b : tempValidBlockList) {
-//                TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
-//                if (tempEntiry instanceof MultiServantLogic servant) servant.overrideMaster(masterPos);
-//            }
-//        }
+        // while (checkUpper || checkLower) {
+        // if (checkUpper && isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
+        // yd1++;
+        // validLayerCount++;
+        // } else {
+        // checkUpper = false;
+        // }
+        // if (checkLower) {
+        // if (isValidLayer(center, range, center.y - yd2, tempValidBlockList)) {
+        // yd2++;
+        // validLayerCount++;
+        // continue;
+        // } else if (isValidBottom(center, range, center.y - yd2, tempValidBlockList)) {
+        // hasBottmLayer = true;
+        // }
+        // checkLower = false;
+        // }
+        // }
+        //
+        // if (hasBottmLayer && validLayerCount > 0 && !this.lavaTanks.isEmpty()) {
+        // this.activeLavaTank = this.lavaTanks.get(0);
+        // this.setActive(true);
+        //
+        // this.minPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
+        // this.maxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
+        //
+        // this.adjustLayers();
+        //
+        // for (BlockPos b : tempValidBlockList) {
+        // TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
+        // if (tempEntiry instanceof MultiServantLogic servant) servant.overrideMaster(masterPos);
+        // }
+        // }
         while (checkUpper || checkLower) {
             if (checkUpper) {
                 if (isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
                     yd1++;
                     validLayerCount++;
-                }else if (hasTopLayer() && isValidTop(center, range, center.y + yd1, tempValidBlockList)){
+                } else if (hasTopLayer() && isValidTop(center, range, center.y + yd1, tempValidBlockList)) {
                     hasTopLayer = true;
                     checkUpper = false;
-                }else checkUpper = false;
+                } else checkUpper = false;
             }
             if (checkLower) {
                 if (isValidLayer(center, range, center.y - yd2, tempValidBlockList)) {
@@ -179,12 +180,14 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
                 } else if (isValidBottom(center, range, center.y - yd2, tempValidBlockList)) {
                     hasBottmLayer = true;
                     checkLower = false;
-                }else checkLower = false;
+                } else checkLower = false;
             }
 
         }
 
-        if (hasTopLayer() == hasTopLayer && hasBottmLayer() == hasBottmLayer && validLayerCount > 0 && !this.lavaTanks.isEmpty()) {
+        if (hasTopLayer() == hasTopLayer && hasBottmLayer() == hasBottmLayer
+            && validLayerCount > 0
+            && !this.lavaTanks.isEmpty()) {
             this.activeLavaTank = this.lavaTanks.get(0);
             this.setActive(true);
 
@@ -262,6 +265,7 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
     protected boolean validTopBlock(Block b) {
         return b == TinkersRebornSmeltery.smelteryBlock;
     }
+
     protected boolean validWallBlock(Block b) {
         return b == this.controller || b == TinkersRebornSmeltery.smelteryDrain
             || b == TinkersRebornSmeltery.smelteryBlock
@@ -284,7 +288,7 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
         this.resizeTemperatures(innerBlockCount);
     }
 
-    protected int calculateInnerBlockCount(){
+    protected int calculateInnerBlockCount() {
         return this.blocksPerLayer * multiLayers;
     }
 
@@ -301,7 +305,7 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
             TileEntity tempEntity = this.worldObj.getTileEntity(b.x, b.y, b.z);
             if (tempEntity instanceof MultiServantLogic servant && servant.getHasMaster()
                 && servant.getMasterPosition()
-                .equals(this.getBlockPos()))
+                    .equals(this.getBlockPos()))
                 servant.removeMaster();
         }
         this.blocksPerLayer = 0;

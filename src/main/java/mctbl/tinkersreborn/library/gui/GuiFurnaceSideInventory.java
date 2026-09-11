@@ -1,16 +1,16 @@
 package mctbl.tinkersreborn.library.gui;
 
-import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
-import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
-import mctbl.tinkersreborn.util.TinkersStr;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
-public class GuiFurnaceSideInventory extends GuiSideInventory{
+import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
+import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
+import mctbl.tinkersreborn.util.TinkersStr;
+
+public class GuiFurnaceSideInventory extends GuiSideInventory {
+
     public static final ResourceLocation SLOT_LOCATION = GuiFurnace.BACKGROUND;
 
     protected final FurnaceLogic furnace;
@@ -19,8 +19,9 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
     protected GuiElement unprogressBar = new GuiElementScalable(179, 201, 3, 16);
     protected GuiElement uberHeatBar = new GuiElementScalable(182, 201, 3, 16);
     protected GuiElement noMeltBar = new GuiElementScalable(185, 201, 3, 16);
+
     public GuiFurnaceSideInventory(GuiMultiModule parent, Container container, FurnaceLogic furnace, int slotCount,
-                                   int columns) {
+        int columns) {
         super(parent, container, slotCount, columns, false, true);
         this.furnace = furnace;
 
@@ -28,135 +29,65 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
         GuiElement.defaultTexW = 256;
         slot = new GuiElementScalable(0, 197, 22, 18);
         slotEmpty = new GuiElementScalable(22, 197, 22, 18);
-        yOffset = 0;
+
     }
+
+    // @Override
+    // public void updatePosition(int parentX, int parentY, int parentSizeX, int parentSizeY) {
+    // // at most as big as the parent
+    // this.ySize = calcCappedYSize(parentSizeY - 10);
+    // // slider needed?
+    // if (getDisplayedRows() < getTotalRows()) {
+    // slider.enable();
+    // this.xSize = columns * slot.w + slider.width + 2 * border.w;
+    // } else {
+    // slider.disable();
+    // this.xSize = columns * slot.w + border.w * 2;
+    // }
+    //
+    // // update position
+    // super.updatePosition(parentX, parentY, parentSizeX, parentSizeY);
+    //
+    // // connected needs to move to the side
+    // if (connected) {
+    // if (yOffset == 0) {
+    // if (right) {
+    // border.cornerTopLeft = overlapTop;
+    // } else {
+    // border.cornerTopRight = overlapTop;
+    // }
+    // }
+    //
+    // xOffset = (border.w - 1) * (right ? -1 : 1);
+    // guiLeft += xOffset;
+    // } else {
+    // xOffset = 0;
+    // }
+    //
+    // // move it a bit
+    // this.guiTop += yOffset;
+    //
+    // border.setPosition(guiLeft, guiTop);
+    // border.setSize(xSize, ySize);
+    //
+    // int y = guiTop + border.h;
+    // int h = ySize - border.h * 2;
+    //
+    // if (shouldDrawName()) {
+    // y += textBackground.h;
+    // h -= textBackground.h;
+    // }
+    // slider.setPosition(guiLeft + columns * slot.w + border.w, y);
+    // slider.setSize(h);
+    // slider.setSliderParameters(0, getTotalRows() - getDisplayedRows(), 1);
+    //
+    // updateSlots();
+    // }
 
     @Override
     protected boolean shouldDrawName() {
         return false;
     }
-
-//    @Override
-//    public void updatePosition(int parentX, int parentY, int parentSizeX, int parentSizeY) {
-//        // at most as big as the parent
-//        this.ySize = calcCappedYSize(parentSizeY) ;
-//        // slider needed?
-//        if (getDisplayedRows() < getTotalRows()) {
-//            slider.enable();
-//            this.xSize = columns * slot.w + slider.width + 2 * border.w;
-//        } else {
-//            slider.disable();
-//            this.xSize = columns * slot.w + border.w * 2;
-//        }
-//
-//        // update position
-//        super.updatePosition(parentX + 118, parentY + 18, this.xSize, this.ySize);
-//
-//        // move it a bit
-//        this.guiTop += yOffset;
-//
-//        border.setPosition(guiLeft, guiTop);
-//        border.setSize(xSize, ySize);
-//
-//        int y = guiTop + border.h;
-//        int h = ySize - border.h * 2;
-//
-//        if (shouldDrawName()) {
-//            y += textBackground.h;
-//            h -= textBackground.h;
-//        }
-//        slider.setPosition(guiLeft + columns * slot.w + border.w, y);
-//        slider.setSize(h);
-//        slider.setSliderParameters(0, getTotalRows() - getDisplayedRows(), 1);
-//
-//        updateSlots();
-//    }
-    @Override
-    public void updatePosition(int parentX, int parentY, int parentSizeX, int parentSizeY) {
-        // at most as big as the parent
-        this.ySize = calcCappedYSize(parentSizeY - 10);
-        // slider needed?
-        if (getDisplayedRows() < getTotalRows()) {
-            slider.enable();
-            this.xSize = columns * slot.w + slider.width + 2 * border.w;
-        } else {
-            slider.disable();
-            this.xSize = columns * slot.w + border.w * 2;
-        }
-
-        // update position
-        super.updatePosition(parentX, parentY, parentSizeX, parentSizeY);
-
-        // connected needs to move to the side
-        if (connected) {
-            if (yOffset == 0) {
-                if (right) {
-                    border.cornerTopLeft = overlapTop;
-                } else {
-                    border.cornerTopRight = overlapTop;
-                }
-            }
-
-            xOffset = (border.w - 1) * (right ? -1 : 1);
-            guiLeft += xOffset;
-        } else {
-            xOffset = 0;
-        }
-
-        // move it a bit
-        this.guiTop += yOffset;
-
-        border.setPosition(guiLeft, guiTop);
-        border.setSize(xSize, ySize);
-
-        int y = guiTop + border.h;
-        int h = ySize - border.h * 2;
-
-        if (shouldDrawName()) {
-            y += textBackground.h;
-            h -= textBackground.h;
-        }
-        slider.setPosition(guiLeft + columns * slot.w + border.w, y);
-        slider.setSize(h);
-        slider.setSliderParameters(0, getTotalRows() - getDisplayedRows(), 1);
-
-        updateSlots();
-    }
-//    @Override
-//    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-//        guiLeft += border.w;
-//        guiTop += border.h;
-//
-//        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-//        this.mc.getTextureManager()
-//            .bindTexture(GUI_INVENTORY);
-//
-//        int x = guiLeft;// + border.w;
-//        int y = guiTop;// + border.h;
-//        int midW = xSize - border.w * 2;
-//        int midH = ySize - border.h * 2;
-//
-//        //border.draw();
-//
-//        if (shouldDrawName()) {
-//            textBackground.drawScaledX(x, y, midW);
-//            y += textBackground.h;
-//        }
-//
-//        this.mc.getTextureManager()
-//            .bindTexture(GUI_INVENTORY);
-//        drawSlots(x, y);
-//
-//        if (slider.isEnabled()) {
-//            slider.update(mouseX, mouseY, !isMouseOverFullSlot(mouseX, mouseY) && isMouseInModule(mouseX, mouseY));
-//            slider.draw();
-//
-//            updateSlots();
-//        }
-//
-//        guiLeft -= border.w;
-//        guiTop -= border.h;
-//    }
 
     @Override
     protected void updateSlots() {
@@ -212,8 +143,9 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
                     tooltip = TinkersStr.smtleteryNoSpace.toString();
                 }
 
-                float x = slot.xDisplayPosition - 8;
-                float y = slot.yDisplayPosition - 2 - bar.h;
+                int height = 1 + Math.round(progress * (bar.h - 1));
+                int x = slot.xDisplayPosition - 10 + this.xSize;
+                int y = slot.yDisplayPosition;
 
                 if (tooltip != null && x + guiLeft <= mouseX
                     && x + guiLeft + bar.w > mouseX
@@ -222,8 +154,9 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
                     tooltipText = tooltip;
                 }
 
-                drawTexturedModalRect(x, y, bar.x, bar.y, bar.w, bar.h,progress);
+                drawTexturedModalRect(x, y + bar.h - height, bar.x, bar.y, bar.w, height);
             }
+
         }
 
         if (tooltipText != null) {
@@ -235,31 +168,6 @@ public class GuiFurnaceSideInventory extends GuiSideInventory{
         }
 
         RenderHelper.enableStandardItemLighting();
-    }
-
-    public void drawTexturedModalRect(float x, float y, float textureX, float textureY, float width, float height,
-        float progress) {
-        if (progress < 0f) progress = 0f;
-        if (progress > 1f) progress = 1f;
-
-        float visibleHeight = 1 + Math.round(progress * (height - 1));
-
-        float f = 0.00390625F;
-
-        float u1 = textureX * f;
-        float u2 = (textureX + width) * f;
-        float v1 = (textureY + height - visibleHeight) * f;
-        float v2 = (textureY + height) * f;
-
-        float screenTop = y + height - visibleHeight;
-
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV(x, screenTop + visibleHeight, this.zLevel, u1, v2);
-        tessellator.addVertexWithUV(x + width, screenTop + visibleHeight, this.zLevel, u2, v2);
-        tessellator.addVertexWithUV(x + width, screenTop, this.zLevel, u2, v1);
-        tessellator.addVertexWithUV(x, screenTop, this.zLevel, u1, v1);
-        tessellator.draw();
     }
 
 }

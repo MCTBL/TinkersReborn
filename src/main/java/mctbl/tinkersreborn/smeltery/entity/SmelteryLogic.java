@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
-import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
-import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -38,9 +36,11 @@ import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.AlloyRecipe;
+import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
 import mctbl.tinkersreborn.library.event.TinkerSmelteryEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
 import mctbl.tinkersreborn.smeltery.gui.GuiSmeltery;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerSmeltery;
@@ -78,7 +78,7 @@ public class SmelteryLogic extends TinkersRebornSearedMultiBlockLogic implements
     }
 
     @Override
-    protected void tickPost(){
+    protected void tickPost() {
         if (this.tickCounter == 0) {
             this.interactWithEntitiesInside();
             // called every second, we check every 15s or so

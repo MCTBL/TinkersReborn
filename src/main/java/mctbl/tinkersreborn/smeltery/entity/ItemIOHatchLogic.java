@@ -1,7 +1,5 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
-import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,15 +11,19 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class ItemIOHatchLogic extends TinkersRebornInventoryLogic implements ISidedInventory,
-    ITinkersRebornIFacingLogic {
+import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
+import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+
+public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
+    implements ISidedInventory, ITinkersRebornIFacingLogic {
+
     public ForgeDirection faceDirection;
     public int mode;
     public static final int INPUT_MODE = 0, OUTPUT_MODE = 1;
 
     public ItemIOHatchLogic(int mode) {
-        super(0,0);
-        if(mode == INPUT_MODE) {
+        super(0, 0);
+        if (mode == INPUT_MODE) {
             inventory = new ItemStack[6];
             stackSizeLimit = 64;
         }
@@ -65,8 +67,8 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic implements ISi
     @Override
     public int[] getAccessibleSlotsFromSide(int p_94128_1_) {
         if (mode == INPUT_MODE) {
-            return new int[]{0, 1, 2, 3, 4, 5};
-        }else return null;
+            return new int[] { 0, 1, 2, 3, 4, 5 };
+        } else return null;
     }
 
     /**
@@ -141,7 +143,7 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic implements ISi
     protected String getDefaultName() {
         if (mode == INPUT_MODE) {
             return "InputHatch";
-        }else return "OutputHatch";
+        } else return "OutputHatch";
     }
 
     /**
@@ -164,7 +166,7 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic implements ISi
     public String getInventoryName() {
         if (mode == INPUT_MODE) {
             return "InputHatch";
-        }else return "OutputHatch";
+        } else return "OutputHatch";
     }
 
     /**
@@ -226,7 +228,9 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic implements ISi
      */
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        if (mode == INPUT_MODE) {return super.isItemValidForSlot(index, stack);}
+        if (mode == INPUT_MODE) {
+            return super.isItemValidForSlot(index, stack);
+        }
         return false;
     }
 }

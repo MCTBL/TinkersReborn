@@ -1,5 +1,14 @@
 package mctbl.tinkersreborn.smeltery.gui;
 
+import java.util.Collections;
+import java.util.List;
+
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
+
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
@@ -13,13 +22,6 @@ import mctbl.tinkersreborn.library.gui.GuiHeatingStructureFuelTank;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
 import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerFurnace;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
-
-import java.util.Collections;
-import java.util.List;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
@@ -28,14 +30,14 @@ public class GuiFurnace extends GuiHeatingStructureFuelTank implements INEIGuiHa
     public static final ResourceLocation BACKGROUND = new ResourceLocation(
         TinkersReborn.MODID,
         "textures/gui/furnace.png");
-    protected GuiElementScalable flame = new GuiElementScalable(176, 187, 14, 14, 256, 256);
+    protected GuiElementScalable flame = new GuiElementScalable(176, 173, 28, 28, 256, 256);
     protected final int fuelStartX = 116;
     protected final int fuelStartY = 32;
     protected final int fuelWidth = 16;
     protected final int fuelHeight = 64;
 
-    protected final int fuelProgressStartX = 117;
-    protected final int fuelProgressStartY = 29;
+    protected final int fuelProgressStartX = 50;
+    protected final int fuelProgressStartY = 97;
 
     protected final GuiFurnaceSideInventory sideinventory;
     protected final FurnaceLogic furnace;

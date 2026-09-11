@@ -1,16 +1,18 @@
 package mctbl.tinkersreborn.library.gui;
 
-import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
-import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
 import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiItemIOHatchInventory extends GuiSideInventory{
+import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
+import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
+
+public class GuiItemIOHatchInventory extends GuiSideInventory {
 
     public static final ResourceLocation SLOT_LOCATION = GuiFurnace.BACKGROUND;
     private final ItemIOHatchLogic itemIOHatchLogic;
 
-    public GuiItemIOHatchInventory(GuiMultiModule parent, Container container, ItemIOHatchLogic logic, int slotCount, int columns) {
+    public GuiItemIOHatchInventory(GuiMultiModule parent, Container container, ItemIOHatchLogic logic, int slotCount,
+        int columns) {
         super(parent, container, slotCount, columns);
         GuiElement.defaultTexH = 256;
         GuiElement.defaultTexW = 256;

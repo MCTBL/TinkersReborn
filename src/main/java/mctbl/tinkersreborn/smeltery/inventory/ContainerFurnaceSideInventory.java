@@ -35,7 +35,7 @@ public class ContainerFurnaceSideInventory extends ContainerSideInventory<Furnac
 
         @Override
         public int getSlotStackLimit() {
-            return 64;
+            return 16;
         }
     }
 }

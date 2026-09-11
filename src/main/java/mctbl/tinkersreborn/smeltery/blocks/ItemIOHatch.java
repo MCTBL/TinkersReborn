@@ -1,17 +1,17 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
-import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.blocks.TinkersRebornInventoryBlock;
-import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
-import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
-import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
+import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
+import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
+
 public class ItemIOHatch extends TinkersRebornMultiBlock {
+
     public ItemIOHatch() {
         super();
         this.TEXTURENAMES = new String[] { "smeltery/drain_basin", "smeltery/drain_out" };
@@ -30,15 +30,16 @@ public class ItemIOHatch extends TinkersRebornMultiBlock {
             ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
             : ForgeDirection.getOrientation(0);
         if (facing == ForgeDirection.getOrientation(side)) {
-            return meta == 0 ?  this.icons[0]: this.icons[1];
-        }else if (facing.getOpposite() == ForgeDirection.getOrientation(side)) return meta == 1 ?  this.icons[0]: this.icons[1];
+            return meta == 0 ? this.icons[0] : this.icons[1];
+        } else if (facing.getOpposite() == ForgeDirection.getOrientation(side))
+            return meta == 1 ? this.icons[0] : this.icons[1];
         return this.sideIcon;
     }
 
     @Override
     public IIcon getIcon(int side, int meta) {
         if (side == 3) {
-            return meta == 0 ?  this.icons[0]: this.icons[1];
+            return meta == 0 ? this.icons[0] : this.icons[1];
         } else {
             return super.sideIcon;
         }

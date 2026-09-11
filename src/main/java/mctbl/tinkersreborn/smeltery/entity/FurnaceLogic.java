@@ -1,27 +1,20 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
-import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
-import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
-import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
-import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
-import mctbl.tinkersreborn.smeltery.blocks.LavaTankBlock;
-import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
-import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
-import mctbl.tinkersreborn.smeltery.inventory.ContainerFurnace;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.world.World;
 
+import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
+import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
+import mctbl.tinkersreborn.smeltery.inventory.ContainerFurnace;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
-
 
     public FurnaceLogic() {
         super("furnace", TinkersRebornSmeltery.furnaceController);
@@ -29,7 +22,7 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
 
     @Override
     public int getInventoryStackLimit() {
-        return 64;
+        return 16;
     }
 
     @Override
@@ -100,26 +93,9 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
     @Override
     public boolean canHeat(int index) {
         ItemStack stack = getStackInSlot(index);
-        return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+        return FurnaceRecipes.smelting()
+            .getSmeltingResult(stack) != null;
     }
-
-    @Override
-    protected int heatSlot(int i) {
-        return 40;
-    }
-
-    @Override
-    protected void setTempRequiredForSlot(int index, int heat) {
-        if (index < itemTempRequired.length) {
-            ItemStack stack = getStackInSlot(index);
-            if (stack != null) {
-                itemTempRequired[index] = heat * stack.stackSize;
-                return;
-            }
-            itemTempRequired[index] = heat;
-        }
-    }
-
 
     /**
      * Calculate the heat required for the given slot
@@ -130,8 +106,16 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
     protected void updateTempRequired(int index) {
         ItemStack stack = getStackInSlot(index);
         if (!TinkersRebornUtils.isStackEmpty(stack)) {
-            if (FurnaceRecipes.smelting().getSmeltingResult(stack) != null) {
-                setTempRequiredForSlot(index, 1000);
+            if (FurnaceRecipes.smelting()
+                .getSmeltingResult(stack) != null) {
+                int base = 200;
+                float temp = base * stack.stackSize / 4f;
+
+                if (stack.getItem() instanceof ItemFood) {
+                    temp *= 0.8f;
+                }
+
+                setTempRequiredForSlot(index, (int) temp);
                 if (fuelReleaseTicks <= 0) {
                     consumeFuel();
                 }
@@ -150,7 +134,8 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
      */
     @Override
     protected boolean onItemFinishedHeating(ItemStack stack, int slot) {
-        ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(stack);
+        ItemStack result = FurnaceRecipes.smelting()
+            .getSmeltingResult(stack);
         if (result != null) {
             result = result.copy();
             int amount = result.stackSize == 0 ? 1 : result.stackSize;
@@ -170,11 +155,11 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
     }
 
     @Override
-    protected int calculateInnerBlockCount(){
-        int w = Math.max(1,this.maxPos.getX() - this.minPos.getX());
-        int h = Math.max(1,this.maxPos.getY() - this.minPos.getY());
-        int z = Math.max(1,this.maxPos.getZ() - this.minPos.getZ());
-       return  9 + (3 * w * h * z);
+    protected int calculateInnerBlockCount() {
+        int w = Math.max(1, this.maxPos.getX() - this.minPos.getX());
+        int h = Math.max(1, this.maxPos.getY() - this.minPos.getY());
+        int z = Math.max(1, this.maxPos.getZ() - this.minPos.getZ());
+        return 9 + (3 * w * h * z);
     }
 
     @Override

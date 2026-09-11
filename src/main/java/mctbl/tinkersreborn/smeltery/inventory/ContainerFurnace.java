@@ -1,10 +1,11 @@
 package mctbl.tinkersreborn.smeltery.inventory;
 
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ICrafting;
+
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
 import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ICrafting;
 
 public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
 
