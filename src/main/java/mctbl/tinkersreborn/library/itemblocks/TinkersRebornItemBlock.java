@@ -4,8 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import mctbl.tinkersreborn.TinkersReborn;
-
 public class TinkersRebornItemBlock extends ItemBlock {
 
     public String[] blockType;
@@ -46,9 +44,6 @@ public class TinkersRebornItemBlock extends ItemBlock {
                 .append(append)
                 .toString();
         } catch (ArrayIndexOutOfBoundsException ex) {
-            TinkersReborn.LOG
-                .warn("[MultiItemBlock] Caught array index error in getUnlocalizedName: " + ex.getMessage());
-            TinkersReborn.LOG.warn("[MultiItemBlock] Returning unlocalized name: " + getUnlocalizedName());
             return getUnlocalizedName();
         }
     }

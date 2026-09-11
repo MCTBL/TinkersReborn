@@ -29,11 +29,17 @@ public class TinkersRebornBlock extends Block {
         this.unlocalizedName = unlocalizedName;
     }
 
-    private String unlocalizedName;
+    protected String unlocalizedName;
 
     @Override
     public String getUnlocalizedName() {
         return this.unlocalizedName;
+    }
+
+    @Override
+    public Block setBlockName(String name) {
+        this.unlocalizedName = name;
+        return this;
     }
 
     @Override
