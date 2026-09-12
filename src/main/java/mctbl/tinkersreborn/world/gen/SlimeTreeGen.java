@@ -275,9 +275,10 @@ public class SlimeTreeGen extends WorldGenerator {
     }
 
     void placeVine(World world, Random random, int x, int y, int z, int metadata) {
-        for (int i = 0; i < 3; i++) {
+        // 5 vine at most, 100% => 50% => 33.33% => 25% => 20%
+        for (int i = 0; i < 5; i++) {
             if (world.isAirBlock(x, y - i, z)) {
-                if (random.nextInt(i + 1) <= i) {
+                if (random.nextInt(i + 1) == 0) {
                     world.setBlock(x, y - i, z, TinkersRebornGeneral.slimeVine, metadata, 2);
                 } else {
                     break;

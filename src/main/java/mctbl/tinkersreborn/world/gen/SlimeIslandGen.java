@@ -34,17 +34,14 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator,
-        IChunkProvider chunkProvider) // IWorldGenerator
-    // version
-    {
+        IChunkProvider chunkProvider) {
         // dim 0 only?
         if ((chunkGenerator instanceof ChunkProviderFlat || world.provider.terrainType == WorldType.FLAT)) {
             return;
         }
 
-        if (world.provider.dimensionId == 0) {
-            if (random.nextInt(TinkersRebornConfig.islandRarity) == 0)
-                generateIsland(world, random, chunkX * 16, chunkZ * 16);
+        if (world.provider.dimensionId == 0 && random.nextInt(TinkersRebornConfig.islandRarity) == 0) {
+            generateIsland(world, random, chunkX * 16, chunkZ * 16);
         }
     }
 

@@ -17,6 +17,7 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.world.gen.SlimeTreeGen;
@@ -29,16 +30,16 @@ public class SlimeSapling extends BlockSapling {
     public SlimeSapling() {
         super();
         float f = 0.4F;
-        setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f * 2.0F, 0.5F + f);
-        setHardness(0.0F);
-        setCreativeTab(TinkersRebornRegistry.blockTab);
-        setStepSound(TinkersRebornGeneral.slimeStep);
+        this.setBlockBounds(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f * 2.0F, 0.5F + f);
+        this.setHardness(0.0F);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        this.setStepSound(TinkersRebornGeneral.slimeStep);
         this.setBlockName("tinkersreborn.slime.sapling");
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "tinkersreborn.slime.sapling";
+        return TinkersReborn.MODID + ".slime.sapling";
     }
 
     @Override
@@ -103,6 +104,7 @@ public class SlimeSapling extends BlockSapling {
         if (!(obj.generate(world, random, x, y, z))) world.setBlock(x, y, z, this, md + 8, 3);
     }
 
+    @Override
     public int damageDropped(int i) {
         return i % 8;
     }

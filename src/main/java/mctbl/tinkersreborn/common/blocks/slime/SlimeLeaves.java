@@ -127,6 +127,7 @@ public class SlimeLeaves extends BlockLeaves {
                 dropChance -= 10 << fortune;
 
                 if (dropChance < 20) {
+                    // TODO WTH?
                     dropChance = 20;
                 }
             }
