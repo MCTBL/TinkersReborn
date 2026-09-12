@@ -966,6 +966,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         vineMaterial.setRepresentativeItem(Blocks.vine);
 
         slimeVineMaterial = new TinkersRebornMaterial("SlimeVine", 0x74C8C7).setCraftable(true);
+        slimeVineMaterial.addItem(new ItemStack(TinkersRebornGeneral.slimeVine), 1, VALUE_Ingot);
+        slimeVineMaterial.setRepresentativeItem(TinkersRebornGeneral.slimeVine);
 
         blazeMaterial = new TinkersRebornMaterial("Blaze", 0xFFC100).setCraftable(true);
         blazeMaterial.addItem(Items.blaze_rod, 1, VALUE_Ingot);

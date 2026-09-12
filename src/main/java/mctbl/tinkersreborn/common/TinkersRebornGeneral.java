@@ -54,6 +54,7 @@ import mctbl.tinkersreborn.common.blocks.slime.SlimeGrass;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeLeaves;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeSapling;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeTallGrass;
+import mctbl.tinkersreborn.common.blocks.slime.SlimeVine;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
@@ -118,6 +119,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Block slimeTallGrass;
     public static SlimeLeaves slimeLeaves;
     public static SlimeSapling slimeSapling;
+    public static Block slimeVine;
 
     public static TinkersRebornFluid bloodFluid;
     public static TinkersRebornFluid enderFluid;
@@ -187,6 +189,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(slimeLeaves, SlimeLeavesItemBlock.class, slimeLeaves.getUnlocalizedName());
         slimeSapling = new SlimeSapling();
         GameRegistry.registerBlock(slimeSapling, SlimeSaplingItemBlock.class, slimeSapling.getUnlocalizedName());
+        slimeVine = new SlimeVine();
+        GameRegistry.registerBlock(slimeVine, slimeVine.getUnlocalizedName());
 
         oreSlag = new MetalOre();
         GameRegistry.registerBlock(oreSlag, MetalOreItemBlock.class, oreSlag.getUnlocalizedName());

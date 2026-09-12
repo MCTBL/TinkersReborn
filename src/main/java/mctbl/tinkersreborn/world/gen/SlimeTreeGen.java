@@ -46,6 +46,7 @@ public class SlimeTreeGen extends WorldGenerator {
                 soil.onPlantGrow(world, xPos, yPos - 1, zPos, xPos, yPos, zPos);
                 placeCanopy(world, random, xPos, yPos, zPos, height);
                 placeTrunk(world, xPos, yPos, zPos, height);
+                placeVines(world, random, xPos, yPos, zPos, height);
                 return true;
             }
         }
@@ -243,6 +244,44 @@ public class SlimeTreeGen extends WorldGenerator {
                     zPos,
                     TinkersRebornGeneral.slimeGel,
                     this.metaWood);
+            }
+        }
+    }
+
+    void placeVines(World world, Random random, int xPos, int yPos, int zPos, int height) {
+        int top = yPos + height;
+        int bottom = Math.max(yPos + height - 5, yPos);
+        for (int y = bottom; y <= top; y++) {
+            for (int x = xPos - 4; x <= xPos + 4; x++) {
+                for (int z = zPos - 4; z <= zPos + 4; z++) {
+                    if (world.getBlock(x, y, z) != TinkersRebornGeneral.slimeLeaves || random.nextInt(4) != 0) continue;
+                    switch (random.nextInt(4)) {
+                        case 0:
+                            placeVine(world, random, x + 1, y, z, 2);
+                            break;
+                        case 1:
+                            placeVine(world, random, x - 1, y, z, 8);
+                            break;
+                        case 2:
+                            placeVine(world, random, x, y, z + 1, 4);
+                            break;
+                        default:
+                            placeVine(world, random, x, y, z - 1, 1);
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    void placeVine(World world, Random random, int x, int y, int z, int metadata) {
+        for (int i = 0; i < 3; i++) {
+            if (world.isAirBlock(x, y - i, z)) {
+                if (random.nextInt(i + 1) <= i) {
+                    world.setBlock(x, y - i, z, TinkersRebornGeneral.slimeVine, metadata, 2);
+                } else {
+                    break;
+                }
             }
         }
     }

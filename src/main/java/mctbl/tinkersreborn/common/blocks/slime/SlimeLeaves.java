@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 
@@ -25,15 +26,15 @@ public class SlimeLeaves extends BlockLeaves {
 
     public SlimeLeaves() {
         super();
-        setStepSound(TinkersRebornGeneral.slimeStep);
+        this.setStepSound(TinkersRebornGeneral.slimeStep);
         this.setBlockName("tinkersreborn.slime.leaves");
-        setCreativeTab(TinkersRebornRegistry.blockTab);
-        setHardness(0.3f);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        this.setHardness(0.3f);
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "tinkersreborn.slime.leaves";
+        return TinkersReborn.MODID + ".slime.leaves";
     }
 
     @Override
@@ -107,10 +108,6 @@ public class SlimeLeaves extends BlockLeaves {
         if (!world.isRemote) {
             int dropChance = 35;
 
-            /*
-             * if ((meta & 3) == 3) { j1 = 40; }
-             */
-
             if (fortune > 0) {
                 dropChance -= 2 << fortune;
 
@@ -133,10 +130,6 @@ public class SlimeLeaves extends BlockLeaves {
                     dropChance = 20;
                 }
             }
-
-            // if ((meta & 3) == 0 && world.rand.nextInt(dropChance) == 0) {
-            // this.dropBlockAsItem(world, x, y, z, new ItemStack(TinkerWorld.strangeFood, 1, 0));
-            // }
         }
     }
 
