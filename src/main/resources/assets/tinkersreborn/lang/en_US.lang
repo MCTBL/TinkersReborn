@@ -88,6 +88,7 @@ tinkersreborn.glass.light_blue.name=Light Blue Clear Glass
 tinkersreborn.glass.magenta.name=Magenta Clear Glass
 tinkersreborn.glass.orange.name=Orange Clear Glass
 tinkersreborn.glass.white.name=White Clear Glass
+tinkersreborn.clearGlassPane.name=Clear Glass Pane
 
 tinkersreborn.tank.tooltip1=Contains
 tinkersreborn.tank.tooltip2=Keeps any fluids it has when harvested
