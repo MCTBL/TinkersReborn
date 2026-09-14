@@ -25,6 +25,7 @@ public class TinkersRebornConfig {
     public static String[] metalTypes;
     public static String[] oreTypes;
     public static String[] gravelOreTypes;
+    public static String[] oreberryBushTypes;
 
     public static boolean exportMaterialDefaultConfig;
 
@@ -121,6 +122,8 @@ public class TinkersRebornConfig {
         oreTypes = new String[] { "nether_cobalt", "nether_ardite", "ore_copper", "ore_tin", "ore_aluminum" };
 
         gravelOreTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum" };
+
+        oreberryBushTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum", "essence" };
 
         Configuration config = new Configuration(new File(location + "/Tinkersreborn/TinkersRebornGeneral.cfg"));
 

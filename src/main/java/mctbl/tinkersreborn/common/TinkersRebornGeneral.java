@@ -44,6 +44,7 @@ import mctbl.tinkersreborn.common.blocks.GravelOre;
 import mctbl.tinkersreborn.common.blocks.GraveyardSoil;
 import mctbl.tinkersreborn.common.blocks.Grout;
 import mctbl.tinkersreborn.common.blocks.MetalOre;
+import mctbl.tinkersreborn.common.blocks.OreberryBushBlock;
 import mctbl.tinkersreborn.common.blocks.SlimeSand;
 import mctbl.tinkersreborn.common.blocks.StoneTorch;
 import mctbl.tinkersreborn.common.blocks.TinkersRebornMetalBlock;
@@ -62,6 +63,7 @@ import mctbl.tinkersreborn.common.events.TinkersRebornMobEventHandler;
 import mctbl.tinkersreborn.common.events.TinkersRebornPlayerHandler;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
 import mctbl.tinkersreborn.common.itemblocks.MetalOreItemBlock;
+import mctbl.tinkersreborn.common.itemblocks.OreberryBushItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeGelItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeGrassItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeLeavesItemBlock;
@@ -128,6 +130,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Block oreSlag;
     public static Block oreGravel;
     public static Block dryingRack;
+    public static Block oreberryBush;
 
     // Chest hooks
     public static ChestGenHooks tinkerHouseChest;
@@ -203,6 +206,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         dryingRack = new DryingRackBlock();
         GameRegistry.registerBlock(dryingRack, dryingRack.getUnlocalizedName());
         GameRegistry.registerTileEntity(DryingRackLogic.class, dryingRack.getUnlocalizedName());
+
+        oreberryBush = new OreberryBushBlock();
+        GameRegistry.registerBlock(oreberryBush, OreberryBushItemBlock.class, oreberryBush.getUnlocalizedName());
 
         heartCanister = new HeartCanister();
         GameRegistry.registerItem(heartCanister, heartCanister.getUnlocalizedName());

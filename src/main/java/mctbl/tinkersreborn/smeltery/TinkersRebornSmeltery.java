@@ -122,7 +122,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
         clearGlass = new GlassConnected("clear", true);
         GameRegistry.registerBlock(clearGlass, clearGlass.getUnlocalizedName());
-        // OreDictionary.registerOre("blockGlass", new ItemStack(clearGlass));
+        OreDictionary.registerOre("blockGlass", new ItemStack(clearGlass));
 
         soulGlass = new GlassConnected("soul", true, true);
         GameRegistry.registerBlock(soulGlass, soulGlass.getUnlocalizedName());

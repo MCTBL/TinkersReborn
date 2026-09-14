@@ -24,8 +24,8 @@ public class TinkersRebornBlock extends Block {
 
     public TinkersRebornBlock(Material material, String unlocalizedName, float hardness, String[] tex) {
         super(material);
-        setHardness(hardness);
-        textureNames = tex;
+        this.setHardness(hardness);
+        this.textureNames = tex;
         this.unlocalizedName = unlocalizedName;
     }
 
@@ -72,6 +72,7 @@ public class TinkersRebornBlock extends Block {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item block, CreativeTabs tab, List<ItemStack> list) {
         if (icons != null) {
             for (int iter = 0; iter < icons.length; iter++) {
