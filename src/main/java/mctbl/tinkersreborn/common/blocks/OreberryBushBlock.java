@@ -1,8 +1,10 @@
 package mctbl.tinkersreborn.common.blocks;
 
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,6 +13,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
@@ -22,16 +25,27 @@ import net.minecraftforge.common.IPlantable;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.common.entity.OreberryTileEntity;
 import mctbl.tinkersreborn.common.model.OreberryBushRender;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 
-public class OreberryBushBlock extends TinkersRebornBlock implements IPlantable {
+public class OreberryBushBlock extends TinkersRebornBlock implements IPlantable, ITileEntityProvider {
 
     public OreberryBushBlock() {
         super(Material.leaves, "tinkersreborn.OreberryBush", 0.3F, TinkersRebornConfig.oreberryBushTypes);
         this.setStepSound(Block.soundTypeMetal);
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        this.setTickRandomly(true);
+    }
+
+    @Override
+    public void updateTick(World world, int x, int y, int z, Random random) {
+        if (!world.isRemote && random.nextInt(20) == 0
+            && world.getFullBlockLightValue(x, y, z) < 10
+            && world.getTileEntity(x, y, z) instanceof OreberryTileEntity ob) {
+            ob.bushGrow();
+        }
     }
 
     /**
@@ -49,11 +63,16 @@ public class OreberryBushBlock extends TinkersRebornBlock implements IPlantable 
     }
 
     @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new OreberryTileEntity();
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockAccess worldIn, int x, int y, int z, int side) {
         Block block = worldIn.getBlock(x, y, z);
         // If the block touching the side is same type of bush and not fully grown then render side.
-        if (block == this) {
+        if (block == this && worldIn.getTileEntity(x, y, z) instanceof OreberryTileEntity ob && ob.state < 3) {
             return true;
             // If this block is fully grown and is touching a bush (fast mode) or solid block then don't render side.
         } else if ((Blocks.leaves.isOpaqueCube() && block == this) || block.isOpaqueCube()) {
@@ -83,89 +102,73 @@ public class OreberryBushBlock extends TinkersRebornBlock implements IPlantable 
     }
 
     @Override
+    public IIcon getIcon(IBlockAccess worldIn, int x, int y, int z, int side) {
+        int meta = worldIn.getBlockMetadata(x, y, z) * 2;
+        if (worldIn.getTileEntity(x, y, z) instanceof OreberryTileEntity ob && ob.state == 3) {
+            meta++;
+        }
+        return this.icons[meta];
+    }
+
+    @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-        world.getTileEntity(x, y, z);
-        return AxisAlignedBB.getBoundingBox(x + 0.0625, y, z + 0.0625, x + 0.9375D, y + 0.9375D, z + 0.9375D);
-        // if (l < 4) {
-        // return AxisAlignedBB.getBoundingBox(
-        // (double) x + 0.25D,
-        // y,
-        // (double) z + 0.25D,
-        // (double) x + 0.75D,
-        // (double) y + 0.5D,
-        // (double) z + 0.75D);
-        // } else if (l < 8) {
-        // return AxisAlignedBB.getBoundingBox(
-        // (double) x + 0.125D,
-        // y,
-        // (double) z + 0.125D,
-        // (double) x + 0.875D,
-        // (double) y + 0.75D,
-        // (double) z + 0.875D);
-        // } else {
-        // return AxisAlignedBB.getBoundingBox(
-        // x + 0.0625,
-        // y,
-        // z + 0.0625,
-        // (double) x + 0.9375D,
-        // (double) y + 0.9375D,
-        // (double) z + 0.9375D);
-        // }
+        if (world.getTileEntity(x, y, z) instanceof OreberryTileEntity ob) {
+            switch (ob.state) {
+                case 0:
+                    return AxisAlignedBB.getBoundingBox(x + 0.25D, y, z + 0.25D, x + 0.75D, y + 0.5D, z + 0.75D);
+                case 1:
+                    return AxisAlignedBB.getBoundingBox(x + 0.125D, y, z + 0.125D, x + 0.875D, y + 0.75D, z + 0.875D);
+                default:
+                    return AxisAlignedBB
+                        .getBoundingBox(x + 0.0625, y, z + 0.0625, x + 0.9375D, y + 0.9375D, z + 0.9375D);
+            }
+        } else {
+            return super.getCollisionBoundingBoxFromPool(world, x, y, z);
+        }
     }
 
     @Override
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int x, int y, int z) {
-        world.getTileEntity(x, y, z);
-        return AxisAlignedBB.getBoundingBox(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D);
-        // if (l < 4) {
-        // return AxisAlignedBB.getBoundingBox(
-        // (double) x + 0.25D,
-        // y,
-        // (double) z + 0.25D,
-        // (double) x + 0.75D,
-        // (double) y + 0.5D,
-        // (double) z + 0.75D);
-        // } else if (l < 8) {
-        // return AxisAlignedBB.getBoundingBox(
-        // (double) x + 0.125D,
-        // y,
-        // (double) z + 0.125D,
-        // (double) x + 0.875D,
-        // (double) y + 0.75D,
-        // (double) z + 0.875D);
-        // } else {
-        // return AxisAlignedBB.getBoundingBox(x, y, z, (double) x + 1.0D, (double) y + 1.0D, (double) z + 1.0D);
-        // }
+        if (world.getTileEntity(x, y, z) instanceof OreberryTileEntity ob) {
+            switch (ob.state) {
+                case 0:
+                    return AxisAlignedBB.getBoundingBox(x + 0.25D, y, z + 0.25D, x + 0.75D, y + 0.5D, z + 0.75D);
+                case 1:
+                    return AxisAlignedBB.getBoundingBox(x + 0.125D, y, z + 0.125D, x + 0.875D, y + 0.75D, z + 0.875D);
+                default:
+                    return AxisAlignedBB.getBoundingBox(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D);
+            }
+
+        }
+        return super.getSelectedBoundingBoxFromPool(world, x, y, z);
     }
 
     @Override
     public void setBlockBoundsBasedOnState(IBlockAccess iblockaccess, int x, int y, int z) {
-        iblockaccess.getTileEntity(x, y, z);
+        if (iblockaccess.getTileEntity(x, y, z) instanceof OreberryTileEntity ob) {
+            float minX;
+            float minY = 0F;
+            float minZ;
+            float maxX;
+            float maxY;
+            float maxZ;
 
-        float minX;
-        float minY = 0F;
-        float minZ;
-        float maxX;
-        float maxY;
-        float maxZ;
+            if (ob.state == 0) {
+                minX = minZ = 0.25F;
+                maxX = maxZ = 0.75F;
+                maxY = 0.5F;
+            } else if (ob.state == 1) {
+                minX = minZ = 0.125F;
+                maxX = maxZ = 0.875F;
+                maxY = 0.75F;
+            } else {
+                minX = minZ = 0.0F;
+                maxX = maxZ = 1.0F;
+                maxY = 1.0F;
+            }
+            this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
+        }
 
-        // if (md < 4) {
-        // minX = minZ = 0.25F;
-        // maxX = maxZ = 0.75F;
-        // maxY = 0.5F;
-        // } else if (md < 8) {
-        // minX = minZ = 0.125F;
-        // maxX = maxZ = 0.875F;
-        // maxY = 0.75F;
-        // } else {
-        // minX = minZ = 0.0F;
-        // maxX = maxZ = 1.0F;
-        // maxY = 1.0F;
-        // }
-        minX = minZ = 0.0F;
-        maxX = maxZ = 1.0F;
-        maxY = 1.0F;
-        this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     @Override

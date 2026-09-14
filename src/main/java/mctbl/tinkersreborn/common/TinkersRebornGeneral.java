@@ -59,6 +59,7 @@ import mctbl.tinkersreborn.common.blocks.slime.SlimeVine;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
+import mctbl.tinkersreborn.common.entity.OreberryTileEntity;
 import mctbl.tinkersreborn.common.events.TinkersRebornMobEventHandler;
 import mctbl.tinkersreborn.common.events.TinkersRebornPlayerHandler;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
@@ -209,6 +210,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         oreberryBush = new OreberryBushBlock();
         GameRegistry.registerBlock(oreberryBush, OreberryBushItemBlock.class, oreberryBush.getUnlocalizedName());
+        GameRegistry.registerTileEntity(OreberryTileEntity.class, oreberryBush.getUnlocalizedName());
 
         heartCanister = new HeartCanister();
         GameRegistry.registerItem(heartCanister, heartCanister.getUnlocalizedName());
