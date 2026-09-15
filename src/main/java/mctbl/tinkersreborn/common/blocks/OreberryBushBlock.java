@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,11 +25,14 @@ import net.minecraftforge.common.IPlantable;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.entity.OreberryTileEntity;
 import mctbl.tinkersreborn.common.model.OreberryBushRender;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class OreberryBushBlock extends TinkersRebornBlock implements IPlantable, ITileEntityProvider {
 
@@ -46,6 +50,34 @@ public class OreberryBushBlock extends TinkersRebornBlock implements IPlantable,
             && world.getTileEntity(x, y, z) instanceof OreberryTileEntity ob) {
             ob.bushGrow();
         }
+    }
+
+    /* Left-click harvests berries */
+    @Override
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+        harvest(world, x, y, z, player);
+    }
+
+    /* Right-click harvests berries */
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7,
+        float par8, float par9) {
+        return harvest(world, x, y, z, player);
+    }
+
+    public boolean harvest(World world, int x, int y, int z, EntityPlayer player) {
+        if (world.isRemote) return true;
+
+        final int meta = world.getBlockMetadata(x, y, z);
+
+        if (world.getTileEntity(x, y, z) instanceof OreberryTileEntity ob && ob.harvest()) {
+            TinkersRebornUtils.drropItemAtPlayer(
+                player,
+                new ItemStack(TinkersRebornGeneral.oreberries, TinkersReborn.random.nextInt(3) + 1, meta));
+            return true;
+        }
+
+        return false;
     }
 
     /**

@@ -29,6 +29,20 @@ tinkersreborn.OreberryBush.tin.name=Tin Oreberry Bush
 tinkersreborn.OreberryBush.aluminum.name=Aluminum Oreberry Bush
 tinkersreborn.OreberryBush.essence.name=Essence Oreberry Bush
 
+tinkersreborn.oreberry.iron.name=Iron Oreberry
+tinkersreborn.oreberry.gold.name=Gold Oreberry
+tinkersreborn.oreberry.copper.name=Copper Oreberry
+tinkersreborn.oreberry.tin.name=Tin Oreberry
+tinkersreborn.oreberry.aluminum.name=Aluminum Oreberry
+tinkersreborn.oreberry.essence.name=Essence Oreberry
+
+tinkersreborn.oreberry.iron.tooltip=Sweet Irony
+tinkersreborn.oreberry.gold.tooltip=Pure Luster
+tinkersreborn.oreberry.copper.tooltip=Tastes like metal
+tinkersreborn.oreberry.tin.tooltip=Tin Man
+tinkersreborn.oreberry.aluminum.tooltip=White Chocolate
+tinkersreborn.oreberry.essence.tooltip=Tastes like Creeper
+
 tinkersreborn.slimesand.name=Slime Sand
 tinkersreborn.grout.name=Grout
 tinkersreborn.graveyardsoil.name=Grave Yard Soil

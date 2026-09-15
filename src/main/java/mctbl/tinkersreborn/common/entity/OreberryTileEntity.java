@@ -19,6 +19,16 @@ public class OreberryTileEntity extends TileEntity {
         }
     }
 
+    public boolean harvest() {
+        if (!this.worldObj.isRemote && this.state == 3) {
+            this.state--;
+            this.markDirty();
+            this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);

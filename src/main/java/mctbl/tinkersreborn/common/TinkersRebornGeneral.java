@@ -75,6 +75,7 @@ import mctbl.tinkersreborn.common.items.GoldenHead;
 import mctbl.tinkersreborn.common.items.HeartCanister;
 import mctbl.tinkersreborn.common.items.Jerky;
 import mctbl.tinkersreborn.common.items.ManualItem;
+import mctbl.tinkersreborn.common.items.Oreberries;
 import mctbl.tinkersreborn.common.items.StrangeFood;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -132,6 +133,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Block oreGravel;
     public static Block dryingRack;
     public static Block oreberryBush;
+    public static Item oreberries;
 
     // Chest hooks
     public static ChestGenHooks tinkerHouseChest;
@@ -211,6 +213,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         oreberryBush = new OreberryBushBlock();
         GameRegistry.registerBlock(oreberryBush, OreberryBushItemBlock.class, oreberryBush.getUnlocalizedName());
         GameRegistry.registerTileEntity(OreberryTileEntity.class, oreberryBush.getUnlocalizedName());
+
+        oreberries = new Oreberries();
+        GameRegistry.registerItem(oreberries, oreberries.getUnlocalizedName());
 
         heartCanister = new HeartCanister();
         GameRegistry.registerItem(heartCanister, heartCanister.getUnlocalizedName());
