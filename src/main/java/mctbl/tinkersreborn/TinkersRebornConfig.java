@@ -58,6 +58,12 @@ public class TinkersRebornConfig {
     public static boolean generateCopperSurface;
     public static boolean generateTinSurface;
     public static boolean generateAluminumSurface;
+    public static boolean generateIronBush;
+    public static boolean generateGoldBush;
+    public static boolean generateCopperBush;
+    public static boolean generateTinBush;
+    public static boolean generateAluminumBush;
+    public static boolean generateEssenceBush;
 
     public static int copperDensity;
     public static int tinDensity;
@@ -69,6 +75,19 @@ public class TinkersRebornConfig {
     public static int coppersRarity;
     public static int tinsRarity;
     public static int aluminumsRarity;
+    public static int ironBushRarity;
+    public static int goldBushRarity;
+    public static int copperBushRarity;
+    public static int tinBushRarity;
+    public static int aluminumBushRarity;
+    public static int essenceBushRarity;
+
+    public static int ironBushDensity;
+    public static int goldBushDensity;
+    public static int copperBushDensity;
+    public static int tinBushDensity;
+    public static int aluminumBushDensity;
+    public static int essenceBushDensity;
 
     public static int islandRarity;
 
@@ -188,6 +207,19 @@ public class TinkersRebornConfig {
         generateAluminumSurface = config.get(WORLD_GEN, "Generate Surface Aluminum", true)
             .getBoolean();
 
+        generateIronBush = config.get(WORLD_GEN, "Generate Iron Bushes", true)
+            .getBoolean();
+        generateGoldBush = config.get(WORLD_GEN, "Generate Gold Bushes", true)
+            .getBoolean();
+        generateCopperBush = config.get(WORLD_GEN, "Generate Copper Bushes", true)
+            .getBoolean();
+        generateTinBush = config.get(WORLD_GEN, "Generate Tin Bushes", true)
+            .getBoolean();
+        generateAluminumBush = config.get(WORLD_GEN, "Generate Aluminum Bushes", true)
+            .getBoolean();
+        generateEssenceBush = config.get(WORLD_GEN, "Generate Essence Bushes", true)
+            .getBoolean();
+
         copperDensity = config.get(WORLD_GEN, "Copper Underground Density", 2, "Density: Chances per chunk")
             .getInt();
         tinDensity = config.get(WORLD_GEN, "Tin Underground Density", 2)
@@ -207,6 +239,31 @@ public class TinkersRebornConfig {
         tinsRarity = config.get(WORLD_GEN, "Tin Surface Rarity", 100)
             .getInt();
         aluminumsRarity = config.get(WORLD_GEN, "Aluminum Surface Rarity", 50)
+            .getInt();
+        ironBushRarity = config.get(WORLD_GEN, "Iron Bush Rarity", 5)
+            .getInt();
+        goldBushRarity = config.get(WORLD_GEN, "Gold Bush Rarity", 8)
+            .getInt();
+        copperBushRarity = config.get(WORLD_GEN, "Copper Bush Rarity", 3)
+            .getInt();
+        tinBushRarity = config.get(WORLD_GEN, "Tin Bush Rarity", 3)
+            .getInt();
+        aluminumBushRarity = config.get(WORLD_GEN, "Aluminum Bush Rarity", 2)
+            .getInt();
+        essenceBushRarity = config.get(WORLD_GEN, "Essence Bush Rarity", 5)
+            .getInt();
+
+        ironBushDensity = config.get(WORLD_GEN, "Iron Bush Density", 1)
+            .getInt();
+        goldBushDensity = config.get(WORLD_GEN, "Gold Bush Density", 1)
+            .getInt();
+        copperBushDensity = config.get(WORLD_GEN, "Copper Bush Density", 2)
+            .getInt();
+        tinBushDensity = config.get(WORLD_GEN, "Tin Bush Density", 2)
+            .getInt();
+        aluminumBushDensity = config.get(WORLD_GEN, "Aluminum Bush Density", 2)
+            .getInt();
+        essenceBushDensity = config.get(WORLD_GEN, "Essence Bush Density", 1)
             .getInt();
 
         // Slime pools

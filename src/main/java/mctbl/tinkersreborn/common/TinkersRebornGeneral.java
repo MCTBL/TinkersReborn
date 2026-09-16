@@ -300,6 +300,13 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         OreDictionary.registerOre("torchStone", new ItemStack(stoneTorch));
 
+        OreDictionary.registerOre("nuggetIron", new ItemStack(oreberries, 1, 0));
+        OreDictionary.registerOre("nuggetGold", new ItemStack(oreberries, 1, 1));
+        OreDictionary.registerOre("nuggetCopper", new ItemStack(oreberries, 1, 2));
+        OreDictionary.registerOre("nuggetTin", new ItemStack(oreberries, 1, 3));
+        OreDictionary.registerOre("nuggetAluminum", new ItemStack(oreberries, 1, 4));
+        OreDictionary.registerOre("nuggetAluminium", new ItemStack(oreberries, 1, 4));
+
         // Vanilla stuff
         OreDictionary.registerOre("slimeball", new ItemStack(Items.slime_ball));
         OreDictionary.registerOre("blockGlass", new ItemStack(Blocks.glass));
