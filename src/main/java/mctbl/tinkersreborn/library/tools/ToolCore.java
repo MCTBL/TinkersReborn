@@ -579,7 +579,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     /**
      * Builds the NBT for new tinkers tools, and this NBT is for render
-     * 
+     *
      * @param materials
      * @return
      */
@@ -737,7 +737,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     /**
      * Called when an AOE block is broken by the tool. Use to oveerride the block
      * breaking logic
-     * 
+     *
      * @param tool   Tool ItemStack
      * @param world  World instance
      * @param player Player instance
@@ -750,7 +750,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     /**
      * Called to break the base block, return false to perform no breaking
-     * 
+     *
      * @param itemstack Tool ItemStack
      * @param pos       Current position
      * @param player    Player instance
@@ -782,7 +782,10 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
         BlockPos blockPos = BlockPos.of(x, y, z);
         ToolTagsHelper.getTraitsOrdered(stack)
             .forEach(trait -> trait.afterBlockBreak(stack, world, block, blockPos, player, wasEffective));
-        ToolTagsHelper.damageTool(stack, damage, player);
+
+        if ((double) block.getBlockHardness(world, x, y, z) != 0.0D) {
+            ToolTagsHelper.damageTool(stack, damage, player);
+        }
 
         if (TinkersRebornConfig.toolLevelingEnable && wasEffective) {
             // bonus xp for mining ores!
@@ -793,7 +796,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     /**
      * For tool station display
-     * 
+     *
      * @param stack
      * @return
      */
@@ -865,7 +868,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     /**
      * For tooltip display
-     * 
+     *
      * @param stack
      * @param list
      */
@@ -1136,7 +1139,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
 
     /**
      * for sharpening kit
-     * 
+     *
      * @param material
      * @param repairItems
      * @return
