@@ -57,9 +57,9 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
 
     protected void heatItemsPost() {}
 
-    protected void tickPre() {};
+    protected void tickPre() {}
 
-    protected void tickPost() {};
+    protected void tickPost() {}
 
     /**
      * check the whole structure
