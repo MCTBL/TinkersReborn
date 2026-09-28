@@ -23,7 +23,7 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
     @Override
     public void updateEntity() {
         if (this.worldObj.isRemote) return;
-        tickPre();
+        this.tickPre();
         if ((!this.getActive() && this.tickCounter == 0) || this.needsUpdate) {
             // check for once per second
             this.needsUpdate = false;
@@ -34,9 +34,9 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
             // this also updates the needsFuel flag, which causes us to consume fuel at the
             // end.
             // This way fuel is only consumed if it's actually needed
-            if (tickCounter % TinkersRebornConfig.heatItemsTickrateSmeltery == 0) {
-                heatItems();
-                heatItemsPost();
+            if (this.tickCounter % TinkersRebornConfig.heatItemsTickrate == 0) {
+                this.heatItems();
+                this.heatItemsPost();
             }
             if (this.needsFuel) {
                 this.consumeFuel();
@@ -51,21 +51,11 @@ public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMu
                 }
             }
         }
-        tickPost();
+        this.tickPost();
         this.tickCounter = (this.tickCounter + 1) % 20;
     }
 
     protected void heatItemsPost() {}
-
-    protected void tickPre() {}
-
-    protected void tickPost() {}
-
-    /**
-     * check the whole structure
-     */
-    @Override
-    public void checkWholeStructureValid() {}
 
     protected void adjustLayers() {
         this.blocksPerLayer = (this.maxPos.x - this.minPos.x + 1) * (this.maxPos.z - this.minPos.z + 1);
