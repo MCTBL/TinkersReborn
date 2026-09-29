@@ -12,6 +12,7 @@ import mctbl.tinkersreborn.smeltery.model.BlockRenderCastingChannel;
 import mctbl.tinkersreborn.smeltery.model.CastingBasinSpecialRender;
 import mctbl.tinkersreborn.smeltery.model.CastingBlockRender;
 import mctbl.tinkersreborn.smeltery.model.CastingTableSpecialRenderer;
+import mctbl.tinkersreborn.smeltery.model.PaneConnectedRender;
 import mctbl.tinkersreborn.smeltery.model.SmelteryRender;
 import mctbl.tinkersreborn.smeltery.model.TankItemRenderer;
 import mctbl.tinkersreborn.smeltery.model.TankRender;
@@ -27,6 +28,7 @@ public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxy
         RenderingRegistry.registerBlockHandler(new TankRender());
         RenderingRegistry.registerBlockHandler(new SmelteryRender());
         RenderingRegistry.registerBlockHandler(new CastingBlockRender());
+        RenderingRegistry.registerBlockHandler(new PaneConnectedRender());
 
         // RenderingRegistry.registerBlockHandler(new PaneRender());
         // RenderingRegistry.registerBlockHandler(new PaneConnectedRender());

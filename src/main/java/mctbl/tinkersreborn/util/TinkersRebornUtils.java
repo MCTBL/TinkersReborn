@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOre;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -167,18 +168,26 @@ public class TinkersRebornUtils {
     }
 
     public static void dropItemAtPos(World world, int x, int y, int z, ItemStack stack) {
-        float f = 0.7F;
-        double d0 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-        double d1 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-        double d2 = (double) (world.rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+        if (!world.isRemote) {
+            float f = 0.7F;
+            double d0 = (world.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
+            double d1 = (world.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
+            double d2 = (world.rand.nextFloat() * f) + (1.0F - f) * 0.5D;
 
-        EntityItem entityitem = new EntityItem(world, (double) x + d0, (double) y + d1, (double) z + d2, stack);
-        entityitem.delayBeforeCanPickup = 10;
-        world.spawnEntityInWorld(entityitem);
+            EntityItem entityitem = new EntityItem(world, x + d0, y + d1, z + d2, stack);
+            entityitem.delayBeforeCanPickup = 10;
+            world.spawnEntityInWorld(entityitem);
+        }
     }
 
     public static void drropItemAtPlayer(EntityPlayer player, ItemStack stack) {
         dropItemAtPos(player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ, stack);
+    }
+
+    public static void spawnEntity(World world, Entity entity) {
+        if (!world.isRemote) {
+            world.spawnEntityInWorld(entity);
+        }
     }
 
     /**

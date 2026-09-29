@@ -33,6 +33,7 @@ import mctbl.tinkersreborn.common.manuals.pages.TextPage.TextPageProcessor;
 import mctbl.tinkersreborn.common.manuals.pages.ToolsNavigationPage.ToolsNavigationPageProcessor;
 import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.common.model.DryingRackSpecialRender;
+import mctbl.tinkersreborn.common.model.OreberryBushRender;
 import mctbl.tinkersreborn.common.model.SlimeRender;
 import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.ManualBookData;
@@ -63,6 +64,7 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
     public void init() {
         registerRender();
         RenderingRegistry.registerBlockHandler(new DryingRackRender());
+        RenderingRegistry.registerBlockHandler(new OreberryBushRender());
         ClientRegistry.bindTileEntitySpecialRenderer(DryingRackLogic.class, new DryingRackSpecialRender());
 
         HealthBarRenderer healthBarRenderer = new HealthBarRenderer();

@@ -2,6 +2,8 @@ package mctbl.tinkersreborn.smeltery.model;
 
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.Tessellator;
@@ -149,6 +151,7 @@ public class BlockRenderCastingChannel implements ISimpleBlockRenderingHandler {
         return false;
     }
 
+    @Nullable
     private double[] getRenderboundsForLiquid(ForgeDirection dir) {
         switch (dir) {
             case NORTH:

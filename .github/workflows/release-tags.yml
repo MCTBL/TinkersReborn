@@ -1,7 +1,9 @@
 
 name: Release tagged build
 
-on: workflow_dispatch
+on: 
+  push:
+    tags: [ '*' ]
 
 permissions:
   contents: write

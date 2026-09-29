@@ -44,6 +44,7 @@ import mctbl.tinkersreborn.common.blocks.GravelOre;
 import mctbl.tinkersreborn.common.blocks.GraveyardSoil;
 import mctbl.tinkersreborn.common.blocks.Grout;
 import mctbl.tinkersreborn.common.blocks.MetalOre;
+import mctbl.tinkersreborn.common.blocks.OreberryBushBlock;
 import mctbl.tinkersreborn.common.blocks.SlimeSand;
 import mctbl.tinkersreborn.common.blocks.StoneTorch;
 import mctbl.tinkersreborn.common.blocks.TinkersRebornMetalBlock;
@@ -54,13 +55,16 @@ import mctbl.tinkersreborn.common.blocks.slime.SlimeGrass;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeLeaves;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeSapling;
 import mctbl.tinkersreborn.common.blocks.slime.SlimeTallGrass;
+import mctbl.tinkersreborn.common.blocks.slime.SlimeVine;
 import mctbl.tinkersreborn.common.entity.BlueSlime;
 import mctbl.tinkersreborn.common.entity.DryingRackLogic;
 import mctbl.tinkersreborn.common.entity.KingBlueSlime;
+import mctbl.tinkersreborn.common.entity.OreberryTileEntity;
 import mctbl.tinkersreborn.common.events.TinkersRebornMobEventHandler;
 import mctbl.tinkersreborn.common.events.TinkersRebornPlayerHandler;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
 import mctbl.tinkersreborn.common.itemblocks.MetalOreItemBlock;
+import mctbl.tinkersreborn.common.itemblocks.OreberryBushItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeGelItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeGrassItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeLeavesItemBlock;
@@ -71,6 +75,7 @@ import mctbl.tinkersreborn.common.items.GoldenHead;
 import mctbl.tinkersreborn.common.items.HeartCanister;
 import mctbl.tinkersreborn.common.items.Jerky;
 import mctbl.tinkersreborn.common.items.ManualItem;
+import mctbl.tinkersreborn.common.items.Oreberries;
 import mctbl.tinkersreborn.common.items.StrangeFood;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -118,6 +123,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Block slimeTallGrass;
     public static SlimeLeaves slimeLeaves;
     public static SlimeSapling slimeSapling;
+    public static Block slimeVine;
 
     public static TinkersRebornFluid bloodFluid;
     public static TinkersRebornFluid enderFluid;
@@ -126,6 +132,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Block oreSlag;
     public static Block oreGravel;
     public static Block dryingRack;
+    public static Block oreberryBush;
+    public static Item oreberries;
 
     // Chest hooks
     public static ChestGenHooks tinkerHouseChest;
@@ -187,6 +195,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(slimeLeaves, SlimeLeavesItemBlock.class, slimeLeaves.getUnlocalizedName());
         slimeSapling = new SlimeSapling();
         GameRegistry.registerBlock(slimeSapling, SlimeSaplingItemBlock.class, slimeSapling.getUnlocalizedName());
+        slimeVine = new SlimeVine();
+        GameRegistry.registerBlock(slimeVine, slimeVine.getUnlocalizedName());
 
         oreSlag = new MetalOre();
         GameRegistry.registerBlock(oreSlag, MetalOreItemBlock.class, oreSlag.getUnlocalizedName());
@@ -199,6 +209,13 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         dryingRack = new DryingRackBlock();
         GameRegistry.registerBlock(dryingRack, dryingRack.getUnlocalizedName());
         GameRegistry.registerTileEntity(DryingRackLogic.class, dryingRack.getUnlocalizedName());
+
+        oreberryBush = new OreberryBushBlock();
+        GameRegistry.registerBlock(oreberryBush, OreberryBushItemBlock.class, oreberryBush.getUnlocalizedName());
+        GameRegistry.registerTileEntity(OreberryTileEntity.class, oreberryBush.getUnlocalizedName());
+
+        oreberries = new Oreberries();
+        GameRegistry.registerItem(oreberries, oreberries.getUnlocalizedName());
 
         heartCanister = new HeartCanister();
         GameRegistry.registerItem(heartCanister, heartCanister.getUnlocalizedName());
@@ -282,6 +299,13 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         OreDictionary.registerOre("craftingTableWood", craftingTable);
 
         OreDictionary.registerOre("torchStone", new ItemStack(stoneTorch));
+
+        OreDictionary.registerOre("nuggetIron", new ItemStack(oreberries, 1, 0));
+        OreDictionary.registerOre("nuggetGold", new ItemStack(oreberries, 1, 1));
+        OreDictionary.registerOre("nuggetCopper", new ItemStack(oreberries, 1, 2));
+        OreDictionary.registerOre("nuggetTin", new ItemStack(oreberries, 1, 3));
+        OreDictionary.registerOre("nuggetAluminum", new ItemStack(oreberries, 1, 4));
+        OreDictionary.registerOre("nuggetAluminium", new ItemStack(oreberries, 1, 4));
 
         // Vanilla stuff
         OreDictionary.registerOre("slimeball", new ItemStack(Items.slime_ball));

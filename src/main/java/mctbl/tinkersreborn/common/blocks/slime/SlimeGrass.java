@@ -30,10 +30,10 @@ public class SlimeGrass extends TinkersRebornBlock {
             0.6f,
             new String[] { "slime/slimegrass_green_top", "slime/slimedirt_blue", "slime/slimegrass_green_blue_side",
                 "slime/slimegrass_green_dirt_side" });
-        setTickRandomly(true);
-        setCreativeTab(TinkersRebornRegistry.blockTab);
-        setLightOpacity(0);
-        setStepSound(Block.soundTypeGrass);
+        this.setTickRandomly(true);
+        this.setCreativeTab(TinkersRebornRegistry.blockTab);
+        this.setLightOpacity(0);
+        this.setStepSound(Block.soundTypeGrass);
     }
 
     @Override

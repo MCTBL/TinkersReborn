@@ -25,6 +25,7 @@ public class TinkersRebornConfig {
     public static String[] metalTypes;
     public static String[] oreTypes;
     public static String[] gravelOreTypes;
+    public static String[] oreberryBushTypes;
 
     public static boolean exportMaterialDefaultConfig;
 
@@ -57,6 +58,12 @@ public class TinkersRebornConfig {
     public static boolean generateCopperSurface;
     public static boolean generateTinSurface;
     public static boolean generateAluminumSurface;
+    public static boolean generateIronBush;
+    public static boolean generateGoldBush;
+    public static boolean generateCopperBush;
+    public static boolean generateTinBush;
+    public static boolean generateAluminumBush;
+    public static boolean generateEssenceBush;
 
     public static int copperDensity;
     public static int tinDensity;
@@ -68,6 +75,19 @@ public class TinkersRebornConfig {
     public static int coppersRarity;
     public static int tinsRarity;
     public static int aluminumsRarity;
+    public static int ironBushRarity;
+    public static int goldBushRarity;
+    public static int copperBushRarity;
+    public static int tinBushRarity;
+    public static int aluminumBushRarity;
+    public static int essenceBushRarity;
+
+    public static int ironBushDensity;
+    public static int goldBushDensity;
+    public static int copperBushDensity;
+    public static int tinBushDensity;
+    public static int aluminumBushDensity;
+    public static int essenceBushDensity;
 
     public static int islandRarity;
 
@@ -114,6 +134,9 @@ public class TinkersRebornConfig {
 
     public static String[] manualNames;
 
+    public static boolean disgustingXPBerries;
+    public static String[] disgustingXPBerryEffects;
+
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
             "Alumite", "Steel", "Ender" };
@@ -121,6 +144,8 @@ public class TinkersRebornConfig {
         oreTypes = new String[] { "nether_cobalt", "nether_ardite", "ore_copper", "ore_tin", "ore_aluminum" };
 
         gravelOreTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum" };
+
+        oreberryBushTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum", "essence" };
 
         Configuration config = new Configuration(new File(location + "/Tinkersreborn/TinkersRebornGeneral.cfg"));
 
@@ -182,6 +207,19 @@ public class TinkersRebornConfig {
         generateAluminumSurface = config.get(WORLD_GEN, "Generate Surface Aluminum", true)
             .getBoolean();
 
+        generateIronBush = config.get(WORLD_GEN, "Generate Iron Bushes", true)
+            .getBoolean();
+        generateGoldBush = config.get(WORLD_GEN, "Generate Gold Bushes", true)
+            .getBoolean();
+        generateCopperBush = config.get(WORLD_GEN, "Generate Copper Bushes", true)
+            .getBoolean();
+        generateTinBush = config.get(WORLD_GEN, "Generate Tin Bushes", true)
+            .getBoolean();
+        generateAluminumBush = config.get(WORLD_GEN, "Generate Aluminum Bushes", true)
+            .getBoolean();
+        generateEssenceBush = config.get(WORLD_GEN, "Generate Essence Bushes", true)
+            .getBoolean();
+
         copperDensity = config.get(WORLD_GEN, "Copper Underground Density", 2, "Density: Chances per chunk")
             .getInt();
         tinDensity = config.get(WORLD_GEN, "Tin Underground Density", 2)
@@ -201,6 +239,31 @@ public class TinkersRebornConfig {
         tinsRarity = config.get(WORLD_GEN, "Tin Surface Rarity", 100)
             .getInt();
         aluminumsRarity = config.get(WORLD_GEN, "Aluminum Surface Rarity", 50)
+            .getInt();
+        ironBushRarity = config.get(WORLD_GEN, "Iron Bush Rarity", 5)
+            .getInt();
+        goldBushRarity = config.get(WORLD_GEN, "Gold Bush Rarity", 8)
+            .getInt();
+        copperBushRarity = config.get(WORLD_GEN, "Copper Bush Rarity", 3)
+            .getInt();
+        tinBushRarity = config.get(WORLD_GEN, "Tin Bush Rarity", 3)
+            .getInt();
+        aluminumBushRarity = config.get(WORLD_GEN, "Aluminum Bush Rarity", 2)
+            .getInt();
+        essenceBushRarity = config.get(WORLD_GEN, "Essence Bush Rarity", 5)
+            .getInt();
+
+        ironBushDensity = config.get(WORLD_GEN, "Iron Bush Density", 1)
+            .getInt();
+        goldBushDensity = config.get(WORLD_GEN, "Gold Bush Density", 1)
+            .getInt();
+        copperBushDensity = config.get(WORLD_GEN, "Copper Bush Density", 2)
+            .getInt();
+        tinBushDensity = config.get(WORLD_GEN, "Tin Bush Density", 2)
+            .getInt();
+        aluminumBushDensity = config.get(WORLD_GEN, "Aluminum Bush Density", 2)
+            .getInt();
+        essenceBushDensity = config.get(WORLD_GEN, "Essence Bush Density", 1)
             .getInt();
 
         // Slime pools
@@ -469,6 +532,18 @@ public class TinkersRebornConfig {
 
         manualNames = config.get(GENERAL, "Manual Names", new String[] { "materialsandyou" })
             .getStringList();
+
+        disgustingXPBerries = config.getBoolean(
+            "Allow effects for consumption",
+            GENERAL,
+            false,
+            "Grants effects to players when consuming XP berries");
+        disgustingXPBerryEffects = config.getStringList(
+            "Applied effects",
+            GENERAL,
+            new String[] { "9, 200, 1, 1200, 2, false", "17, 160, 1, 1000, 3, false", "DAMAGE, 0.5, false ",
+                "9, 400, 2, 1200, 2, true", "17, 320, 1, 1000, 3, true", "DAMAGE, 0.3, true" },
+            " If an effect fails to apply, check the console for information \n FORMAT: \n potionID (Can also put \"DAMAGE\" to hurt the player instead, \n effectDuration (in ticks) (or DAMAGE effect strength) , \n initialAmplifier (Exclude if the first parameter is DAMAGE), \n maxDuration (this is the maximum duration the potions can stack in ticks (Exclude if the first parameter is DAMAGE)), \n maxAmplifier (the maximum allowed potionAmplifier with multiple effects uses (Exclude if the first parameter is DAMAGE)), \n stackExclusiveEffect (a true or false value which allows the effect to be only applied when the essence berries are eaten while shift is held (Only works if Allow stackwise consumption = true)");
 
         if (Loader.isModLoaded("angelica")) {
             isAngelicaLoaded = true;
