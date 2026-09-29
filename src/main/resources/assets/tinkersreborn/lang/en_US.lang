@@ -61,6 +61,7 @@ tinkersreborn.MultiBlock.Brick.name=Seared Bricks
 tinkersreborn.MultiBlock.Stone.name=Seared Stone
 tinkersreborn.SmelteryController.name=Smeltery Controller
 tinkersreborn.FurnaceController.name=Furnace Controller
+tinkersreborn.ItemIOHatch.name=Smeltery I/O Hatch
 tinkersreborn.Drain.name=Smeltery Drain
 tinkersreborn.LavaTank.Tank.name=Seared Tank
 tinkersreborn.LavaTank.Gague.name=Seared Glass

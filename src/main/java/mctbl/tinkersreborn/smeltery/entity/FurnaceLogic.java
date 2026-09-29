@@ -1,5 +1,8 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import static mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery.itemIOHatch;
+import static mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery.lavaTank;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,9 +157,15 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
                         continue;
                     }
 
-                    if (block == TinkersRebornSmeltery.lavaTank) {
+                    if (block == lavaTank) {
                         tanks.add(pos);
+                    } else if (block == itemIOHatch) {
+                        TileEntity te = this.worldObj.getTileEntity(pos.x, pos.y, pos.z);
+                        if (te instanceof ItemIOHatchLogic hatch) {
+                            hatch.setFurnace(this);
+                        }
                     }
+
                 }
             }
         }
@@ -166,7 +175,8 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
 
     private boolean validShellBlock(Block block) {
         return (block == this.controller || block == TinkersRebornSmeltery.smelteryBlock
-            || block == TinkersRebornSmeltery.lavaTank);
+            || block == lavaTank
+            || block == TinkersRebornSmeltery.itemIOHatch);
     }
 
     @Override

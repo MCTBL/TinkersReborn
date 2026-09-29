@@ -2,16 +2,15 @@ package mctbl.tinkersreborn.smeltery.inventory;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
 import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
-import net.minecraft.item.crafting.FurnaceRecipes;
 
 public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
 
@@ -86,7 +85,7 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
             }
 
             if (useEndIndex) --k;
-            else ++k;
+            else++k;
         }
 
         return flag;

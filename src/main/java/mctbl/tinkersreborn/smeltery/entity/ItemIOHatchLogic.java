@@ -1,5 +1,8 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import java.util.stream.IntStream;
+
+import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -7,6 +10,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -18,16 +23,10 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
     implements ISidedInventory, ITinkersRebornIFacingLogic {
 
     public ForgeDirection faceDirection;
-    public int mode;
-    public static final int INPUT_MODE = 0, OUTPUT_MODE = 1;
+    public TinkersRebornSearedMultiBlockLogic logic;
 
-    public ItemIOHatchLogic(int mode) {
+    public ItemIOHatchLogic() {
         super(0, 0);
-        if (mode == INPUT_MODE) {
-            inventory = new ItemStack[6];
-            stackSizeLimit = 64;
-        }
-        this.mode = mode;
     }
 
     @Override
@@ -35,10 +34,8 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
         return this.faceDirection;
     }
 
-    public void setInventory(ItemStack[] inventory) {
-        if (mode == INPUT_MODE) {
-            this.inventory = inventory;
-        }
+    public void setFurnace(TinkersRebornSearedMultiBlockLogic furnace) {
+        this.logic = furnace;
     }
 
     @Override
@@ -48,7 +45,15 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
 
     @Override
     public void setFacedDirection(EntityLivingBase player) {
-        int facing = player != null ? MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3 : 0;
+        if (player.rotationPitch < -45.0F) {
+            this.faceDirection = ForgeDirection.DOWN;
+            return;
+        }
+        if (player.rotationPitch > 45.0F) {
+            this.faceDirection = ForgeDirection.UP;
+            return;
+        }
+        int facing = MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3;
         switch (facing) {
             case 0 -> this.faceDirection = ForgeDirection.NORTH;
             case 1 -> this.faceDirection = ForgeDirection.EAST;
@@ -58,44 +63,28 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
         }
     }
 
-    /**
-     * Returns an array containing the indices of the slots that can be accessed by automation on the given side of this
-     * block.
-     *
-     * @param p_94128_1_
-     */
+
     @Override
-    public int[] getAccessibleSlotsFromSide(int p_94128_1_) {
-        if (mode == INPUT_MODE) {
-            return new int[] { 0, 1, 2, 3, 4, 5 };
-        } else return null;
+    public int[] getAccessibleSlotsFromSide(int side) {
+        if (logic == null) return new int[0];
+        if (ForgeDirection.getOrientation(side) != this.faceDirection) return new int[0];
+        return IntStream.range(0, logic.getSizeInventory())
+            .toArray();
     }
 
-    /**
-     * Returns true if automation can insert the given item in the given slot from the given side. Args: Slot, item,
-     * side
-     *
-     * @param p_102007_1_
-     * @param p_102007_2_
-     * @param p_102007_3_
-     */
+
     @Override
-    public boolean canInsertItem(int p_102007_1_, ItemStack p_102007_2_, int p_102007_3_) {
-        return mode == INPUT_MODE;
+    public boolean canInsertItem(int slot, ItemStack stack, int side) {
+        if (ForgeDirection.getOrientation(side) != this.faceDirection) return false;
+        if (logic == null || stack == null) return false;
+        return logic.isItemValidForSlot(slot, stack);
     }
 
-    /**
-     * Returns true if automation can extract the given item in the given slot from the given side. Args: Slot, item,
-     * side
-     *
-     * @param p_102008_1_
-     * @param p_102008_2_
-     * @param p_102008_3_
-     */
     @Override
-    public boolean canExtractItem(int p_102008_1_, ItemStack p_102008_2_, int p_102008_3_) {
-        ForgeDirection direction = ForgeDirection.getOrientation(p_102008_3_);
-        return direction == getForgeDirection();
+    public boolean canExtractItem(int slot, ItemStack stack, int side) {
+        if (ForgeDirection.getOrientation(side) != this.faceDirection) return false;
+        if (logic == null || stack == null) return false;
+        return this.logic.getTemperature(side) <= 0;
     }
 
     /**
@@ -103,7 +92,7 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public int getSizeInventory() {
-        return mode == INPUT_MODE ? super.getSizeInventory() : 0;
+        return logic != null ? logic.getSizeInventory() : 0;
     }
 
     /**
@@ -113,7 +102,7 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public ItemStack getStackInSlot(int slotIn) {
-        return mode == INPUT_MODE ? super.getStackInSlot(slotIn) : null;
+        return logic != null ? logic.getStackInSlot(slotIn) : null;
     }
 
     /**
@@ -125,7 +114,7 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        return mode == INPUT_MODE ? super.decrStackSize(index, count) : null;
+        return logic != null ? logic.decrStackSize(index, count) : null;
     }
 
     /**
@@ -136,14 +125,12 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public ItemStack getStackInSlotOnClosing(int index) {
-        return mode == INPUT_MODE ? super.getStackInSlotOnClosing(index) : null;
+        return logic != null ? logic.getStackInSlotOnClosing(index) : null;
     }
 
     @Override
     protected String getDefaultName() {
-        if (mode == INPUT_MODE) {
-            return "InputHatch";
-        } else return "OutputHatch";
+        return "IOHatch";
     }
 
     /**
@@ -154,8 +141,8 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        if (mode == INPUT_MODE) {
-            super.setInventorySlotContents(index, stack);
+        if (logic != null) {
+            logic.setInventorySlotContents(index, stack);
         }
     }
 
@@ -164,9 +151,7 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public String getInventoryName() {
-        if (mode == INPUT_MODE) {
-            return "InputHatch";
-        } else return "OutputHatch";
+        return getDefaultName();
     }
 
     /**
@@ -182,7 +167,7 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public int getInventoryStackLimit() {
-        return mode == INPUT_MODE ? super.getInventoryStackLimit() : 0;
+        return logic != null ? logic.getInventoryStackLimit() : 64;
     }
 
     /**
@@ -192,22 +177,22 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        if (mode == INPUT_MODE) {
-            return super.isUseableByPlayer(player);
-        }
-        return false;
+        return super.isUseableByPlayer(player);
     }
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        if (mode == INPUT_MODE) {}
         return null;
     }
 
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        if (mode == INPUT_MODE) {}
         return null;
+    }
+
+    @Override
+    public boolean canDropInventorySlot(int slot) {
+        return false;
     }
 
     @Override
@@ -220,6 +205,33 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
 
     }
 
+    @Override
+    public void writeToNBT(NBTTagCompound tags) {
+        super.writeToNBT(tags);
+        if (this.logic != null) {
+            tags.setInteger("MasterX", this.logic.xCoord);
+            tags.setInteger("MasterY", this.logic.yCoord);
+            tags.setInteger("MasterZ", this.logic.zCoord);
+        }
+        byte index = (byte) this.faceDirection.ordinal();
+        tags.setByte("Direction", index);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tags) {
+        super.readFromNBT(tags);
+        if (tags.hasKey("MasterX") && this.worldObj != null) {
+            TileEntity te = this.worldObj
+                .getTileEntity(tags.getInteger("MasterX"), tags.getInteger("MasterY"), tags.getInteger("MasterZ"));
+            if (te instanceof FurnaceLogic f) {
+                this.logic = f;
+            }
+        }
+        if (tags.hasKey("Direction")) {
+            this.faceDirection = ForgeDirection.getOrientation(tags.getInteger("Direction"));
+        }
+    }
+
     /**
      * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
      *
@@ -228,9 +240,6 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
      */
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        if (mode == INPUT_MODE) {
-            return super.isItemValidForSlot(index, stack);
-        }
-        return false;
+        return logic != null && logic.isItemValidForSlot(index, stack);
     }
 }
