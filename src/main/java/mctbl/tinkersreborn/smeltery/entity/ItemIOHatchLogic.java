@@ -2,7 +2,6 @@ package mctbl.tinkersreborn.smeltery.entity;
 
 import java.util.stream.IntStream;
 
-import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,6 +17,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
 
 public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
     implements ISidedInventory, ITinkersRebornIFacingLogic {
@@ -63,7 +63,6 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
         }
     }
 
-
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
         if (logic == null) return new int[0];
@@ -71,7 +70,6 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
         return IntStream.range(0, logic.getSizeInventory())
             .toArray();
     }
-
 
     @Override
     public boolean canInsertItem(int slot, ItemStack stack, int side) {
