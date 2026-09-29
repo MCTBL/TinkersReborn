@@ -33,7 +33,20 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
 
     @Override
     public int getInventoryStackLimit() {
-        return 16;
+        return 64;
+    }
+
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
+        if (!super.isItemValidForSlot(slot, itemstack)) return false;
+        if (itemstack == null) return false;
+        ItemStack result = FurnaceRecipes.smelting()
+            .getSmeltingResult(itemstack);
+        if (result == null || result.stackSize <= 0) return false;
+        ItemStack existing = this.getStackInSlot(slot);
+        int cap = Math.min(16, 64 / result.stackSize);
+        int amount = itemstack.stackSize + (existing != null ? existing.stackSize : 0);
+        return amount <= cap;
     }
 
     @Override
@@ -259,8 +272,8 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
             .getSmeltingResult(stack);
         if (result != null) {
             result = result.copy();
-            int amount = result.stackSize == 0 ? 1 : result.stackSize;
-            result.stackSize = stack.stackSize * amount;
+            int amount = stack.stackSize;
+            result.stackSize *= amount;
             setInventorySlotContents(slot, result);
             return true;
         }

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 
 import org.apache.logging.log4j.LogManager;
@@ -82,6 +85,7 @@ public class TinkersReborn {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         l.forEach(m -> m.init(event));
+        GameRegistry.addSmelting(Blocks.dirt,new ItemStack(Blocks.iron_bars,33),0.5f);
     }
 
     @EventHandler

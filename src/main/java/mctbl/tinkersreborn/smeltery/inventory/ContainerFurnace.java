@@ -1,11 +1,17 @@
 package mctbl.tinkersreborn.smeltery.inventory;
 
+import javax.annotation.Nonnull;
+
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
 import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
+import net.minecraft.item.crafting.FurnaceRecipes;
 
 public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
 
@@ -22,6 +28,68 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
         addPlayerInventory(inventoryPlayer, 8, 115);
 
         oldHeats = new int[tile.getSizeInventory()];
+    }
+
+    @Override
+    public boolean canMergeSlot(ItemStack stack, Slot slotIn) {
+        if (isFurnaceSlot(slotIn)) {
+            ItemStack result = FurnaceRecipes.smelting()
+                .getSmeltingResult(stack);
+            return result != null;
+        }
+        return super.canMergeSlot(stack, slotIn);
+    }
+
+    private boolean isFurnaceSlot(Slot slot) {
+        return slot.inventory == this.inventory;
+    }
+
+    @Override
+    protected boolean mergeItemStackMove(@Nonnull ItemStack stack, int startIndex, int endIndex, boolean useEndIndex) {
+        if (stack.stackSize <= 0) return false;
+
+        boolean flag = false;
+        int k = useEndIndex ? endIndex - 1 : startIndex;
+
+        while ((!useEndIndex && k < endIndex) || (useEndIndex && k >= startIndex)) {
+            Slot slot = this.inventorySlots.get(k);
+            ItemStack existing = slot.getStack();
+
+            if (existing == null || existing.stackSize == 0) {
+                if (this.isFurnaceSlot(slot)) {
+                    int cap = ContainerFurnaceSideInventory.getMaxStackForItem(stack);
+                    if (cap <= 0) return false;
+                    int amount = Math.min(cap, stack.stackSize);
+                    amount = Math.min(amount, slot.getSlotStackLimit());
+                    if (amount <= 0) return false;
+
+                    slot.putStack(stack.splitStack(amount));
+                    slot.onSlotChanged();
+                    flag = true;
+                    if (stack.stackSize == 0) break;
+                } else {
+                    int limit = slot.getSlotStackLimit();
+                    ItemStack stack2 = stack.copy();
+                    if (stack2.stackSize > limit) {
+                        stack2.stackSize = limit;
+                        stack.stackSize -= limit;
+                    } else {
+                        stack.stackSize = 0;
+                    }
+                    if (slot.isItemValid(stack2) && this.canMergeSlot(stack2, slot)) {
+                        slot.putStack(stack2);
+                        slot.onSlotChanged();
+                        flag = true;
+                        if (stack.stackSize == 0) break;
+                    }
+                }
+            }
+
+            if (useEndIndex) --k;
+            else ++k;
+        }
+
+        return flag;
     }
 
     @Override
