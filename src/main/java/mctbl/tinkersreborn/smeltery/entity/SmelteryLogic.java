@@ -83,7 +83,7 @@ public class SmelteryLogic extends TinkersRebornSearedMultiBlockLogic implements
     }
 
     @Override
-    protected void tickPre() {
+    public void tickPre() {
         if (this.tickCounter == 0 && getActive()) {
             this.interactWithEntitiesInside();
         }
