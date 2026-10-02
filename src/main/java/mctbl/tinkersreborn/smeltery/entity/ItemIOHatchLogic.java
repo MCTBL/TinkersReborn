@@ -16,14 +16,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
+import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
-import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
 
 public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
     implements ISidedInventory, ITinkersRebornIFacingLogic {
 
     public ForgeDirection faceDirection;
-    public TinkersRebornSearedMultiBlockLogic logic;
+    public TinkersRebornHeatableMultiBlockLogic logic;
 
     public ItemIOHatchLogic() {
         super(0, 0);
@@ -34,7 +34,7 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
         return this.faceDirection;
     }
 
-    public void setFurnace(TinkersRebornSearedMultiBlockLogic furnace) {
+    public void setFurnace(TinkersRebornHeatableMultiBlockLogic furnace) {
         this.logic = furnace;
     }
 

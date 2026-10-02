@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
@@ -40,7 +41,7 @@ import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.AlloyRecipe;
-import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
+import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
 import mctbl.tinkersreborn.library.event.TinkerSmelteryEvent;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
@@ -53,7 +54,7 @@ import mctbl.tinkersreborn.smeltery.network.SmelteryFluidUpdatePacket;
 import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class SmelteryLogic extends TinkersRebornSearedMultiBlockLogic implements IFluidTank {
+public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implements IFluidTank {
 
     public static final DamageSource smelteryDamage = new DamageSource("smeltery").setFireDamage();
 
@@ -154,39 +155,6 @@ public class SmelteryLogic extends TinkersRebornSearedMultiBlockLogic implements
         int yd2 = 1;
 
         List<BlockPos> tempValidBlockList = new ArrayList<>();
-        // while (checkUpper || checkLower) {
-        // if (checkUpper && isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
-        // yd1++;
-        // validLayerCount++;
-        // } else {
-        // checkUpper = false;
-        // }
-        // if (checkLower) {
-        // if (isValidLayer(center, range, center.y - yd2, tempValidBlockList)) {
-        // yd2++;
-        // validLayerCount++;
-        // continue;
-        // } else if (isValidBottom(center, range, center.y - yd2, tempValidBlockList)) {
-        // hasBottmLayer = true;
-        // }
-        // checkLower = false;
-        // }
-        // }
-        //
-        // if (hasBottmLayer && validLayerCount > 0 && !this.lavaTanks.isEmpty()) {
-        // this.activeLavaTank = this.lavaTanks.get(0);
-        // this.setActive(true);
-        //
-        // this.minPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
-        // this.maxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
-        //
-        // this.adjustLayers();
-        //
-        // for (BlockPos b : tempValidBlockList) {
-        // TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
-        // if (tempEntiry instanceof MultiServantLogic servant) servant.overrideMaster(masterPos);
-        // }
-        // }
         while (checkUpper || checkLower) {
             if (checkUpper) {
                 if (isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
@@ -439,7 +407,8 @@ public class SmelteryLogic extends TinkersRebornSearedMultiBlockLogic implements
 
     @Override
     public int fill(FluidStack resource, boolean doFill) {
-        int canFill = Math.max(0, Math.min(resource.amount, this.maxMoltenMetalAmount - this.currentMoltenMetalAmount));
+        int canFill = MathHelper
+            .clamp_int(resource.amount, 0, this.maxMoltenMetalAmount - this.currentMoltenMetalAmount);
 
         if (doFill) {
             boolean isAdded = false;

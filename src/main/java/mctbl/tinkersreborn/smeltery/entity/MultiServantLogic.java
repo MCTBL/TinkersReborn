@@ -19,6 +19,7 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
     BlockPos master;
     Block masterBlock;
 
+    @Override
     public boolean canUpdate() {
         return false;
     }
@@ -73,7 +74,6 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
     @Override
     public void invalidateMaster(IMasterLogic master, World w, int x, int y, int z) {
         hasMaster = false;
-        master = null;
     }
 
     public void notifyMasterOfChange() {

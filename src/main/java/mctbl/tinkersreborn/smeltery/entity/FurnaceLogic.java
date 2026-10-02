@@ -19,14 +19,14 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import mctbl.tinkersreborn.library.entity.TinkersRebornSearedMultiBlockLogic;
+import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.gui.GuiFurnace;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerFurnace;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
+public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
 
     private static final int MAX_SMELTERY_SIZE = 11;
 
@@ -300,31 +300,16 @@ public class FurnaceLogic extends TinkersRebornSearedMultiBlockLogic {
 
     @Override
     protected int calculateInnerBlockCount() {
-        int w = Math.max(1, this.maxPos.getX() - this.minPos.getX());
-        int h = Math.max(1, this.maxPos.getY() - this.minPos.getY());
-        int z = Math.max(1, this.maxPos.getZ() - this.minPos.getZ());
-        return 9 + (3 * w * h * z);
-    }
-
-    @Override
-    public void checkSteppingingValid() {
-        super.checkSteppingingValid();
-    }
-
-    @Override
-    public void stepNextInnerPos() {
-        super.stepNextInnerPos();
+        return super.calculateInnerBlockCount() * 3 + 9;
     }
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        if (!getActive()) return null;
         return new ContainerFurnace(inventoryplayer, this);
     }
 
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        if (!getActive()) return null;
         return new GuiFurnace((ContainerFurnace) getGuiContainer(inventoryplayer, world, x, y, z), this);
     }
 }

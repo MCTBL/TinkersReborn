@@ -10,13 +10,13 @@ import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 
-public abstract class TinkersRebornSearedMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic {
+public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic {
 
     public int blocksPerLayer;
     public int multiLayers;
     protected Block controller;
 
-    protected TinkersRebornSearedMultiBlockLogic(String name, Block block) {
+    protected TinkersRebornHeatableMultiBlockLogic(String name, Block block) {
         super(name);
         this.controller = block;
     }
