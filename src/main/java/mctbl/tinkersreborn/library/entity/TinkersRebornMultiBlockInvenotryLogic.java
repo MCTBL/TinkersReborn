@@ -219,10 +219,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         if (tank != null && tank.getFluid() != null) {
             if (tank.getFluidAmount() > 0 && TinkersRebornRegistry.isSmelteryFuel(tank.getFluid())) {
                 // if we have a preference, only use that
-                if (this.currentFuel == null || tank.getFluid()
-                    .isFluidEqual(this.currentFuel)) {
-                    return true;
-                }
+                return this.currentFuel == null || tank.getFluid()
+                    .isFluidEqual(this.currentFuel);
             }
         }
 
@@ -245,7 +243,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     /**
      * Calculate the heat required for the given slot
      */
-    protected abstract void updateTempRequired(int index);
+    public abstract void updateTempRequired(int index);
 
     @Override
     public void writeToNBT(NBTTagCompound tags) {
@@ -326,9 +324,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         ItemStack[] oldInv = this.inventory;
         this.inventory = new ItemStack[newSize];
         int loopIdx = Math.min(oldInv.length, this.inventory.length);
-        for (int idx = 0; idx < loopIdx; idx++) {
-            this.inventory[idx] = oldInv[idx];
-        }
+        System.arraycopy(oldInv, 0, this.inventory, 0, loopIdx);
         for (int idx = loopIdx; idx < oldInv.length; idx++) {
             if (oldInv[idx] != null && oldInv[idx].stackSize != 0) TinkersRebornUtils.dropItemAtPos(
                 this.worldObj,

@@ -66,8 +66,7 @@ public abstract class TinkersRebornInventoryBlock extends BlockContainer {
     public void breakBlock(World par1World, int x, int y, int z, Block blockID, int meta) {
         TileEntity te = par1World.getTileEntity(x, y, z);
 
-        if (te != null && te instanceof TinkersRebornInventoryLogic) {
-            TinkersRebornInventoryLogic logic = (TinkersRebornInventoryLogic) te;
+        if (te instanceof TinkersRebornInventoryLogic logic) {
             logic.removeBlock();
             for (int iter = 0; iter < logic.getSizeInventory(); ++iter) {
                 ItemStack stack = logic.getStackInSlot(iter);

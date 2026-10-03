@@ -516,7 +516,7 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
     }
 
     @Override
-    protected void updateTempRequired(int index) {
+    public void updateTempRequired(int index) {
         ItemStack stack = getStackInSlot(index);
         if (!TinkersRebornUtils.isStackEmpty(stack)) {
             MeltingRecipe melting = TinkersRebornRegistry.getMelting(stack);

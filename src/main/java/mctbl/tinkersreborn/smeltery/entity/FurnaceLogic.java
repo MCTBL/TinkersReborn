@@ -150,6 +150,12 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
 
                     Block block = this.worldObj.getBlock(x, y, z);
                     BlockPos pos = BlockPos.of(x, y, z);
+                    if (block == this.controller) {
+                        if (this.getBlockPos()
+                            .equals(pos)) {
+                            continue;
+                        }
+                    }
                     shellBlocks.add(pos);
 
                     if (!this.validShellBlock(block)) {
@@ -174,8 +180,7 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
     }
 
     private boolean validShellBlock(Block block) {
-        return (block == this.controller || block == TinkersRebornSmeltery.smelteryBlock
-            || block == lavaTank
+        return (block == TinkersRebornSmeltery.smelteryBlock || block == lavaTank
             || block == TinkersRebornSmeltery.itemIOHatch);
     }
 
@@ -247,7 +252,7 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
      * @param index
      */
     @Override
-    protected void updateTempRequired(int index) {
+    public void updateTempRequired(int index) {
         ItemStack stack = getStackInSlot(index);
         if (!TinkersRebornUtils.isStackEmpty(stack)) {
             if (FurnaceRecipes.smelting()

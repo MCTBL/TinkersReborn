@@ -75,14 +75,16 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
     public boolean canInsertItem(int slot, ItemStack stack, int side) {
         if (ForgeDirection.getOrientation(side) != this.faceDirection) return false;
         if (logic == null || stack == null) return false;
-        return logic.isItemValidForSlot(slot, stack);
+        boolean flag = logic.isItemValidForSlot(slot, stack);
+        if (flag) this.logic.updateTempRequired(slot);
+        return flag;
     }
 
     @Override
     public boolean canExtractItem(int slot, ItemStack stack, int side) {
         if (ForgeDirection.getOrientation(side) != this.faceDirection) return false;
         if (logic == null || stack == null) return false;
-        return this.logic.getTemperature(side) <= 0;
+        return this.logic.getTemperature(side) < 0;
     }
 
     /**
