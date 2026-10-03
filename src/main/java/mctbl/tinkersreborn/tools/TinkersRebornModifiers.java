@@ -37,6 +37,7 @@ import mctbl.tinkersreborn.tools.modifiers.ModEmerald;
 import mctbl.tinkersreborn.tools.modifiers.ModFiery;
 import mctbl.tinkersreborn.tools.modifiers.ModFins;
 import mctbl.tinkersreborn.tools.modifiers.ModFortify;
+import mctbl.tinkersreborn.tools.modifiers.ModHarvestSize;
 import mctbl.tinkersreborn.tools.modifiers.ModHaste;
 import mctbl.tinkersreborn.tools.modifiers.ModKnockback;
 import mctbl.tinkersreborn.tools.modifiers.ModLuck;
@@ -59,8 +60,8 @@ public class TinkersRebornModifiers {
     public static AbstractModifier modFiery;
     public static AbstractModifier modFins;
     public static AbstractModifier modHaste;
-    // public static AbstractModifier modHarvestWidth;
-    // public static AbstractModifier modHarvestHeight;
+    public static AbstractModifier modHarvestWidth;
+    public static AbstractModifier modHarvestHeight;
     public static AbstractModifier modKnockback;
     public static AbstractModifier modLuck;
     public static AbstractModifier modMendingMoss;
@@ -113,18 +114,19 @@ public class TinkersRebornModifiers {
         modFins.addRecipeMatch(new RecipeMatch.ItemCombination(1, fish, fish));
 
         // modGlowing = registerModifier(new ModGlowing());
-        // modGlowing.addRecipeMatch(new RecipeMatch.ItemCombination(1, glowstoneDust, new ItemStack(Items.ENDER_EYE),
+        // modGlowing.addRecipeMatch(new RecipeMatch.ItemCombination(1, glowstoneDust,
+        // new ItemStack(Items.ENDER_EYE),
         // glowstoneDust));
 
         modHaste = new ModHaste(50);
         modHaste.addItem("dustRedstone");
         modHaste.addItem("blockRedstone", 1, 9);
 
-        // modHarvestWidth = registerModifier(new ModHarvestSize("width"));
-        // modHarvestWidth.addItem(TinkerCommons.matExpanderW, 1, 1);
-        //
-        // modHarvestHeight = registerModifier(new ModHarvestSize("height"));
-        // modHarvestHeight.addItem(TinkerCommons.matExpanderH, 1, 1);
+        modHarvestWidth = new ModHarvestSize("width");
+        modHarvestWidth.addItem(TinkersRebornTools.expanderW, 1, 1);
+
+        modHarvestHeight = new ModHarvestSize("height");
+        modHarvestHeight.addItem(TinkersRebornTools.expanderH, 1, 1);
 
         modKnockback = new ModKnockback();
         modKnockback.addItem(Blocks.piston, 1);
@@ -198,7 +200,8 @@ public class TinkersRebornModifiers {
         // === Creeper → creeper head (skull:4) ===
         TinkersRebornRegistry.registerHeadDrop(EntityCreeper.class, new ItemStack(Items.skull, 1, 4));
 
-        // === Player → player head (skull:3, writes SkullOwner NBT for player identity) ===
+        // === Player → player head (skull:3, writes SkullOwner NBT for player identity)
+        // ===
         TinkersRebornRegistry.registerHeadDrop(EntityPlayerMP.class, entity -> {
             ItemStack stack = new ItemStack(Items.skull, 1, 3);
             if (entity instanceof EntityPlayer player) {

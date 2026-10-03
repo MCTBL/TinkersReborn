@@ -587,6 +587,12 @@ modifier.fins.name=Fins
 modifier.fins.desc=§oSomething's fishy...§r\nAttaching fins to the projectiles makes them travel like normal underwater.
 modifier.fins.text=Let's take a fish... and strap it onto arrows. Of course! It makes them swim underwater! Now you can shoot stuff underwater!
 modifier.fins.effect=Projectiles ignore water\nLogical\nMakes sense
+modifier.harvestheight.name=Height++
+modifier.harvestheight.desc=§oExpand!§r\nIncreases the height of the area affected by your tool. The effect is tool specific.
+modifier.harvestheight.text=Have you ever wished your tool could affect a higher area? Now it can!
+modifier.harvestwidth.name=Width++
+modifier.harvestwidth.desc=§oExpand!§r\nIncreases the width of the area affected by your tool. The effect is tool specific.
+modifier.harvestwidth.text=Have you ever wished your tool could affect a wider area? Now it can!
 
 // aspect
 modifier.aspect.needFreeModifier=Need %s free modifier each time
