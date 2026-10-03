@@ -7,12 +7,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public abstract class AoeHarvestTool extends HarvestTool implements IAoeTool {
 
     protected AoeHarvestTool(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
+        this.categoryTags.add(Category.AOE);
     }
 
     @Override

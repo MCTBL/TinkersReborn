@@ -1,11 +1,14 @@
 package mctbl.tinkersreborn.tools.events;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -19,7 +22,10 @@ import mctbl.tinkersreborn.library.entity.TinkersEntityProperties;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
+import mctbl.tinkersreborn.tools.TinkersRebornModifiers;
+import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.traits.TraitSpiky;
+import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class TinkersRebornToolsEventsHandler {
@@ -27,8 +33,8 @@ public class TinkersRebornToolsEventsHandler {
     @SubscribeEvent
     public void tinkersToolTooltipEvent(ItemTooltipEvent e) {
         if (e.itemStack.getItem() instanceof ToolCore && e.itemStack.getItemDamage() != 0) {
-            // use this to prevent vailnila durability display
 
+            // use this to prevent vailnila durability display
             for (int idx = e.toolTip.size() - 1; idx >= 0; idx--) {
                 String tempStr = e.toolTip.get(idx);
                 if (tempStr != null && tempStr.startsWith("Durability: ")) {
@@ -36,7 +42,6 @@ public class TinkersRebornToolsEventsHandler {
                     break;
                 }
             }
-
         }
     }
 
@@ -112,7 +117,8 @@ public class TinkersRebornToolsEventsHandler {
     }
 
     /**
-     * Handles the onBlock or the onPlayerHurt trait callback. Note that only one of the two is called!
+     * Handles the onBlock or the onPlayerHurt trait callback. Note that only one of
+     * the two is called!
      * 
      * And will calc tool leveling logic
      */
@@ -151,6 +157,52 @@ public class TinkersRebornToolsEventsHandler {
 
         ToolTagsHelper.getTraitsOrdered(tool)
             .forEach(trait -> trait.onRepair(tool, event.amount));
+    }
+
+    @SubscribeEvent
+    public void onExtraBlockBreak(TinkerToolEvent.ExtraBlockBreak event) {
+        if (TinkersRebornModifiers.modHarvestWidth == null || TinkersRebornModifiers.modHarvestHeight == null) {
+            return;
+        }
+
+        boolean width = false;
+        boolean height = false;
+        final List<NBTTagCompound> modifiers = ToolTagsHelper.getModifiersList(event.itemStack);
+        for (NBTTagCompound tag : modifiers) {
+            String modId = tag.getString(ToolTags.IDENTIFIER);
+            if (modId.equals(TinkersRebornModifiers.modHarvestWidth.getIdentifier())) {
+                width = true;
+            } else if (modId.equals(TinkersRebornModifiers.modHarvestHeight.getIdentifier())) {
+                height = true;
+            }
+        }
+
+        if (!width && !height) {
+            return;
+        }
+
+        if (event.tool == TinkersRebornTools.pickaxe || event.tool == TinkersRebornTools.hatchet
+            || event.tool == TinkersRebornTools.shovel
+            || event.tool == TinkersRebornTools.kama) {
+            event.width += width ? 1 : 0;
+            event.height += height ? 1 : 0;
+        } else if (event.tool == TinkersRebornTools.mattock) {
+            int c = 0;
+            if (width) {
+                c++;
+            }
+            if (height) {
+                c++;
+            }
+            event.width += c;
+            event.height += c;
+        } else if (event.tool == TinkersRebornTools.hammer || event.tool == TinkersRebornTools.excavator
+            || event.tool == TinkersRebornTools.lumberAxe
+            || event.tool == TinkersRebornTools.scythe) {
+                event.width += width ? 2 : 0;
+                event.height += height ? 2 : 0;
+                event.distance = 3;
+            }
     }
 
     private boolean isTool(ItemStack stack) {

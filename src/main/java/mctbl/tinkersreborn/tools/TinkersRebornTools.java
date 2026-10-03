@@ -1272,6 +1272,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         ItemStack smelteryBrick = new ItemStack(TinkersRebornSmeltery.smelteryBlock);
         ItemStack toolStationBlock = new ItemStack(toolStation);
 
+        String[] expanderRecipe = new String[] { " A ", "BCB", " A " };
+        ItemStack lapis = new ItemStack(Items.dye, 1, 4);
+
         // for sharpening kit crafting repair recipe
         GameRegistry.addRecipe(new SharpeningKitRepairRecipe());
 
@@ -1379,6 +1382,27 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             new ItemStack(silkyCloth),
             'B',
             new ItemStack(Items.emerald));
+
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                new ItemStack(expanderH),
+                expanderRecipe,
+                'A',
+                Blocks.piston,
+                'B',
+                lapis,
+                'C',
+                "slimeball"));
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                new ItemStack(expanderW),
+                expanderRecipe,
+                'A',
+                lapis,
+                'B',
+                Blocks.piston,
+                'C',
+                "slimeball"));
     }
 
     private static void findToolsFromConfig() {

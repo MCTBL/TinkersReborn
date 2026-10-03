@@ -29,7 +29,7 @@ import mctbl.tinkersreborn.common.particle.Particles;
 import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.event.TinkerToolEvent;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
-import mctbl.tinkersreborn.library.tools.HarvestTool;
+import mctbl.tinkersreborn.library.tools.AoeHarvestTool;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.Category;
@@ -38,7 +38,7 @@ import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
-public class Kama extends HarvestTool {
+public class Kama extends AoeHarvestTool {
 
     public Kama() {
         super("Kama", 3);

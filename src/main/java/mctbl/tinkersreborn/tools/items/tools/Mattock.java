@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
-import mctbl.tinkersreborn.library.tools.HarvestTool;
+import mctbl.tinkersreborn.library.tools.AoeHarvestTool;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
@@ -27,7 +27,7 @@ import mctbl.tinkersreborn.util.TinkersStr;
 import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
-public class Mattock extends HarvestTool {
+public class Mattock extends AoeHarvestTool {
 
     public Mattock() {
         super("Mattock", 3);

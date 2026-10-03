@@ -3,11 +3,11 @@ package mctbl.tinkersreborn.tools.items.tools;
 import net.minecraft.block.Block;
 
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
-import mctbl.tinkersreborn.library.tools.HarvestTool;
+import mctbl.tinkersreborn.library.tools.AoeHarvestTool;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 
-public class Shovel extends HarvestTool {
+public class Shovel extends AoeHarvestTool {
 
     public Shovel() {
         super("Shovel", 3);

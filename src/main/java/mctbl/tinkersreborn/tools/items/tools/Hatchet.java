@@ -13,13 +13,13 @@ import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.particle.Particles;
 import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
-import mctbl.tinkersreborn.library.tools.HarvestTool;
+import mctbl.tinkersreborn.library.tools.AoeHarvestTool;
 import mctbl.tinkersreborn.library.tools.ToolNBT;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
-public class Hatchet extends HarvestTool {
+public class Hatchet extends AoeHarvestTool {
 
     public Hatchet() {
         super("Hatchet", 3);
