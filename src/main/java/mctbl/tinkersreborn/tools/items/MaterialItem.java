@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class MaterialItem extends Item {
 
@@ -37,7 +38,12 @@ public class MaterialItem extends Item {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {}
+    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+        String tooltipsKey = this.getUnlocalizedName() + ".tooltip";
+        if (TinkersRebornUtils.canTranslate(tooltipsKey)) {
+            list.add(TinkersRebornUtils.translate(tooltipsKey));
+        }
+    }
 
     @Override
     public void registerIcons(IIconRegister register) {

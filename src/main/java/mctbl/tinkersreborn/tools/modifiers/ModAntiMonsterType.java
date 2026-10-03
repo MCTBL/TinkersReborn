@@ -16,14 +16,14 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ModAntiMonsterType extends ModifierTrait {
 
-    protected final EnumCreatureAttribute type;
+    protected final EnumCreatureAttribute creatureType;
 
     private final float dmgPerItem;
 
     public ModAntiMonsterType(String identifier, int color, int maxLevel, int countPerLevel,
         EnumCreatureAttribute type) {
         super(identifier, color, maxLevel, countPerLevel);
-        this.type = type;
+        this.creatureType = type;
 
         dmgPerItem = 7f / (float) countPerLevel;
     }
@@ -37,7 +37,7 @@ public class ModAntiMonsterType extends ModifierTrait {
     @Override
     public float damage(ItemStack tool, EntityLivingBase player, EntityLivingBase target, float damage, float newDamage,
         boolean isCritical) {
-        if (target.getCreatureAttribute() == type) {
+        if (target.getCreatureAttribute() == creatureType) {
             NBTTagCompound tag = ToolTagsHelper.getModifierTag(tool, identifier);
             return calcIncreasedDamage(tag, newDamage);
         }

@@ -273,6 +273,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static Item manyullynDust;
     public static Item aluBrassDust;
     public static Item reinforcement;
+    public static Item expanderW;
+    public static Item expanderH;
 
     public static Pattern patternAndCast;
     public static Item creativeModifier; // TODO
@@ -587,6 +589,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         necroticBone = new MaterialItem("NecroticBone", "necroticbone");
         blueSlimeCrystal = new MaterialItem("BlueSlimeCrystal", "blueslimecrystal");
         reinforcement = new MaterialItem("Reinforcement", "reinforcement");
+        expanderW = new MaterialItem("ExpanderWidth", "expander_w");
+        expanderH = new MaterialItem("ExpanderHeight", "expander_h");
 
         paperStack = new MaterialItem("PaperStack", "paperstack");
         bloodyBone = new MaterialItem("BloodyBone", "bloodybone");
@@ -634,6 +638,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(silkyJewel, silkyJewel.getUnlocalizedName());
         GameRegistry.registerItem(necroticBone, necroticBone.getUnlocalizedName());
         GameRegistry.registerItem(reinforcement, reinforcement.getUnlocalizedName());
+        GameRegistry.registerItem(expanderW, expanderW.getUnlocalizedName());
+        GameRegistry.registerItem(expanderH, expanderH.getUnlocalizedName());
         GameRegistry.registerItem(bloodyBone, bloodyBone.getUnlocalizedName());
         GameRegistry.registerItem(paperStack, paperStack.getUnlocalizedName());
         GameRegistry.registerItem(searedBrick, searedBrick.getUnlocalizedName());
