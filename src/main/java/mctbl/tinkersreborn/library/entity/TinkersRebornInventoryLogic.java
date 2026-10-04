@@ -252,7 +252,19 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
 
     @Override
     public void setFacedDirection(EntityLivingBase player) {
-        int facing = player != null ? MathHelper.floor_double((double) (player.rotationYaw / 90F) + 0.5D) & 3 : 0;
+        if (player == null) {
+            this.faceDirection = ForgeDirection.UNKNOWN;
+            return;
+        }
+        if (player.rotationPitch < -45.0F) {
+            this.faceDirection = ForgeDirection.DOWN;
+            return;
+        }
+        if (player.rotationPitch > 45.0F) {
+            this.faceDirection = ForgeDirection.UP;
+            return;
+        }
+        int facing = MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3;
         switch (facing) {
             case 0 -> this.faceDirection = ForgeDirection.NORTH;
             case 1 -> this.faceDirection = ForgeDirection.EAST;

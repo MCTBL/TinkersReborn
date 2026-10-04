@@ -1,50 +1,55 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
-import java.util.stream.IntStream;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
-import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
+import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
 
-public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
-    implements ISidedInventory, ITinkersRebornIFacingLogic {
+public class ItemIOHatchLogic extends MultiServantLogic implements ISidedInventory, ITinkersRebornIFacingLogic {
 
     public ForgeDirection faceDirection;
-    public TinkersRebornHeatableMultiBlockLogic logic;
 
-    public ItemIOHatchLogic() {
-        super(0, 0);
+    @Override
+    public void writeCustomNBT(NBTTagCompound tags) {
+        super.writeCustomNBT(tags);
+        tags.setByte("Direction", (byte) this.faceDirection.ordinal());
     }
 
     @Override
-    public ForgeDirection getForgeDirection() {
-        return this.faceDirection;
+    public void readCustomNBT(NBTTagCompound tags) {
+        super.readCustomNBT(tags);
+        this.faceDirection = ForgeDirection.getOrientation(tags.getByte("Direction"));
     }
 
-    public void setFurnace(TinkersRebornHeatableMultiBlockLogic furnace) {
-        this.logic = furnace;
+    /* Packets */
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound tag = new NBTTagCompound();
+        writeToNBT(tag);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 1, tag);
     }
 
     @Override
-    public void setForgeDirection(ForgeDirection direction) {
-        this.faceDirection = direction;
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+        readFromNBT(packet.func_148857_g());
+        worldObj.func_147479_m(xCoord, yCoord, zCoord);
     }
 
     @Override
     public void setFacedDirection(EntityLivingBase player) {
+        if (player == null) {
+            this.faceDirection = ForgeDirection.UNKNOWN;
+            return;
+        }
         if (player.rotationPitch < -45.0F) {
             this.faceDirection = ForgeDirection.DOWN;
             return;
@@ -64,182 +69,126 @@ public class ItemIOHatchLogic extends TinkersRebornInventoryLogic
     }
 
     @Override
-    public int[] getAccessibleSlotsFromSide(int side) {
-        if (logic == null) return new int[0];
-        if (ForgeDirection.getOrientation(side) != this.faceDirection) return new int[0];
-        return IntStream.range(0, logic.getSizeInventory())
-            .toArray();
+    public ForgeDirection getForgeDirection() {
+        return this.faceDirection != null ? this.faceDirection : ForgeDirection.UNKNOWN;
     }
 
     @Override
-    public boolean canInsertItem(int slot, ItemStack stack, int side) {
-        if (ForgeDirection.getOrientation(side) != this.faceDirection) return false;
-        if (logic == null || stack == null) return false;
-        boolean flag = logic.isItemValidForSlot(slot, stack);
-        if (flag) this.logic.updateTempRequired(slot);
-        return flag;
+    public void setForgeDirection(ForgeDirection direction) {
+        this.faceDirection = direction;
     }
 
-    @Override
-    public boolean canExtractItem(int slot, ItemStack stack, int side) {
-        if (ForgeDirection.getOrientation(side) != this.faceDirection) return false;
-        if (logic == null || stack == null) return false;
-        return this.logic.getTemperature(side) < 0;
-    }
-
-    /**
-     * Returns the number of slots in the inventory.
-     */
     @Override
     public int getSizeInventory() {
-        return logic != null ? logic.getSizeInventory() : 0;
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.getSizeInventory();
+        }
+        return 0;
     }
 
-    /**
-     * Returns the stack in slot i
-     *
-     * @param slotIn
-     */
     @Override
     public ItemStack getStackInSlot(int slotIn) {
-        return logic != null ? logic.getStackInSlot(slotIn) : null;
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.getStackInSlot(slotIn);
+        }
+        return null;
     }
 
-    /**
-     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
-     * new stack.
-     *
-     * @param index
-     * @param count
-     */
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        return logic != null ? logic.decrStackSize(index, count) : null;
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.decrStackSize(index, count);
+        }
+        return null;
     }
 
-    /**
-     * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
-     * like when you close a workbench GUI.
-     *
-     * @param index
-     */
     @Override
     public ItemStack getStackInSlotOnClosing(int index) {
-        return logic != null ? logic.getStackInSlotOnClosing(index) : null;
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.getStackInSlotOnClosing(index);
+        }
+        return null;
     }
 
-    @Override
-    protected String getDefaultName() {
-        return "IOHatch";
-    }
-
-    /**
-     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
-     *
-     * @param index
-     * @param stack
-     */
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        if (logic != null) {
-            logic.setInventorySlotContents(index, stack);
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            masterEntity.setInventorySlotContents(index, stack);
         }
     }
 
-    /**
-     * Returns the name of the inventory
-     */
     @Override
     public String getInventoryName() {
-        return getDefaultName();
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.getInventoryName();
+        }
+        return null;
     }
 
-    /**
-     * Returns if the inventory is named
-     */
     @Override
     public boolean hasCustomInventoryName() {
-        return true;
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.hasCustomInventoryName();
+        }
+        return false;
     }
 
-    /**
-     * Returns the maximum stack size for a inventory slot.
-     */
     @Override
     public int getInventoryStackLimit() {
-        return logic != null ? logic.getInventoryStackLimit() : 64;
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.getInventoryStackLimit();
+        }
+        return 0;
     }
 
-    /**
-     * Do not make give this method the name canInteractWith because it clashes with Container
-     *
-     * @param player
-     */
     @Override
     public boolean isUseableByPlayer(EntityPlayer player) {
-        return super.isUseableByPlayer(player);
-    }
-
-    @Override
-    public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return null;
-    }
-
-    @Override
-    public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return null;
-    }
-
-    @Override
-    public boolean canDropInventorySlot(int slot) {
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.isUseableByPlayer(player);
+        }
         return false;
     }
 
     @Override
     public void openInventory() {
-
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            masterEntity.openInventory();
+        }
     }
 
     @Override
     public void closeInventory() {
-
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tags) {
-        super.writeToNBT(tags);
-        if (this.logic != null) {
-            tags.setInteger("MasterX", this.logic.xCoord);
-            tags.setInteger("MasterY", this.logic.yCoord);
-            tags.setInteger("MasterZ", this.logic.zCoord);
-        }
-        byte index = (byte) this.faceDirection.ordinal();
-        tags.setByte("Direction", index);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tags) {
-        super.readFromNBT(tags);
-        if (tags.hasKey("MasterX") && this.worldObj != null) {
-            TileEntity te = this.worldObj
-                .getTileEntity(tags.getInteger("MasterX"), tags.getInteger("MasterY"), tags.getInteger("MasterZ"));
-            if (te instanceof FurnaceLogic f) {
-                this.logic = f;
-            }
-        }
-        if (tags.hasKey("Direction")) {
-            this.faceDirection = ForgeDirection.getOrientation(tags.getInteger("Direction"));
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            masterEntity.closeInventory();
         }
     }
 
-    /**
-     * Returns true if automation is allowed to insert the given stack (ignoring stack size) into the given slot.
-     *
-     * @param index
-     * @param stack
-     */
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return logic != null && logic.isItemValidForSlot(index, stack);
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.isItemValidForSlot(index, stack);
+        }
+        return false;
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(int side) {
+        // TODO
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            // return masterEntity.getAccessibleSlotsFromSide(side);
+        }
+        return null;
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack stack, int side) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack, int side) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

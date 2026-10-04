@@ -82,6 +82,18 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
         }
     }
 
+    @Override
+    public IMasterLogic getMaster() {
+        if (hasValidMaster() && this.getWorldObj()
+            .getTileEntity(
+                getMasterPosition().x,
+                getMasterPosition().y,
+                getMasterPosition().z) instanceof IMasterLogic masterEntity) {
+            return masterEntity;
+        }
+        return null;
+    }
+
     public void readCustomNBT(NBTTagCompound tags) {
         hasMaster = tags.getBoolean("TiedToMaster");
         if (hasMaster) {
@@ -132,10 +144,6 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
         readCustomNBT(packet.func_148857_g());
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-    }
-
-    public World getWorld() {
-        return super.getWorldObj();
     }
 
 }
