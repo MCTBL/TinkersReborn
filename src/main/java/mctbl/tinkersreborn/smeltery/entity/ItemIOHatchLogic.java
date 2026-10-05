@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import java.util.stream.IntStream;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
@@ -173,7 +175,12 @@ public class ItemIOHatchLogic extends MultiServantLogic implements ISidedInvento
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        return ForgeDirection.OPPOSITES;
+        int invSize = 0;
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            invSize = masterEntity.getSizeInventory();
+        }
+        return IntStream.range(0, invSize)
+            .toArray();
     }
 
     @Override
