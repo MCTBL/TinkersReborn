@@ -1,5 +1,10 @@
 package mctbl.tinkersreborn.smeltery.network;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fluids.FluidStack;
+
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
@@ -7,10 +12,6 @@ import mctbl.tinkersreborn.common.network.AbstractPacketThreadsafe;
 import mctbl.tinkersreborn.common.network.TinkerNetwork.AbstactPacketHandler;
 import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.FluidStack;
 
 // Sent to the client when the smeltery consumes fuel
 public class HeatingStructureFuelUpdatePacket extends AbstractPacketThreadsafe {

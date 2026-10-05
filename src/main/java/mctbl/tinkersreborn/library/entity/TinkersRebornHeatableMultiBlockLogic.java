@@ -48,7 +48,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
     protected int temperature = 20; // internal temperature of the heater == speed of the heater
     public boolean isHeating = false; // If the last tick is heating item insde.
     protected int[] itemTemperatures; // current temperature of each item in the corresponding slot
-    protected int[] itemTempRequired; // Temperature where the items want to goooooo    
+    protected int[] itemTempRequired; // Temperature where the items want to goooooo
     public static final String TAG_FUEL_RELEASE = "fuelRelease";
     public static final String TAG_TEMPERATURE = "temperature";
     public static final String TAG_NEEDS_FUEL = "needsFuel";
