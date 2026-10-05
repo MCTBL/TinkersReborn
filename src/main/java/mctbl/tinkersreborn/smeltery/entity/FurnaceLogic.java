@@ -177,61 +177,6 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
     }
 
     @Override
-    protected void heatItems() {
-        boolean heatedItem = false;
-        boolean triedRefuel = false;
-        for (int i = 0; i < getSizeInventory(); i++) {
-            ItemStack stack = getStackInSlot(i);
-            if (!TinkersRebornUtils.isStackEmpty(stack)) {
-                // heat item if possible
-                if (itemTempRequired[i] > 0) {
-                    // fuel is present, turn up the heat
-                    if (fuelReleaseTicks > 0) {
-                        // if the temperature is high enough for the slot
-                        if (canHeat(i)) {
-                            // are we done heating?
-                            if (itemTemperatures[i] >= itemTempRequired[i]) {
-                                if (onItemFinishedHeating(stack, i)) {
-                                    itemTemperatures[i] = 0;
-                                    itemTempRequired[i] = 0;
-                                }
-                            }
-                            // otherwise turn up the heat
-                            else {
-                                itemTemperatures[i] += heatSlot(i);
-                                heatedItem = true;
-                            }
-                        }
-                    } else if (!triedRefuel) {
-                        // out of fuel, try to consume more right now
-                        // so we don't miss this tick's heating
-                        this.needsFuel = true;
-                        this.consumeFuel();
-                        triedRefuel = true;
-                        if (fuelReleaseTicks > 0) {
-                            // fuel acquired, retry this slot
-                            i--;
-                            continue;
-                        }
-                        // truly out of fuel, nothing more we can do
-                        break;
-                    } else {
-                        // already tried refueling this tick and failed, give up
-                        break;
-                    }
-                }
-            } else {
-                itemTemperatures[i] = 0;
-            }
-        }
-
-        if (heatedItem) {
-            fuelReleaseTicks--;
-        }
-        updateIfChanged(heatedItem);
-    }
-
-    @Override
     public boolean canHeat(int index) {
         ItemStack stack = getStackInSlot(index);
         return FurnaceRecipes.smelting()
@@ -308,5 +253,10 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
     @Override
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiFurnace((ContainerFurnace) getGuiContainer(inventoryplayer, world, x, y, z), this);
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack) {
+        return this.getTempRequired(slot) == 0;
     }
 }

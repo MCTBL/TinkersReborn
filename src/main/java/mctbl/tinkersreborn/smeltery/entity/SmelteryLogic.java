@@ -772,4 +772,9 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
 
         buckets.decrStackSize(BUCKET_INPUT_SLOT, 1);
     }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack) {
+        return true;
+    }
 }

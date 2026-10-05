@@ -29,6 +29,10 @@ import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public class TinkersRebornUtils {
 
+    private TinkersRebornUtils() {
+        /* This utility class should not be instantiated */
+    }
+
     public static final DecimalFormat df = new DecimalFormat(
         "#,###,###.##",
         DecimalFormatSymbols.getInstance(Locale.US));

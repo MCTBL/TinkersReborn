@@ -185,13 +185,14 @@ public class ItemIOHatchLogic extends MultiServantLogic implements ISidedInvento
 
     @Override
     public boolean canInsertItem(int slot, ItemStack stack, int side) {
-        // TODO Auto-generated method stub
         return this.isItemValidForSlot(slot, stack);
     }
 
     @Override
     public boolean canExtractItem(int slot, ItemStack stack, int side) {
-        // TODO Auto-generated method stub
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            return masterEntity.canExtractItem(slot, stack);
+        }
         return false;
     }
 }
