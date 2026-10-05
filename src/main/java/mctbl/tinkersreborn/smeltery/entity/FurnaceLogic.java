@@ -1,6 +1,5 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
-import static mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery.itemIOHatch;
 import static mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery.lavaTank;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
 
-    private static final int MAX_SMELTERY_SIZE = 11;
+    private static final int MAX_FURNACE_SIZE = 11;
 
     public FurnaceLogic() {
         super("furnace", TinkersRebornSmeltery.furnaceController);
@@ -122,9 +121,9 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
     private BlockPos traceWall(BlockPos center, ForgeDirection dir) {
         Vec3 start = Vec3.createVectorHelper(center.x + 0.5D, center.y + 0.5D, center.z + 0.5D);
         Vec3 end = Vec3.createVectorHelper(
-            start.xCoord + dir.offsetX * MAX_SMELTERY_SIZE,
-            start.yCoord + dir.offsetY * MAX_SMELTERY_SIZE,
-            start.zCoord + dir.offsetZ * MAX_SMELTERY_SIZE);
+            start.xCoord + dir.offsetX * MAX_FURNACE_SIZE,
+            start.yCoord + dir.offsetY * MAX_FURNACE_SIZE,
+            start.zCoord + dir.offsetZ * MAX_FURNACE_SIZE);
 
         MovingObjectPosition mop = this.worldObj.rayTraceBlocks(start, end);
         if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
@@ -150,11 +149,9 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
 
                     Block block = this.worldObj.getBlock(x, y, z);
                     BlockPos pos = BlockPos.of(x, y, z);
-                    if (block == this.controller) {
-                        if (this.getBlockPos()
-                            .equals(pos)) {
-                            continue;
-                        }
+                    if (block == this.controller && this.getBlockPos()
+                        .equals(pos)) {
+                        continue;
                     }
                     shellBlocks.add(pos);
 
@@ -165,11 +162,6 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
 
                     if (block == lavaTank) {
                         tanks.add(pos);
-                    } else if (block == itemIOHatch) {
-                        TileEntity te = this.worldObj.getTileEntity(pos.x, pos.y, pos.z);
-                        if (te instanceof ItemIOHatchLogic hatch) {
-                            hatch.setFurnace(this);
-                        }
                     }
 
                 }

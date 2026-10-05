@@ -214,14 +214,14 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     }
 
     public boolean isInvNameLocalized() {
-        return this.invName != null && this.invName.length() > 0;
+        return this.invName != null && !this.invName.isEmpty();
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-        if (slot < getSizeInventory()) {
-            if (inventory[slot] == null || itemstack.stackSize + inventory[slot].stackSize <= getInventoryStackLimit())
-                return true;
+        if (slot < getSizeInventory() && (inventory[slot] == null
+            || itemstack.stackSize + inventory[slot].stackSize <= getInventoryStackLimit())) {
+            return true;
         }
         return false;
     }

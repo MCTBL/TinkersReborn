@@ -7,7 +7,6 @@ import net.minecraft.tileentity.TileEntity;
 
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 
 public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic {
@@ -85,8 +84,6 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                 && servant.getMasterPosition()
                     .equals(this.getBlockPos())) {
                 servant.removeMaster();
-            } else if (tempEntity instanceof ItemIOHatchLogic hatch) {
-                hatch.setFurnace(null);
             }
         }
         this.blocksPerLayer = 0;
