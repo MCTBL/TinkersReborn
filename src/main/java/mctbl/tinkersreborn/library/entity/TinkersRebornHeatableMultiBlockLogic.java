@@ -3,10 +3,12 @@ package mctbl.tinkersreborn.library.entity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -25,7 +27,8 @@ import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import mctbl.tinkersreborn.smeltery.network.HeatingStructureFuelUpdatePacket;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic {
+public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic
+    implements ISidedInventory {
 
     public int blocksPerLayer;
     public int multiLayers;
@@ -532,5 +535,22 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
     @Override
     public boolean canExtractItem(int slot, ItemStack stack) {
         return this.getTempRequired(slot) == 0;
+    }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack, int side) {
+        return this.getActive() && this.canExtractItem(slot, stack);
+    }
+
+    @Override
+    public boolean canInsertItem(int slot, ItemStack stack, int side) {
+        return this.getActive() && this.isItemValidForSlot(slot, stack);
+    }
+
+    @Override
+    public int[] getAccessibleSlotsFromSide(int slot) {
+        int invSize = this.getActive() ? this.getSizeInventory() : 0;
+        return IntStream.range(0, invSize)
+            .toArray();
     }
 }
