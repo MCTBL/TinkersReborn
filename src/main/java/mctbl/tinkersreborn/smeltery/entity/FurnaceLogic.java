@@ -254,9 +254,4 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiFurnace((ContainerFurnace) getGuiContainer(inventoryplayer, world, x, y, z), this);
     }
-
-    @Override
-    public boolean canExtractItem(int slot, ItemStack stack) {
-        return this.getTempRequired(slot) == 0;
-    }
 }

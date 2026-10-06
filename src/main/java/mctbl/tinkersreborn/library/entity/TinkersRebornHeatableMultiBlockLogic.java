@@ -528,4 +528,9 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
             isHeating = heatedItem;
         }
     }
+
+    @Override
+    public boolean canExtractItem(int slot, ItemStack stack) {
+        return this.getTempRequired(slot) == 0;
+    }
 }

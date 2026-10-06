@@ -32,7 +32,7 @@ import mctbl.tinkersreborn.library.gui.GuiButtonItem;
 import mctbl.tinkersreborn.library.gui.GuiElement;
 import mctbl.tinkersreborn.library.gui.GuiElementScalable;
 import mctbl.tinkersreborn.library.gui.GuiHeatingStructureFuelTank;
-import mctbl.tinkersreborn.library.gui.GuiSmelterySideInventory;
+import mctbl.tinkersreborn.library.gui.GuiMultiBlockSideInventory;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.IGuiLiquidTank;
@@ -66,7 +66,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
     protected final int fuelProgressStartX = 117;
     protected final int fuelProgressStartY = 29;
 
-    protected final GuiSmelterySideInventory sideinventory;
+    protected final GuiMultiBlockSideInventory sideinventory;
     protected final SmelteryLogic smeltery;
     protected GuiButtonItem<ItemStack> fillButton;
 
@@ -75,7 +75,7 @@ public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiH
 
         this.smeltery = smeltery;
 
-        sideinventory = new GuiSmelterySideInventory(
+        sideinventory = new GuiMultiBlockSideInventory(
             this,
             container.getSubContainer(ContainerSideInventory.class),
             smeltery,

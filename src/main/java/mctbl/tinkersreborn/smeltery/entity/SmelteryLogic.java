@@ -212,6 +212,12 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
         worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
+    @Override
+    protected void adjustLayers() {
+        super.adjustLayers();
+        this.maxMoltenMetalAmount = MB_PER_BLOCK_CAPACITY * this.calculateInnerBlockCount();
+    }
+
     protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
         List<BlockPos> tempList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
@@ -783,10 +789,5 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
         }
 
         buckets.decrStackSize(BUCKET_INPUT_SLOT, 1);
-    }
-
-    @Override
-    public boolean canExtractItem(int slot, ItemStack stack) {
-        return true;
     }
 }

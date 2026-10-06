@@ -17,8 +17,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.gui.GuiElementScalable;
-import mctbl.tinkersreborn.library.gui.GuiFurnaceSideInventory;
 import mctbl.tinkersreborn.library.gui.GuiHeatingStructureFuelTank;
+import mctbl.tinkersreborn.library.gui.GuiMultiBlockSideInventory;
 import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
 import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
 import mctbl.tinkersreborn.smeltery.inventory.ContainerFurnace;
@@ -39,12 +39,12 @@ public class GuiFurnace extends GuiHeatingStructureFuelTank implements INEIGuiHa
     protected final int fuelProgressStartX = 50;
     protected final int fuelProgressStartY = 97;
 
-    protected final GuiFurnaceSideInventory sideinventory;
+    protected final GuiMultiBlockSideInventory sideinventory;
     protected final FurnaceLogic furnace;
 
     public GuiFurnace(ContainerFurnace container, FurnaceLogic furnace) {
         super(container);
-        this.sideinventory = new GuiFurnaceSideInventory(
+        this.sideinventory = new GuiMultiBlockSideInventory(
             this,
             container.getSubContainer(ContainerSideInventory.class),
             furnace,

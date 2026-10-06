@@ -94,8 +94,8 @@ public class GuiSideInventory extends GuiModule {
     }
 
     protected boolean shouldDrawName() {
-        if (this.inventorySlots instanceof BaseContainer) {
-            return ((BaseContainer) this.inventorySlots).getInventoryDisplayName() != null;
+        if (this.inventorySlots instanceof BaseContainer baseContainer) {
+            return baseContainer.getInventoryDisplayName() != null;
         }
 
         return false;
