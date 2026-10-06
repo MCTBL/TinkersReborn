@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -73,9 +74,22 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
 
     public IInventory buckets = new InventoryBasic("smeltery.bucket", false, 2);
 
+    protected final List<Block> validWall;
+    protected final List<Block> validTop;
+    protected final List<Block> validBottom;
+
     public SmelteryLogic() {
         super("smeltery", TinkersRebornSmeltery.smelteryController);
         this.drains = new ArrayList<>();
+
+        this.validWall = Arrays.asList(
+            this.controller,
+            TinkersRebornSmeltery.smelteryDrain,
+            TinkersRebornSmeltery.smelteryBlock,
+            TinkersRebornSmeltery.lavaTank,
+            TinkersRebornSmeltery.itemIOHatch);
+        this.validTop = Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.itemIOHatch);
+        this.validBottom = Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.itemIOHatch);
     }
 
     @Override
@@ -255,17 +269,15 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
     }
 
     protected boolean validTopBlock(Block b) {
-        return b == TinkersRebornSmeltery.smelteryBlock;
+        return validTop.contains(b);
     }
 
     protected boolean validWallBlock(Block b) {
-        return b == this.controller || b == TinkersRebornSmeltery.smelteryDrain
-            || b == TinkersRebornSmeltery.smelteryBlock
-            || b == TinkersRebornSmeltery.lavaTank;
+        return validWall.contains(b);
     }
 
     protected boolean validBottomBlock(Block b) {
-        return b == TinkersRebornSmeltery.smelteryBlock;
+        return validBottom.contains(b);
     }
 
     protected boolean validTankBlock(Block b) {
