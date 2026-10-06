@@ -176,13 +176,6 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
             || block == TinkersRebornSmeltery.itemIOHatch);
     }
 
-    @Override
-    public boolean canHeat(int index) {
-        ItemStack stack = getStackInSlot(index);
-        return FurnaceRecipes.smelting()
-            .getSmeltingResult(stack) != null;
-    }
-
     /**
      * Calculate the heat required for the given slot
      *

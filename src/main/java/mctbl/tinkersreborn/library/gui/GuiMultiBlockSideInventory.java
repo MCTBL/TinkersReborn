@@ -3,7 +3,6 @@ package mctbl.tinkersreborn.library.gui;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
@@ -77,21 +76,23 @@ public class GuiMultiBlockSideInventory extends GuiSideInventory {
                 String tooltip = null;
                 GuiElement bar = progressBar;
 
-                if (Float.isNaN(progress)) {
+                if (Float.isNaN(progress)) { // Cannot be smelted, no recipe available.
                     progress = 1f;
                     bar = noMeltBar;
                     tooltip = TinkersStr.smtleteryNoRecipe.toString();
-                } else if (multiBlock.fuelReleaseTicks == 0) {
+                } else if (multiBlock.fuelReleaseTicks == 0) { // No fuel or the structure is not formed yet, so the
+                                                               // fuel cannot be detected.
                     bar = unprogressBar;
-                    progress = MathHelper.clamp_float(progress, 0, 1);
+                    progress = 1f;
                     tooltip = TinkersStr.smtleteryNoFuel.toString();
-                } else if (progress < 0) {
+                } else if (progress < 0) { // No fuel or the structure is not formed yet, so the fuel cannot be
+                                           // detected.
                     bar = unprogressBar;
                     progress = 1f;
                     tooltip = TinkersStr.smtleteryNoHeat.toString();
                 } else if ((progress > 1f && progress < 2f) || progress == Float.POSITIVE_INFINITY) {
                     progress = 1f;
-                } else if (progress > 2f) {
+                } else if (progress > 2f) { // No space.
                     bar = uberHeatBar;
                     progress = 1f;
                     tooltip = TinkersStr.smtleteryNoSpace.toString();

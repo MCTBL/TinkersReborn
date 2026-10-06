@@ -8,7 +8,9 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
+import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
+import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 
 public class ItemIOHatch extends TinkersRebornMultiBlock {
 
@@ -28,14 +30,55 @@ public class ItemIOHatch extends TinkersRebornMultiBlock {
         ForgeDirection facing = (logic instanceof ITinkersRebornIFacingLogic)
             ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
             : ForgeDirection.getOrientation(0);
+
+        ForgeDirection internalDir = facing.getOpposite();
+
+        if (logic instanceof ItemIOHatchLogic hatch) {
+            BlockPos master = hatch.getMasterPosition();
+            if (master != null) {
+                TileEntity masterTE = worldIn.getTileEntity(master.x, master.y, master.z);
+                if (masterTE instanceof SmelteryLogic smeltery) {
+                    BlockPos minPos = smeltery.minPos;
+                    BlockPos maxPos = smeltery.maxPos;
+                    if (minPos != null && maxPos != null) {
+                        int minX = minPos.x, maxX = maxPos.x;
+                        int minY = minPos.y, maxY = maxPos.y;
+                        int minZ = minPos.z, maxZ = maxPos.z;
+
+                        ForgeDirection bestDir = null;
+                        double bestDot = -2.0;
+                        ForgeDirection masterBack = facing.getOpposite();
+
+                        for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
+                            int nx = x + dir.offsetX;
+                            int ny = y + dir.offsetY;
+                            int nz = z + dir.offsetZ;
+
+                            if (nx >= minX && nx <= maxX && ny >= minY && ny <= maxY && nz >= minZ && nz <= maxZ) {
+
+                                double dot = dir.offsetX * masterBack.offsetX + dir.offsetY * masterBack.offsetY
+                                    + dir.offsetZ * masterBack.offsetZ;
+                                if (dot > bestDot) {
+                                    bestDot = dot;
+                                    bestDir = dir;
+                                }
+                            }
+                        }
+                        if (bestDir != null) {
+                            internalDir = bestDir;
+                        }
+                    }
+                }
+            }
+        }
+
         if (facing == ForgeDirection.getOrientation(side)) {
             return this.icons[0];
-        }
-        if (facing == ForgeDirection.getOrientation(side)
-            .getOpposite()) {
+        } else if (internalDir == ForgeDirection.getOrientation(side)) {
             return this.icons[1];
+        } else {
+            return this.sideIcon;
         }
-        return this.sideIcon;
     }
 
     @Override
