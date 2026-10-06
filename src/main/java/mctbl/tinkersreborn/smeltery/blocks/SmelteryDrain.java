@@ -1,16 +1,23 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
+import static mctbl.tinkersreborn.util.TinkersRebornUtils.replaceHeldItem;
+
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
+import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 
 public class SmelteryDrain extends TinkersRebornMultiBlock {
 
@@ -28,8 +35,7 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
     @Override
     public IIcon getIcon(IBlockAccess worldIn, int x, int y, int z, int side) {
         TileEntity logic = worldIn.getTileEntity(x, y, z);
-        ForgeDirection facing = (logic instanceof ITinkersRebornIFacingLogic)
-            ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
+        ForgeDirection facing = (logic instanceof ITinkersRebornIFacingLogic l) ? l.getForgeDirection()
             : ForgeDirection.getOrientation(0);
 
         ForgeDirection internalDir = facing.getOpposite();
@@ -96,4 +102,35 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
         return new SmelteryDrainLogic();
     }
 
+    @Override
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,
+        float clickY, float clickZ) {
+        if (!world.isRemote && player.getHeldItem() != null
+            && world.getTileEntity(x, y, z) instanceof SmelteryDrainLogic logic) {
+            ItemStack heldItem = player.getHeldItem();
+
+            FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(heldItem);
+            if (heldItem.getItem() instanceof FilledBucket bucket) {
+                liquid = new FluidStack(bucket.getFluidStackInBucket(heldItem), FluidContainerRegistry.BUCKET_VOLUME);
+            }
+
+            // putting liquid into the tank
+            if (liquid != null) {
+                int amount = logic.fill(ForgeDirection.UNKNOWN, liquid, false);
+                if (amount == liquid.amount) {
+                    logic.fill(ForgeDirection.UNKNOWN, liquid, true);
+                    if (!player.capabilities.isCreativeMode) {
+                        replaceHeldItem(player, FluidContainerRegistry.drainFluidContainer(heldItem));
+                    }
+
+                    // update
+                    player.inventoryContainer.detectAndSendChanges();
+                    world.markBlockForUpdate(x, y, z);
+                }
+                return true;
+            }
+
+        }
+        return super.onBlockActivated(world, x, y, z, player, side, clickX, clickY, clickZ);
+    }
 }

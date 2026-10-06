@@ -66,8 +66,6 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
     protected static final int ALLOYING_PER_TICK = 10; // how much liquid can be created per tick to make alloys
     public static final String MOLTEN_METAL_LIST = "MoltenMetal";
 
-    protected final List<BlockPos> drains;
-
     public final List<FluidStack> moltenMetal = new ArrayList<>();
     public int maxMoltenMetalAmount;
     public int currentMoltenMetalAmount;
@@ -80,7 +78,6 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
 
     public SmelteryLogic() {
         super("smeltery", TinkersRebornSmeltery.smelteryController);
-        this.drains = new ArrayList<>();
 
         this.validWall = Arrays.asList(
             this.controller,

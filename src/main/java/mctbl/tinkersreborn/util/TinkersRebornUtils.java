@@ -146,9 +146,7 @@ public class TinkersRebornUtils {
     }
 
     public static boolean isStackEmpty(@Nullable ItemStack stack) {
-        if (stack == null || stack.stackSize == 0) return true;
-
-        return false;
+        return (stack == null || stack.stackSize == 0);
     }
 
     public static List<ItemStack> copyItemStackList(List<ItemStack> stackList) {
@@ -259,6 +257,25 @@ public class TinkersRebornUtils {
             return q + 1;
         }
         return q;
+    }
+
+    /**
+     * Replace one currently held item for a given player.
+     *
+     * @param player      A player
+     * @param replacement An ItemStack that will replace one of the items in the player's currently held ItemStack.
+     */
+    public static void replaceHeldItem(EntityPlayer player, ItemStack replacement) {
+        ItemStack current = player.getHeldItem();
+        if (current.stackSize == 1) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, replacement);
+        } else {
+            player.inventory.decrStackSize(player.inventory.currentItem, 1);
+
+            if (!player.inventory.addItemStackToInventory(replacement)) {
+                player.dropPlayerItemWithRandomChoice(replacement, false);
+            }
+        }
     }
 
 }

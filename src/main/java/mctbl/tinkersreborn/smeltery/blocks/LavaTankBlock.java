@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
+import static mctbl.tinkersreborn.util.TinkersRebornUtils.replaceHeldItem;
+
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -125,16 +127,16 @@ public class LavaTankBlock extends BlockContainer {
     }
 
     @Override
-    public boolean onBlockActivated(World world, int i, int j, int k, EntityPlayer entityplayer, int par6, float par7,
-        float par8, float par9) {
-        ItemStack current = entityplayer.inventory.getCurrentItem();
+    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer entityplayer, int side, float clickX,
+        float clickY, float clickZ) {
+        ItemStack current = entityplayer.getHeldItem();
         if (current != null) {
             FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(current);
             if (current.getItem() instanceof FilledBucket bucket) {
                 liquid = new FluidStack(bucket.getFluidStackInBucket(current), FluidContainerRegistry.BUCKET_VOLUME);
             }
 
-            LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(i, j, k);
+            LavaTankLogic logic = (LavaTankLogic) world.getTileEntity(x, y, z);
             // putting liquid into the tank
             if (liquid != null && !world.isRemote) {
                 int amount = logic.fill(ForgeDirection.UNKNOWN, liquid, false);
@@ -146,7 +148,7 @@ public class LavaTankBlock extends BlockContainer {
 
                     // update
                     entityplayer.inventoryContainer.detectAndSendChanges();
-                    world.markBlockForUpdate(i, j, k);
+                    world.markBlockForUpdate(x, y, z);
                 }
 
                 return true;
@@ -168,7 +170,7 @@ public class LavaTankBlock extends BlockContainer {
                             entityplayer.inventoryContainer.detectAndSendChanges();
                             // and block
                         }
-                        world.markBlockForUpdate(i, j, k);
+                        world.markBlockForUpdate(x, y, z);
                     }
                 }
 
@@ -177,25 +179,6 @@ public class LavaTankBlock extends BlockContainer {
         }
 
         return false;
-    }
-
-    /**
-     * Replace one currently held item for a given player.
-     *
-     * @param player      A player
-     * @param replacement An ItemStack that will replace one of the items in the player's currently held ItemStack.
-     */
-    private static void replaceHeldItem(EntityPlayer player, ItemStack replacement) {
-        ItemStack current = player.inventory.getCurrentItem();
-        if (current.stackSize == 1) {
-            player.inventory.setInventorySlotContents(player.inventory.currentItem, replacement);
-        } else {
-            player.inventory.decrStackSize(player.inventory.currentItem, 1);
-
-            if (!player.inventory.addItemStackToInventory(replacement)) {
-                player.dropPlayerItemWithRandomChoice(replacement, false);
-            }
-        }
     }
 
     /* Data */
@@ -243,7 +226,7 @@ public class LavaTankBlock extends BlockContainer {
     }
 
     @Override
-    public void harvestBlock(World par1World, EntityPlayer par2EntityPlayer, int par3, int par4, int par5, int par6) {}
+    public void harvestBlock(World worldIn, EntityPlayer player, int x, int y, int z, int meta) {}
 
     @Override
     public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase living, ItemStack stack) {
