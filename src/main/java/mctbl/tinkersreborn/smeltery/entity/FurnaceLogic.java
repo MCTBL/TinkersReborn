@@ -18,6 +18,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
@@ -244,6 +246,7 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
         return new GuiFurnace((ContainerFurnace) getGuiContainer(inventoryplayer, world, x, y, z), this);
     }
