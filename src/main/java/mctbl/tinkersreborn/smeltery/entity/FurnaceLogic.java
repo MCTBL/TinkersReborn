@@ -40,7 +40,6 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
         return 64;
     }
 
-
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
         if (!super.isItemValidForSlot(slot, itemstack)) return false;
