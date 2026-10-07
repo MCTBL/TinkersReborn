@@ -113,6 +113,14 @@ public class ItemIOHatchLogic extends MultiServantLogic implements ISidedInvento
     }
 
     @Override
+    public void markDirty() {
+        super.markDirty();
+        if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
+            masterEntity.markDirty();
+        }
+    }
+
+    @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         if (this.getMaster() instanceof TinkersRebornMultiBlockInvenotryLogic masterEntity) {
             masterEntity.setInventorySlotContents(index, stack);
