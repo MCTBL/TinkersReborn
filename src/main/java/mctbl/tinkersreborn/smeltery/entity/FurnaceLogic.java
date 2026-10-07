@@ -40,15 +40,6 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
         return 64;
     }
 
-    @Override
-    public void markDirty() {
-        super.markDirty();
-        if (!worldObj.isRemote) {
-            for (int i = 0; i < inventory.length; i++) {
-                updateTempRequired(i - 1);
-            }
-        }
-    }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {

@@ -105,6 +105,16 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
 
     protected void heatItemsPost() {}
 
+    @Override
+    public void markDirty() {
+        super.markDirty();
+        if (!worldObj.isRemote) {
+            for (int i = 0; i < inventory.length; i++) {
+                updateTempRequired(i - 1);
+            }
+        }
+    }
+
     protected void adjustLayers() {
         this.blocksPerLayer = (this.maxPos.x - this.minPos.x + 1) * (this.maxPos.z - this.minPos.z + 1);
         this.multiLayers = (this.maxPos.y - this.minPos.y + 1);
