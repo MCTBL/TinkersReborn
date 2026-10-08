@@ -44,8 +44,9 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
     protected int renderOffset = 0;
     protected int capacity = 0;
     protected int timer;
+    protected ItemStack cacheOutput;
 
-    public CastingBlockLogic() {
+    protected CastingBlockLogic() {
         // input slot and output slot, 1 item in it max
         super(2, 1);
     }
@@ -207,10 +208,8 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
     @Override
     public FluidStack drain(int maxDrain, boolean doDrain) {
         FluidStack amount = this.drainInternal(maxDrain, doDrain);
-        if (amount != null && doDrain) {
-            if (liquid.amount == 0) {
-                this.reset();
-            }
+        if (amount != null && doDrain && liquid.amount == 0) {
+            this.reset();
         }
 
         return amount;
@@ -567,6 +566,7 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
     public void reset() {
         this.timer = 0;
         this.recipe = null;
+        this.cacheOutput = null;
         this.capacity = 0;
         this.liquid = null;
         this.renderOffset = 0;
@@ -610,4 +610,13 @@ public abstract class CastingBlockLogic extends TinkersRebornInventoryLogic
         return Math.min(1f, (float) timer / (float) recipe.getTime());
     }
 
+    public ItemStack getRecipeOutput() {
+        if (cacheOutput == null) {
+            cacheOutput = recipe.getResult(
+                this.getStackInSlot(0),
+                this.getFluid()
+                    .getFluid());
+        }
+        return cacheOutput;
+    }
 }

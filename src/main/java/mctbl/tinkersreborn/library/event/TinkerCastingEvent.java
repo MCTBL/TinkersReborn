@@ -14,7 +14,7 @@ public abstract class TinkerCastingEvent extends Event {
     public final ICastingRecipe recipe;
     public final CastingBlockLogic tile;
 
-    public TinkerCastingEvent(ICastingRecipe recipe, CastingBlockLogic tile) {
+    protected TinkerCastingEvent(ICastingRecipe recipe, CastingBlockLogic tile) {
         this.recipe = recipe;
         this.tile = tile;
     }
