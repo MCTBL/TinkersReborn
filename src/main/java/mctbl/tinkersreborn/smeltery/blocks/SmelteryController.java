@@ -12,6 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
@@ -73,21 +74,23 @@ public class SmelteryController extends TinkersRebornMultiBlock {
             ForgeDirection face = ForgeDirection.NORTH;
             if (logic instanceof ITinkersRebornIFacingLogic facingLogic) face = facingLogic.getForgeDirection();
 
+            double wBias = TinkersReborn.random.nextDouble() * 0.8D - 0.4D;
+            double hBias = TinkersReborn.random.nextDouble() * 0.8D + 0.1D;
             world.spawnParticle(
                 "smoke",
-                x + 0.5 + face.offsetX * 0.55,
-                y + 0.5,
-                z + 0.5 + face.offsetZ * 0.55,
+                x + 0.5D + face.offsetX * 0.55D + Math.abs(face.offsetZ) * wBias,
+                y + hBias,
+                z + 0.5D + face.offsetZ * 0.55D + Math.abs(face.offsetX) * wBias,
                 0.0D,
-                0.0D,
+                0.02D,
                 0.0D);
             world.spawnParticle(
                 "flame",
-                x + 0.5 + face.offsetX * 0.55,
-                y + 0.5,
-                z + 0.5 + face.offsetZ * 0.55,
+                x + 0.5D + face.offsetX * 0.55D + Math.abs(face.offsetZ) * wBias,
+                y + hBias,
+                z + 0.5D + face.offsetZ * 0.55D + Math.abs(face.offsetX) * wBias,
                 0.0D,
-                0.0D,
+                0.02D,
                 0.0D);
 
         }

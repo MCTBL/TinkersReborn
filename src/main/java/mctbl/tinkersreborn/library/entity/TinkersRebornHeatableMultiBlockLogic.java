@@ -107,12 +107,12 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
 
     @Override
     public void markDirty() {
-        super.markDirty();
         if (!worldObj.isRemote) {
             for (int i = 0; i < inventory.length; i++) {
-                updateTempRequired(i - 1);
+                updateTempRequired(i);
             }
         }
+        super.markDirty();
     }
 
     protected void adjustLayers() {
