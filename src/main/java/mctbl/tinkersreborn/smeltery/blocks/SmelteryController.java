@@ -60,7 +60,7 @@ public class SmelteryController extends TinkersRebornMultiBlock {
 
     @Override
     public IIcon getIcon(int side, int meta) {
-        if (side == 3) {
+        if (side == 5) {
             return this.icons[0];
         } else {
             return this.sideIcon;

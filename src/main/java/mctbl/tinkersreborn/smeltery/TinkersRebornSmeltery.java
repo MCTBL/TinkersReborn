@@ -226,6 +226,24 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         // Register
         GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 0), "bb", "bb", 'b', searedBrick); // Bricks Block
         GameRegistry.addRecipe(new ItemStack(smelteryController, 1), "bbb", "b b", "bbb", 'b', searedBrick); // Controller
+        GameRegistry.addRecipe(
+            new ItemStack(furnaceController, 1),
+            "bbb",
+            "bfb",
+            "bbb",
+            'b',
+            searedBrick,
+            'f',
+            new ItemStack(Blocks.furnace)); // Controller
+        GameRegistry.addRecipe(
+            new ItemStack(itemIOHatch, 1),
+            "bbb",
+            "bhb",
+            "bbb",
+            'b',
+            searedBrick,
+            'h',
+            new ItemStack(Blocks.hopper)); // Controller
         // GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 3), " b ", "b b",
         // "bbb", 'b', searedBrick); // Furnace
         GameRegistry.addRecipe(new ItemStack(smelteryDrain, 1), "b b", "b b", "b b", 'b', searedBrick); // Drain
