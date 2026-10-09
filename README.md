@@ -31,6 +31,14 @@ these blocks will render the item stack inside it's container
 
 colorful tooltips and some new tools from higher version
 
+![manual](imgs/manual_homepage.png)
+![manual buttons](imgs/manual_buttons.png)
+
+Modernization manual
+
+![smeltery](imgs/smeltery.png)
+![furnace](imgs/furnace.png)
+
 ## NBT
 
 ```json
