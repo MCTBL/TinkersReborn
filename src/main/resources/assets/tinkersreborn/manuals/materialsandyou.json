@@ -126,6 +126,19 @@
     },
     {
       "type": "image",
+      "image": "tinkersreborn:textures/gui/book/smeltery.png",
+      "text": "tinkersreborn.manuals.materialsandyou.smeltery",
+      "title": "tinkersreborn.manuals.materialsandyou.smeltery.title",
+      "align": "center",
+      "name": "smeltery"
+    },
+    {
+      "type": "text",
+      "align": "center",
+      "text": "tinkersreborn.manuals.materialsandyou.smeltery.info"
+    },
+    {
+      "type": "image",
       "image": "tinkersreborn:textures/gui/book/furnace.png",
       "text": "tinkersreborn.manuals.materialsandyou.furnace",
       "title": "tinkersreborn.manuals.materialsandyou.furnace.title",
