@@ -49,7 +49,7 @@ public class GuiFurnace extends GuiHeatingStructureFuelTank implements INEIGuiHa
             container.getSubContainer(ContainerSideInventory.class),
             furnace,
             furnace.getSizeInventory(),
-            4);
+            container.calcColumns());
         this.furnace = furnace;
         addModule(sideinventory);
 

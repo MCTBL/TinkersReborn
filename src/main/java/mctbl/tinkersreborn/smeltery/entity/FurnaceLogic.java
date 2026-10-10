@@ -62,7 +62,7 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
         this.lavaTanks.clear();
 
         if (!this.worldObj.isAirBlock(center.x, center.y, center.z)) {
-            this.reset(new ArrayList<>());
+            this.reset();
             return;
         }
 
@@ -78,7 +78,7 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
             || wallUp == null
             || wallNorth == null
             || wallSouth == null) {
-            this.reset(new ArrayList<>());
+            this.reset();
             return;
         }
 
@@ -86,13 +86,13 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
         BlockPos maxPos = BlockPos.of(wallEast.x - 1, wallUp.y - 1, wallSouth.z - 1);
 
         if (minPos.x > maxPos.x || minPos.y > maxPos.y || minPos.z > maxPos.z) {
-            this.reset(new ArrayList<>());
+            this.reset();
             return;
         }
 
         for (BlockPos pos : BlockPos.getAllInBox(minPos, maxPos)) {
             if (!this.worldObj.isAirBlock(pos.x, pos.y, pos.z)) {
-                this.reset(new ArrayList<>());
+                this.reset();
                 return;
             }
         }

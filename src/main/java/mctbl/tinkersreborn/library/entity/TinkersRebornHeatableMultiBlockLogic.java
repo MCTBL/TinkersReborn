@@ -128,14 +128,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
     }
 
     protected void reset(List<BlockPos> tempValidBlockList) {
-        this.setActive(false);
-        this.temperature = INIT_TEMPERATURES;
-        // reset fuel state to prevent stale values when structure is rebuilt
-        this.fuelReleaseTicks = 0;
-        this.fuelTotalTicks = 0;
-        this.currentFuel = null;
-        this.needsFuel = false;
-        this.activeLavaTank = null;
+        this.reset();
         for (BlockPos b : tempValidBlockList) {
             TileEntity tempEntity = this.worldObj.getTileEntity(b.x, b.y, b.z);
             if (tempEntity instanceof MultiServantLogic servant && servant.getHasMaster()
@@ -144,6 +137,17 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                 servant.removeMaster();
             }
         }
+    }
+
+    protected void reset() {
+        this.setActive(false);
+        this.temperature = INIT_TEMPERATURES;
+        // reset fuel state to prevent stale values when structure is rebuilt
+        this.fuelReleaseTicks = 0;
+        this.fuelTotalTicks = 0;
+        this.currentFuel = null;
+        this.needsFuel = false;
+        this.activeLavaTank = null;
         this.blocksPerLayer = 0;
         this.multiLayers = 0;
     }

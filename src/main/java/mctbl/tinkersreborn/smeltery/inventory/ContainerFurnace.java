@@ -22,11 +22,15 @@ public class ContainerFurnace extends ContainerMultiModule<FurnaceLogic> {
     public ContainerFurnace(InventoryPlayer inventoryPlayer, FurnaceLogic tile) {
         super(tile);
 
-        sideInventory = new ContainerFurnaceSideInventory(tile, 0, 0, 4);
+        sideInventory = new ContainerFurnaceSideInventory(tile, 0, 0, calcColumns());
         addSubContainer(sideInventory, false);
         addPlayerInventory(inventoryPlayer, 8, 115);
 
         oldHeats = new int[tile.getSizeInventory()];
+    }
+
+    public int calcColumns() {
+        return 4;
     }
 
     @Override

@@ -27,8 +27,7 @@ public class ItemIOHatch extends TinkersRebornMultiBlock {
     @Override
     public IIcon getIcon(IBlockAccess worldIn, int x, int y, int z, int side) {
         TileEntity logic = worldIn.getTileEntity(x, y, z);
-        ForgeDirection facing = (logic instanceof ITinkersRebornIFacingLogic)
-            ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
+        ForgeDirection facing = (logic instanceof ITinkersRebornIFacingLogic l) ? l.getForgeDirection()
             : ForgeDirection.getOrientation(0);
 
         ForgeDirection internalDir = facing.getOpposite();
