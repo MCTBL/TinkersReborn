@@ -1,35 +1,27 @@
 package mctbl.tinkersreborn.smeltery.blocks;
 
-import static mctbl.tinkersreborn.util.TinkersRebornUtils.replaceHeldItem;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
+import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
-import mctbl.tinkersreborn.smeltery.items.FilledBucket;
 
-public class SmelteryDrain extends TinkersRebornMultiBlock {
+public class ItemIOHatch extends TinkersRebornMultiBlock {
 
-    public SmelteryDrain() {
+    public ItemIOHatch() {
         super();
-        this.setBlockName("tinkersreborn.Drain");
         this.TEXTURENAMES = new String[] { "smeltery/drain_basin", "smeltery/drain_out" };
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "tinkersreborn.Drain";
+        return "tinkersreborn.ItemIOHatch";
     }
 
     @Override
@@ -40,8 +32,8 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
 
         ForgeDirection internalDir = facing.getOpposite();
 
-        if (logic instanceof SmelteryDrainLogic drain) {
-            BlockPos master = drain.getMasterPosition();
+        if (logic instanceof ItemIOHatchLogic hatch) {
+            BlockPos master = hatch.getMasterPosition();
             if (master != null) {
                 TileEntity masterTE = worldIn.getTileEntity(master.x, master.y, master.z);
                 if (masterTE instanceof SmelteryLogic smeltery) {
@@ -97,40 +89,14 @@ public class SmelteryDrain extends TinkersRebornMultiBlock {
         }
     }
 
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     *
+     * @param worldIn
+     * @param meta
+     */
     @Override
-    public TileEntity createNewTileEntity(World world, int metadata) {
-        return new SmelteryDrainLogic();
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float clickX,
-        float clickY, float clickZ) {
-        if (!world.isRemote && player.getHeldItem() != null
-            && world.getTileEntity(x, y, z) instanceof SmelteryDrainLogic logic) {
-            ItemStack heldItem = player.getHeldItem();
-
-            FluidStack liquid = FluidContainerRegistry.getFluidForFilledItem(heldItem);
-            if (heldItem.getItem() instanceof FilledBucket bucket) {
-                liquid = new FluidStack(bucket.getFluidStackInBucket(heldItem), FluidContainerRegistry.BUCKET_VOLUME);
-            }
-
-            // putting liquid into the tank
-            if (liquid != null) {
-                int amount = logic.fill(ForgeDirection.UNKNOWN, liquid, false);
-                if (amount == liquid.amount) {
-                    logic.fill(ForgeDirection.UNKNOWN, liquid, true);
-                    if (!player.capabilities.isCreativeMode) {
-                        replaceHeldItem(player, FluidContainerRegistry.drainFluidContainer(heldItem));
-                    }
-
-                    // update
-                    player.inventoryContainer.detectAndSendChanges();
-                    world.markBlockForUpdate(x, y, z);
-                }
-                return true;
-            }
-
-        }
-        return super.onBlockActivated(world, x, y, z, player, side, clickX, clickY, clickZ);
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new ItemIOHatchLogic();
     }
 }

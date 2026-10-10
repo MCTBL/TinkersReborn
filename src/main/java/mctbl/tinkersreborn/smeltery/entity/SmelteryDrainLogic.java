@@ -15,7 +15,6 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandler, ITinkersRebornIFacingLogic {
 
@@ -23,9 +22,8 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-        if (hasValidMaster() && resource != null && canFill(from, resource.getFluid())) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
+        if (this.getMaster() instanceof SmelteryLogic smeltery && resource != null
+            && canFill(from, resource.getFluid())) {
             return smeltery.fill(resource, doFill);
         } else {
             return 0;
@@ -34,22 +32,17 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
-        if (hasValidMaster() && canDrain(from, resource.getFluid())) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
-            if (resource.getFluid() == smeltery.getFluid()
+        if (this.getMaster() instanceof SmelteryLogic smeltery && canDrain(from, resource.getFluid())
+            && resource.getFluid() == smeltery.getFluid()
                 .getFluid()) {
-                return smeltery.drain(resource.amount, doDrain);
-            }
+            return smeltery.drain(resource.amount, doDrain);
         }
         return null;
     }
 
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        if (hasValidMaster() && canDrain(from, null)) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
+        if (this.getMaster() instanceof SmelteryLogic smeltery && canDrain(from, null)) {
             return smeltery.drain(maxDrain, doDrain);
         }
         return null;
@@ -67,9 +60,7 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
         if (!hasValidMaster()) return false;
 
         boolean containsFluid = fluid == null;
-        if (fluid != null) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
+        if (fluid != null && this.getMaster() instanceof SmelteryLogic smeltery) {
             for (FluidStack fstack : smeltery.moltenMetal) {
                 if (fstack.getFluidID() == fluid.getID()) {
                     containsFluid = true;
@@ -83,10 +74,8 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
     @Override
     @Nullable
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        if (hasValidMaster() && (from == getForgeDirection() || from == getForgeDirection().getOpposite()
-            || from == ForgeDirection.UNKNOWN)) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
+        if ((from == getForgeDirection() || from == getForgeDirection().getOpposite() || from == ForgeDirection.UNKNOWN)
+            && this.getMaster() instanceof SmelteryLogic smeltery) {
             return smeltery.getMultiTankInfo();
         }
         return null;
@@ -118,24 +107,21 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
     }
 
-    public int comparatorStrength() {
-        BlockPos master = this.getMasterPosition();
-        // invalid smeltery
-        if (master == null) return 0;
-        SmelteryLogic smeltery = (SmelteryLogic) worldObj.getTileEntity(master.x, master.y, master.z);
-
-        // this can happen when the comparator checks its strength before the drain is getting updated on a broken
-        // master (smeltery controller)
-        if (smeltery == null) return 0;
-
-        if (smeltery.maxMoltenMetalAmount == 0) return 0;
-
-        return MathHelper.ceiling_float_int(15f * smeltery.currentMoltenMetalAmount / smeltery.maxMoltenMetalAmount);
-    }
-
     @Override
     public void setFacedDirection(EntityLivingBase player) {
-        int facing = player != null ? MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3 : 0;
+        if (player == null) {
+            this.faceDirection = ForgeDirection.UNKNOWN;
+            return;
+        }
+        if (player.rotationPitch < -45.0F) {
+            this.faceDirection = ForgeDirection.DOWN;
+            return;
+        }
+        if (player.rotationPitch > 45.0F) {
+            this.faceDirection = ForgeDirection.UP;
+            return;
+        }
+        int facing = MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3;
         switch (facing) {
             case 0 -> this.faceDirection = ForgeDirection.NORTH;
             case 1 -> this.faceDirection = ForgeDirection.EAST;

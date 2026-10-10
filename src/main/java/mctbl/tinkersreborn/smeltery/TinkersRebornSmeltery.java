@@ -28,6 +28,7 @@ import mctbl.tinkersreborn.smeltery.blocks.FurnaceController;
 import mctbl.tinkersreborn.smeltery.blocks.GlassConnected;
 import mctbl.tinkersreborn.smeltery.blocks.GlassPaneConnected;
 import mctbl.tinkersreborn.smeltery.blocks.GlueBlock;
+import mctbl.tinkersreborn.smeltery.blocks.ItemIOHatch;
 import mctbl.tinkersreborn.smeltery.blocks.LavaTankBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SearedBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
@@ -37,6 +38,8 @@ import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingChannelLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
 import mctbl.tinkersreborn.smeltery.entity.FaucetLogic;
+import mctbl.tinkersreborn.smeltery.entity.FurnaceLogic;
+import mctbl.tinkersreborn.smeltery.entity.ItemIOHatchLogic;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
@@ -44,6 +47,7 @@ import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
 import mctbl.tinkersreborn.smeltery.itemblocks.CastingChannelItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.ColoredGlassItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.FurnaceControllerItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.ItemIOHatchItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.LavaTankItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryControllerItemBlock;
@@ -58,6 +62,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     public static Block smelteryBlock;
     public static Block smelteryController;
     public static Block smelteryDrain;
+    public static Block itemIOHatch;
     public static Block furnaceController;
     public static Block lavaTank;
     public static Block searedBlock;
@@ -98,13 +103,18 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         smelteryDrain = new SmelteryDrain();
         GameRegistry.registerBlock(smelteryDrain, SmelteryDrainItemBlock.class, smelteryDrain.getUnlocalizedName());
 
+        itemIOHatch = new ItemIOHatch();
+        GameRegistry.registerBlock(itemIOHatch, ItemIOHatchItemBlock.class, itemIOHatch.getUnlocalizedName());
+
         furnaceController = new FurnaceController();
         GameRegistry
             .registerBlock(furnaceController, FurnaceControllerItemBlock.class, furnaceController.getUnlocalizedName());
 
         GameRegistry.registerTileEntity(SmelteryLogic.class, "tinkersreborn.Smeltery");
+        GameRegistry.registerTileEntity(FurnaceLogic.class, "tinkersreborn.Furnace");
         GameRegistry.registerTileEntity(SmelteryDrainLogic.class, "tinkersreborn.SmelteryDrain");
         GameRegistry.registerTileEntity(MultiServantLogic.class, "tinkersreborn.Servants");
+        GameRegistry.registerTileEntity(ItemIOHatchLogic.class, "tinkersreborn.ItemIOHatch");
 
         lavaTank = new LavaTankBlock();
         GameRegistry.registerBlock(lavaTank, LavaTankItemBlock.class, lavaTank.getUnlocalizedName());
@@ -216,6 +226,24 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         // Register
         GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 0), "bb", "bb", 'b', searedBrick); // Bricks Block
         GameRegistry.addRecipe(new ItemStack(smelteryController, 1), "bbb", "b b", "bbb", 'b', searedBrick); // Controller
+        GameRegistry.addRecipe(
+            new ItemStack(furnaceController, 1),
+            "bbb",
+            "bfb",
+            "bbb",
+            'b',
+            searedBrick,
+            'f',
+            new ItemStack(Blocks.furnace)); // Furnace Controller
+        GameRegistry.addRecipe(
+            new ItemStack(itemIOHatch, 1),
+            "bbb",
+            "bhb",
+            "bbb",
+            'b',
+            searedBrick,
+            'h',
+            new ItemStack(Blocks.hopper)); // ItemIOHatch
         // GameRegistry.addRecipe(new ItemStack(smelteryBlock, 1, 3), " b ", "b b",
         // "bbb", 'b', searedBrick); // Furnace
         GameRegistry.addRecipe(new ItemStack(smelteryDrain, 1), "b b", "b b", "b b", 'b', searedBrick); // Drain

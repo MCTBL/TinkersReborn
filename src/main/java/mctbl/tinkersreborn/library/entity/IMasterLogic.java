@@ -16,6 +16,10 @@ public interface IMasterLogic {
      */
     public abstract void checkWholeStructureValid();
 
+    public default void tickPre() {}
+
+    public default void tickPost() {}
+
     /**
      * check one block inside of structure
      */

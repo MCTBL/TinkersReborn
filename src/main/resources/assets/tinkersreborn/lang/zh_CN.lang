@@ -61,6 +61,7 @@ tinkersreborn.MultiBlock.Brick.name=冶炼炉砖块
 tinkersreborn.MultiBlock.Stone.name=熔融石头
 tinkersreborn.SmelteryController.name=冶炼炉控制器
 tinkersreborn.FurnaceController.name=熔炉控制器
+tinkersreborn.ItemIOHatch.name=焦黑给料口
 tinkersreborn.Drain.name=冶炼炉排液口
 tinkersreborn.LavaTank.Tank.name=焦黑储罐
 tinkersreborn.LavaTank.Gague.name=焦黑玻璃
@@ -489,6 +490,7 @@ tinkersreborn.gui.partbuilder.material_value=材料价值：%s
 tinkersreborn.gui.partbuilder.material_cant_make=材料 %s 无法制作 %s
 
 tinkersreborn.gui.smeltery.name=冶炼炉
+tinkersreborn.gui.furnace.name=焦黑熔炉
 tinkersreborn.gui.smeltery.fuel=燃料
 tinkersreborn.gui.smeltery.fuel.empty=没有燃料
 tinkersreborn.gui.smeltery.fuel.invalid=§4%s不是有效的冶炼厂燃烧燃料！
@@ -710,3 +712,9 @@ tinkersreborn.waila.subtanks=子储罐:
 tinkersreborn.waila.invalidstructure=无效结构
 tinkersreborn.waila.drying=物品：
 tinkersreborn.waila.dryingProgress=晾干进度：
+
+// manuals
+tinkersreborn.manuals.materialsandyou.furnace=焦黑熔炉是熔炉界的大师，一次可以烧制1/4组物品，拿来烧制食物绝对快极了。
+tinkersreborn.manuals.materialsandyou.furnace.title=焦黑熔炉
+tinkersreborn.manuals.materialsandyou.furnace.info=焦黑熔炉可以在3×3到11×11之间自定义大小，高度至少为3。越大的焦黑熔炉可以烧制更多的物品。搭建它需要铺满顶部，底部以及框架。（顶部，底部，框架部分都可以自定义）。\n这个多方块结构可由任意种类焦黑方块搭建而成，但只能拥有一个控制器。需要至少一个能存储燃料的储罐（如图所示）。
+tinkersreborn.manuals.materialsandyou.itemIOHatch=焦黑给料口可以让你使用漏斗等方块将材料注入焦黑多方块中，也可以将产物从焦黑多方块中抽取出来。

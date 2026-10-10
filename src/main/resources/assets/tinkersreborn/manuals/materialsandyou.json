@@ -39,6 +39,11 @@
           "to": "smeltery",
           "icon": "tinkersreborn:tinkersreborn.SmelteryController",
           "text": "tinkersreborn.manuals.materialsandyou.jumptosmeltery"
+        },
+        {
+          "to": "furnace",
+          "icon": "tinkersreborn:tinkersreborn.FurnaceController",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptofurnace"
         }
       ],
       "size": "large",
@@ -118,6 +123,37 @@
       "type": "bowMaterialNavigation",
       "title": "tinkersreborn.manuals.materialsandyou.bowmaterials.title",
       "name": "bowmaterialsHomePage"
+    },
+    {
+      "type": "image",
+      "image": "tinkersreborn:textures/gui/book/smeltery.png",
+      "text": "tinkersreborn.manuals.materialsandyou.smeltery",
+      "title": "tinkersreborn.manuals.materialsandyou.smeltery.title",
+      "align": "center",
+      "name": "smeltery"
+    },
+    {
+      "type": "text",
+      "align": "center",
+      "text": "tinkersreborn.manuals.materialsandyou.smeltery.info"
+    },
+    {
+      "type": "image",
+      "image": "tinkersreborn:textures/gui/book/furnace.png",
+      "text": "tinkersreborn.manuals.materialsandyou.furnace",
+      "title": "tinkersreborn.manuals.materialsandyou.furnace.title",
+      "align": "center",
+      "name": "furnace"
+    },
+    {
+      "type": "text",
+      "align": "center",
+      "text": "tinkersreborn.manuals.materialsandyou.furnace.info"
+    },
+    {
+      "type": "recipe",
+      "output": "tinkersreborn:tinkersreborn.ItemIOHatch",
+      "text": "tinkersreborn.manuals.materialsandyou.itemIOHatch"
     }
   ]
 }

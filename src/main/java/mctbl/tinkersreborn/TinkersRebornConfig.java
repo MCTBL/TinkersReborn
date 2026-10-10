@@ -105,7 +105,7 @@ public class TinkersRebornConfig {
     public static boolean celsiusPref;
 
     public static double oreToIngotRatio;
-    public static int heatItemsTickrateSmeltery;
+    public static int heatItemsTickrate;
 
     public static String[] fluidIgnore;
 
@@ -433,9 +433,9 @@ public class TinkersRebornConfig {
                 "List of fluids to ignore, effectively preventing registration of melting and casting recipes.")
             .getStringList();
 
-        heatItemsTickrateSmeltery = config.get(
+        heatItemsTickrate = config.get(
             SMELTERY,
-            "heatItemsTickrateSmeltery",
+            "heatItemsTickrate",
             4,
             "The tickrate at which items are heated and alloys are created in the smeltery. Defaults to every 4th tick.")
             .getInt();
