@@ -326,9 +326,10 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
      * 
      * @param fuel
      * @param tick
+     * @param multi
      */
-    public static void registerFuel(FluidStack fuel, int fuelDuration) {
-        allAllowFuel.put(fuel.getFluid(), new TinkersRebornFuelRecord(fuel, fuelDuration));
+    public static void registerFuel(FluidStack fuel, int fuelDuration, int temperatureMulti) {
+        allAllowFuel.put(fuel.getFluid(), new TinkersRebornFuelRecord(fuel, fuelDuration, temperatureMulti));
     }
 
     public static boolean isSmelteryFuel(FluidStack fluid) {
@@ -357,8 +358,11 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
                 return out;
             }
         }
-
         return 0;
+    }
+
+    public static TinkersRebornFuelRecord getSmelteryFuelRecord(FluidStack in) {
+        return allAllowFuel.get(in.getFluid());
     }
 
     /**

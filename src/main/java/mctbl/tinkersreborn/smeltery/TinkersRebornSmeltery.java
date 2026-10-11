@@ -16,6 +16,8 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -132,7 +134,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
         clearGlass = new GlassConnected("clear", true);
         GameRegistry.registerBlock(clearGlass, clearGlass.getUnlocalizedName());
-        OreDictionary.registerOre("blockGlass", new ItemStack(clearGlass));
+        OreDictionary.registerOre("blockGlass", clearGlass);
 
         soulGlass = new GlassConnected("soul", true, true);
         GameRegistry.registerBlock(soulGlass, soulGlass.getUnlocalizedName());
@@ -146,7 +148,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         glassPane = new GlassPaneConnected("clear", true);
         GameRegistry.registerBlock(glassPane, glassPane.getUnlocalizedName());
 
-        TinkersRebornRegistry.registerFuel(new FluidStack(FluidRegistry.LAVA, 50), 100);
+        registerMultiBlockFuel();
     }
 
     @Override
@@ -379,6 +381,23 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
                 new FluidStack(TinkersRebornTools.alubrassFluid, 4),
                 new FluidStack(TinkersRebornTools.copperFluid, 1),
                 new FluidStack(TinkersRebornTools.aluminumFluid, 3));
+        }
+    }
+
+    private void registerMultiBlockFuel() {
+        for (String line : TinkersRebornConfig.multiBlockFuel) {
+            try {
+                final String[] fuelLine = line.split(";");
+
+                final Fluid fluid = FluidRegistry.getFluid(fuelLine[0]);
+                final int consume = Integer.parseInt(fuelLine[1]);
+                final int duration = Integer.parseInt(fuelLine[2]);
+                final int tempMulti = fuelLine.length > 3 ? Integer.parseInt(fuelLine[3]) : 1;
+
+                TinkersRebornRegistry.registerFuel(new FluidStack(fluid, consume), duration, tempMulti);
+            } catch (Exception _) {
+                TinkersReborn.LOG.error("get exception when register fuel, detail:{}", line);
+            }
         }
     }
 }

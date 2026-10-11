@@ -110,6 +110,7 @@ public class TinkersRebornConfig {
     public static String[] fluidIgnore;
 
     public static String[] entityMelting;
+    public static String[] multiBlockFuel;
     public static int smelteryDrainEachTick;
     public static int vineHammerMaxOreMine;
     public static int vineHammerMineEachTick;
@@ -447,6 +448,13 @@ public class TinkersRebornConfig {
                 new String[] { "SnowMan;true;water;100", "Villager;true;molten_emerald;6",
                     "VillagerGolem;true;molten_iron;18", "PigZombie;true;molten_gold;10", "Enderman;true;ender;5", },
                 "List of entity melting entries in the format 'entity;subtypes;fluid;amount'.")
+            .getStringList();
+
+        multiBlockFuel = config.get(
+            SMELTERY,
+            "multiBlockFuel",
+            new String[] { "lava;50;100" },
+            "List of multi block fuels in the format 'fluid;eachTimeConsume(mb);fuelDuration(tick);temperatureMulti(not require)'.")
             .getStringList();
 
         smelteryDrainEachTick = config.get(SMELTERY, "smelteryDrainEachTick", 6)

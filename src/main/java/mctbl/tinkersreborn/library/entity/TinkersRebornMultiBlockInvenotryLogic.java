@@ -169,8 +169,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     protected void adjustLayers() {
         this.blocksPerLayer = (this.maxPos.x - this.minPos.x + 1) * (this.maxPos.z - this.minPos.z + 1);
         this.multiLayers = (this.maxPos.y - this.minPos.y + 1);
-        int innerBlockCount = calculateInnerBlockCount();
-        this.resizeInventory(innerBlockCount);
+        this.resizeInventory(calculateInnerBlockCount());
     }
 
     @Override

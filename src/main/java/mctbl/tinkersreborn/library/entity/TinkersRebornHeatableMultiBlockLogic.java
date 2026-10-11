@@ -28,6 +28,7 @@ import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import mctbl.tinkersreborn.smeltery.network.HeatingStructureFuelUpdatePacket;
+import mctbl.tinkersreborn.smeltery.utils.TinkersRebornFuelRecord;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic
@@ -347,6 +348,12 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
         this.activeLavaTank = null;
     }
 
+    @Override
+    protected void adjustLayers() {
+        super.adjustLayers();
+        this.resizeTemperatures(calculateInnerBlockCount());
+    }
+
     protected void resizeTemperatures(int newSize) {
         int[] oldTemperatures = this.itemTemperatures;
         int[] oldTempRequired = this.itemTempRequired;
@@ -484,6 +491,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                     int bonusFuel = TinkersRebornRegistry.consumeSmelteryFuel(in);
                     int amount = liquid.amount - in.amount;
                     FluidStack drained = tankLogic.drain(null, amount, false);
+                    TinkersRebornFuelRecord smelteryFuelRecord = TinkersRebornRegistry.getSmelteryFuelRecord(drained);
 
                     // we can drain. actually drain and add the fuel
                     if (drained != null && drained.amount == amount) {
@@ -495,7 +503,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                             Math.round(
                                 TinkersRebornUtils.transferKelvinToCelsius(
                                     drained.getFluid()
-                                        .getTemperature())));
+                                        .getTemperature() * smelteryFuelRecord.getTemperatureMulti())));
                         // convert to degree celcius
 
                         // notify client of fuel/temperature changes
