@@ -44,22 +44,22 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
     }
 
     @Override
-    protected int getMaxMultiSize() {
+    public int getMaxMultiSize() {
         return MAX_FURNACE_SIZE;
     }
 
     @Override
-    protected boolean hasCeilingLayer() {
+    public boolean hasCeilingLayer() {
         return true;
     }
 
     @Override
-    protected boolean hasFrame() {
+    public boolean hasFrame() {
         return true;
     }
 
     @Override
-    protected boolean hasFloorLayer() {
+    public boolean hasFloorLayer() {
         return true;
     }
 
@@ -139,7 +139,7 @@ public class FurnaceLogic extends TinkersRebornHeatableMultiBlockLogic {
     }
 
     @Override
-    protected int calculateInnerBlockCount() {
+    public int calculateInnerBlockCount() {
         return super.calculateInnerBlockCount() * 3 + 9;
     }
 

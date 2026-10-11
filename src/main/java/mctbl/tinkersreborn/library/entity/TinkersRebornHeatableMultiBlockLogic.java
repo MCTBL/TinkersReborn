@@ -33,9 +33,6 @@ import mctbl.tinkersreborn.util.TinkersRebornUtils;
 public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersRebornMultiBlockInvenotryLogic
     implements ISidedInventory {
 
-    public int blocksPerLayer;
-    public int multiLayers;
-    protected Block controller;
     /**
      * last time consume fluid stack
      */
@@ -63,20 +60,12 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
     public static final String TAG_IS_HEATING = "isHeating";
     protected static final int INIT_TEMPERATURES = 20; // ℃
 
-    protected final List<Block> validWall;
-    protected final List<Block> validCeiling;
-    protected final List<Block> validFloor;
-
     protected TinkersRebornHeatableMultiBlockLogic(String name, Block block) {
         super(name);
         this.controller = block;
         this.lavaTanks = new ArrayList<>();
         this.itemTemperatures = new int[0];
         this.itemTempRequired = new int[0];
-
-        this.validWall = new ArrayList<>();
-        this.validCeiling = new ArrayList<>();
-        this.validFloor = new ArrayList<>();
     }
 
     @Override
@@ -113,13 +102,6 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
         this.tickPost();
         this.tickCounter = (this.tickCounter + 1) % 20;
     }
-
-    /**
-     * Inner air block's size
-     * 
-     * @return
-     */
-    protected abstract int getMaxMultiSize();
 
     @Override
     public void checkWholeStructureValid() {
@@ -230,14 +212,23 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
     }
 
     protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
-        List<BlockPos> tempList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
                 boolean isCorner = (dx == xAndZRange[0] || dx == xAndZRange[1])
                     && (dz == xAndZRange[2] || dz == xAndZRange[3]);
-                if (isCorner && !hasFrame()) {
-                    // skip 4 corner
-                    continue;
+                if (isCorner) {
+                    if (hasFrame()) {
+                        Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                        if (!validFrameBlock(block)) {
+                            return false;
+                        }
+                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                        checkAndAddTank(block, newBlockPos);
+                        tempValidBlockList.add(newBlockPos);
+                    } else {
+                        // skip outer
+                        continue;
+                    }
                 } else {
                     // check otter wall
                     Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
@@ -246,9 +237,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                             return false;
                         }
                         BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                        if (validTankBlock(block)) {
-                            tempList.add(newBlockPos);
-                        }
+                        checkAndAddTank(block, newBlockPos);
                         tempValidBlockList.add(newBlockPos);
                     } else if (block != Blocks.air) {
                         return false;
@@ -257,59 +246,82 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
 
             }
         }
-        this.lavaTanks.addAll(tempList);
         return true;
     }
 
     protected boolean isValidBottom(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
-        int bias = hasFrame() ? 0 : 1;
-        for (int dx = xAndZRange[0] + bias; dx <= xAndZRange[1] - bias; dx++) {
-            for (int dz = xAndZRange[2] + bias; dz <= xAndZRange[3] - bias; dz++) {
-                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
-                if (!validFloorBlock(block)) {
-                    return false;
+        for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
+            for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
+                boolean isFrame = (dx == xAndZRange[0] || dx == xAndZRange[1])
+                    || (dz == xAndZRange[2] || dz == xAndZRange[3]);
+                if (isFrame) {
+                    if (hasFrame()) {
+                        Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                        if (!validFrameBlock(block)) {
+                            return false;
+                        }
+                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                        checkAndAddTank(block, newBlockPos);
+                        tempValidBlockList.add(newBlockPos);
+                    } else {
+                        // skip outer
+                        continue;
+                    }
+                } else {
+                    Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                    if (!validFloorBlock(block)) {
+                        return false;
+                    }
+                    BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                    checkAndAddTank(block, newBlockPos);
+                    tempValidBlockList.add(newBlockPos);
                 }
-                tempValidBlockList.add(BlockPos.of(center.x + dx, y, center.z + dz));
             }
         }
         return true;
     }
 
     protected boolean isValidTop(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
-        int bias = hasFrame() ? 0 : 1;
-        for (int dx = xAndZRange[0] + bias; dx <= xAndZRange[1] - bias; dx++) {
-            for (int dz = xAndZRange[2] + bias; dz <= xAndZRange[3] - bias; dz++) {
-                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
-                if (!validCeilingBlock(block)) {
-                    return false;
+        for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
+            for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
+                boolean isFrame = (dx == xAndZRange[0] || dx == xAndZRange[1])
+                    || (dz == xAndZRange[2] || dz == xAndZRange[3]);
+                if (isFrame) {
+                    if (hasFrame()) {
+                        Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                        if (!validFrameBlock(block)) {
+                            return false;
+                        }
+                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                        checkAndAddTank(block, newBlockPos);
+                        tempValidBlockList.add(newBlockPos);
+                    } else {
+                        // skip outer
+                        continue;
+                    }
+                } else {
+                    Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                    if (!validCeilingBlock(block)) {
+                        return false;
+                    }
+                    BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                    checkAndAddTank(block, newBlockPos);
+                    tempValidBlockList.add(newBlockPos);
                 }
-                tempValidBlockList.add(BlockPos.of(center.x + dx, y, center.z + dz));
             }
         }
         return true;
     }
 
-    protected boolean validCeilingBlock(Block b) {
-        return validCeiling.contains(b);
-    }
-
-    protected boolean validWallBlock(Block b) {
-        return validWall.contains(b);
-    }
-
-    protected boolean validFloorBlock(Block b) {
-        return validFloor.contains(b);
+    protected void checkAndAddTank(Block block, BlockPos newBlockPos) {
+        if (validTankBlock(block)) {
+            this.lavaTanks.add(newBlockPos);
+        }
     }
 
     protected boolean validTankBlock(Block b) {
         return b == TinkersRebornSmeltery.lavaTank;
     }
-
-    protected abstract boolean hasCeilingLayer();
-
-    protected abstract boolean hasFrame();
-
-    protected abstract boolean hasFloorLayer();
 
     protected void heatItemsPost() {}
 
@@ -323,32 +335,9 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
         super.markDirty();
     }
 
-    protected void adjustLayers() {
-        this.blocksPerLayer = (this.maxPos.x - this.minPos.x + 1) * (this.maxPos.z - this.minPos.z + 1);
-        this.multiLayers = (this.maxPos.y - this.minPos.y + 1);
-        int innerBlockCount = calculateInnerBlockCount();
-        this.resizeInventory(innerBlockCount);
-        this.resizeTemperatures(innerBlockCount);
-    }
-
-    protected int calculateInnerBlockCount() {
-        return this.blocksPerLayer * multiLayers;
-    }
-
-    protected void reset(List<BlockPos> tempValidBlockList) {
-        this.reset();
-        for (BlockPos b : tempValidBlockList) {
-            TileEntity tempEntity = this.worldObj.getTileEntity(b.x, b.y, b.z);
-            if (tempEntity instanceof MultiServantLogic servant && servant.getHasMaster()
-                && servant.getMasterPosition()
-                    .equals(this.getBlockPos())) {
-                servant.removeMaster();
-            }
-        }
-    }
-
+    @Override
     protected void reset() {
-        this.setActive(false);
+        super.reset();
         this.temperature = INIT_TEMPERATURES;
         // reset fuel state to prevent stale values when structure is rebuilt
         this.fuelReleaseTicks = 0;
@@ -356,8 +345,6 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
         this.currentFuel = null;
         this.needsFuel = false;
         this.activeLavaTank = null;
-        this.blocksPerLayer = 0;
-        this.multiLayers = 0;
     }
 
     protected void resizeTemperatures(int newSize) {

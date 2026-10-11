@@ -83,22 +83,22 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
     }
 
     @Override
-    protected int getMaxMultiSize() {
+    public int getMaxMultiSize() {
         return MAX_SMELTERY_SIZE;
     }
 
     @Override
-    protected boolean hasCeilingLayer() {
+    public boolean hasCeilingLayer() {
         return false;
     }
 
     @Override
-    protected boolean hasFrame() {
+    public boolean hasFrame() {
         return false;
     }
 
     @Override
-    protected boolean hasFloorLayer() {
+    public boolean hasFloorLayer() {
         return true;
     }
 
