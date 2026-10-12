@@ -213,8 +213,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                     && (dz == xAndZRange[2] || dz == xAndZRange[3]);
                 Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                 BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
-                    && block == this.controller) {
+                if (block == this.controller
+                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
                     return false;
                 }
 
@@ -253,8 +253,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                     || (dz == xAndZRange[2] || dz == xAndZRange[3]);
                 Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                 BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
-                    && block == this.controller) {
+                if (block == this.controller
+                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
                     return false;
                 }
 
@@ -288,8 +288,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                     || (dz == xAndZRange[2] || dz == xAndZRange[3]);
                 Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                 BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
-                    && block == this.controller) {
+                if (block == this.controller
+                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
                     return false;
                 }
 

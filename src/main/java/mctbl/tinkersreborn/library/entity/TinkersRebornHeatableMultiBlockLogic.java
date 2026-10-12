@@ -223,6 +223,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
         worldObj.markBlockForUpdate(this.xCoord, this.yCoord, this.zCoord);
     }
 
+    @Override
     protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
         List<BlockPos> tempBlockList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
@@ -231,8 +232,8 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                     && (dz == xAndZRange[2] || dz == xAndZRange[3]);
                 Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                 BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
-                    && block == this.controller) {
+                if (block == this.controller
+                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
                     return false;
                 }
 
@@ -266,6 +267,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
         return true;
     }
 
+    @Override
     protected boolean isValidBottom(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
         List<BlockPos> tempBlockList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
@@ -274,8 +276,8 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                     || (dz == xAndZRange[2] || dz == xAndZRange[3]);
                 Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                 BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
-                    && block == this.controller) {
+                if (block == this.controller
+                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
                     return false;
                 }
 
@@ -303,6 +305,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
         return true;
     }
 
+    @Override
     protected boolean isValidTop(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
         List<BlockPos> tempBlockList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
@@ -311,8 +314,8 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                     || (dz == xAndZRange[2] || dz == xAndZRange[3]);
                 Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                 BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
-                    && block == this.controller) {
+                if (block == this.controller
+                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
                     return false;
                 }
 
