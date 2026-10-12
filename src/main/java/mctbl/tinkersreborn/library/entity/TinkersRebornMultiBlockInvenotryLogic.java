@@ -149,16 +149,26 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         }
 
         if (hasCeilingLayer() == hasTopLayer && hasFloorLayer() == hasBottmLayer && validLayerCount > 0) {
-            this.setActive(true);
-
-            this.minPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
-            this.maxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
-
-            this.adjustLayers();
-
+            boolean finish = true;
             for (BlockPos b : tempValidBlockList) {
-                TileEntity tempEntiry = this.worldObj.getTileEntity(b.x, b.y, b.z);
-                if (tempEntiry instanceof MultiServantLogic servant) servant.overrideMaster(masterPos);
+                if (this.worldObj.getTileEntity(b.x, b.y, b.z) instanceof MultiServantLogic servant) {
+                    if (!servant.hasValidMaster() || servant.getMaster() == this) {
+                        servant.overrideMaster(masterPos);
+                    } else {
+                        finish = false;
+                        break;
+                    }
+                }
+            }
+
+            if (finish) {
+                this.setActive(true);
+                this.minPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
+                this.maxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
+
+                this.adjustLayers();
+            } else {
+                reset(tempValidBlockList);
             }
         } else {
             reset(tempValidBlockList);
@@ -196,98 +206,112 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     }
 
     protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
+        List<BlockPos> tempBlockList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
                 boolean isCorner = (dx == xAndZRange[0] || dx == xAndZRange[1])
                     && (dz == xAndZRange[2] || dz == xAndZRange[3]);
+                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
+                    && block == this.controller) {
+                    return false;
+                }
+
                 if (isCorner) {
                     if (hasFrame()) {
-                        Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                         if (!validFrameBlock(block)) {
                             return false;
                         }
-                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                        tempValidBlockList.add(newBlockPos);
+                        tempBlockList.add(newBlockPos);
                     } else {
                         // skip outer
                         continue;
                     }
                 } else {
                     // check otter wall
-                    Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                     if (dx == xAndZRange[0] || dx == xAndZRange[1] || dz == xAndZRange[2] || dz == xAndZRange[3]) {
                         if (!validWallBlock(block)) {
                             return false;
                         }
-                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                        tempValidBlockList.add(newBlockPos);
+                        tempBlockList.add(newBlockPos);
                     } else if (block != Blocks.air) {
                         return false;
                     }
                 }
-
             }
         }
+        tempValidBlockList.addAll(tempBlockList);
         return true;
     }
 
     protected boolean isValidBottom(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
+        List<BlockPos> tempBlockList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
                 boolean isFrame = (dx == xAndZRange[0] || dx == xAndZRange[1])
                     || (dz == xAndZRange[2] || dz == xAndZRange[3]);
+                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
+                    && block == this.controller) {
+                    return false;
+                }
+
                 if (isFrame) {
                     if (hasFrame()) {
-                        Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                         if (!validFrameBlock(block)) {
                             return false;
                         }
-                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                        tempValidBlockList.add(newBlockPos);
+                        tempBlockList.add(newBlockPos);
                     } else {
                         // skip outer
                         continue;
                     }
                 } else {
-                    Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                     if (!validFloorBlock(block)) {
                         return false;
                     }
-                    BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                    tempValidBlockList.add(newBlockPos);
+                    tempBlockList.add(newBlockPos);
                 }
             }
         }
+        tempValidBlockList.addAll(tempBlockList);
         return true;
     }
 
     protected boolean isValidTop(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
+        List<BlockPos> tempBlockList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
                 boolean isFrame = (dx == xAndZRange[0] || dx == xAndZRange[1])
                     || (dz == xAndZRange[2] || dz == xAndZRange[3]);
+                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
+                BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
+                if ((this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)
+                    && block == this.controller) {
+                    return false;
+                }
+
                 if (isFrame) {
                     if (hasFrame()) {
-                        Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                         if (!validFrameBlock(block)) {
                             return false;
                         }
-                        BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                        tempValidBlockList.add(newBlockPos);
+                        tempBlockList.add(newBlockPos);
                     } else {
                         // skip outer
                         continue;
                     }
                 } else {
-                    Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
                     if (!validCeilingBlock(block)) {
                         return false;
                     }
-                    BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                    tempValidBlockList.add(newBlockPos);
+                    tempBlockList.add(newBlockPos);
                 }
             }
         }
+        tempValidBlockList.addAll(tempBlockList);
         return true;
     }
 

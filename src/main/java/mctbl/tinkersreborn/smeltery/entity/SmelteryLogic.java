@@ -399,13 +399,21 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
 
     @Override
     public Container getGuiContainer(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new ContainerSmeltery(inventoryplayer, this);
+        if (this.getActive()) {
+            return new ContainerSmeltery(inventoryplayer, this);
+        } else {
+            return null;
+        }
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public GuiContainer getGui(InventoryPlayer inventoryplayer, World world, int x, int y, int z) {
-        return new GuiSmeltery((ContainerSmeltery) getGuiContainer(inventoryplayer, world, x, y, z), this);
+        if (this.getActive()) {
+            return new GuiSmeltery((ContainerSmeltery) getGuiContainer(inventoryplayer, world, x, y, z), this);
+        } else {
+            return null;
+        }
     }
 
     // melt stuff
