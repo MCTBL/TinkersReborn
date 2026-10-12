@@ -328,7 +328,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
      * @param tick
      * @param multi
      */
-    public static void registerFuel(FluidStack fuel, int fuelDuration, int temperatureMulti) {
+    public static void registerFuel(FluidStack fuel, int fuelDuration, float temperatureMulti) {
         allAllowFuel.put(fuel.getFluid(), new TinkersRebornFuelRecord(fuel, fuelDuration, temperatureMulti));
     }
 

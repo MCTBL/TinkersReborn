@@ -6,13 +6,13 @@ public class TinkersRebornFuelRecord {
 
     private FluidStack fuel;
     private int fuelDuration;
-    private int temperatureMulti;
+    private float temperatureMulti;
 
     /**
      * @param fuel
      * @param fuelDuration
      */
-    public TinkersRebornFuelRecord(FluidStack fuel, int fuelDuration, int temperatureMulti) {
+    public TinkersRebornFuelRecord(FluidStack fuel, int fuelDuration, float temperatureMulti) {
         this.fuel = fuel;
         this.fuelDuration = fuelDuration;
         this.temperatureMulti = temperatureMulti;
@@ -26,7 +26,7 @@ public class TinkersRebornFuelRecord {
         return fuelDuration;
     }
 
-    public int getTemperatureMulti() {
+    public float getTemperatureMulti() {
         return temperatureMulti;
     }
 

@@ -392,11 +392,11 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
                 final Fluid fluid = FluidRegistry.getFluid(fuelLine[0]);
                 final int consume = Integer.parseInt(fuelLine[1]);
                 final int duration = Integer.parseInt(fuelLine[2]);
-                final int tempMulti = fuelLine.length > 3 ? Integer.parseInt(fuelLine[3]) : 1;
+                final float tempMulti = fuelLine.length > 3 ? Float.parseFloat(fuelLine[3]) : 1.0F;
 
                 TinkersRebornRegistry.registerFuel(new FluidStack(fluid, consume), duration, tempMulti);
-            } catch (Exception _) {
-                TinkersReborn.LOG.error("get exception when register fuel, detail:{}", line);
+            } catch (Exception e) {
+                TinkersReborn.LOG.error("get exception when register fuel {}\n{}", line, e);
             }
         }
     }

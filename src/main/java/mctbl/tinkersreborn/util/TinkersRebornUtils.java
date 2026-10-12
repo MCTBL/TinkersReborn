@@ -216,7 +216,7 @@ public class TinkersRebornUtils {
         return String.format(TinkersStr.guiKelvin.toString(), temperature);
     }
 
-    public static float transferKelvinToCelsius(int kelvin) {
+    public static float transferKelvinToCelsius(float kelvin) {
         return kelvin - 273.15F;
     }
 
