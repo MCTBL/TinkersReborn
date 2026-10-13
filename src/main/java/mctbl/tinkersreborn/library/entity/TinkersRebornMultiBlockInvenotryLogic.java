@@ -176,7 +176,12 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
             }
         }
 
-        if (hasCeilingLayer() == hasTopLayer && hasFloorLayer() == hasBottmLayer && validLayerCount > 0) {
+        BlockPos tempMinPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
+        BlockPos tempMaxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
+
+        if (isControllerInside(tempMinPos, tempMaxPos) && hasCeilingLayer() == hasTopLayer
+            && hasFloorLayer() == hasBottmLayer
+            && validLayerCount > 0) {
             boolean finish = true;
             for (BlockPos b : tempValidBlockList) {
                 if (this.worldObj.getTileEntity(b.x, b.y, b.z) instanceof MultiServantLogic servant) {
@@ -191,8 +196,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
 
             if (finish) {
                 this.setActive(true);
-                this.minPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
-                this.maxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
+                this.minPos = tempMinPos;
+                this.maxPos = tempMaxPos;
 
                 this.adjustLayers();
             } else {
@@ -278,6 +283,12 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         }
         tempValidBlockList.addAll(tempBlockList);
         return true;
+    }
+
+    protected boolean isControllerInside(BlockPos minPos, BlockPos maxPos) {
+        int lower = Math.min(minPos.getY(), maxPos.getY());
+        int upper = Math.max(minPos.getY(), maxPos.getY());
+        return this.yCoord >= lower && this.yCoord <= upper;
     }
 
     protected boolean validCeilingBlock(Block b, BlockPos pos) {
