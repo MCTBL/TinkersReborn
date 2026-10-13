@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.library.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -128,24 +129,51 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         List<BlockPos> tempValidBlockList = new ArrayList<>();
         while (checkUpper || checkLower) {
             if (checkUpper) {
-                if (isValidLayer(center, range, center.y + yd1, tempValidBlockList)) {
+                if (isValidLayerGeneric(
+                    center,
+                    range,
+                    center.y + yd1,
+                    tempValidBlockList,
+                    false,
+                    this::validFrameBlock,
+                    this::validWallBlock)) {
                     yd1++;
                     validLayerCount++;
-                } else if (hasCeilingLayer() && isValidTop(center, range, center.y + yd1, tempValidBlockList)) {
-                    hasTopLayer = true;
-                    checkUpper = false;
-                } else checkUpper = false;
+                } else if (hasCeilingLayer() && isValidLayerGeneric(
+                    center,
+                    range,
+                    center.y + yd1,
+                    tempValidBlockList,
+                    true,
+                    this::validFrameBlock,
+                    this::validCeilingBlock)) {
+                        hasTopLayer = true;
+                        checkUpper = false;
+                    } else checkUpper = false;
             }
             if (checkLower) {
-                if (isValidLayer(center, range, center.y - yd2, tempValidBlockList)) {
+                if (isValidLayerGeneric(
+                    center,
+                    range,
+                    center.y - yd2,
+                    tempValidBlockList,
+                    false,
+                    this::validFrameBlock,
+                    this::validWallBlock)) {
                     yd2++;
                     validLayerCount++;
-                } else if (isValidBottom(center, range, center.y - yd2, tempValidBlockList)) {
-                    hasBottmLayer = true;
-                    checkLower = false;
-                } else checkLower = false;
+                } else if (hasFloorLayer() && isValidLayerGeneric(
+                    center,
+                    range,
+                    center.y - yd2,
+                    tempValidBlockList,
+                    true,
+                    this::validFrameBlock,
+                    this::validFloorBlock)) {
+                        hasBottmLayer = true;
+                        checkLower = false;
+                    } else checkLower = false;
             }
-
         }
 
         if (hasCeilingLayer() == hasTopLayer && hasFloorLayer() == hasBottmLayer && validLayerCount > 0) {
@@ -205,38 +233,45 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         this.multiLayers = 0;
     }
 
-    protected boolean isValidLayer(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
+    protected boolean isValidLayerGeneric(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList,
+        boolean isTopOrBottom, BiPredicate<Block, BlockPos> borderCheck, BiPredicate<Block, BlockPos> innerCheck) {
         List<BlockPos> tempBlockList = new ArrayList<>();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
-                boolean isCorner = (dx == xAndZRange[0] || dx == xAndZRange[1])
-                    && (dz == xAndZRange[2] || dz == xAndZRange[3]);
-                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
-                BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if (block == this.controller
-                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
+                boolean isBorder;
+                if (isTopOrBottom) {
+                    isBorder = (dx == xAndZRange[0] || dx == xAndZRange[1])
+                        || (dz == xAndZRange[2] || dz == xAndZRange[3]);
+                } else {
+                    isBorder = (dx == xAndZRange[0] || dx == xAndZRange[1])
+                        && (dz == xAndZRange[2] || dz == xAndZRange[3]);
+                }
+
+                BlockPos pos = BlockPos.of(center.x + dx, y, center.z + dz);
+                Block block = this.worldObj.getBlock(pos.x, pos.y, pos.z);
+
+                if (block == this.controller && !pos.equals(this.getBlockPos())) {
                     return false;
                 }
 
-                if (isCorner) {
+                if (isBorder) {
                     if (hasFrame()) {
-                        if (!validFrameBlock(block)) {
-                            return false;
-                        }
-                        tempBlockList.add(newBlockPos);
-                    } else {
-                        // skip outer
-                        continue;
+                        if (!borderCheck.test(block, pos)) return false;
+                        tempBlockList.add(pos);
                     }
                 } else {
-                    // check otter wall
-                    if (dx == xAndZRange[0] || dx == xAndZRange[1] || dz == xAndZRange[2] || dz == xAndZRange[3]) {
-                        if (!validWallBlock(block)) {
+                    if (isTopOrBottom) {
+                        if (!innerCheck.test(block, pos)) return false;
+                        tempBlockList.add(pos);
+                    } else {
+                        if (dx == xAndZRange[0] || dx == xAndZRange[1] || dz == xAndZRange[2] || dz == xAndZRange[3]) {
+                            if (!innerCheck.test(block, pos)) {
+                                return false;
+                            }
+                            tempBlockList.add(pos);
+                        } else if (block != Blocks.air) {
                             return false;
                         }
-                        tempBlockList.add(newBlockPos);
-                    } else if (block != Blocks.air) {
-                        return false;
                     }
                 }
             }
@@ -245,89 +280,19 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         return true;
     }
 
-    protected boolean isValidBottom(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
-        List<BlockPos> tempBlockList = new ArrayList<>();
-        for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
-            for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
-                boolean isFrame = (dx == xAndZRange[0] || dx == xAndZRange[1])
-                    || (dz == xAndZRange[2] || dz == xAndZRange[3]);
-                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
-                BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if (block == this.controller
-                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
-                    return false;
-                }
-
-                if (isFrame) {
-                    if (hasFrame()) {
-                        if (!validFrameBlock(block)) {
-                            return false;
-                        }
-                        tempBlockList.add(newBlockPos);
-                    } else {
-                        // skip outer
-                        continue;
-                    }
-                } else {
-                    if (!validFloorBlock(block)) {
-                        return false;
-                    }
-                    tempBlockList.add(newBlockPos);
-                }
-            }
-        }
-        tempValidBlockList.addAll(tempBlockList);
-        return true;
-    }
-
-    protected boolean isValidTop(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList) {
-        List<BlockPos> tempBlockList = new ArrayList<>();
-        for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
-            for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
-                boolean isFrame = (dx == xAndZRange[0] || dx == xAndZRange[1])
-                    || (dz == xAndZRange[2] || dz == xAndZRange[3]);
-                Block block = this.worldObj.getBlock(center.x + dx, y, center.z + dz);
-                BlockPos newBlockPos = BlockPos.of(center.x + dx, y, center.z + dz);
-                if (block == this.controller
-                    && (this.xCoord != center.x + dx || this.yCoord != y || this.zCoord != center.z + dz)) {
-                    return false;
-                }
-
-                if (isFrame) {
-                    if (hasFrame()) {
-                        if (!validFrameBlock(block)) {
-                            return false;
-                        }
-                        tempBlockList.add(newBlockPos);
-                    } else {
-                        // skip outer
-                        continue;
-                    }
-                } else {
-                    if (!validCeilingBlock(block)) {
-                        return false;
-                    }
-                    tempBlockList.add(newBlockPos);
-                }
-            }
-        }
-        tempValidBlockList.addAll(tempBlockList);
-        return true;
-    }
-
-    protected boolean validCeilingBlock(Block b) {
+    protected boolean validCeilingBlock(Block b, BlockPos pos) {
         return validCeiling.contains(b);
     }
 
-    protected boolean validFrameBlock(Block b) {
+    protected boolean validFrameBlock(Block b, BlockPos pos) {
         return validWall.contains(b);
     }
 
-    protected boolean validWallBlock(Block b) {
+    protected boolean validWallBlock(Block b, BlockPos pos) {
         return validWall.contains(b);
     }
 
-    protected boolean validFloorBlock(Block b) {
+    protected boolean validFloorBlock(Block b, BlockPos pos) {
         return validFloor.contains(b);
     }
 
