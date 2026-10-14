@@ -16,13 +16,15 @@ import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornMultiBlock;
 import mctbl.tinkersreborn.library.entity.IMasterLogic;
+import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
+import mctbl.tinkersreborn.smeltery.entity.TinkerTankLogic;
 
 public class TinkerTankController extends TinkersRebornMultiBlock {
 
     public TinkerTankController() {
         super();
         this.setBlockName("tinkersreborn.TinkerTankController");
-        this.TEXTURENAMES = new String[] { "smeltery/smeltery_inactive", "smeltery/smeltery_active" };
+        this.TEXTURENAMES = new String[] { "smeltery/tinker_tank_inactive", "smeltery/tinker_tank_active" };
     }
 
     @Override
@@ -30,15 +32,15 @@ public class TinkerTankController extends TinkersRebornMultiBlock {
         return "tinkersreborn.TinkerTankController";
     }
 
-    // @Override
-    // public TileEntity createNewTileEntity(World world, int metadata) {
-    // return new SmelteryLogic();
-    // }
-    //
-    // @Override
-    // public int getRenderType() {
-    // return TinkersRebornSmeltery.proxy.getSmelteryRender();
-    // }
+    @Override
+    public TileEntity createNewTileEntity(World world, int metadata) {
+        return new TinkerTankLogic();
+    }
+
+    @Override
+    public int getRenderType() {
+        return TinkersRebornSmeltery.proxy.getTinkerTankRender();
+    }
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -66,7 +68,7 @@ public class TinkerTankController extends TinkersRebornMultiBlock {
 
     @Override
     public void randomDisplayTick(World world, int x, int y, int z, Random random) {
-        if (isActive(world, x, y, z)) {
+        if (isActive(world, x, y, z) && TinkersReborn.random.nextInt(5) == 0) {
             TileEntity logic = world.getTileEntity(x, y, z);
             ForgeDirection face = ForgeDirection.NORTH;
             if (logic instanceof ITinkersRebornIFacingLogic facingLogic) face = facingLogic.getForgeDirection();
@@ -74,28 +76,14 @@ public class TinkerTankController extends TinkersRebornMultiBlock {
             double wBias = TinkersReborn.random.nextDouble() * 0.8D - 0.4D;
             double hBias = TinkersReborn.random.nextDouble() * 0.8D + 0.1D;
             world.spawnParticle(
-                "smoke",
+                "splash",
                 x + 0.5D + face.offsetX * 0.55D + Math.abs(face.offsetZ) * wBias,
                 y + hBias,
                 z + 0.5D + face.offsetZ * 0.55D + Math.abs(face.offsetX) * wBias,
                 0.0D,
-                0.02D,
+                -0.001D,
                 0.0D);
-            world.spawnParticle(
-                "flame",
-                x + 0.5D + face.offsetX * 0.55D + Math.abs(face.offsetZ) * wBias,
-                y + hBias,
-                z + 0.5D + face.offsetZ * 0.55D + Math.abs(face.offsetX) * wBias,
-                0.0D,
-                0.02D,
-                0.0D);
-
         }
-    }
-
-    @Override
-    public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        return !isActive(world, x, y, z) ? 0 : 9;
     }
 
     @Override

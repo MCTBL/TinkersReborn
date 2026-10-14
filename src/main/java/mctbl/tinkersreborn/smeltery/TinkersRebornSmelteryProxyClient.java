@@ -16,6 +16,7 @@ import mctbl.tinkersreborn.smeltery.model.PaneConnectedRender;
 import mctbl.tinkersreborn.smeltery.model.SmelteryRender;
 import mctbl.tinkersreborn.smeltery.model.TankItemRenderer;
 import mctbl.tinkersreborn.smeltery.model.TankRender;
+import mctbl.tinkersreborn.smeltery.model.TinkerTankRender;
 
 public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxyCommon {
 
@@ -27,12 +28,10 @@ public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxy
     void registerRenderer() {
         RenderingRegistry.registerBlockHandler(new TankRender());
         RenderingRegistry.registerBlockHandler(new SmelteryRender());
+        RenderingRegistry.registerBlockHandler(new TinkerTankRender());
         RenderingRegistry.registerBlockHandler(new CastingBlockRender());
         RenderingRegistry.registerBlockHandler(new PaneConnectedRender());
 
-        // RenderingRegistry.registerBlockHandler(new PaneRender());
-        // RenderingRegistry.registerBlockHandler(new PaneConnectedRender());
-        // RenderingRegistry.registerBlockHandler(new RenderBlockFluid());
         RenderingRegistry.registerBlockHandler(new BlockRenderCastingChannel());
 
         ClientRegistry.bindTileEntitySpecialRenderer(CastingTableLogic.class, new CastingTableSpecialRenderer());
@@ -61,5 +60,10 @@ public class TinkersRebornSmelteryProxyClient extends TinkersRebornSmelteryProxy
     @Override
     public int getCastingChannelRender() {
         return BlockRenderCastingChannel.renderID;
+    }
+
+    @Override
+    public int getTinkerTankRender() {
+        return TinkerTankRender.tankModel;
     }
 }

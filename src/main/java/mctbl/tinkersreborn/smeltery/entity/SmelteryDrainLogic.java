@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -13,6 +15,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
 
@@ -22,9 +25,8 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-        if (this.getMaster() instanceof SmelteryLogic smeltery && resource != null
-            && canFill(from, resource.getFluid())) {
-            return smeltery.fill(resource, doFill);
+        if (this.getMaster() instanceof IFluidTank tank && resource != null && canFill(from, resource.getFluid())) {
+            return tank.fill(resource, doFill);
         } else {
             return 0;
         }
@@ -32,18 +34,18 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
-        if (this.getMaster() instanceof SmelteryLogic smeltery && canDrain(from, resource.getFluid())
-            && resource.getFluid() == smeltery.getFluid()
+        if (this.getMaster() instanceof IFluidTank tank && canDrain(from, resource.getFluid())
+            && resource.getFluid() == tank.getFluid()
                 .getFluid()) {
-            return smeltery.drain(resource.amount, doDrain);
+            return tank.drain(resource.amount, doDrain);
         }
         return null;
     }
 
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        if (this.getMaster() instanceof SmelteryLogic smeltery && canDrain(from, null)) {
-            return smeltery.drain(maxDrain, doDrain);
+        if (this.getMaster() instanceof IFluidTank tank && canDrain(from, null)) {
+            return tank.drain(maxDrain, doDrain);
         }
         return null;
     }
@@ -60,11 +62,21 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
         if (!hasValidMaster()) return false;
 
         boolean containsFluid = fluid == null;
-        if (fluid != null && this.getMaster() instanceof SmelteryLogic smeltery) {
-            for (FluidStack fstack : smeltery.moltenMetal) {
-                if (fstack.getFluidID() == fluid.getID()) {
-                    containsFluid = true;
-                    break;
+        if (fluid != null) {
+            List<FluidStack> fluidList = null;
+
+            if (this.getMaster() instanceof SmelteryLogic tank) {
+                fluidList = tank.moltenMetal;
+            } else if (this.getMaster() instanceof TinkerTankLogic tank) {
+                fluidList = tank.fluids;
+            }
+
+            if (fluidList != null) {
+                for (FluidStack fstack : fluidList) {
+                    if (fstack.getFluidID() == fluid.getID()) {
+                        containsFluid = true;
+                        break;
+                    }
                 }
             }
         }
@@ -74,9 +86,13 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
     @Override
     @Nullable
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        if ((from == getForgeDirection() || from == getForgeDirection().getOpposite() || from == ForgeDirection.UNKNOWN)
-            && this.getMaster() instanceof SmelteryLogic smeltery) {
-            return smeltery.getMultiTankInfo();
+        if ((from == getForgeDirection() || from == getForgeDirection().getOpposite()
+            || from == ForgeDirection.UNKNOWN)) {
+            if (this.getMaster() instanceof SmelteryLogic tank) {
+                return tank.getMultiTankInfo();
+            } else if (this.getMaster() instanceof TinkerTankLogic tank) {
+                return tank.getMultiTankInfo();
+            }
         }
         return null;
     }

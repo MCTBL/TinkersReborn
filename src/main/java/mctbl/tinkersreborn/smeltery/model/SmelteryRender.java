@@ -54,11 +54,11 @@ public class SmelteryRender implements ISimpleBlockRenderingHandler {
             float base = 0F;
             int yBase = 0;
             int liquidBase = 0;
+            int cap = logic.blocksPerLayer * SmelteryLogic.MB_PER_BLOCK_CAPACITY;
 
             for (FluidStack liquid : logic.moltenMetal) {
                 int liquidSize = liquid.amount;
                 while (liquidSize > 0) {
-                    int cap = logic.blocksPerLayer * SmelteryLogic.MB_PER_BLOCK_CAPACITY;
                     int room = cap - liquidBase;
                     int countSize = Math.min(liquidSize, room);
                     liquidSize -= countSize;

@@ -8,16 +8,16 @@ import mctbl.tinkersreborn.library.gui.container.BaseContainer;
 import mctbl.tinkersreborn.smeltery.entity.TinkerTankLogic;
 
 // Fired when a player clicks a fluid in the smeltery GUI to move it to the bottom
-public class TinkerTankClicked extends AbstractPacketThreadsafe {
+public class TinkerTankFluidClicked extends AbstractPacketThreadsafe {
 
     public static class Handler extends AbstactPacketHandler {
     }
 
     public int index; // index of the clicked fluid
 
-    public TinkerTankClicked() {}
+    public TinkerTankFluidClicked() {}
 
-    public TinkerTankClicked(int index) {
+    public TinkerTankFluidClicked(int index) {
         this.index = index;
     }
 

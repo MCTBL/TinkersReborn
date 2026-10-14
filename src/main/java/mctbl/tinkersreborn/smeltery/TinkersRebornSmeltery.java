@@ -47,6 +47,7 @@ import mctbl.tinkersreborn.smeltery.entity.LavaTankLogic;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryDrainLogic;
 import mctbl.tinkersreborn.smeltery.entity.SmelteryLogic;
+import mctbl.tinkersreborn.smeltery.entity.TinkerTankLogic;
 import mctbl.tinkersreborn.smeltery.itemblocks.CastingChannelItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.ColoredGlassItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.FurnaceControllerItemBlock;
@@ -121,6 +122,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
         GameRegistry.registerTileEntity(SmelteryLogic.class, "tinkersreborn.Smeltery");
         GameRegistry.registerTileEntity(FurnaceLogic.class, "tinkersreborn.Furnace");
+        GameRegistry.registerTileEntity(TinkerTankLogic.class, "tinkersreborn.TinkerTank");
         GameRegistry.registerTileEntity(SmelteryDrainLogic.class, "tinkersreborn.SmelteryDrain");
         GameRegistry.registerTileEntity(MultiServantLogic.class, "tinkersreborn.Servants");
         GameRegistry.registerTileEntity(ItemIOHatchLogic.class, "tinkersreborn.ItemIOHatch");

@@ -82,6 +82,7 @@ tinkersreborn.MultiBlock.Cobblestone.name=Seared Cobblestone
 tinkersreborn.MultiBlock.Brick.name=Seared Bricks
 tinkersreborn.MultiBlock.Stone.name=Seared Stone
 tinkersreborn.SmelteryController.name=Smeltery Controller
+tinkersreborn.TinkerTankController.name=Tinker Tank Controller
 tinkersreborn.FurnaceController.name=Furnace Controller
 tinkersreborn.ItemIOHatch.name=Seared Feed Inlet
 tinkersreborn.Drain.name=Smeltery Drain
@@ -641,6 +642,8 @@ tinkersreborn.gui.smeltery.progress.no_heat=Not enough heat to melt this item
 tinkersreborn.gui.smeltery.progress.no_space=Not enough free space in the smeltery
 
 tinkersreborn.gui.smeltery.fill_clear=Fill or clear bucket
+
+tinkersreborn.gui.tinkertank.name=Tinker Tank
 
 // Leveling
 tinkersreborn.message.levelup.generic=Looks like your %s is being used since: %s
