@@ -50,7 +50,6 @@ public class SmelteryController extends TinkersRebornMultiBlock {
             ? facingLogic.getForgeDirection()
             : ForgeDirection.NORTH;
 
-        // smeltry or furnace
         if (ForgeDirection.getOrientation(side) == faceingDirection) {
             return this.icons[isActive(world, x, y, z) ? 1 : 0];
         }

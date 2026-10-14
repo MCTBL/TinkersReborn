@@ -63,8 +63,7 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
     protected static final int INIT_TEMPERATURES = 20; // ℃
 
     protected TinkersRebornHeatableMultiBlockLogic(String name, Block block) {
-        super(name);
-        this.controller = block;
+        super(name, block);
         this.lavaTanks = new ArrayList<>();
         this.itemTemperatures = new int[0];
         this.itemTempRequired = new int[0];

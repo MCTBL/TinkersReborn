@@ -36,11 +36,9 @@ public class FurnaceController extends TinkersRebornMultiBlock {
     public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
         TileEntity logic = world.getTileEntity(x, y, z);
         ForgeDirection sideDirection = ForgeDirection.getOrientation(side);
-        ForgeDirection faceingDirection = (logic instanceof ITinkersRebornIFacingLogic)
-            ? ((ITinkersRebornIFacingLogic) logic).getForgeDirection()
+        ForgeDirection faceingDirection = (logic instanceof ITinkersRebornIFacingLogic l) ? l.getForgeDirection()
             : ForgeDirection.getOrientation(0);
 
-        // smeltry or furnace
         if (sideDirection == faceingDirection) {
             return this.icons[isActive(world, x, y, z) ? 1 : 0];
         }

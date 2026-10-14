@@ -55,8 +55,9 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     protected final List<Block> validCeiling;
     protected final List<Block> validFloor;
 
-    protected TinkersRebornMultiBlockInvenotryLogic(String name) {
+    protected TinkersRebornMultiBlockInvenotryLogic(String name, Block block) {
         super(0);
+        this.controller = block;
         this.name = "tinkersreborn.gui." + name;
 
         this.validWall = new ArrayList<>();
@@ -329,7 +330,25 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     }
 
     @Override
-    public abstract void updateEntity();
+    public void updateEntity() {
+        if (this.worldObj.isRemote) return;
+        this.tickPre();
+        if ((!this.getActive() && this.tickCounter == 0) || this.needsUpdate) {
+            // check for once per second
+            this.needsUpdate = false;
+            this.checkWholeStructureValid();
+        } else if (this.getActive() && this.tickCounter == 0) {
+            // called every second, we check every 15s or so
+            if (++this.secondCounter >= 15) {
+                this.secondCounter = 0;
+                this.checkWholeStructureValid();
+            } else {
+                this.checkSteppingingValid();
+            }
+        }
+        this.tickPost();
+        this.tickCounter = (this.tickCounter + 1) % 20;
+    }
 
     @Override
     public void writeToNBT(NBTTagCompound tags) {

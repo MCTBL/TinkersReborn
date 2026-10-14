@@ -36,6 +36,7 @@ import mctbl.tinkersreborn.smeltery.blocks.SearedBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryBlock;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryController;
 import mctbl.tinkersreborn.smeltery.blocks.SmelteryDrain;
+import mctbl.tinkersreborn.smeltery.blocks.TinkerTankController;
 import mctbl.tinkersreborn.smeltery.entity.CastingBasinLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingChannelLogic;
 import mctbl.tinkersreborn.smeltery.entity.CastingTableLogic;
@@ -55,6 +56,7 @@ import mctbl.tinkersreborn.smeltery.itemblocks.SearedTableItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryControllerItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryDrainItemBlock;
 import mctbl.tinkersreborn.smeltery.itemblocks.SmelteryItemBlock;
+import mctbl.tinkersreborn.smeltery.itemblocks.TinkerTankControllerItemBlock;
 import mctbl.tinkersreborn.smeltery.utils.BoltCoreCastingRecipe;
 import mctbl.tinkersreborn.smeltery.utils.MeltingRecipe;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
@@ -69,6 +71,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
     public static Block lavaTank;
     public static Block searedBlock;
     public static Block castingChannel;
+    public static Block tankController;
 
     public static Block glueBlock;
 
@@ -111,6 +114,10 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         furnaceController = new FurnaceController();
         GameRegistry
             .registerBlock(furnaceController, FurnaceControllerItemBlock.class, furnaceController.getUnlocalizedName());
+
+        tankController = new TinkerTankController();
+        GameRegistry
+            .registerBlock(tankController, TinkerTankControllerItemBlock.class, tankController.getUnlocalizedName());
 
         GameRegistry.registerTileEntity(SmelteryLogic.class, "tinkersreborn.Smeltery");
         GameRegistry.registerTileEntity(FurnaceLogic.class, "tinkersreborn.Furnace");
