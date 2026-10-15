@@ -28,12 +28,13 @@ public class GlassConnected extends TinkersRebornBlock {
     protected String folder;
     private final int renderPass;
     private final boolean canPlayerPass;
+    private final boolean hasTileEntity;
 
     public GlassConnected(String location, boolean hasAlpha) {
-        this(location, hasAlpha, false);
+        this(location, hasAlpha, false, false);
     }
 
-    public GlassConnected(String location, boolean hasAlpha, boolean canPlayerPass) {
+    public GlassConnected(String location, boolean hasAlpha, boolean canPlayerPass, boolean hasTileEntity) {
         super(Material.glass);
         this.stepSound = soundTypeGlass;
         this.folder = location;
@@ -43,6 +44,12 @@ public class GlassConnected extends TinkersRebornBlock {
         this.icons = new IIcon[16];
         this.unlocalizedName = location + "GlassBlock";
         this.canPlayerPass = canPlayerPass;
+        this.hasTileEntity = hasTileEntity;
+    }
+
+    @Override
+    public boolean hasTileEntity(int metadata) {
+        return this.hasTileEntity;
     }
 
     @Override
@@ -551,7 +558,7 @@ public class GlassConnected extends TinkersRebornBlock {
 
     @Override
     public TileEntity createTileEntity(World world, int metadata) {
-        if (this.canPlayerPass) {
+        if (this.hasTileEntity) {
             return new MultiServantLogic();
         }
         return null;
@@ -559,22 +566,23 @@ public class GlassConnected extends TinkersRebornBlock {
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        icons[0] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass");
-        icons[1] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_1_d");
-        icons[2] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_1_u");
-        icons[3] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_1_l");
-        icons[4] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_1_r");
-        icons[5] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_2_h");
-        icons[6] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_2_v");
-        icons[7] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_2_dl");
-        icons[8] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_2_dr");
-        icons[9] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_2_ul");
-        icons[10] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_2_ur");
-        icons[11] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_3_d");
-        icons[12] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_3_u");
-        icons[13] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_3_l");
-        icons[14] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_3_r");
-        icons[15] = iconRegister.registerIcon("tinkersreborn:glass/" + folder + "/glass_4");
+        String base = "tinkersreborn:glass/" + folder + "/glass";
+        icons[0] = iconRegister.registerIcon(base);
+        icons[1] = iconRegister.registerIcon(base + "_1_d");
+        icons[2] = iconRegister.registerIcon(base + "_1_u");
+        icons[3] = iconRegister.registerIcon(base + "_1_l");
+        icons[4] = iconRegister.registerIcon(base + "_1_r");
+        icons[5] = iconRegister.registerIcon(base + "_2_h");
+        icons[6] = iconRegister.registerIcon(base + "_2_v");
+        icons[7] = iconRegister.registerIcon(base + "_2_dl");
+        icons[8] = iconRegister.registerIcon(base + "_2_dr");
+        icons[9] = iconRegister.registerIcon(base + "_2_ul");
+        icons[10] = iconRegister.registerIcon(base + "_2_ur");
+        icons[11] = iconRegister.registerIcon(base + "_3_d");
+        icons[12] = iconRegister.registerIcon(base + "_3_u");
+        icons[13] = iconRegister.registerIcon(base + "_3_l");
+        icons[14] = iconRegister.registerIcon(base + "_3_r");
+        icons[15] = iconRegister.registerIcon(base + "_4");
     }
 
     @Override

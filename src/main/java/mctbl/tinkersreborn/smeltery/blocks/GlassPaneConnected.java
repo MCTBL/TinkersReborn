@@ -21,7 +21,7 @@ public class GlassPaneConnected extends GlassConnected {
     private IIcon sideIcon;
 
     public GlassPaneConnected(String location, boolean hasAlpha) {
-        super(location, hasAlpha, false);
+        super(location, hasAlpha, false, false);
         this.unlocalizedName = location + "GlassPane";
     }
 

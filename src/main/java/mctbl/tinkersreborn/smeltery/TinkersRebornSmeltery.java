@@ -76,12 +76,11 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
 
     public static Block glueBlock;
 
-    // TODO
     public static Block clearGlass;
     public static Block soulGlass;
+    public static Block searedGlass;
     public static Block coloredGlassClear;
     public static Block glassPane;
-    // public static Block stainedGlassClearPane;
 
     @SidedProxy(
         clientSide = "mctbl.tinkersreborn.smeltery.TinkersRebornSmelteryProxyClient",
@@ -145,9 +144,13 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.registerBlock(clearGlass, clearGlass.getUnlocalizedName());
         OreDictionary.registerOre("blockGlass", clearGlass);
 
-        soulGlass = new GlassConnected("soul", true, true);
+        soulGlass = new GlassConnected("soul", true, true, true);
         GameRegistry.registerBlock(soulGlass, soulGlass.getUnlocalizedName());
         OreDictionary.registerOre("blockGlass", soulGlass);
+
+        searedGlass = new GlassConnected("seared", true, false, true);
+        GameRegistry.registerBlock(searedGlass, searedGlass.getUnlocalizedName());
+        OreDictionary.registerOre("blockGlass", searedGlass);
 
         coloredGlassClear = new ColoredGlassConnected();
         GameRegistry
