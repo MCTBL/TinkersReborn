@@ -26,6 +26,7 @@ import net.minecraftforge.fluids.IFluidTank;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
@@ -42,7 +43,7 @@ public class TinkerTankLogic extends TinkersRebornMultiBlockInvenotryLogic imple
     private static final int MAX_TANK_SIZE = 9;
     private static final int BUCKET_INPUT_SLOT = 0;
     private static final int BUCKET_OUTPUT_SLOT = 1;
-    public static final int MB_PER_BLOCK_CAPACITY = 4000; // 4B each block
+    public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornConfig.tinkerTankFluidPerBlock;
     public static final String FLUID_LIST = "Fluids";
 
     public final List<FluidStack> fluids = new ArrayList<>();

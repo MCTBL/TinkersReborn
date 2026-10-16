@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import net.minecraftforge.common.config.Configuration;
 
 import cpw.mods.fml.common.Loader;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 
 public class TinkersRebornConfig {
 
@@ -112,6 +113,9 @@ public class TinkersRebornConfig {
     public static String[] entityMelting;
     public static String[] multiBlockFuel;
     public static int smelteryDrainEachTick;
+    public static int tinkerTankFluidPerBlock;
+    public static int smelteryFluidPerBlock;
+
     public static int vineHammerMaxOreMine;
     public static int vineHammerMineEachTick;
 
@@ -458,6 +462,16 @@ public class TinkersRebornConfig {
             .getStringList();
 
         smelteryDrainEachTick = config.get(SMELTERY, "smelteryDrainEachTick", 6)
+            .getInt();
+        tinkerTankFluidPerBlock = config
+            .get(SMELTERY, "tinkerTankFluidEachBlock", 4000, "Each block inside tinker tank can hold how many mb")
+            .getInt();
+        smelteryFluidPerBlock = config
+            .get(
+                SMELTERY,
+                "smelteryFluidPerBlock",
+                TinkersRebornMaterial.VALUE_Ingot * 10,
+                "Each block inside smeltery can hold how many mb")
             .getInt();
 
         vineHammerMaxOreMine = config.get(TOOLS, "Vein Hammer can mine ores each time", 25)

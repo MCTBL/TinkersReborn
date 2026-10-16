@@ -34,13 +34,13 @@ import net.minecraftforge.fluids.IFluidTank;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.crafting.AlloyRecipe;
 import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
 import mctbl.tinkersreborn.library.event.TinkerSmelteryEvent;
-import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
 import mctbl.tinkersreborn.smeltery.blocks.TinkersRebornFluid;
@@ -58,7 +58,7 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
     private static final int MAX_SMELTERY_SIZE = 9;
     private static final int BUCKET_INPUT_SLOT = 0;
     private static final int BUCKET_OUTPUT_SLOT = 1;
-    public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornMaterial.VALUE_Ingot * 10;
+    public static final int MB_PER_BLOCK_CAPACITY = TinkersRebornConfig.smelteryFluidPerBlock;
     protected static final int ALLOYING_PER_TICK = 10; // how much liquid can be created per tick to make alloys
     public static final String MOLTEN_METAL_LIST = "MoltenMetal";
 
