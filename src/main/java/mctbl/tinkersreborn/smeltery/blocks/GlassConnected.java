@@ -23,6 +23,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
+import mctbl.tinkersreborn.library.entity.IMasterLogic;
+import mctbl.tinkersreborn.library.entity.IServantLogic;
 import mctbl.tinkersreborn.library.texture.SubIcon;
 import mctbl.tinkersreborn.smeltery.entity.MultiServantLogic;
 
@@ -152,6 +154,21 @@ public class GlassConnected extends TinkersRebornBlock {
         int col = ctmIndex % 12;
         int row = ctmIndex / 12;
         return icons[row * 12 + col];
+    }
+    
+    @Override
+    public void breakBlock(World world, int x, int y, int z, Block blockID, int meta) {
+	if(this.hasTileEntity && world.getTileEntity(x, y, z)instanceof IServantLogic servant) {
+		servant.notifyMasterOfChange();
+	}
+        super.breakBlock(world, x, y, z, blockID, meta);
+    }
+    
+    @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block block) {
+	if(this.hasTileEntity && world.getTileEntity(x, y, z)instanceof IServantLogic servant) {
+		servant.notifyMasterOfChange();
+	}
     }
 
     @Override

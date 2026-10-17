@@ -44,6 +44,11 @@
           "to": "furnace",
           "icon": "tinkersreborn:tinkersreborn.FurnaceController",
           "text": "tinkersreborn.manuals.materialsandyou.jumptofurnace"
+        },
+        {
+          "to": "tinkertank",
+          "icon": "tinkersreborn:tinkersreborn.TinkerTankController",
+          "text": "tinkersreborn.manuals.materialsandyou.jumptotinkertank"
         }
       ],
       "size": "large",
@@ -138,6 +143,11 @@
       "text": "tinkersreborn.manuals.materialsandyou.smeltery.info"
     },
     {
+      "type": "recipe",
+      "output": "tinkersreborn:tinkersreborn.ItemIOHatch",
+      "text": "tinkersreborn.manuals.materialsandyou.itemIOHatch"
+    },
+    {
       "type": "image",
       "image": "tinkersreborn:textures/gui/book/furnace.png",
       "text": "tinkersreborn.manuals.materialsandyou.furnace",
@@ -151,9 +161,17 @@
       "text": "tinkersreborn.manuals.materialsandyou.furnace.info"
     },
     {
-      "type": "recipe",
-      "output": "tinkersreborn:tinkersreborn.ItemIOHatch",
-      "text": "tinkersreborn.manuals.materialsandyou.itemIOHatch"
+      "name": "tinkertank",
+      "type": "image",
+      "image": "tinkersreborn:textures/gui/book/tinkertank.png",
+      "text": "tinkersreborn.manuals.materialsandyou.tinkertank",
+      "title": "tinkersreborn.manuals.materialsandyou.tinkertank.title",
+      "align": "center"
+    },
+    {
+      "type": "text",
+      "align": "center",
+      "text": "tinkersreborn.manuals.materialsandyou.tinkertank.info"
     }
   ]
 }

@@ -77,7 +77,7 @@ public class SmelteryLogic extends TinkersRebornHeatableMultiBlockLogic implemen
                 TinkersRebornSmeltery.smelteryDrain,
                 TinkersRebornSmeltery.smelteryBlock,
                 TinkersRebornSmeltery.lavaTank,
-                TinkersRebornSmeltery.itemIOHatch));
+                TinkersRebornSmeltery.itemIOHatch, TinkersRebornSmeltery.searedGlass));
         this.validCeiling.addAll(Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.itemIOHatch));
         this.validFloor.addAll(Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.itemIOHatch));
     }
