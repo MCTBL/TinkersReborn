@@ -94,8 +94,8 @@ public class GuiSideInventory extends GuiModule {
     }
 
     protected boolean shouldDrawName() {
-        if (this.inventorySlots instanceof BaseContainer) {
-            return ((BaseContainer) this.inventorySlots).getInventoryDisplayName() != null;
+        if (this.inventorySlots instanceof BaseContainer baseContainer) {
+            return baseContainer.getInventoryDisplayName() != null;
         }
 
         return false;
@@ -130,6 +130,14 @@ public class GuiSideInventory extends GuiModule {
     public void updatePosition(int parentX, int parentY, int parentSizeX, int parentSizeY) {
         // at most as big as the parent
         this.ySize = calcCappedYSize(parentSizeY - 10);
+
+        // set slider height first
+        int h = ySize - border.h * 2;
+        if (shouldDrawName()) {
+            h -= textBackground.h;
+        }
+        slider.setSize(h);
+
         // slider needed?
         if (getDisplayedRows() < getTotalRows()) {
             slider.enable();
@@ -165,24 +173,21 @@ public class GuiSideInventory extends GuiModule {
         border.setSize(xSize, ySize);
 
         int y = guiTop + border.h;
-        int h = ySize - border.h * 2;
 
         if (shouldDrawName()) {
             y += textBackground.h;
-            h -= textBackground.h;
         }
         slider.setPosition(guiLeft + columns * slot.w + border.w, y);
-        slider.setSize(h);
         slider.setSliderParameters(0, getTotalRows() - getDisplayedRows(), 1);
 
         updateSlots();
     }
 
-    private int getDisplayedRows() {
+    int getDisplayedRows() {
         return slider.height / slot.h;
     }
 
-    private int getTotalRows() {
+    int getTotalRows() {
         int total = slotCount / columns;
         if (slotCount % columns != 0) {
             total++;
@@ -191,7 +196,7 @@ public class GuiSideInventory extends GuiModule {
         return total;
     }
 
-    private int calcCappedYSize(int max) {
+    int calcCappedYSize(int max) {
         int h = slot.h * getTotalRows();
 
         h = border.getHeightWithBorder(h);
@@ -219,8 +224,7 @@ public class GuiSideInventory extends GuiModule {
             yd += textBackground.h;
         }
 
-        for (Object o : inventorySlots.inventorySlots) {
-            Slot slot = (Slot) o;
+        for (Slot slot : inventorySlots.inventorySlots) {
             if (shouldDrawSlot(slot)) {
                 // calc position of the slot
                 int offset = slot.getSlotIndex() - firstSlotId;

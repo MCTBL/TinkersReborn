@@ -16,6 +16,10 @@ public interface IMasterLogic {
      */
     public abstract void checkWholeStructureValid();
 
+    public default void tickPre() {}
+
+    public default void tickPost() {}
+
     /**
      * check one block inside of structure
      */
@@ -25,5 +29,20 @@ public interface IMasterLogic {
      * steep to next inner block need to check valid
      */
     public default void stepNextInnerPos() {}
+
+    /**
+     * Inner air block's size
+     * 
+     * @return
+     */
+    public int getMaxMultiSize();
+
+    public boolean hasCeilingLayer();
+
+    public boolean hasFrame();
+
+    public boolean hasFloorLayer();
+
+    public int calculateInnerBlockCount();
 
 }

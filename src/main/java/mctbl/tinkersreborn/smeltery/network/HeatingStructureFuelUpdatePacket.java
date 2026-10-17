@@ -10,7 +10,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import mctbl.tinkersreborn.common.network.AbstractPacketThreadsafe;
 import mctbl.tinkersreborn.common.network.TinkerNetwork.AbstactPacketHandler;
-import mctbl.tinkersreborn.library.entity.TinkersRebornMultiBlockInvenotryLogic;
+import mctbl.tinkersreborn.library.entity.TinkersRebornHeatableMultiBlockLogic;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 
 // Sent to the client when the smeltery consumes fuel
@@ -36,7 +36,7 @@ public class HeatingStructureFuelUpdatePacket extends AbstractPacketThreadsafe {
     @Override
     public void handleClientSafe(MessageContext netHandler) {
         TileEntity te = Minecraft.getMinecraft().theWorld.getTileEntity(this.pos.x, this.pos.y, this.pos.z);
-        if (te instanceof TinkersRebornMultiBlockInvenotryLogic trmbi) trmbi.updateFuelTemperatureFromPacket(this);
+        if (te instanceof TinkersRebornHeatableMultiBlockLogic trmbi) trmbi.updateFuelTemperatureFromPacket(this);
 
     }
 

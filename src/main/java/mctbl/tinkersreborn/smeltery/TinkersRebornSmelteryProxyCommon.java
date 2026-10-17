@@ -23,4 +23,8 @@ public class TinkersRebornSmelteryProxyCommon {
     public int getCastingChannelRender() {
         return 0;
     }
+
+    public int getTinkerTankRender() {
+        return 0;
+    }
 }

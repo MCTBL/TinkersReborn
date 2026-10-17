@@ -56,7 +56,7 @@ public class ItemHelper {
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 1.0F, 0.0F);
         renderblocks.renderFaceYPos(block, 0.0D, 0.0D, 0.0D, ItemHelper.getIconSafe(block.getIcon(1, meta))); // block.getIcon(1,
-                                                                                                              // meta));
+                                                                                                              // mode));
         tessellator.draw();
         tessellator.startDrawingQuads();
         tessellator.setNormal(0.0F, 0.0F, -1F);

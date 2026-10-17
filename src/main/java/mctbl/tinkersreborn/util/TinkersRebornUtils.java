@@ -16,8 +16,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import org.lwjgl.input.Keyboard;
@@ -25,9 +27,14 @@ import org.lwjgl.input.Keyboard;
 import com.google.gson.JsonParser;
 
 import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public class TinkersRebornUtils {
+
+    private TinkersRebornUtils() {
+        /* This utility class should not be instantiated */
+    }
 
     public static final DecimalFormat df = new DecimalFormat(
         "#,###,###.##",
@@ -142,9 +149,7 @@ public class TinkersRebornUtils {
     }
 
     public static boolean isStackEmpty(@Nullable ItemStack stack) {
-        if (stack == null || stack.stackSize == 0) return true;
-
-        return false;
+        return (stack == null || stack.stackSize == 0);
     }
 
     public static List<ItemStack> copyItemStackList(List<ItemStack> stackList) {
@@ -214,7 +219,7 @@ public class TinkersRebornUtils {
         return String.format(TinkersStr.guiKelvin.toString(), temperature);
     }
 
-    public static float transferKelvinToCelsius(int kelvin) {
+    public static float transferKelvinToCelsius(float kelvin) {
         return kelvin - 273.15F;
     }
 
@@ -257,4 +262,140 @@ public class TinkersRebornUtils {
         return q;
     }
 
+    /**
+     * Replace one currently held item for a given player.
+     *
+     * @param player      A player
+     * @param replacement An ItemStack that will replace one of the items in the player's currently held ItemStack.
+     */
+    public static void replaceHeldItem(EntityPlayer player, ItemStack replacement) {
+        ItemStack current = player.getHeldItem();
+        if (current.stackSize == 1) {
+            player.inventory.setInventorySlotContents(player.inventory.currentItem, replacement);
+        } else {
+            player.inventory.decrStackSize(player.inventory.currentItem, 1);
+
+            if (!player.inventory.addItemStackToInventory(replacement)) {
+                player.dropPlayerItemWithRandomChoice(replacement, false);
+            }
+        }
+    }
+
+    /**
+     * calculate the rendering heights for all the liquids
+     *
+     * @param liquids  The liquids
+     * @param capacity Max capacity of smeltery, to calculate how much height one
+     *                 liquid takes up
+     * @param height   Maximum height, basically represents how much height full
+     *                 capacity is
+     * @param min      Minimum amount of height for a fluid. A fluid can never have
+     *                 less than this value height returned
+     * @return Array with heights corresponding to input-list liquids
+     */
+    public static int[] calcLiquidHeights(List<FluidStack> liquids, int capacity, int height) {
+        int[] fluidHeights = new int[liquids.size()];
+
+        int totalFluidAmount = 0;
+        int min = 3;
+
+        if (!liquids.isEmpty()) {
+
+            for (int i = 0; i < liquids.size(); i++) {
+                FluidStack liquid = liquids.get(i);
+
+                float h = (float) liquid.amount / (float) capacity;
+                totalFluidAmount += liquid.amount;
+                fluidHeights[i] = Math.max(min, (int) Math.ceil(h * 1.0F * height));
+            }
+
+            // if not completely full, leave a few pixels for the empty tank display
+            if (totalFluidAmount < capacity) {
+                height -= min;
+            }
+
+            // check if we have enough height to render everything, if not remove pixels
+            // from the tallest liquid
+            int sum;
+            do {
+                sum = 0;
+                int biggest = -1;
+                int m = 0;
+                for (int i = 0; i < fluidHeights.length; i++) {
+                    sum += fluidHeights[i];
+                    if (fluidHeights[i] > biggest) {
+                        biggest = fluidHeights[i];
+                        m = i;
+                    }
+                }
+
+                // we can't get a result without going negative
+                if (fluidHeights[m] == 0) {
+                    break;
+                }
+
+                // remove a pixel from the biggest one
+                if (sum > height) {
+                    fluidHeights[m]--;
+                }
+            } while (sum > height);
+        }
+
+        return fluidHeights;
+    }
+
+    /**
+     * Adds information to the tooltip based on the fluid amount
+     *
+     * @param amount Fluid amount
+     * @param text   Text to add information to.
+     */
+    public static void amountToString(int amount, List<String> text) {
+        amount = calcLiquidText(amount, 1000000, TinkersStr.smtleteryLiquidKB.toString(), text);
+        amount = calcLiquidText(amount, 1000, TinkersStr.smtleteryLiquidB.toString(), text);
+        calcLiquidText(amount, 1, TinkersStr.smtleteryLiquidmB.toString(), text);
+    }
+
+    public static void amountToIngotString(int amount, List<String> text) {
+        amount = calcLiquidText(
+            amount,
+            TinkersRebornMaterial.VALUE_Ingot,
+            TinkersStr.smtleteryLiquidIngot.toString(),
+            text);
+        amountToString(amount, text);
+    }
+
+    public static int calcLiquidText(int amount, int divider, String unit, List<String> text) {
+        int full = amount / divider;
+        if (full > 0) {
+            text.add(String.format("%s%d %s", EnumChatFormatting.GRAY, full, unit));
+        }
+
+        return amount % divider;
+    }
+
+    /**
+     * Adds information for the tooltip based on the fluid stacks size.
+     *
+     * @param fluid Input fluid stack
+     * @param text  Text to add information to.
+     */
+    public static void liquidToString(FluidStack fluid, List<String> text) {
+        int amount = fluid.amount;
+
+        if (!TinkersRebornUtils.isShiftKeyDown()) {
+            // List<FluidGuiEntry> entries = fluidGui.get(fluid.getFluid());
+            // if(entries == null) {
+            // entries = calcFluidGuiEntries(fluid.getFluid());
+            // fluidGui.put(fluid.getFluid(), entries);
+            // }
+            //
+            // for(FluidGuiEntry entry : entries) {
+            // amount = calcLiquidText(amount, entry.amount, entry.getText(), text);
+            // }
+        }
+
+        // standard display stuff: bucket amounts
+        amountToString(amount, text);
+    }
 }

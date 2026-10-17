@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import net.minecraftforge.common.config.Configuration;
 
 import cpw.mods.fml.common.Loader;
+import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 
 public class TinkersRebornConfig {
 
@@ -105,12 +106,16 @@ public class TinkersRebornConfig {
     public static boolean celsiusPref;
 
     public static double oreToIngotRatio;
-    public static int heatItemsTickrateSmeltery;
+    public static int heatItemsTickrate;
 
     public static String[] fluidIgnore;
 
     public static String[] entityMelting;
+    public static String[] multiBlockFuel;
     public static int smelteryDrainEachTick;
+    public static int tinkerTankFluidPerBlock;
+    public static int smelteryFluidPerBlock;
+
     public static int vineHammerMaxOreMine;
     public static int vineHammerMineEachTick;
 
@@ -433,9 +438,9 @@ public class TinkersRebornConfig {
                 "List of fluids to ignore, effectively preventing registration of melting and casting recipes.")
             .getStringList();
 
-        heatItemsTickrateSmeltery = config.get(
+        heatItemsTickrate = config.get(
             SMELTERY,
-            "heatItemsTickrateSmeltery",
+            "heatItemsTickrate",
             4,
             "The tickrate at which items are heated and alloys are created in the smeltery. Defaults to every 4th tick.")
             .getInt();
@@ -449,7 +454,24 @@ public class TinkersRebornConfig {
                 "List of entity melting entries in the format 'entity;subtypes;fluid;amount'.")
             .getStringList();
 
+        multiBlockFuel = config.get(
+            SMELTERY,
+            "multiBlockFuel",
+            new String[] { "lava;50;100" },
+            "List of multi block fuels in the format 'fluid;eachTimeConsume(mb);fuelDuration(tick);temperatureMulti(not require)'.")
+            .getStringList();
+
         smelteryDrainEachTick = config.get(SMELTERY, "smelteryDrainEachTick", 6)
+            .getInt();
+        tinkerTankFluidPerBlock = config
+            .get(SMELTERY, "tinkerTankFluidEachBlock", 4000, "Each block inside tinker tank can hold how many mb")
+            .getInt();
+        smelteryFluidPerBlock = config
+            .get(
+                SMELTERY,
+                "smelteryFluidPerBlock",
+                TinkersRebornMaterial.VALUE_Ingot * 10,
+                "Each block inside smeltery can hold how many mb")
             .getInt();
 
         vineHammerMaxOreMine = config.get(TOOLS, "Vein Hammer can mine ores each time", 25)

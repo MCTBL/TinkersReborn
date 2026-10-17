@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.library.entity;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.utils.BlockPos;
@@ -42,4 +44,11 @@ public interface IServantLogic {
      */
     public void invalidateMaster(IMasterLogic master, World world, int xMaster, int yMaster, int zMaster);
 
+    /**
+     * Get master tile entity
+     * 
+     * @return master entity or null
+     */
+    @Nullable
+    public IMasterLogic getMaster();
 }

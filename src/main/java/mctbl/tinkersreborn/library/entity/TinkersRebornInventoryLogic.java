@@ -81,6 +81,8 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
             itemstack.stackSize = getInventoryStackLimit();
         }
 
+        this.markDirty();
+
         if (worldObj != null && worldObj.isRemote) {
             worldObj.markBlockRangeForRenderUpdate(xCoord, yCoord, zCoord, xCoord, yCoord, zCoord);
         }
@@ -92,12 +94,14 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
             if (inventory[slot].stackSize <= quantity) {
                 ItemStack stack = inventory[slot];
                 inventory[slot] = null;
+                this.markDirty();
                 return stack;
             }
             ItemStack split = inventory[slot].splitStack(quantity);
             if (inventory[slot].stackSize == 0) {
                 inventory[slot] = null;
             }
+            this.markDirty();
             return split;
         } else {
             return null;
@@ -210,14 +214,14 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
     }
 
     public boolean isInvNameLocalized() {
-        return this.invName != null && this.invName.length() > 0;
+        return this.invName != null && !this.invName.isEmpty();
     }
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
-        if (slot < getSizeInventory()) {
-            if (inventory[slot] == null || itemstack.stackSize + inventory[slot].stackSize <= getInventoryStackLimit())
-                return true;
+        if (slot < getSizeInventory() && (inventory[slot] == null
+            || itemstack.stackSize + inventory[slot].stackSize <= getInventoryStackLimit())) {
+            return true;
         }
         return false;
     }
@@ -248,7 +252,19 @@ public abstract class TinkersRebornInventoryLogic extends TileEntity implements 
 
     @Override
     public void setFacedDirection(EntityLivingBase player) {
-        int facing = player != null ? MathHelper.floor_double((double) (player.rotationYaw / 90F) + 0.5D) & 3 : 0;
+        if (player == null) {
+            this.faceDirection = ForgeDirection.UNKNOWN;
+            return;
+        }
+        if (player.rotationPitch < -45.0F) {
+            this.faceDirection = ForgeDirection.DOWN;
+            return;
+        }
+        if (player.rotationPitch > 45.0F) {
+            this.faceDirection = ForgeDirection.UP;
+            return;
+        }
+        int facing = MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3;
         switch (facing) {
             case 0 -> this.faceDirection = ForgeDirection.NORTH;
             case 1 -> this.faceDirection = ForgeDirection.EAST;

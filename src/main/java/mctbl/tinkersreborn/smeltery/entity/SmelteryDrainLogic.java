@@ -1,5 +1,7 @@
 package mctbl.tinkersreborn.smeltery.entity;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.EntityLivingBase;
@@ -13,9 +15,9 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.IFluidTank;
 
 import mctbl.tinkersreborn.library.blocks.ITinkersRebornIFacingLogic;
-import mctbl.tinkersreborn.library.utils.BlockPos;
 
 public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandler, ITinkersRebornIFacingLogic {
 
@@ -23,10 +25,8 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public int fill(ForgeDirection from, FluidStack resource, boolean doFill) {
-        if (hasValidMaster() && resource != null && canFill(from, resource.getFluid())) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
-            return smeltery.fill(resource, doFill);
+        if (this.getMaster() instanceof IFluidTank tank && resource != null && canFill(from, resource.getFluid())) {
+            return tank.fill(resource, doFill);
         } else {
             return 0;
         }
@@ -34,23 +34,18 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
     @Override
     public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) {
-        if (hasValidMaster() && canDrain(from, resource.getFluid())) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
-            if (resource.getFluid() == smeltery.getFluid()
+        if (this.getMaster() instanceof IFluidTank tank && canDrain(from, resource.getFluid())
+            && resource.getFluid() == tank.getFluid()
                 .getFluid()) {
-                return smeltery.drain(resource.amount, doDrain);
-            }
+            return tank.drain(resource.amount, doDrain);
         }
         return null;
     }
 
     @Override
     public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        if (hasValidMaster() && canDrain(from, null)) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
-            return smeltery.drain(maxDrain, doDrain);
+        if (this.getMaster() instanceof IFluidTank tank && canDrain(from, null)) {
+            return tank.drain(maxDrain, doDrain);
         }
         return null;
     }
@@ -68,12 +63,20 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
 
         boolean containsFluid = fluid == null;
         if (fluid != null) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
-            for (FluidStack fstack : smeltery.moltenMetal) {
-                if (fstack.getFluidID() == fluid.getID()) {
-                    containsFluid = true;
-                    break;
+            List<FluidStack> fluidList = null;
+
+            if (this.getMaster() instanceof SmelteryLogic tank) {
+                fluidList = tank.moltenMetal;
+            } else if (this.getMaster() instanceof TinkerTankLogic tank) {
+                fluidList = tank.fluids;
+            }
+
+            if (fluidList != null) {
+                for (FluidStack fstack : fluidList) {
+                    if (fstack.getFluidID() == fluid.getID()) {
+                        containsFluid = true;
+                        break;
+                    }
                 }
             }
         }
@@ -83,11 +86,13 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
     @Override
     @Nullable
     public FluidTankInfo[] getTankInfo(ForgeDirection from) {
-        if (hasValidMaster() && (from == getForgeDirection() || from == getForgeDirection().getOpposite()
+        if ((from == getForgeDirection() || from == getForgeDirection().getOpposite()
             || from == ForgeDirection.UNKNOWN)) {
-            SmelteryLogic smeltery = (SmelteryLogic) worldObj
-                .getTileEntity(getMasterPosition().x, getMasterPosition().y, getMasterPosition().z);
-            return smeltery.getMultiTankInfo();
+            if (this.getMaster() instanceof SmelteryLogic tank) {
+                return tank.getMultiTankInfo();
+            } else if (this.getMaster() instanceof TinkerTankLogic tank) {
+                return tank.getMultiTankInfo();
+            }
         }
         return null;
     }
@@ -118,24 +123,21 @@ public class SmelteryDrainLogic extends MultiServantLogic implements IFluidHandl
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
     }
 
-    public int comparatorStrength() {
-        BlockPos master = this.getMasterPosition();
-        // invalid smeltery
-        if (master == null) return 0;
-        SmelteryLogic smeltery = (SmelteryLogic) worldObj.getTileEntity(master.x, master.y, master.z);
-
-        // this can happen when the comparator checks its strength before the drain is getting updated on a broken
-        // master (smeltery controller)
-        if (smeltery == null) return 0;
-
-        if (smeltery.maxMoltenMetalAmount == 0) return 0;
-
-        return MathHelper.ceiling_float_int(15f * smeltery.currentMoltenMetalAmount / smeltery.maxMoltenMetalAmount);
-    }
-
     @Override
     public void setFacedDirection(EntityLivingBase player) {
-        int facing = player != null ? MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3 : 0;
+        if (player == null) {
+            this.faceDirection = ForgeDirection.UNKNOWN;
+            return;
+        }
+        if (player.rotationPitch < -45.0F) {
+            this.faceDirection = ForgeDirection.DOWN;
+            return;
+        }
+        if (player.rotationPitch > 45.0F) {
+            this.faceDirection = ForgeDirection.UP;
+            return;
+        }
+        int facing = MathHelper.floor_double(player.rotationYaw / 90F + 0.5D) & 3;
         switch (facing) {
             case 0 -> this.faceDirection = ForgeDirection.NORTH;
             case 1 -> this.faceDirection = ForgeDirection.EAST;

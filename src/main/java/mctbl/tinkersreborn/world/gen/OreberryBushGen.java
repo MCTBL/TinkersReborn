@@ -84,6 +84,7 @@ public class OreberryBushGen extends WorldGenerator {
         if (block == null || (block != Blocks.end_portal_frame && !world.getBlock(x, y, z)
             .func_149730_j())) {
             world.removeTileEntity(x, y, z);
+            world.setBlockToAir(x, y, z);
             world.setBlock(x, y, z, this.blockB, metadata, 2);
         } else {
             for (Block replaceBlock : replaceBlocks) {

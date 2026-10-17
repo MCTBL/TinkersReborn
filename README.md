@@ -3,6 +3,42 @@
     Make Tinkers Great again
 **Still WIP!** have many issues
 
+## Some features
+
+![part builder](imgs/partbuilder.png)
+
+no more **Stencil Table**, good
+
+![part builder with cast](imgs/partbuilderwithcast.png)
+
+use pattern can craft every part but will consume pattern
+
+use cast can only craft specified parts and will not consume the cast
+
+![tool station](imgs/toolstation.png)
+
+looks like TiC2, I like it
+
+![tool forge](imgs/toolforge.png)
+
+![tool forge](imgs/toolforge2.png)
+
+![render in world](imgs/renderinworld.png)
+
+these blocks will render the item stack inside it's container
+
+![render in world](imgs/vineminer.png)
+
+colorful tooltips and some new tools from higher version
+
+![manual](imgs/manual_homepage.png)
+![manual buttons](imgs/manual_buttons.png)
+
+Modernization manual
+
+![smeltery](imgs/smeltery.png)
+![furnace](imgs/furnace.png)
+
 ## NBT
 
 ```json
@@ -67,34 +103,6 @@
   "RepairCount":10
 }
 ```
-
-## Some features
-
-![part builder](imgs/partbuilder.png)
-
-no more **Stencil Table**, good
-
-![part builder with cast](imgs/partbuilderwithcast.png)
-
-use pattern can craft every part but will consume pattern
-
-use cast can only craft specified parts and will not consume the cast
-
-![tool station](imgs/toolstation.png)
-
-looks like TiC2, I like it
-
-![tool forge](imgs/toolforge.png)
-
-![tool forge](imgs/toolforge2.png)
-
-![render in world](imgs/renderinworld.png)
-
-these blocks will render the item stack inside it's container
-
-![render in world](imgs/vineminer.png)
-
-colorful tooltips and some new tools from higher version
 
 ## TOOL and WEAPON
 

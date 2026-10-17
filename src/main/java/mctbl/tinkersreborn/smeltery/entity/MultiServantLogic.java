@@ -19,6 +19,7 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
     BlockPos master;
     Block masterBlock;
 
+    @Override
     public boolean canUpdate() {
         return false;
     }
@@ -73,13 +74,24 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
     @Override
     public void invalidateMaster(IMasterLogic master, World w, int x, int y, int z) {
         hasMaster = false;
-        master = null;
     }
 
     public void notifyMasterOfChange() {
         if (hasValidMaster() && worldObj.getTileEntity(master.x, master.y, master.z) instanceof IMasterLogic logic) {
             logic.notifyChange(this, xCoord, yCoord, zCoord);
         }
+    }
+
+    @Override
+    public IMasterLogic getMaster() {
+        if (hasValidMaster() && this.getWorldObj()
+            .getTileEntity(
+                getMasterPosition().x,
+                getMasterPosition().y,
+                getMasterPosition().z) instanceof IMasterLogic masterEntity) {
+            return masterEntity;
+        }
+        return null;
     }
 
     public void readCustomNBT(NBTTagCompound tags) {
@@ -132,10 +144,6 @@ public class MultiServantLogic extends TileEntity implements IServantLogic {
         readCustomNBT(packet.func_148857_g());
         worldObj.func_147479_m(xCoord, yCoord, zCoord);
         worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-    }
-
-    public World getWorld() {
-        return super.getWorldObj();
     }
 
 }

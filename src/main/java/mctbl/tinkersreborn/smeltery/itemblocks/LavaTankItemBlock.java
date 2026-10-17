@@ -16,7 +16,7 @@ import mctbl.tinkersreborn.util.TinkersStr;
 
 public class LavaTankItemBlock extends TinkersRebornItemBlock implements IFluidContainerItem {
 
-    public static final String[] blockTypes = { "Tank", "Gague", "Window" };
+    public static final String[] blockTypes = { "Tank", "Gauge", "Window" };
 
     public LavaTankItemBlock(Block b) {
         super(b, "tinkersreborn.LavaTank", blockTypes);
