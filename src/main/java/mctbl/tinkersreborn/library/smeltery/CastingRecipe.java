@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import mctbl.tinkersreborn.library.TinkerAPIException;
 import mctbl.tinkersreborn.library.utils.RecipeMatch;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
@@ -42,12 +43,11 @@ public class CastingRecipe implements ICastingRecipe {
 
     public CastingRecipe(ItemStack output, RecipeMatch cast, FluidStack fluid, int time, boolean consumesCast,
         boolean switchOutputs) {
-        // if(output == null || output.isEmpty()) {
-        // throw new TinkerAPIException("Casting Recipe is missing an output!");
-        // }
-        // else if(fluid == null) {
-        // throw new TinkerAPIException(String.format("Casting Recipe for %s has no fluid!", output.getDisplayName()));
-        // }
+        if (output == null || TinkersRebornUtils.isStackEmpty(output)) {
+            throw new TinkerAPIException("Casting Recipe is missing an output!");
+        } else if (fluid == null) {
+            throw new TinkerAPIException(String.format("Casting Recipe for %s has no fluid!", output.getDisplayName()));
+        }
 
         this.output = output;
         this.cast = cast;
@@ -60,7 +60,7 @@ public class CastingRecipe implements ICastingRecipe {
     @Override
     public boolean matches(ItemStack cast, Fluid fluid) {
         if ((TinkersRebornUtils.isStackEmpty(cast) && this.cast == null)
-            || (this.cast != null && this.cast.matches(Arrays.asList(new ItemStack[] { cast }))
+            || (this.cast != null && this.cast.matches(Arrays.asList(cast))
                 .isPresent())) {
             return this.fluid.getFluid() == fluid;
         }

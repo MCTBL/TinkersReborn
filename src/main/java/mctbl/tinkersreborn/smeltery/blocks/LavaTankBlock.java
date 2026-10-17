@@ -44,8 +44,8 @@ public class LavaTankBlock extends BlockContainer {
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.setBlockName("tinkersreborn.LavaTank");
         this.setStepSound(Block.soundTypeGlass);
-        this.textureNames = new String[] { "lavatank_top", "lavatank_side", "lavatank_bottom", "searedgague_top",
-            "searedgague_side", "searedgague_bottom", "searedwindow_top", "searedwindow_side", "searedwindow_bottom" };
+        this.textureNames = new String[] { "lavatank_top", "lavatank_side", "lavatank_bottom", "searedgauge_top",
+            "searedgauge_side", "searedgauge_bottom", "searedwindow_top", "searedwindow_side", "searedwindow_bottom" };
     }
 
     @Override
@@ -99,8 +99,7 @@ public class LavaTankBlock extends BlockContainer {
 
     @Override
     public int getLightValue(IBlockAccess world, int x, int y, int z) {
-        TileEntity logic = world.getTileEntity(x, y, z);
-        if (logic instanceof LavaTankLogic l) return l.getBrightness();
+        if (world.getTileEntity(x, y, z) instanceof LavaTankLogic l) return l.getBrightness();
         return 0;
     }
 

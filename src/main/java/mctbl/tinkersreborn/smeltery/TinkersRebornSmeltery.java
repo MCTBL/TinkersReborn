@@ -140,22 +140,22 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         GameRegistry.registerBlock(castingChannel, CastingChannelItemBlock.class, castingChannel.getUnlocalizedName());
         GameRegistry.registerTileEntity(CastingChannelLogic.class, "tinkersreborn.CastingChannel");
 
+        soulGlass = new GlassConnected("soul", true, true, true);
+        GameRegistry.registerBlock(soulGlass, soulGlass.getUnlocalizedName());
+
+        searedGlass = new GlassConnected("seared", true, false, true);
+        GameRegistry.registerBlock(searedGlass, searedGlass.getUnlocalizedName());
+
         clearGlass = new GlassConnected("clear", true);
         GameRegistry.registerBlock(clearGlass, clearGlass.getUnlocalizedName());
         OreDictionary.registerOre("blockGlass", clearGlass);
 
-        soulGlass = new GlassConnected("soul", true, true, true);
-        GameRegistry.registerBlock(soulGlass, soulGlass.getUnlocalizedName());
-        OreDictionary.registerOre("blockGlass", soulGlass);
-
-        searedGlass = new GlassConnected("seared", true, false, true);
-        GameRegistry.registerBlock(searedGlass, searedGlass.getUnlocalizedName());
-        OreDictionary.registerOre("blockGlass", searedGlass);
-
         coloredGlassClear = new ColoredGlassConnected();
         GameRegistry
             .registerBlock(coloredGlassClear, ColoredGlassItemBlock.class, coloredGlassClear.getUnlocalizedName());
-        OreDictionary.registerOre("blockGlass", coloredGlassClear);
+        for (int i = 0; i < 16; i++) {
+            OreDictionary.registerOre("blockGlass", new ItemStack(coloredGlassClear, 1, i));
+        }
 
         glassPane = new GlassPaneConnected("clear", true);
         GameRegistry.registerBlock(glassPane, glassPane.getUnlocalizedName());
@@ -209,6 +209,11 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         TinkersRebornRegistry
             .registerBasinCasting(new ItemStack(smelteryBlock, 1, 2), null, TinkersRebornTools.stoneFluid, 144);
         TinkersRebornRegistry.registerBasinCasting(
+            new ItemStack(clearGlass, 1),
+            null,
+            TinkersRebornTools.glassFluid,
+            TinkersRebornMaterial.VALUE_Glass);
+        TinkersRebornRegistry.registerBasinCasting(
             new CastingRecipe(
                 new ItemStack(smelteryBlock, 1, 1),
                 RecipeMatch.of(Blocks.cobblestone),
@@ -250,6 +255,15 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             'f',
             new ItemStack(Blocks.furnace)); // Furnace Controller
         GameRegistry.addRecipe(
+            new ItemStack(tankController, 1),
+            "bbb",
+            "bfb",
+            "bbb",
+            'b',
+            searedBrick,
+            'f',
+            new ItemStack(Items.bucket)); // Tinker Tank Controller
+        GameRegistry.addRecipe(
             new ItemStack(itemIOHatch, 1),
             "bbb",
             "bhb",
@@ -272,7 +286,7 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
                 'b',
                 searedBrick,
                 'g',
-                "blockGlass")); // Glass
+                "blockGlass")); // Gauge
         GameRegistry.addRecipe(
             new ShapedOreRecipe(
                 new ItemStack(lavaTank, 1, 2),
@@ -284,10 +298,37 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
                 'g',
                 "blockGlass")); // Window
 
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(
+                new ItemStack(searedGlass, 1),
+                " a ",
+                "aba",
+                " a ",
+                'a',
+                searedBrick,
+                'b',
+                "blockGlass")); // Seared Glass
+        GameRegistry
+            .addRecipe(new ItemStack(soulGlass, 1), " a ", "aba", " a ", 'a', searedBrick, 'b', Blocks.soul_sand); // Seared
+                                                                                                                   // Glass
+
         GameRegistry.addRecipe(new ItemStack(searedBlock, 1, 0), "bbb", "b b", "b b", 'b', searedBrick); // Table
         GameRegistry.addRecipe(new ItemStack(searedBlock, 1, 1), "b b", " b ", 'b', searedBrick); // Faucet
         GameRegistry.addRecipe(new ItemStack(searedBlock, 1, 2), "b b", "b b", "bbb", 'b', searedBrick); // Basin
         GameRegistry.addRecipe(new ItemStack(castingChannel, 4, 0), "b b", "bbb", 'b', searedBrick); // Channel
+
+        ItemStack clearGlassItemStack = new ItemStack(clearGlass);
+        for (int i = 0; i < 16; i++) {
+            GameRegistry.addRecipe(
+                new ItemStack(coloredGlassClear, 8, i),
+                "aaa",
+                "aba",
+                "aaa",
+                'a',
+                clearGlassItemStack,
+                'b',
+                new ItemStack(Items.dye, 1, i));
+        }
     }
 
     private void registerMeltingRecipe() {
@@ -318,8 +359,10 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             Items.iron_horse_armor,
             TinkersRebornTools.ironFluid,
             TinkersRebornMaterial.VALUE_Ingot * 4);
-        // TinkersRebornRegistry.registerMelting(Items.golden_horse_armor, TinkersRebornTools.goldFluid,
-        // TinkersRebornMaterial.VALUE_Ingot * 4);
+        TinkersRebornRegistry.registerMelting(
+            Items.golden_horse_armor,
+            TinkersRebornTools.goldFluid,
+            TinkersRebornMaterial.VALUE_Ingot * 4);
 
         // rails, some of these are caught through registerOredictMelting, but for
         // consistency all are just registered here
@@ -329,8 +372,15 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             .registerMelting(Blocks.activator_rail, TinkersRebornTools.ironFluid, TinkersRebornMaterial.VALUE_Ingot);
         TinkersRebornRegistry
             .registerMelting(Blocks.detector_rail, TinkersRebornTools.ironFluid, TinkersRebornMaterial.VALUE_Ingot);
-        // TinkersRebornRegistry.registerMelting(Blocks.golden_rail, TinkersRebornTools.goldFluid,
-        // TinkersRebornMaterial.VALUE_Ingot);
+        TinkersRebornRegistry
+            .registerMelting(Blocks.golden_rail, TinkersRebornTools.goldFluid, TinkersRebornMaterial.VALUE_Ingot);
+
+        TinkersRebornRegistry.registerMelting(
+            new MeltingRecipe(
+                new RecipeMatch.Oredict("blockGlass", 1, TinkersRebornMaterial.VALUE_Glass),
+                TinkersRebornTools.glassFluid));
+        TinkersRebornRegistry
+            .registerMelting(Blocks.sand, TinkersRebornTools.glassFluid, TinkersRebornMaterial.VALUE_Glass);
     }
 
     /**

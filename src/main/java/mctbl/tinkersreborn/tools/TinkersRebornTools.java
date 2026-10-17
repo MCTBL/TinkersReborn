@@ -295,6 +295,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornFluid aluminumFluid;
     public static TinkersRebornFluid alubrassFluid;
     public static TinkersRebornFluid stoneFluid;
+    public static TinkersRebornFluid glassFluid;
 
     public static TinkersRebornMaterial woodMaterial;
     public static TinkersRebornMaterial stoneMaterial;
@@ -1002,6 +1003,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         aluminumFluid = TinkersRebornFluid.createMolten("aluminum", 0xE88989, "aluminum", 330);
         alubrassFluid = TinkersRebornFluid.createMolten("alubrass", 0xF0D467, "alubrass", 330);
         stoneFluid = TinkersRebornFluid.createMolten("stone", 0x2B2B2B, "stone", 800);
+        glassFluid = TinkersRebornFluid.createMolten("glass", 0x9DC8CF, "glass", 760);
 
         this.registerBaseMaterialsStats();
         this.registerBowMaterialsStats();
@@ -1170,6 +1172,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.bloodFluid, null));
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.enderFluid, null));
         integrate(new MaterialIntegration(null, null, emeraldFluid, null));
+        integrate(new MaterialIntegration(null, null, glassFluid, null));
 
         integrate(new MaterialIntegration(woodMaterial));
         integrate(new MaterialIntegration(stoneMaterial, stoneFluid));
