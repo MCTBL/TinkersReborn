@@ -55,6 +55,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     protected final List<Block> validCeiling;
     protected final List<Block> validFloor;
 
+    protected final List<BlockPos> tempList = new ArrayList<>();
+
     protected TinkersRebornMultiBlockInvenotryLogic(String name, Block block) {
         super(0);
         this.controller = block;
@@ -249,7 +251,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
 
     protected boolean isValidLayerGeneric(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList,
         boolean isTopOrBottom, BiPredicate<Block, BlockPos> borderCheck, BiPredicate<Block, BlockPos> innerCheck) {
-        List<BlockPos> tempBlockList = new ArrayList<>();
+        this.tempList.clear();
         final boolean hasFrame = hasFrame();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
@@ -272,18 +274,18 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                 if (isBorder) {
                     if (hasFrame) {
                         if (!borderCheck.test(block, pos)) return false;
-                        tempBlockList.add(pos);
+                        this.tempList.add(pos);
                     }
                 } else {
                     if (isTopOrBottom) {
                         if (!innerCheck.test(block, pos)) return false;
-                        tempBlockList.add(pos);
+                        this.tempList.add(pos);
                     } else {
                         if (dx == xAndZRange[0] || dx == xAndZRange[1] || dz == xAndZRange[2] || dz == xAndZRange[3]) {
                             if (!innerCheck.test(block, pos)) {
                                 return false;
                             }
-                            tempBlockList.add(pos);
+                            this.tempList.add(pos);
                         } else if (block != Blocks.air) {
                             return false;
                         }
@@ -291,7 +293,8 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                 }
             }
         }
-        tempValidBlockList.addAll(tempBlockList);
+        tempValidBlockList.addAll(this.tempList);
+        this.tempList.clear();
         return true;
     }
 

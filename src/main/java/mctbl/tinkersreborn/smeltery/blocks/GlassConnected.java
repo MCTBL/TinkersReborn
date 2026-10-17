@@ -15,9 +15,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.TextureStitchEvent;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
@@ -35,7 +33,7 @@ public class GlassConnected extends TinkersRebornBlock {
     private final boolean hasTileEntity;
     private IIcon bigIcon;
 
-    private boolean isInit = false;
+    private boolean isInit;
 
     public GlassConnected(String location, boolean hasAlpha) {
         this(location, hasAlpha, false, false);
@@ -181,13 +179,8 @@ public class GlassConnected extends TinkersRebornBlock {
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
         bigIcon = iconRegister.registerIcon("tinkersreborn:glass/" + folder);
-    }
 
-    @SubscribeEvent
-    public void onTextureStitch(TextureStitchEvent.Post event) {
-        if (event.map.getTextureType() == 1) {
-            this.buildSubIcons();
-        }
+        this.isInit = false;
     }
 
     public void buildSubIcons() {

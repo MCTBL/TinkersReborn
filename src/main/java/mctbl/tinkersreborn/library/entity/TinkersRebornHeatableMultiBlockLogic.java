@@ -41,6 +41,8 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
     public FluidStack currentFuel;
     protected BlockPos activeLavaTank;
     protected final List<BlockPos> lavaTanks;
+
+    private final List<BlockPos> tempLavatanks = new ArrayList<>();
     /**
      * Ticks left until the current fuel is depleted and fuel is taken from the
      * tanks. Depletes every tick
@@ -254,8 +256,8 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
     @Override
     protected boolean isValidLayerGeneric(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList,
         boolean isTopOrBottom, BiPredicate<Block, BlockPos> borderCheck, BiPredicate<Block, BlockPos> innerCheck) {
-        List<BlockPos> tempBlockList = new ArrayList<>();
-        List<BlockPos> tempLavaTankList = new ArrayList<>();
+        this.tempList.clear();
+        this.tempLavatanks.clear();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
                 boolean isBorder;
@@ -277,21 +279,21 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                 if (isBorder) {
                     if (hasFrame()) {
                         if (!borderCheck.test(block, pos)) return false;
-                        tempBlockList.add(pos);
-                        checkAndAddTank(block, pos, tempLavaTankList);
+                        this.tempList.add(pos);
+                        checkAndAddTank(block, pos, this.tempLavatanks);
                     }
                 } else {
                     if (isTopOrBottom) {
                         if (!innerCheck.test(block, pos)) return false;
-                        tempBlockList.add(pos);
-                        checkAndAddTank(block, pos, tempLavaTankList);
+                        this.tempList.add(pos);
+                        checkAndAddTank(block, pos, this.tempLavatanks);
                     } else {
                         if (dx == xAndZRange[0] || dx == xAndZRange[1] || dz == xAndZRange[2] || dz == xAndZRange[3]) {
                             if (!innerCheck.test(block, pos)) {
                                 return false;
                             }
-                            tempBlockList.add(pos);
-                            checkAndAddTank(block, pos, tempLavaTankList);
+                            this.tempList.add(pos);
+                            checkAndAddTank(block, pos, this.tempLavatanks);
                         } else if (block != Blocks.air) {
                             return false;
                         }
@@ -299,8 +301,11 @@ public abstract class TinkersRebornHeatableMultiBlockLogic extends TinkersReborn
                 }
             }
         }
-        tempValidBlockList.addAll(tempBlockList);
-        this.lavaTanks.addAll(tempLavaTankList);
+        tempValidBlockList.addAll(this.tempList);
+        this.lavaTanks.addAll(this.tempLavatanks);
+
+        this.tempList.clear();
+        this.tempLavatanks.clear();
         return true;
     }
 

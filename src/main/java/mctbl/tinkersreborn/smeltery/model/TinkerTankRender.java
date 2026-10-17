@@ -46,7 +46,7 @@ public class TinkerTankRender implements ISimpleBlockRenderingHandler {
                 float base = 0F;
                 int yBase = 0;
                 int liquidBase = 0;
-                int cap = logic.maxMoltenMetalAmount / logic.multiLayers;
+                int cap = logic.getCapacity() / logic.multiLayers;
 
                 for (FluidStack liquid : logic.fluids) {
                     int liquidSize = liquid.amount;
