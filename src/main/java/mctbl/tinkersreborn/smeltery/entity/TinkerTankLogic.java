@@ -71,7 +71,7 @@ public class TinkerTankLogic extends TinkersRebornMultiBlockInvenotryLogic imple
                 TinkersRebornSmeltery.soulGlass,
                 TinkersRebornSmeltery.searedGlass));
         this.validFloor.addAll(
-            Arrays.asList(this.controller, TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.smelteryDrain));
+            Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.smelteryDrain));
         this.validFrame.addAll(Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.smelteryDrain));
     }
 

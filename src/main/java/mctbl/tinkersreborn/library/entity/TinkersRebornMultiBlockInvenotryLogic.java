@@ -127,6 +127,14 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         int yd1 = 0;
         int yd2 = 1;
 
+        final BiPredicate<Block, BlockPos> chechFrame = this::validFrameBlock;
+        final BiPredicate<Block, BlockPos> chechCeiling = this::validCeilingBlock;
+        final BiPredicate<Block, BlockPos> chechFloor = this::validFloorBlock;
+        final BiPredicate<Block, BlockPos> chechWall = this::validWallBlock;
+        
+        final boolean hasCeiling = hasCeilingLayer();
+        final boolean hasFloor = hasFloorLayer();
+        
         List<BlockPos> tempValidBlockList = new ArrayList<>();
         while (checkUpper || checkLower) {
             if (checkUpper) {
@@ -136,18 +144,18 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                     center.y + yd1,
                     tempValidBlockList,
                     false,
-                    this::validFrameBlock,
-                    this::validWallBlock)) {
+                    chechFrame,
+                    chechWall)) {
                     yd1++;
                     validLayerCount++;
-                } else if (hasCeilingLayer() && isValidLayerGeneric(
+                } else if (hasCeiling && isValidLayerGeneric(
                     center,
                     range,
                     center.y + yd1,
                     tempValidBlockList,
                     true,
-                    this::validFrameBlock,
-                    this::validCeilingBlock)) {
+                    chechFrame,
+                    chechCeiling)) {
                         hasTopLayer = true;
                         checkUpper = false;
                     } else checkUpper = false;
@@ -159,29 +167,29 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                     center.y - yd2,
                     tempValidBlockList,
                     false,
-                    this::validFrameBlock,
-                    this::validWallBlock)) {
+                    chechFrame,
+                    chechWall)) {
                     yd2++;
                     validLayerCount++;
-                } else if (hasFloorLayer() && isValidLayerGeneric(
+                } else if (hasFloor && isValidLayerGeneric(
                     center,
                     range,
                     center.y - yd2,
                     tempValidBlockList,
                     true,
-                    this::validFrameBlock,
-                    this::validFloorBlock)) {
+                    chechFrame,
+                    chechFloor)) {
                         hasBottmLayer = true;
                         checkLower = false;
                     } else checkLower = false;
             }
         }
 
-        BlockPos tempMinPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
-        BlockPos tempMaxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
+        final BlockPos tempMinPos = BlockPos.of(center.x - xd1 + 1, center.y - yd2 + 1, center.z - zd1 + 1);
+        final BlockPos tempMaxPos = BlockPos.of(center.x + xd2 - 1, center.y + yd1 - 1, center.z + zd2 - 1);
 
-        if (isControllerInside(tempMinPos, tempMaxPos) && hasCeilingLayer() == hasTopLayer
-            && hasFloorLayer() == hasBottmLayer
+        if (isControllerInside(tempMinPos, tempMaxPos) && hasCeiling == hasTopLayer
+            && hasFloor == hasBottmLayer
             && validLayerCount > 0) {
             boolean finish = true;
             for (BlockPos b : tempValidBlockList) {
@@ -242,6 +250,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
     protected boolean isValidLayerGeneric(BlockPos center, int[] xAndZRange, int y, List<BlockPos> tempValidBlockList,
         boolean isTopOrBottom, BiPredicate<Block, BlockPos> borderCheck, BiPredicate<Block, BlockPos> innerCheck) {
         List<BlockPos> tempBlockList = new ArrayList<>();
+        final boolean hasFrame = hasFrame();
         for (int dx = xAndZRange[0]; dx <= xAndZRange[1]; dx++) {
             for (int dz = xAndZRange[2]; dz <= xAndZRange[3]; dz++) {
                 boolean isBorder;
@@ -261,7 +270,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
                 }
 
                 if (isBorder) {
-                    if (hasFrame()) {
+                    if (hasFrame) {
                         if (!borderCheck.test(block, pos)) return false;
                         tempBlockList.add(pos);
                     }
