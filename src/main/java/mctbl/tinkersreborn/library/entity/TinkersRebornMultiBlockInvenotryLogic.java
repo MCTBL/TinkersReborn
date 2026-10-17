@@ -131,10 +131,10 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
         final BiPredicate<Block, BlockPos> chechCeiling = this::validCeilingBlock;
         final BiPredicate<Block, BlockPos> chechFloor = this::validFloorBlock;
         final BiPredicate<Block, BlockPos> chechWall = this::validWallBlock;
-        
+
         final boolean hasCeiling = hasCeilingLayer();
         final boolean hasFloor = hasFloorLayer();
-        
+
         List<BlockPos> tempValidBlockList = new ArrayList<>();
         while (checkUpper || checkLower) {
             if (checkUpper) {
@@ -226,7 +226,7 @@ public abstract class TinkersRebornMultiBlockInvenotryLogic extends TinkersRebor
 
     @Override
     public int calculateInnerBlockCount() {
-        return this.blocksPerLayer * multiLayers;
+        return this.blocksPerLayer * this.multiLayers;
     }
 
     protected void reset(List<BlockPos> tempValidBlockList) {

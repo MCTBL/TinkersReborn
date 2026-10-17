@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.smeltery.model;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -37,14 +38,14 @@ public class TinkerTankRender implements ISimpleBlockRenderingHandler {
         boolean ret = renderer.renderStandardBlock(block, x, y, z);
         final TinkerTankLogic logic = (TinkerTankLogic) world.getTileEntity(x, y, z);
         if (logic != null && logic.getActive()) {
-            BlockPos from = logic.minPos;
-            BlockPos to = logic.maxPos;
+            BlockPos from = logic.minPos.add(-1, 0, -1);
+            BlockPos to = logic.maxPos.add(1, 0, 1);
 
             // Liquids
             float base = 0F;
             int yBase = 0;
             int liquidBase = 0;
-            int cap = logic.blocksPerLayer * TinkerTankLogic.MB_PER_BLOCK_CAPACITY;
+            int cap = logic.maxMoltenMetalAmount / logic.multiLayers;
 
             for (FluidStack liquid : logic.fluids) {
                 int liquidSize = liquid.amount;
@@ -65,27 +66,32 @@ public class TinkerTankRender implements ISimpleBlockRenderingHandler {
 
                     renderer.setRenderBounds(0, renderBase, 0, 1, renderHeight, 1);
                     Fluid fluid = liquid.getFluid();
+                    final int renderY = from.y + yBase;
                     for (int xi = from.x; xi <= to.x; xi++) {
                         for (int zi = from.z; zi <= to.z; zi++) {
-                            float minX = xi == from.x ? -0.001F : 0F;
-                            float minZ = zi == from.z ? -0.001F : 0F;
-                            float maxX = xi == to.x ? 1.001F : 1F;
-                            float maxZ = zi == to.z ? 1.001F : 1F;
-                            renderer.setRenderBounds(minX, renderBase, minZ, maxX, renderHeight, maxZ);
-                            if (fluid.canBePlacedInWorld()) {
-                                BlockSkinRenderHelper
-                                    .renderMetadataBlock(fluid.getBlock(), 0, xi, from.y + yBase, zi, renderer, world);
-                            } else {
-                                BlockSkinRenderHelper.renderLiquidBlock(
-                                    fluid.getStillIcon(),
-                                    fluid.getFlowingIcon(),
-                                    xi,
-                                    from.y + yBase,
-                                    zi,
-                                    renderer,
-                                    world,
-                                    false,
-                                    fluid.getColor(liquid));
+                            Block b = world.getBlock(xi, renderY, zi);
+                            if (b == TinkersRebornSmeltery.searedGlass || b == TinkersRebornSmeltery.soulGlass
+                                || b == Blocks.air) {
+                                float minX = xi == from.x ? 0.01F : 0F;
+                                float minZ = zi == from.z ? 0.01F : 0F;
+                                float maxX = xi == to.x ? 0.99F : 1F;
+                                float maxZ = zi == to.z ? 0.99F : 1F;
+                                renderer.setRenderBounds(minX, renderBase, minZ, maxX, renderHeight, maxZ);
+                                if (fluid.canBePlacedInWorld()) {
+                                    BlockSkinRenderHelper
+                                        .renderMetadataBlock(fluid.getBlock(), 0, xi, renderY, zi, renderer, world);
+                                } else {
+                                    BlockSkinRenderHelper.renderLiquidBlock(
+                                        fluid.getStillIcon(),
+                                        fluid.getFlowingIcon(),
+                                        xi,
+                                        renderY,
+                                        zi,
+                                        renderer,
+                                        world,
+                                        false,
+                                        fluid.getColor(liquid));
+                                }
                             }
                         }
                     }

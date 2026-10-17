@@ -70,9 +70,11 @@ public class TinkerTankLogic extends TinkersRebornMultiBlockInvenotryLogic imple
                 TinkersRebornSmeltery.smelteryDrain,
                 TinkersRebornSmeltery.soulGlass,
                 TinkersRebornSmeltery.searedGlass));
-        this.validFloor.addAll(
-            Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.smelteryDrain));
-        this.validFrame.addAll(Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.smelteryDrain,
+        this.validFloor.addAll(Arrays.asList(TinkersRebornSmeltery.smelteryBlock, TinkersRebornSmeltery.smelteryDrain));
+        this.validFrame.addAll(
+            Arrays.asList(
+                TinkersRebornSmeltery.smelteryBlock,
+                TinkersRebornSmeltery.smelteryDrain,
                 TinkersRebornSmeltery.soulGlass,
                 TinkersRebornSmeltery.searedGlass));
     }
@@ -104,8 +106,11 @@ public class TinkerTankLogic extends TinkersRebornMultiBlockInvenotryLogic imple
 
     @Override
     protected void adjustLayers() {
-        super.adjustLayers();
-        this.maxMoltenMetalAmount = MB_PER_BLOCK_CAPACITY * this.calculateInnerBlockCount();
+        this.blocksPerLayer = (this.maxPos.x - this.minPos.x + 3) * (this.maxPos.z - this.minPos.z + 3);
+        this.multiLayers = (this.maxPos.y - this.minPos.y + 1);
+
+        final int blockCount = this.blocksPerLayer * (this.multiLayers + 2);
+        this.maxMoltenMetalAmount = MB_PER_BLOCK_CAPACITY * blockCount;
     }
 
     @Override
