@@ -290,11 +290,7 @@ public class SlimeTreeGen extends WorldGenerator {
     protected void setBlockAndMetadata(World world, int x, int y, int z, Block blockID, int blockMeta) {
         Block block = world.getBlock(x, y, z);
         if (block == null || block.canPlaceBlockAt(world, x, y, z)) {
-            if (this.notify) {
-                world.setBlock(x, y, z, blockID, blockMeta, 3);
-            } else {
-                world.setBlock(x, y, z, blockID, blockMeta, 2);
-            }
+            world.setBlock(x, y, z, blockID, blockMeta, this.notify ? 3 : 2);
         }
     }
 

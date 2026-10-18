@@ -9,9 +9,9 @@ import net.minecraft.block.BlockBush;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
@@ -19,14 +19,10 @@ import net.minecraftforge.common.IShearable;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 
 public class SlimeTallGrass extends BlockBush implements IShearable {
-
-    private static final String[] grassTypes = new String[] { "slimegrass_blue_tall" };
-
-    @SideOnly(Side.CLIENT)
-    private IIcon[] iconArray;
 
     public SlimeTallGrass() {
         super(Material.vine);
@@ -38,26 +34,27 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public int getRenderColor(int meta) {
+        return TinkersRebornConfig.slimeColors[meta & 3];
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int colorMultiplier(IBlockAccess worldIn, int x, int y, int z) {
+        int meta = worldIn.getBlockMetadata(x, y, z);
+        return TinkersRebornConfig.slimeColors[meta & 3];
+    }
+
+    @Override
     public String getUnlocalizedName() {
         return "tinkersreborn.slime.grass.tall";
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    /**
-     * From the specified side and block metadata retrieves the blocks texture.
-     * Args: side, metadata
-     */
     public IIcon getIcon(int side, int meta) {
-        meta = MathHelper.clamp_int(meta, 0, iconArray.length - 1);
-        return this.iconArray[meta];
-    }
-
-    /**
-     * Returns the ID of the items to drop on destruction.
-     */
-    public int idDropped(int par1, Random par2Random, int par3) {
-        return -1;
+        return this.blockIcon;
     }
 
     /**
@@ -77,13 +74,11 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
         return par1World.getBlockMetadata(par2, par3, par4);
     }
 
-    @SideOnly(Side.CLIENT)
-    /**
-     * returns a list of blocks with the same ID, but different meta (eg: wood
-     * returns 4 blocks)
-     */
-    public void getSubBlocks(Block b, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
-        par3List.add(new ItemStack(b, 1, 0));
+    @Override
+    public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
+        for (int iter = 0; iter < TinkersRebornConfig.slimeTypes.length; iter++) {
+            list.add(new ItemStack(id, 1, iter));
+        }
     }
 
     @Override
@@ -93,12 +88,8 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
      * with the given IconRegister. This is the only chance you get to register
      * icons.
      */
-    public void registerBlockIcons(IIconRegister par1IconRegister) {
-        this.iconArray = new IIcon[grassTypes.length];
-
-        for (int i = 0; i < this.iconArray.length; ++i) {
-            this.iconArray[i] = par1IconRegister.registerIcon("tinkersreborn:slime/" + grassTypes[i]);
-        }
+    public void registerBlockIcons(IIconRegister reg) {
+        this.blockIcon = reg.registerIcon("tinkersreborn:slime/slimegrass_tall");
     }
 
     @Override

@@ -1175,6 +1175,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(null, tinFluid, "Tin"));
         integrate(new MaterialIntegration(null, aluminumFluid, "Aluminum"));
         integrate(new MaterialIntegration(null, alubrassFluid, "AluminumBrass"));
+        integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.blueSlimeFluid, null));
+        integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.purpleSlimeFluid, null));
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.bloodFluid, null));
         integrate(new MaterialIntegration(null, null, TinkersRebornGeneral.enderFluid, null));
         integrate(new MaterialIntegration(null, null, emeraldFluid, null));

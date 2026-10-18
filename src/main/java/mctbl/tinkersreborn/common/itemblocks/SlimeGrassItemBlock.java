@@ -2,14 +2,13 @@ package mctbl.tinkersreborn.common.itemblocks;
 
 import net.minecraft.block.Block;
 
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 
 public class SlimeGrassItemBlock extends TinkersRebornItemBlock {
 
-    public static final String[] blockTypes = { "blue" };
-
     public SlimeGrassItemBlock(Block b) {
-        super(b, "tinkersreborn.slime.grass", blockTypes);
+        super(b, "tinkersreborn.slime.grass", TinkersRebornConfig.slimeTypes);
         setMaxDamage(0);
         setHasSubtypes(true);
     }

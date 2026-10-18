@@ -18,6 +18,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 
@@ -28,8 +29,10 @@ public class SlimeGrass extends TinkersRebornBlock {
             Material.grass,
             "tinkersreborn.slime.grass",
             0.6f,
-            new String[] { "slime/slimegrass_green_top", "slime/slimedirt_blue", "slime/slimegrass_green_blue_side",
-                "slime/slimegrass_green_dirt_side" });
+            new String[] { "slime/slimedirt_blue", "slime/slimegrass_blue_side", "slime/slimegrass_blue_top",
+                "slime/slimedirt_green", "slime/slimegrass_green_side", "slime/slimegrass_green_top",
+                "slime/slimedirt_purple", "slime/slimegrass_purple_side", "slime/slimegrass_purple_top",
+                "slime/slimedirt_magma", "slime/slimegrass_magma_side", "slime/slimegrass_magma_top" });
         this.setTickRandomly(true);
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.setLightOpacity(0);
@@ -37,32 +40,23 @@ public class SlimeGrass extends TinkersRebornBlock {
     }
 
     @Override
-    public int damageDropped(int meta) {
-        if (meta == 1) // dirt
-            return 0;
-        else
-            // slime dirt
-            return 5;
-    }
-
-    @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        if (meta >= 2) meta = 0;
-
-        if (side == 0) {
-            return meta % 2 == 1 ? Blocks.dirt.getIcon(0, 0) : icons[1];
-        } else if (side == 1) {
-            return icons[0];
-        } else {
-            return icons[meta + 2];
+        final int start = meta * 3;
+        switch (side) {
+            case 0:
+                return this.icons[start];
+            case 1:
+                return this.icons[start + 2];
+            default:
+                return this.icons[start + 1];
         }
     }
 
     @Override
     public void getSubBlocks(Item b, CreativeTabs tab, List<ItemStack> list) {
-        for (int iter = 0; iter < 1; iter++) {
-            list.add(new ItemStack(b, 1, iter));
+        for (int meta = 0; meta < 4; meta++) {
+            list.add(new ItemStack(b, 1, meta));
         }
     }
 
@@ -73,55 +67,49 @@ public class SlimeGrass extends TinkersRebornBlock {
         return plantType == EnumPlantType.Plains && plant.getPlant(world, x, y + 1, z) != Blocks.tallgrass;
     }
 
-    // @Override
-    // public void onPlantGrow(World world, int x, int y, int z, int sourceX, int
-    // sourceY, int sourceZ) {
-    // world.setBlock(x, y, z, TinkerTools.craftedSoil, 5, 3);
-    // }
+    @Override
+    public void onPlantGrow(World world, int x, int y, int z, int sourceX, int sourceY, int sourceZ) {
+        world.setBlock(x, y, z, TinkersRebornGeneral.slimeDirt, world.getBlockMetadata(x, y, z), 3);
+    }
 
     @Override
     public void updateTick(World world, int x, int y, int z, Random random) {
-        // if (!world.isRemote) {
-        // if (world.getBlockLightValue(x, y + 1, z) < 4 &&
-        // world.getBlockLightOpacity(x, y + 1, z) > 2) {
-        // world.setBlock(x, y, z, TinkerTools.craftedSoil, 5, 3);
-        // } else if (world.getBlockLightValue(x, y + 1, z) >= 9) {
-        // for (int l = 0; l < 4; ++l) {
-        // int posX = x + random.nextInt(3) - 1;
-        // int posY = y + random.nextInt(5) - 3;
-        // int posZ = z + random.nextInt(3) - 1;
-        // Block blockAbove = world.getBlock(posX, posY + 1, posZ);
-        //
-        // if (world.getBlockLightValue(posX, posY + 1, posZ) >= 4
-        // && world.getBlockLightOpacity(posX, posY + 1, posZ) <= 2
-        // && blockAbove != TinkerTools.craftedSoil
-        // && blockAbove != this) {
-        // Block block = world.getBlock(posX, posY, posZ);
-        // if (block == Blocks.dirt) {
-        // world.setBlock(posX, posY, posZ, this, 1, 3);
-        // return;
-        // }
-        // int blockMeta = world.getBlockMetadata(posX, posY, posZ);
-        // if (block == TinkerTools.craftedSoil) {
-        // if (blockMeta == 5) world.setBlock(posX, posY, posZ, this, 0, 3);
-        // }
-        // }
-        // }
-        // }
-        // }
+        if (!world.isRemote) {
+            final int thisMeta = world.getBlockMetadata(x, y, z);
+            if (world.getBlockLightValue(x, y + 1, z) < 4 && world.getBlockLightOpacity(x, y + 1, z) > 2) {
+                world.setBlock(x, y, z, TinkersRebornGeneral.slimeDirt, thisMeta, 3);
+            } else if (world.getBlockLightValue(x, y + 1, z) >= 9) {
+                for (int l = 0; l < 4; ++l) {
+                    int posX = x + random.nextInt(3) - 1;
+                    int posY = y + random.nextInt(5) - 3;
+                    int posZ = z + random.nextInt(3) - 1;
+                    Block blockAbove = world.getBlock(posX, posY + 1, posZ);
+
+                    if (world.getBlockLightValue(posX, posY + 1, posZ) >= 4
+                        && world.getBlockLightOpacity(posX, posY + 1, posZ) <= 2
+                        && blockAbove != TinkersRebornGeneral.slimeDirt
+                        && blockAbove != this) {
+                        Block block = world.getBlock(posX, posY, posZ);
+                        if (block == Blocks.dirt) {
+                            world.setBlock(posX, posY, posZ, this, thisMeta, 3);
+                            return;
+                        }
+                        int blockMeta = world.getBlockMetadata(posX, posY, posZ);
+                        if (block == TinkersRebornGeneral.slimeDirt && thisMeta == blockMeta) {
+                            world.setBlock(posX, posY, posZ, this, thisMeta, 3);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public Block blockDropped(int metadata, Random random, int fortune) {
-        return Blocks.dirt;
-        // if (metadata == 1) return Blocks.dirt;
-        // else return TinkerTools.craftedSoil;
+        return TinkersRebornGeneral.slimeDirt;
     }
 
     @Override
     public Item getItemDropped(int metadata, Random random, int fortune) {
-        return Blocks.dirt.getItemDropped(metadata, random, fortune);
-        // if (metadata == 1) return Blocks.dirt.getItemDropped(metadata, random,
-        // fortune);
-        // else return ItemSaddle.getItemFromBlock(TinkerTools.craftedSoil);
+        return TinkersRebornGeneral.slimeDirt.getItemDropped(metadata, random, fortune);
     }
 }

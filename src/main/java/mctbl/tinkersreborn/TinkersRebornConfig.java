@@ -27,6 +27,8 @@ public class TinkersRebornConfig {
     public static String[] oreTypes;
     public static String[] gravelOreTypes;
     public static String[] oreberryBushTypes;
+    public static String[] slimeTypes;
+    public static int[] slimeColors;
 
     public static boolean exportMaterialDefaultConfig;
 
@@ -151,6 +153,10 @@ public class TinkersRebornConfig {
         gravelOreTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum" };
 
         oreberryBushTypes = new String[] { "iron", "gold", "copper", "tin", "aluminum", "essence" };
+
+        slimeTypes = new String[] { "blue", "green", "purple", "magma" };
+
+        slimeColors = new int[] { 0x00D8D5, 0x00D84C, 0xB95BF8, 0xFF9C0D };
 
         Configuration config = new Configuration(new File(location + "/Tinkersreborn/TinkersRebornGeneral.cfg"));
 

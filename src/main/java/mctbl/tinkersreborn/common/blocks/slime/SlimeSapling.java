@@ -7,7 +7,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockSapling;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,6 +17,7 @@ import net.minecraft.world.gen.feature.WorldGenerator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.world.gen.SlimeTreeGen;
@@ -25,7 +25,6 @@ import mctbl.tinkersreborn.world.gen.SlimeTreeGen;
 public class SlimeSapling extends BlockSapling {
 
     public IIcon[] icons;
-    public final String[] textureNames = new String[] { "blue" };
 
     public SlimeSapling() {
         super();
@@ -45,10 +44,11 @@ public class SlimeSapling extends BlockSapling {
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister iconRegister) {
-        this.icons = new IIcon[textureNames.length];
+        this.icons = new IIcon[TinkersRebornConfig.slimeTypes.length];
 
         for (int i = 0; i < this.icons.length; ++i) {
-            this.icons[i] = iconRegister.registerIcon("tinkersreborn:slime/slimesapling_" + textureNames[i]);
+            this.icons[i] = iconRegister
+                .registerIcon("tinkersreborn:slime/slimesapling_" + TinkersRebornConfig.slimeTypes[i]);
         }
     }
 
@@ -78,13 +78,11 @@ public class SlimeSapling extends BlockSapling {
 
     @Override
     public void func_149879_c(World world, int x, int y, int z, Random random) {
-        boneFertilize(world, x, y, z, random, null);
+        boneFertilize(world, x, y, z, random);
     }
 
-    public boolean boneFertilize(World world, int x, int y, int z, Random random, EntityPlayer player) {
+    public boolean boneFertilize(World world, int x, int y, int z, Random random) {
         int meta = world.getBlockMetadata(x, y, z);
-
-        if (meta % 8 == 0 && (player == null || !player.capabilities.isCreativeMode)) return false;
 
         if ((meta & 8) == 0) {
             world.setBlockMetadataWithNotify(x, y, z, meta | 8, 4);
@@ -99,7 +97,7 @@ public class SlimeSapling extends BlockSapling {
         int md = world.getBlockMetadata(x, y, z) % 8;
         world.setBlock(x, y, z, Blocks.air);
 
-        WorldGenerator obj = new SlimeTreeGen(true, 5, 4, 1, 0);
+        WorldGenerator obj = new SlimeTreeGen(true, 5, 4, md, md);
 
         if (!(obj.generate(world, random, x, y, z))) world.setBlock(x, y, z, this, md + 8, 3);
     }
@@ -111,7 +109,9 @@ public class SlimeSapling extends BlockSapling {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> list) {
-        list.add(new ItemStack(par1, 1, 0));
+    public void getSubBlocks(Item item, CreativeTabs par2CreativeTabs, List<ItemStack> list) {
+        for (int i = 0; i < this.icons.length; i++) {
+            list.add(new ItemStack(item, 1, i));
+        }
     }
 }

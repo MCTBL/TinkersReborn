@@ -9,7 +9,12 @@ import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 public class SlimeDirt extends TinkersRebornBlock {
 
     public SlimeDirt() {
-        super(Material.gourd, "tinkersreborn.slimedirt", 3.0F, new String[] { "slime/slimedirt_blue" });
+        super(
+            Material.gourd,
+            "tinkersreborn.slime.dirt",
+            3.0F,
+            new String[] { "slime/slimedirt_blue", "slime/slimedirt_green", "slime/slimedirt_purple",
+                "slime/slimedirt_magma" });
         this.setHarvestLevel("shovel", -1);
         this.setLightOpacity(0);
         this.stepSound = Block.soundTypeGravel;

@@ -65,9 +65,11 @@ import mctbl.tinkersreborn.common.events.TinkersRebornPlayerHandler;
 import mctbl.tinkersreborn.common.itemblocks.GravelOreItem;
 import mctbl.tinkersreborn.common.itemblocks.MetalOreItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.OreberryBushItemBlock;
+import mctbl.tinkersreborn.common.itemblocks.SlimeDirtItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeGelItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeGrassItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeLeavesItemBlock;
+import mctbl.tinkersreborn.common.itemblocks.SlimeSandItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeSaplingItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeTallGrassItem;
 import mctbl.tinkersreborn.common.itemblocks.TinkersRebornMetalItemBlock;
@@ -112,12 +114,14 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Block grout;
     public static Block graveyardSoil;
     public static Block consecratedSoil;
-    public static Block slimeDirt;
 
     // Slime
     public static SoundType slimeStep;
+    public static Block slimeDirt;
     public static TinkersRebornFluid blueSlimeFluid;
-    public static Block slimePool;
+    public static Block blueSlimeFluidBlock;
+    public static TinkersRebornFluid purpleSlimeFluid;
+    public static Block purpleSlimeFluidBlock;
     public static Block slimeGel;
     public static Block slimeGrass;
     public static Block slimeTallGrass;
@@ -161,9 +165,6 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         metalBlock = new TinkersRebornMetalBlock(Material.iron, 10.0F);
         GameRegistry.registerBlock(metalBlock, TinkersRebornMetalItemBlock.class, metalBlock.getUnlocalizedName());
 
-        slimeSand = new SlimeSand();
-        GameRegistry.registerBlock(slimeSand, slimeSand.getUnlocalizedName());
-
         grout = new Grout();
         GameRegistry.registerBlock(grout, grout.getUnlocalizedName());
 
@@ -173,18 +174,25 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         consecratedSoil = new ConsecratedSoil();
         GameRegistry.registerBlock(consecratedSoil, consecratedSoil.getUnlocalizedName());
 
-        slimeDirt = new SlimeDirt();
-        GameRegistry.registerBlock(slimeDirt, slimeDirt.getUnlocalizedName());
-
         slimeStep = new StepSoundSlime("mob.slime", 1.0f, 1.0f);
 
-        blueSlimeFluid = new TinkersRebornFluid("blue_slime", 0X42E9F4, "slime_blue");
+        blueSlimeFluid = new TinkersRebornFluid("blue_slime", 0x42E9F4, "slime_blue");
         FluidRegistry.registerFluid(blueSlimeFluid);
 
-        slimePool = new SlimeFluid(blueSlimeFluid);
-        GameRegistry.registerBlock(slimePool, slimePool.getUnlocalizedName());
+        purpleSlimeFluid = new TinkersRebornFluid("purple_slime", 0xD33FFF, "slime_purple");
+        FluidRegistry.registerFluid(purpleSlimeFluid);
+
+        blueSlimeFluidBlock = new SlimeFluid(blueSlimeFluid);
+        GameRegistry.registerBlock(blueSlimeFluidBlock, blueSlimeFluidBlock.getUnlocalizedName());
+
+        purpleSlimeFluidBlock = new SlimeFluid(purpleSlimeFluid);
+        GameRegistry.registerBlock(purpleSlimeFluidBlock, purpleSlimeFluidBlock.getUnlocalizedName());
 
         // Slime Islands
+        slimeSand = new SlimeSand();
+        GameRegistry.registerBlock(slimeSand, SlimeSandItemBlock.class, slimeSand.getUnlocalizedName());
+        slimeDirt = new SlimeDirt();
+        GameRegistry.registerBlock(slimeDirt, SlimeDirtItemBlock.class, slimeDirt.getUnlocalizedName());
         slimeGel = new SlimeGel();
         GameRegistry.registerBlock(slimeGel, SlimeGelItemBlock.class, slimeGel.getUnlocalizedName());
         slimeGrass = new SlimeGrass();
@@ -254,7 +262,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         GameRegistry.registerWorldGenerator(new TinkersRebornWorldGenerator(), 0);
         MinecraftForge.TERRAIN_GEN_BUS.register(new TinkersRebornSurfaceOreGen());
-        GameRegistry.registerWorldGenerator(new SlimeIslandGen(slimePool, 2), 2);
+        GameRegistry.registerWorldGenerator(new SlimeIslandGen(blueSlimeFluidBlock, 2), 2);
 
     }
 

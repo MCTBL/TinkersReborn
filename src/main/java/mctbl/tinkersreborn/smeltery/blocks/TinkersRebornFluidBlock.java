@@ -9,6 +9,7 @@ import net.minecraftforge.fluids.Fluid;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.util.TextureHelper;
 
 public class TinkersRebornFluidBlock extends BlockFluidClassic {
@@ -16,6 +17,14 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
     public IIcon stillIcon;
     public IIcon flowIcon;
     private TinkersRebornFluid fluid = null;
+
+    public TinkersRebornFluidBlock(TinkersRebornFluid fluid) {
+        this(fluid, fluid.getTemperature() > 300 ? Material.lava : Material.water, fluid.getUnlocalizedName());
+    }
+
+    public TinkersRebornFluidBlock(TinkersRebornFluid fluid, String unlocalizedName) {
+        this(fluid, fluid.getTemperature() > 300 ? Material.lava : Material.water, unlocalizedName);
+    }
 
     public TinkersRebornFluidBlock(TinkersRebornFluid fluid, Material material, String unlocalizedName) {
         super(fluid, material);
@@ -37,22 +46,24 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        if (TextureHelper.itemTextureExists("tinkersreborn:" + this.fluid.identifier)) {
-            stillIcon = iconRegister.registerIcon("tinkersreborn:" + this.fluid.identifier);
+        String preFix = TinkersReborn.MODID + ":";
+
+        if (TextureHelper.itemTextureExists(preFix + this.fluid.identifier)) {
+            stillIcon = iconRegister.registerIcon(preFix + this.fluid.identifier);
         } else {
             if (this.fluid.getTemperature() <= 300) {
-                stillIcon = iconRegister.registerIcon("tinkersreborn:liquid");
+                stillIcon = iconRegister.registerIcon(preFix + "liquid");
             } else {
-                stillIcon = iconRegister.registerIcon("tinkersreborn:liquid_molten");
+                stillIcon = iconRegister.registerIcon(preFix + "liquid_molten");
             }
         }
-        if (TextureHelper.itemTextureExists("tinkersreborn:" + this.fluid.identifier + "_flow")) {
-            flowIcon = iconRegister.registerIcon("tinkersreborn:" + this.fluid.identifier + "_flow");
+        if (TextureHelper.itemTextureExists(preFix + this.fluid.identifier + "_flow")) {
+            flowIcon = iconRegister.registerIcon(preFix + this.fluid.identifier + "_flow");
         } else {
             if (this.fluid.getTemperature() <= 300) {
-                flowIcon = iconRegister.registerIcon("tinkersreborn:liquid_flow");
+                flowIcon = iconRegister.registerIcon(preFix + "liquid_flow");
             } else {
-                flowIcon = iconRegister.registerIcon("tinkersreborn:liquid_molten_flow");
+                flowIcon = iconRegister.registerIcon(preFix + "liquid_molten_flow");
             }
         }
         this.fluid.setIcons(stillIcon, flowIcon);

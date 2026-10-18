@@ -16,13 +16,11 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 
 public class SlimeLeaves extends BlockLeaves {
-
-    private static final String[][] leaves = new String[][] { { "slimeleaves_blue_fancy" },
-        { "slimeleaves_blue_fast" } };
 
     public SlimeLeaves() {
         super();
@@ -39,37 +37,27 @@ public class SlimeLeaves extends BlockLeaves {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public int getBlockColor() {
-        return 0xffffff;
+    public int getRenderColor(int meta) {
+        return TinkersRebornConfig.slimeColors[meta & 3];
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public int getRenderColor(int par1) {
-        return 0xffffff;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public int colorMultiplier(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {
-        return 0xffffff;
+    public int colorMultiplier(IBlockAccess worldIn, int x, int y, int z) {
+        int meta = worldIn.getBlockMetadata(x, y, z);
+        return TinkersRebornConfig.slimeColors[meta & 3];
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister reg) {
-        for (int detail = 0; detail < leaves.length; ++detail) {
-            field_150129_M[detail] = new IIcon[leaves[detail].length];
-            for (int leaf = 0; leaf < leaves[detail].length; ++leaf) {
-                field_150129_M[detail][leaf] = reg.registerIcon("tinkersreborn:slime/" + leaves[detail][leaf]);
-            }
-        }
+        this.blockIcon = reg.registerIcon("tinkersreborn:slime/slimeleaves");
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        return field_150129_M[Blocks.leaves.isOpaqueCube() ? 1 : 0][(meta % 4) % leaves[0].length];
+        return this.blockIcon;
     }
 
     @Override
@@ -85,9 +73,14 @@ public class SlimeLeaves extends BlockLeaves {
 
     @Override
     public void getSubBlocks(Item id, CreativeTabs tab, List<ItemStack> list) {
-        for (int iter = 0; iter < leaves[0].length; iter++) {
+        for (int iter = 0; iter < TinkersRebornConfig.slimeTypes.length; iter++) {
             list.add(new ItemStack(id, 1, iter));
         }
+    }
+
+    @Override
+    public int damageDropped(int meta) {
+        return meta;
     }
 
     /* Drops */

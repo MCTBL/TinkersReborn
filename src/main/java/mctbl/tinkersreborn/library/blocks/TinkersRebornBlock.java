@@ -60,7 +60,7 @@ public class TinkersRebornBlock extends Block {
     @Override
     @SideOnly(Side.CLIENT)
     public IIcon getIcon(int side, int meta) {
-        return meta < icons.length ? icons[meta] : icons[0];
+        return icons[meta < icons.length ? meta : 0];
     }
 
     @SideOnly(Side.CLIENT)

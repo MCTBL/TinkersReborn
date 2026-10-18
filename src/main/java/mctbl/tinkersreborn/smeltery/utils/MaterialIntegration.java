@@ -1,6 +1,5 @@
 package mctbl.tinkersreborn.smeltery.utils;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -83,7 +82,9 @@ public class MaterialIntegration {
 
         // fluid first.
         if (fluid != null) {
-            FluidRegistry.registerFluid(fluid);
+            if (!FluidRegistry.isFluidRegistered(fluid)) {
+                FluidRegistry.registerFluid(fluid);
+            }
 
             FluidContainerRegistry.registerFluidContainer(
                 new FluidContainerData(
@@ -151,10 +152,7 @@ public class MaterialIntegration {
         // ensure the fluid block is not already registered
         if (!addedFluidBlock && fluid != null && fluid.getBlock() == null) {
             addedFluidBlock = true;
-            TinkersRebornFluidBlock tinkersRebornFluidBlock = new TinkersRebornFluidBlock(
-                fluid,
-                fluid.getTemperature() > 300 ? Material.lava : Material.water,
-                fluid.getUnlocalizedName());
+            TinkersRebornFluidBlock tinkersRebornFluidBlock = new TinkersRebornFluidBlock(fluid);
             GameRegistry.registerBlock(tinkersRebornFluidBlock, fluid.getUnlocalizedName());
         }
     }

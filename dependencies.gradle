@@ -43,6 +43,8 @@ dependencies {
     compileOnly('com.github.GTNewHorizons:waila:1.19.31:api')
 
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:ToroHealth:1.2.3:dev')
+    runtimeOnlyNonPublishable(rfg.deobf('maven.modrinth:xaeros-minimap:21.10.44_Forge_1.7.10'))
+    runtimeOnlyNonPublishable(rfg.deobf('maven.modrinth:xaeros-world-map:1.14.1.33_Forge_1.7.10'))
     runtimeOnlyNonPublishable('com.github.GTNewHorizons:waila:1.19.31:dev')
 //    runtimeOnlyNonPublishable('com.github.GTNewHorizons:TiC-Tooltips:1.4.1:dev'){transitive = false}
 //    runtimeOnlyNonPublishable("com.github.GTNewHorizons:TinkersConstruct:1.14.96-GTNH:dev")
