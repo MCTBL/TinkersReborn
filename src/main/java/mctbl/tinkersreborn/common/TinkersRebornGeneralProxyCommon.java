@@ -10,10 +10,6 @@ public class TinkersRebornGeneralProxyCommon {
 
     public void postInit() {}
 
-    public int getDryingRackRenderId() {
-        return 0;
-    }
-
     public void openManual(ItemStack stack) {
         // Dedicated server does nothing.
     }

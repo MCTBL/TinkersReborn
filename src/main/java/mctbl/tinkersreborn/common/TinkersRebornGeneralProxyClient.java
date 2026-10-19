@@ -35,6 +35,7 @@ import mctbl.tinkersreborn.common.model.DryingRackRender;
 import mctbl.tinkersreborn.common.model.DryingRackSpecialRender;
 import mctbl.tinkersreborn.common.model.OreberryBushRender;
 import mctbl.tinkersreborn.common.model.SlimeRender;
+import mctbl.tinkersreborn.common.model.SlimeVineRender;
 import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.ManualBookData;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
@@ -64,6 +65,7 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
     public void init() {
         registerRender();
         RenderingRegistry.registerBlockHandler(new DryingRackRender());
+        RenderingRegistry.registerBlockHandler(new SlimeVineRender());
         RenderingRegistry.registerBlockHandler(new OreberryBushRender());
         ClientRegistry.bindTileEntitySpecialRenderer(DryingRackLogic.class, new DryingRackSpecialRender());
 
@@ -76,8 +78,7 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
 
     @Override
     public void postInit() {
-        // move to tinkersreborn tools post init
-        // TinkersRebornManualDataBase.processManuals();
+
     }
 
     @SideOnly(Side.CLIENT)
@@ -109,11 +110,6 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
 
         RenderingRegistry.registerEntityRenderingHandler(BlueSlime.class, slimeRender);
         RenderingRegistry.registerEntityRenderingHandler(KingBlueSlime.class, slimeRender);
-    }
-
-    @Override
-    public int getDryingRackRenderId() {
-        return DryingRackRender.model;
     }
 
     @Override

@@ -3,34 +3,51 @@ package mctbl.tinkersreborn.common.blocks.slime;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockVine;
 import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
+import mctbl.tinkersreborn.common.model.SlimeVineRender;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 
 public class SlimeVine extends BlockVine {
+
+    private IIcon[] icons;
 
     public SlimeVine() {
         super();
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.setStepSound(Block.soundTypeGrass);
+        this.icons = new IIcon[3];
+    }
+
+    @Override
+    public int getRenderType() {
+        return SlimeVineRender.model;
     }
 
     @Override
     public void registerBlockIcons(IIconRegister reg) {
-        this.blockIcon = reg.registerIcon("tinkersreborn:slime/slime_vine");
+        this.icons[0] = reg.registerIcon("tinkersreborn:slime/slimevine");
+        this.icons[1] = reg.registerIcon("tinkersreborn:slime/slimevine_mid");
+        this.icons[2] = reg.registerIcon("tinkersreborn:slime/slimevine_end");
     }
 
     @Override
-    public String getUnlocalizedName() {
-        return TinkersReborn.MODID + ".slime.vine";
+    public IIcon getIcon(int side, int meta) {
+        return this.icons[0];
     }
 
     @Override
-    public int colorMultiplier(IBlockAccess worldIn, int x, int y, int z) {
-        return 0xFFFFFF;
+    public IIcon getIcon(IBlockAccess worldIn, int x, int y, int z, int side) {
+        if (worldIn.getBlock(x, y + 1, z) != this) {
+            return this.icons[0];
+        } else if (worldIn.getBlock(x, y - 1, z) != this) {
+            return this.icons[2];
+        } else {
+            return this.icons[1];
+        }
     }
 
     @Override
