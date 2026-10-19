@@ -38,14 +38,21 @@ public class SlimeLeaves extends BlockLeaves {
     @Override
     @SideOnly(Side.CLIENT)
     public int getRenderColor(int meta) {
-        return TinkersRebornConfig.slimeColors[meta & 3];
+        switch (meta) {
+            case 0, 1:
+                return TinkersRebornConfig.slimeColors[2];
+            case 2:
+                return TinkersRebornConfig.slimeColors[0];
+            case 3:
+            default:
+                return TinkersRebornConfig.slimeColors[3];
+        }
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public int colorMultiplier(IBlockAccess worldIn, int x, int y, int z) {
-        int meta = worldIn.getBlockMetadata(x, y, z);
-        return TinkersRebornConfig.slimeColors[meta & 3];
+        return this.getRenderColor(worldIn.getBlockMetadata(x, y, z));
     }
 
     @Override
