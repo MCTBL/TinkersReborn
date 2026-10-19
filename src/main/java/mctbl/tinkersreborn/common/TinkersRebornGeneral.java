@@ -432,10 +432,14 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         ItemStack graveyardSoilBlock = new ItemStack(graveyardSoil);
         ItemStack consecratedSoilBlock = new ItemStack(consecratedSoil);
         ItemStack emptyHeartCanister = new ItemStack(heartCanister, 1, 0);
-        ItemStack greenSlimeSand = new ItemStack(slimeSand, 1, 0);
-        ItemStack blueSlimeSand = new ItemStack(slimeSand, 1, 1);
+        ItemStack blueSlimeSand = new ItemStack(slimeSand, 1, 0);
+        ItemStack greenSlimeSand = new ItemStack(slimeSand, 1, 1);
         ItemStack greenSlimeBall = new ItemStack(Items.slime_ball);
         ItemStack blueSlimeBall = new ItemStack(strangeFood);
+        ItemStack greenSlimeBall4 = new ItemStack(Items.slime_ball, 4);
+        ItemStack blueSlimeBall4 = new ItemStack(strangeFood, 4);
+        ItemStack blueSlimeBlock = new ItemStack(slimeGel, 1, 0);
+        ItemStack greenSlimeBlock = new ItemStack(slimeGel, 1, 1);
 
         // Vanilla stuff
         RecipeRemover.removeShapedRecipe(new ItemStack(Blocks.sticky_piston));
@@ -494,6 +498,12 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
             new ItemStack(heartCanister, 1, 6),
             emptyHeartCanister,
             new ItemStack(heartCanister, 1, 5));
+
+        GameRegistry.addShapelessRecipe(blueSlimeBall4, blueSlimeBlock);
+        GameRegistry.addShapelessRecipe(greenSlimeBall4, greenSlimeBlock);
+        GameRegistry.addShapedRecipe(blueSlimeBlock, "AA", "AA", 'A', blueSlimeBall);
+        GameRegistry.addShapedRecipe(greenSlimeBlock, "AA", "AA", 'A', greenSlimeBall);
+
         GameRegistry
             .addShapedRecipe(greenSlimeSand, "AA ", "AA ", "BC ", 'A', greenSlimeBall, 'B', sandBlock, 'C', dirtBlock);
         GameRegistry
