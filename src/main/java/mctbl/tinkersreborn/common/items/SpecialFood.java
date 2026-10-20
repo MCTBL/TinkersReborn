@@ -20,11 +20,11 @@ public class SpecialFood extends ItemFood {
     protected String[] iconNames;
     protected IIcon[] icons;
 
-    public SpecialFood(int[] hunger, float[] saturation, String[] textureNames, String[] iconNames) {
+    public SpecialFood(int[] hunger, float[] saturation, String[] itemNames, String[] iconNames) {
         super(0, 0, false);
         this.hunger = hunger;
         this.saturation = saturation;
-        this.unlocalizedNames = textureNames;
+        this.unlocalizedNames = itemNames;
         this.iconNames = iconNames;
     }
 

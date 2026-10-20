@@ -249,6 +249,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static Item alumiteIngot;
     public static Item steelIngot;
     public static Item blueSlimeCrystal;
+    public static Item magmaSlimeCrystal;
     public static Item obsidianIngot;
     public static Item ironNugget;
     public static Item copperNugget;
@@ -584,11 +585,12 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");
+        blueSlimeCrystal = new MaterialItem("BlueSlimeCrystal", "blueslimecrystal");
+        magmaSlimeCrystal = new MaterialItem("MagmaSlimeCrystal", "magmaslimecrystal");
         lavaCrystal = new MaterialItem("LavaCrystal", "lavacrystal");
         silkyCloth = new MaterialItem("SilkyCloth", "silkycloth");
         silkyJewel = new MaterialItem("SilkyJewel", "silkyjewel");
         necroticBone = new MaterialItem("NecroticBone", "necroticbone");
-        blueSlimeCrystal = new MaterialItem("BlueSlimeCrystal", "blueslimecrystal");
         reinforcement = new MaterialItem("Reinforcement", "reinforcement");
         expanderW = new MaterialItem("ExpanderWidth", "expander_w");
         expanderH = new MaterialItem("ExpanderHeight", "expander_h");
@@ -634,6 +636,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(mossball, mossball.getUnlocalizedName());
         GameRegistry.registerItem(slimeCrystal, slimeCrystal.getUnlocalizedName());
         GameRegistry.registerItem(blueSlimeCrystal, blueSlimeCrystal.getUnlocalizedName());
+        GameRegistry.registerItem(magmaSlimeCrystal, magmaSlimeCrystal.getUnlocalizedName());
         GameRegistry.registerItem(lavaCrystal, lavaCrystal.getUnlocalizedName());
         GameRegistry.registerItem(silkyCloth, silkyCloth.getUnlocalizedName());
         GameRegistry.registerItem(silkyJewel, silkyJewel.getUnlocalizedName());
@@ -749,10 +752,12 @@ public class TinkersRebornTools implements ITinkersRebornModule {
                 axeHead.getNewPartWithMaterial(woodMaterial),
                 binding.getNewPartWithMaterial(woodMaterial),
                 rod.getNewPartWithMaterial(woodMaterial));
-            if (starterPick != null)
+            if (starterPick != null) {
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(starterPick, 1, 1, 5));
-            if (starterAxe != null)
+            }
+            if (starterAxe != null) {
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(starterAxe, 1, 1, 5));
+            }
 
             // same with stone tools
             ChestGenHooks.removeItem(ChestGenHooks.BONUS_CHEST, new ItemStack(Items.stone_axe));
@@ -767,10 +772,12 @@ public class TinkersRebornTools implements ITinkersRebornModule {
                 axeHead.getNewPartWithMaterial(stoneMaterial),
                 binding.getNewPartWithMaterial(woodMaterial),
                 rod.getNewPartWithMaterial(woodMaterial));
-            if (stonePick != null)
+            if (stonePick != null) {
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(stonePick, 1, 1, 5));
-            if (stoneAxe != null)
+            }
+            if (stoneAxe != null) {
                 ChestGenHooks.addItem(ChestGenHooks.BONUS_CHEST, new WeightedRandomChestContent(stoneAxe, 1, 1, 5));
+            }
         }
 
         // no hoes for you
@@ -1272,6 +1279,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         ItemStack blankPattern = Pattern.newStackWithIdentifier(Pattern.PATTERN_BLANK);
         ItemStack blankPattern4 = blankPattern.copy();
         blankPattern4.stackSize = 4;
+        ItemStack purpleSlmieBall = new ItemStack(TinkersRebornGeneral.strangeFood, 1, 3);
 
         ItemStack chest = new ItemStack(Blocks.chest);
         ItemStack smelteryBrick = new ItemStack(TinkersRebornSmeltery.smelteryBlock);
@@ -1388,26 +1396,10 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             'B',
             new ItemStack(Items.emerald));
 
-        GameRegistry.addRecipe(
-            new ShapedOreRecipe(
-                new ItemStack(expanderH),
-                expanderRecipe,
-                'A',
-                Blocks.piston,
-                'B',
-                lapis,
-                'C',
-                "slimeball"));
-        GameRegistry.addRecipe(
-            new ShapedOreRecipe(
-                new ItemStack(expanderW),
-                expanderRecipe,
-                'A',
-                lapis,
-                'B',
-                Blocks.piston,
-                'C',
-                "slimeball"));
+        GameRegistry
+            .addRecipe(new ItemStack(expanderH), expanderRecipe, 'A', Blocks.piston, 'B', lapis, 'C', purpleSlmieBall);
+        GameRegistry
+            .addRecipe(new ItemStack(expanderW), expanderRecipe, 'A', lapis, 'B', Blocks.piston, 'C', purpleSlmieBall);
     }
 
     private static void findToolsFromConfig() {
@@ -1417,7 +1409,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             // do we care about this item?
             if (!(item instanceof ItemTool || item instanceof ItemHoe
                 || item instanceof ItemSword
-                || item instanceof ItemBow)) continue;
+                || item instanceof ItemBow)) {
+                continue;
+            }
 
             String mod = identifier.toString()
                 .split(":")[0]; // should always be non-null... I think
@@ -1426,11 +1420,15 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             if (TinkersRebornConfig.excludedToolsIsWhitelist) {
                 // on the whitelist?
                 if (TinkersRebornConfig.excludedModTools.contains(mod)
-                    || TinkersRebornConfig.excludedTools.contains(identifier)) toolWhitelist.add((Item) item);
+                    || TinkersRebornConfig.excludedTools.contains(identifier)) {
+                    toolWhitelist.add((Item) item);
+                }
             } else {
                 // blacklist
                 if (!TinkersRebornConfig.excludedModTools.contains(mod)
-                    && !TinkersRebornConfig.excludedTools.contains(identifier)) toolWhitelist.add((Item) item);
+                    && !TinkersRebornConfig.excludedTools.contains(identifier)) {
+                    toolWhitelist.add((Item) item);
+                }
             }
         }
     }
