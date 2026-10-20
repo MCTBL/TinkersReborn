@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.common.itemblocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
 import mctbl.tinkersreborn.TinkersRebornConfig;
@@ -20,5 +21,10 @@ public class SlimeSaplingItemBlock extends TinkersRebornItemBlock {
     @Override
     public IIcon getIconFromDamage(int meta) {
         return b.getIcon(0, meta);
+    }
+    
+    @Override
+    public String getUnlocalizedName(ItemStack itemstack) {
+        return this.unlocalizedName;
     }
 }

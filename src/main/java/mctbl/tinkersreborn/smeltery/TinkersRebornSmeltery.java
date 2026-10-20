@@ -196,6 +196,9 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
             TinkersRebornTools.castGem,
             TinkersRebornGeneral.enderFluid,
             250);
+        
+        TinkersRebornRegistry.registerTableCasting(new ItemStack(TinkersRebornGeneral.strangeFood, 1, 1), null,
+                TinkersRebornGeneral.bloodFluid, 160);
 
         TinkersRebornRegistry.registerTableCasting(
             new CastingRecipe(

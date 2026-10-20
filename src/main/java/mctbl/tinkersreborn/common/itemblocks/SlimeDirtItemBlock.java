@@ -1,9 +1,9 @@
 package mctbl.tinkersreborn.common.itemblocks;
 
-import net.minecraft.block.Block;
-
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
+import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 
 public class SlimeDirtItemBlock extends TinkersRebornItemBlock {
 
@@ -13,4 +13,8 @@ public class SlimeDirtItemBlock extends TinkersRebornItemBlock {
         this.setHasSubtypes(true);
     }
 
+    @Override
+    public String getUnlocalizedName(ItemStack itemstack) {
+        return this.unlocalizedName;
+    }
 }

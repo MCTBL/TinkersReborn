@@ -19,4 +19,8 @@ public class SlimeTallGrassItem extends TinkersRebornItemBlock {
         return TinkersRebornConfig.slimeColors[stack.getItemDamage() & 3];
     }
 
+    @Override
+    public String getUnlocalizedName(ItemStack itemstack) {
+        return this.unlocalizedName;
+    }
 }
