@@ -8,6 +8,7 @@ import net.minecraft.world.IBlockAccess;
 
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import mctbl.tinkersreborn.util.ColorUtil;
 
 public class SlimeVineRender implements ISimpleBlockRenderingHandler {
 
@@ -23,7 +24,12 @@ public class SlimeVineRender implements ISimpleBlockRenderingHandler {
         RenderBlocks renderer) {
         int meta = world.getBlockMetadata(x, y, z);
         IIcon icon = block.getIcon(world, x, y, z, 0);
-        Tessellator.instance.setColorOpaque(255, 255, 255);
+        int colorMultiplier = block.colorMultiplier(world, x, y, z);
+
+        Tessellator.instance.setColorOpaque(
+            ColorUtil.red(colorMultiplier),
+            ColorUtil.green(colorMultiplier),
+            ColorUtil.blue(colorMultiplier));
         if ((meta & 4) != 0) {
             renderer.setRenderBounds(0, 0, 0, 1, 1, 0.0625);
             renderer.renderFaceZPos(block, x, y, z, icon);

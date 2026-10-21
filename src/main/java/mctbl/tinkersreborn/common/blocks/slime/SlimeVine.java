@@ -8,6 +8,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.model.SlimeVineRender;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -15,12 +16,15 @@ import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 public class SlimeVine extends BlockVine {
 
     private IIcon[] icons;
+    private String type;
+    private int color;
 
-    public SlimeVine() {
+    public SlimeVine(int type) {
         super();
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
         this.setStepSound(Block.soundTypeGrass);
-        this.icons = new IIcon[3];
+        this.type = TinkersRebornConfig.slimeTypes[type];
+        this.color = TinkersRebornConfig.slimeColors[type];
     }
 
     @Override
@@ -30,29 +34,40 @@ public class SlimeVine extends BlockVine {
 
     @Override
     public String getUnlocalizedName() {
-        return TinkersReborn.MODID + ".slime.vine";
+        return TinkersReborn.MODID + ".slime.vine." + this.type;
     }
 
     @Override
     public void registerBlockIcons(IIconRegister reg) {
+        this.icons = new IIcon[3];
         this.icons[0] = reg.registerIcon("tinkersreborn:slime/slimevine");
         this.icons[1] = reg.registerIcon("tinkersreborn:slime/slimevine_mid");
         this.icons[2] = reg.registerIcon("tinkersreborn:slime/slimevine_end");
     }
 
     @Override
+    public int getRenderColor(int meta) {
+        return this.color;
+    }
+
+    @Override
+    public int colorMultiplier(IBlockAccess worldIn, int x, int y, int z) {
+        return this.color;
+    }
+
+    @Override
     public IIcon getIcon(int side, int meta) {
-        return this.icons[0];
+        return icons[0];
     }
 
     @Override
     public IIcon getIcon(IBlockAccess worldIn, int x, int y, int z, int side) {
         if (worldIn.getBlock(x, y + 1, z) != this) {
-            return this.icons[0];
+            return icons[0];
         } else if (worldIn.getBlock(x, y - 1, z) != this) {
-            return this.icons[2];
+            return icons[2];
         } else {
-            return this.icons[1];
+            return icons[1];
         }
     }
 

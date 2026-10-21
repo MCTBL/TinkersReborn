@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.common.itemblocks;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 

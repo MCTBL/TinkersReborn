@@ -65,8 +65,11 @@ public class SlimeSapling extends BlockSapling {
         super.updateTick(world, x, y, z, random);
         int md = world.getBlockMetadata(x, y, z);
         if (random.nextInt(10) == 0 && world.getBlockLightValue(x, y + 1, z) >= 9) {
-            if ((md & 8) == 0) world.setBlockMetadataWithNotify(x, y, z, md | 8, 4);
-            else growTree(world, x, y, z, random);
+            if ((md & 8) == 0) {
+                world.setBlockMetadataWithNotify(x, y, z, md | 8, 4);
+            } else {
+                growTree(world, x, y, z, random);
+            }
         }
     }
 
@@ -96,10 +99,23 @@ public class SlimeSapling extends BlockSapling {
     public void growTree(World world, int x, int y, int z, Random random) {
         int md = world.getBlockMetadata(x, y, z) % 8;
         world.setBlock(x, y, z, Blocks.air);
+        int woodMeta = switch (md) {
+            case 0, 1 -> 1;
+            case 2 -> 1;
+            default -> md;
+        };
 
-        WorldGenerator obj = new SlimeTreeGen(true, 5, 4, md, md);
+        int leavesMeta = switch (md) {
+            case 0, 1 -> 2;
+            case 2 -> 1;
+            default -> md;
+        };
 
-        if (!(obj.generate(world, random, x, y, z))) world.setBlock(x, y, z, this, md + 8, 3);
+        WorldGenerator obj = new SlimeTreeGen(true, 5, 4, woodMeta, leavesMeta);
+
+        if (!(obj.generate(world, random, x, y, z))) {
+            world.setBlock(x, y, z, this, md + 8, 3);
+        }
     }
 
     @Override

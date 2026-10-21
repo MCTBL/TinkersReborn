@@ -1,9 +1,10 @@
 package mctbl.tinkersreborn.common.blocks.slime;
 
-import mctbl.tinkersreborn.library.TinkersRebornRegistry;
-import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+
+import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 
 public class SlimeDirt extends TinkersRebornBlock {
 
@@ -19,5 +20,5 @@ public class SlimeDirt extends TinkersRebornBlock {
         this.stepSound = Block.soundTypeGravel;
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
-    
+
 }

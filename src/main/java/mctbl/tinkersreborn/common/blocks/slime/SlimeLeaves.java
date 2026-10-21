@@ -38,15 +38,7 @@ public class SlimeLeaves extends BlockLeaves {
     @Override
     @SideOnly(Side.CLIENT)
     public int getRenderColor(int meta) {
-        switch (meta & 7) {
-            case 0, 1:
-                return TinkersRebornConfig.slimeColors[2];
-            case 2:
-                return TinkersRebornConfig.slimeColors[0];
-            case 3:
-            default:
-                return TinkersRebornConfig.slimeColors[3];
-        }
+        return TinkersRebornConfig.slimeColors[meta & 7];
     }
 
     @Override

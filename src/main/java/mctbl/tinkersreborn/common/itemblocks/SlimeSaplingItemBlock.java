@@ -22,7 +22,7 @@ public class SlimeSaplingItemBlock extends TinkersRebornItemBlock {
     public IIcon getIconFromDamage(int meta) {
         return b.getIcon(0, meta);
     }
-    
+
     @Override
     public String getUnlocalizedName(ItemStack itemstack) {
         return this.unlocalizedName;

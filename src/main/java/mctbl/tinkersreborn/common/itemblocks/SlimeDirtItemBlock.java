@@ -1,9 +1,10 @@
 package mctbl.tinkersreborn.common.itemblocks;
 
-import mctbl.tinkersreborn.TinkersRebornConfig;
-import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
+
+import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.library.itemblocks.TinkersRebornItemBlock;
 
 public class SlimeDirtItemBlock extends TinkersRebornItemBlock {
 

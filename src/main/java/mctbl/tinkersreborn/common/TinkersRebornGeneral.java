@@ -127,7 +127,10 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
     public static Block slimeTallGrass;
     public static SlimeLeaves slimeLeaves;
     public static SlimeSapling slimeSapling;
-    public static Block slimeVine;
+    public static Block slimeVineBlue;
+    public static Block slimeVineGreen;
+    public static Block slimeVinePurple;
+    public static Block slimeVineMagma;
 
     public static TinkersRebornFluid bloodFluid;
     public static TinkersRebornFluid enderFluid;
@@ -203,8 +206,14 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(slimeLeaves, SlimeLeavesItemBlock.class, slimeLeaves.getUnlocalizedName());
         slimeSapling = new SlimeSapling();
         GameRegistry.registerBlock(slimeSapling, SlimeSaplingItemBlock.class, slimeSapling.getUnlocalizedName());
-        slimeVine = new SlimeVine();
-        GameRegistry.registerBlock(slimeVine, slimeVine.getUnlocalizedName());
+        slimeVineBlue = new SlimeVine(0);
+        GameRegistry.registerBlock(slimeVineBlue, slimeVineBlue.getUnlocalizedName());
+        slimeVineGreen = new SlimeVine(1);
+        GameRegistry.registerBlock(slimeVineGreen, slimeVineGreen.getUnlocalizedName());
+        slimeVinePurple = new SlimeVine(2);
+        GameRegistry.registerBlock(slimeVinePurple, slimeVinePurple.getUnlocalizedName());
+        slimeVineMagma = new SlimeVine(3);
+        GameRegistry.registerBlock(slimeVineMagma, slimeVineMagma.getUnlocalizedName());
 
         oreSlag = new MetalOre();
         GameRegistry.registerBlock(oreSlag, MetalOreItemBlock.class, oreSlag.getUnlocalizedName());
@@ -274,6 +283,11 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
     private void oreRegistry() {
         ItemStack craftingTable = new ItemStack(Blocks.crafting_table, 1);
+
+        OreDictionary.registerOre("slimeVine", new ItemStack(slimeVineBlue));
+        OreDictionary.registerOre("slimeVine", new ItemStack(slimeVineGreen));
+        OreDictionary.registerOre("slimeVine", new ItemStack(slimeVinePurple));
+        OreDictionary.registerOre("slimeVine", new ItemStack(slimeVineMagma));
 
         OreDictionary.registerOre("oreCobalt", new ItemStack(oreSlag, 1, 0));
         OreDictionary.registerOre("oreArdite", new ItemStack(oreSlag, 1, 1));

@@ -34,7 +34,9 @@ public class SlimeTreeGen extends WorldGenerator {
         int height = random.nextInt(this.treeHeightRange) + this.minTreeHeight;
         if (seekHeight) {
             yPos = findGround(world, xPos, yPos, zPos);
-            if (yPos == -1) return false;
+            if (yPos == -1) {
+                return false;
+            }
         }
 
         if (yPos >= 1 && yPos + height + 1 <= 256) {
@@ -57,14 +59,19 @@ public class SlimeTreeGen extends WorldGenerator {
         for (int yPos = 0; yPos < treeHeight + 1; yPos++) {
             int range = 1;
 
-            if (yPos == 0) range = 0;
-            else if (yPos >= treeHeight - 1) range = 2;
+            if (yPos == 0) {
+                range = 0;
+            } else if (yPos >= treeHeight - 1) {
+                range = 2;
+            }
 
             for (int xPos = range; xPos <= range; xPos++) {
                 for (int zPos = range; zPos <= range; zPos++) {
                     Block blockID = world.getBlock(x + xPos, y + yPos, z + zPos);
                     if (blockID != null && blockID != TinkersRebornGeneral.slimeSapling
-                        && !blockID.isLeaves(world, x + xPos, y + yPos, z + zPos)) return false;
+                        && !blockID.isLeaves(world, x + xPos, y + yPos, z + zPos)) {
+                        return false;
+                    }
                 }
             }
         }
@@ -254,7 +261,9 @@ public class SlimeTreeGen extends WorldGenerator {
         for (int y = bottom; y <= top; y++) {
             for (int x = xPos - 4; x <= xPos + 4; x++) {
                 for (int z = zPos - 4; z <= zPos + 4; z++) {
-                    if (world.getBlock(x, y, z) != TinkersRebornGeneral.slimeLeaves || random.nextInt(4) != 0) continue;
+                    if (world.getBlock(x, y, z) != TinkersRebornGeneral.slimeLeaves || random.nextInt(4) != 0) {
+                        continue;
+                    }
                     switch (random.nextInt(4)) {
                         case 0:
                             placeVine(world, random, x + 1, y, z, 2);
@@ -275,11 +284,17 @@ public class SlimeTreeGen extends WorldGenerator {
     }
 
     void placeVine(World world, Random random, int x, int y, int z, int metadata) {
+        Block vine = TinkersRebornGeneral.slimeVineGreen;
+        if (metaLeaves == 2) {
+            vine = TinkersRebornGeneral.slimeVinePurple;
+        } else if (metaLeaves == 3) {
+            vine = TinkersRebornGeneral.slimeVineMagma;
+        }
         // 5 vine at most, 100% => 50% => 33.33% => 25% => 20%
         for (int i = 0; i < 5; i++) {
             if (world.isAirBlock(x, y - i, z)) {
-                if (random.nextInt(i + 1) == 0) {
-                    world.setBlock(x, y - i, z, TinkersRebornGeneral.slimeVine, metadata, 2);
+                if (random.nextInt(i + 1) == 0 && vine.canPlaceBlockAt(world, x, y - i, z)) {
+                    world.setBlock(x, y - i, z, vine, metadata, 2);
                 } else {
                     break;
                 }
