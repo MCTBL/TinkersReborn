@@ -72,6 +72,7 @@ import mctbl.tinkersreborn.common.itemblocks.SlimeLeavesItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeSandItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeSaplingItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.SlimeTallGrassItem;
+import mctbl.tinkersreborn.common.itemblocks.SlimeVineItemBlock;
 import mctbl.tinkersreborn.common.itemblocks.TinkersRebornMetalItemBlock;
 import mctbl.tinkersreborn.common.items.GoldenHead;
 import mctbl.tinkersreborn.common.items.HeartCanister;
@@ -207,13 +208,13 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         slimeSapling = new SlimeSapling();
         GameRegistry.registerBlock(slimeSapling, SlimeSaplingItemBlock.class, slimeSapling.getUnlocalizedName());
         slimeVineBlue = new SlimeVine(0);
-        GameRegistry.registerBlock(slimeVineBlue, slimeVineBlue.getUnlocalizedName());
+        GameRegistry.registerBlock(slimeVineBlue, SlimeVineItemBlock.class, slimeVineBlue.getUnlocalizedName(), 0);
         slimeVineGreen = new SlimeVine(1);
-        GameRegistry.registerBlock(slimeVineGreen, slimeVineGreen.getUnlocalizedName());
+        GameRegistry.registerBlock(slimeVineGreen, SlimeVineItemBlock.class, slimeVineGreen.getUnlocalizedName(), 1);
         slimeVinePurple = new SlimeVine(2);
-        GameRegistry.registerBlock(slimeVinePurple, slimeVinePurple.getUnlocalizedName());
+        GameRegistry.registerBlock(slimeVinePurple, SlimeVineItemBlock.class, slimeVinePurple.getUnlocalizedName(), 2);
         slimeVineMagma = new SlimeVine(3);
-        GameRegistry.registerBlock(slimeVineMagma, slimeVineMagma.getUnlocalizedName());
+        GameRegistry.registerBlock(slimeVineMagma, SlimeVineItemBlock.class, slimeVineMagma.getUnlocalizedName(), 3);
 
         oreSlag = new MetalOre();
         GameRegistry.registerBlock(oreSlag, MetalOreItemBlock.class, oreSlag.getUnlocalizedName());
