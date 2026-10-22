@@ -105,13 +105,7 @@ public class SlimeSapling extends BlockSapling {
             default -> md;
         };
 
-        int leavesMeta = switch (md) {
-            case 0, 1 -> 2;
-            case 2 -> 1;
-            default -> md;
-        };
-
-        WorldGenerator obj = new SlimeTreeGen(true, 5, 4, woodMeta, leavesMeta);
+        WorldGenerator obj = new SlimeTreeGen(true, 5, 4, woodMeta, md);
 
         if (!(obj.generate(world, random, x, y, z))) {
             world.setBlock(x, y, z, this, md + 8, 3);

@@ -19,17 +19,15 @@ import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 
 public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
 
-    private final Block liquidBlock;
-    private final int gelMeta;
-    int randomness = 2;
-    Random random = new Random();
-    Block base = TinkersRebornGeneral.slimeDirt;
-    Block top = TinkersRebornGeneral.slimeGrass;
-    SlimeTreeGen trees = new SlimeTreeGen(false, 5, 4, 1, 0);
+    private static final int randomness = 1;
+    private final Block slimeDirt = TinkersRebornGeneral.slimeDirt;
+    private final Block slimeGrass = TinkersRebornGeneral.slimeGrass;
+    private final Block[] slimeFluids = new Block[] { TinkersRebornGeneral.blueSlimeFluidBlock,
+        TinkersRebornGeneral.purpleSlimeFluidBlock };
+    private final int[][] slimeGelMetaList = new int[][] { { 0, 1 }, { 2 } };
 
-    public SlimeIslandGen(Block slimePool, int meta) {
-        this.liquidBlock = slimePool;
-        this.gelMeta = meta;
+    public SlimeIslandGen() {
+        // do nothinig
     }
 
     @Override
@@ -41,12 +39,24 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
         }
 
         if (world.provider.dimensionId == 0 && random.nextInt(TinkersRebornConfig.islandRarity) == 0) {
-            generateIsland(world, random, chunkX * 16, chunkZ * 16);
+            int value = random.nextInt(10);
+            int meta = 0;
+            if (value <= 1) {
+                // purple
+                meta = 2;
+            } else if (value <= 6) {
+                // blue
+                meta = 1;
+            } else {
+                // grenn
+                meta = 0;
+            }
+            generateIsland(world, random, chunkX * 16, chunkZ * 16, meta);
         }
     }
 
     // Island is biased towards one direction. Quadrants would be more useful
-    public void generateIsland(World world, Random rand, int xChunk, int zChunk) {
+    public void generateIsland(World world, Random random, int xChunk, int zChunk, int islandType) {
         int xRange = random.nextInt(13) + 20;
         int yCenter = 50 + world.getHeightValue(xChunk, zChunk) + random.nextInt(50);
         int zRange = random.nextInt(13) + 20;
@@ -54,12 +64,17 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
         int initialHeight = height;
         Ellipse2D.Double ellipse = new Ellipse2D.Double(0, 0, xRange, zRange);
 
+        int grassMeta = switch (islandType) {
+            case 0, 1 -> 2;
+            default -> 1;
+        };
+
         // Basic shape
         for (int x = 0; x <= xRange; x++) {
             for (int z = 0; z <= zRange; z++) {
                 for (int y = 0; y <= height; y++) {
                     if (ellipse.contains(x, z)) {
-                        world.setBlock(x + xChunk, y + yCenter, z + zChunk, base, 5, 2);
+                        world.setBlock(x + xChunk, y + yCenter, z + zChunk, slimeDirt, islandType, 2);
                     }
                 }
             }
@@ -73,10 +88,10 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
                     int xPos = x + xChunk;
                     int yPos = y + yCenter + height;
                     int zPos = z + zChunk;
-                    if (world.getBlock(xPos - 1, yPos + 1, zPos) == base
-                        && world.getBlock(xPos + 1, yPos + 1, zPos) == base
-                        && world.getBlock(xPos, yPos + 1, zPos - 1) == base
-                        && world.getBlock(xPos - 1, yPos + 1, zPos + 1) == base
+                    if (world.getBlock(xPos - 1, yPos + 1, zPos) == slimeDirt
+                        && world.getBlock(xPos + 1, yPos + 1, zPos) == slimeDirt
+                        && world.getBlock(xPos, yPos + 1, zPos - 1) == slimeDirt
+                        && world.getBlock(xPos - 1, yPos + 1, zPos + 1) == slimeDirt
                         && random.nextInt(100) > randomness) {} else {
                         world.setBlock(xPos, yPos, zPos, Blocks.air, 0, 2);
                     }
@@ -92,10 +107,10 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
                     int xPos = x + xChunk;
                     int yPos = y + yCenter + initialHeight - height + 1;
                     int zPos = z + zChunk;
-                    if (world.getBlock(xPos - 1, yPos - 1, zPos) == base
-                        && world.getBlock(xPos + 1, yPos - 1, zPos) == base
-                        && world.getBlock(xPos, yPos - 1, zPos - 1) == base
-                        && world.getBlock(xPos - 1, yPos - 1, zPos + 1) == base) {} else {
+                    if (world.getBlock(xPos - 1, yPos - 1, zPos) == slimeDirt
+                        && world.getBlock(xPos + 1, yPos - 1, zPos) == slimeDirt
+                        && world.getBlock(xPos, yPos - 1, zPos - 1) == slimeDirt
+                        && world.getBlock(xPos - 1, yPos - 1, zPos + 1) == slimeDirt) {} else {
                         world.setBlock(xPos, yPos, zPos, Blocks.air, 0, 2);
                     }
                 }
@@ -109,9 +124,10 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
                     int xPos = x + xChunk;
                     int yPos = y + yCenter + initialHeight - height;
                     int zPos = z + zChunk;
-                    if (world.getBlock(xPos, yPos, zPos) == base) {
+                    if (world.getBlock(xPos, yPos, zPos) == slimeDirt) {
                         Block block = world.getBlock(xPos, yPos + 1, zPos);
-                        if (block == null || block == Blocks.air) world.setBlock(xPos, yPos, zPos, top, 0, 2);
+                        if (block == null || block == Blocks.air)
+                            world.setBlock(xPos, yPos, zPos, slimeGrass, islandType, 2);
                     }
                 }
             }
@@ -119,10 +135,25 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
 
         // Decorate
         if (world.provider.dimensionId == 0) {
-            generateSlimePool(world, rand, xChunk + xRange / 2, yCenter + initialHeight, zChunk + zRange / 2);
+            generateSlimePool(
+                world,
+                random,
+                xChunk + xRange / 2,
+                yCenter + initialHeight,
+                zChunk + zRange / 2,
+                islandType);
         }
-        PlantGen tallGrass = new PlantGen(TinkersRebornGeneral.slimeTallGrass, 0, 128, xRange, 1, zRange, false);
-        tallGrass.generate(world, rand, xChunk, yCenter + initialHeight + 1, zChunk);
+
+        PlantGen tallGrass = new PlantGen(
+            TinkersRebornGeneral.slimeTallGrass,
+            grassMeta,
+            128,
+            xRange,
+            1,
+            zRange,
+            false);
+        tallGrass.generate(world, random, xChunk, yCenter + initialHeight + 1, zChunk);
+        SlimeTreeGen trees = new SlimeTreeGen(false, 5, 4, islandType);
         for (int i = 0; i < 3; i++) {
             trees.generate(
                 world,
@@ -133,19 +164,12 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
         }
     }
 
-    public void generateSlimePool(World world, Random rand, int x, int y, int z) {
-        this.generate(world, rand, x, y, z);
-    }
+    public void generateSlimePool(World world, Random rand, int x, int y, int z, int islandType) {
+        Block liquidBlock = slimeFluids[islandType == 2 ? 1 : 0];
+        int[] slimeGelMeta = slimeGelMetaList[islandType == 2 ? 1 : 0];
 
-    @Override
-    public boolean generate(World world, Random rand, int x, int y, int z) // WorldGenerator
-    // version
-    {
         x -= 8;
         z -= 8;
-        /*
-         * for (z -= 8; y > 5 && world.isAirBlock(x, y, z); --y) { ; } if (y <= 4) { return false; } else {
-         */
         y -= 4;
         boolean[] validLocations = new boolean[2048];
         int var7 = rand.nextInt(4) + 4;
@@ -195,12 +219,12 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
                             .getMaterial();
 
                         if (yPos >= 4 && var12.isLiquid()) {
-                            return false;
+                            return;
                         }
 
                         if (yPos < 4 && !var12.isSolid()
-                            && world.getBlock(x + xPos, y + yPos, z + zPos) != this.liquidBlock) {
-                            return false;
+                            && world.getBlock(x + xPos, y + yPos, z + zPos) != liquidBlock) {
+                            return;
                         }
                     }
                 }
@@ -211,7 +235,7 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
             for (zPos = 0; zPos < 16; ++zPos) {
                 for (yPos = 0; yPos < 8; ++yPos) {
                     if (validLocations[(xPos * 16 + zPos) * 8 + yPos]) {
-                        world.setBlock(x + xPos, y + yPos, z + zPos, yPos >= 4 ? Blocks.air : this.liquidBlock);
+                        world.setBlock(x + xPos, y + yPos, z + zPos, yPos >= 4 ? Blocks.air : liquidBlock);
                     }
                 }
             }
@@ -221,16 +245,16 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
             for (zPos = 0; zPos < 16; ++zPos) {
                 for (yPos = 4; yPos < 8; ++yPos) {
                     if (validLocations[(xPos * 16 + zPos) * 8 + yPos]
-                        && world.getBlock(x + xPos, y + yPos - 1, z + zPos) == base
+                        && world.getBlock(x + xPos, y + yPos - 1, z + zPos) == slimeDirt
                         && world.getSavedLightValue(EnumSkyBlock.Sky, x + xPos, y + yPos, z + zPos) > 0) {
-                        world.setBlock(x + xPos, y + yPos - 1, z + zPos, top, 0, 2);
+                        world.setBlock(x + xPos, y + yPos - 1, z + zPos, slimeGrass, 0, 2);
                     }
                 }
             }
         }
 
         // Generate blocks around
-        if (this.liquidBlock.getMaterial() == Material.water) {
+        if (liquidBlock.getMaterial() == Material.water) {
             for (xPos = 0; xPos < 16; ++xPos) {
                 for (zPos = 0; zPos < 16; ++zPos) {
                     for (yPos = 0; yPos < 8; ++yPos) {
@@ -248,14 +272,23 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
                                 .isSolid()
                             && world.getBlock(x + xPos, y + yPos + 1, z + zPos)
                                 .getMaterial() != Material.water) {
-                            world.setBlock(x + xPos, y + yPos, z + zPos, TinkersRebornGeneral.slimeGel, gelMeta, 2);
+                            world.setBlock(
+                                x + xPos,
+                                y + yPos,
+                                z + zPos,
+                                TinkersRebornGeneral.slimeGel,
+                                slimeGelMeta[rand.nextInt(slimeGelMeta.length)],
+                                2);
                         }
                     }
                 }
             }
         }
+    }
 
+    @Override
+    public boolean generate(World world, Random rand, int x, int y, int z) {
+        // do nothing
         return true;
-        // }
     }
 }

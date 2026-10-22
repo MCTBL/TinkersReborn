@@ -29,6 +29,20 @@ public class SlimeTreeGen extends WorldGenerator {
         this.seekHeight = !notify;
     }
 
+    public SlimeTreeGen(boolean notify, int treeHeight, int treeRange, int slimeIslandType) {
+        super(notify);
+        this.notify = notify;
+        this.minTreeHeight = treeHeight;
+        this.treeHeightRange = treeRange;
+        this.seekHeight = !notify;
+        this.metaWood = switch (slimeIslandType) {
+            case 0, 1, 2 -> 1;
+            default -> slimeIslandType;
+        };
+
+        this.metaLeaves = slimeIslandType;
+    }
+
     @Override
     public boolean generate(World world, Random random, int xPos, int yPos, int zPos) {
         int height = random.nextInt(this.treeHeightRange) + this.minTreeHeight;
@@ -284,9 +298,9 @@ public class SlimeTreeGen extends WorldGenerator {
     }
 
     void placeVine(World world, Random random, int x, int y, int z, int metadata) {
-        Block vine = TinkersRebornGeneral.slimeVineGreen;
+        Block vine = TinkersRebornGeneral.slimeVinePurple;
         if (metaLeaves == 2) {
-            vine = TinkersRebornGeneral.slimeVinePurple;
+            vine = TinkersRebornGeneral.slimeVineGreen;
         } else if (metaLeaves == 3) {
             vine = TinkersRebornGeneral.slimeVineMagma;
         }

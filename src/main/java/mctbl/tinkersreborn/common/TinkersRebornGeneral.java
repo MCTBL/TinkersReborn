@@ -272,7 +272,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         GameRegistry.registerWorldGenerator(new TinkersRebornWorldGenerator(), 0);
         MinecraftForge.TERRAIN_GEN_BUS.register(new TinkersRebornSurfaceOreGen());
-        GameRegistry.registerWorldGenerator(new SlimeIslandGen(blueSlimeFluidBlock, 2), 2);
+        GameRegistry.registerWorldGenerator(new SlimeIslandGen(), 2);
 
     }
 

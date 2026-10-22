@@ -33,20 +33,24 @@ public class SlimeVineRender implements ISimpleBlockRenderingHandler {
         if ((meta & 4) != 0) {
             renderer.setRenderBounds(0, 0, 0, 1, 1, 0.0625);
             renderer.renderFaceZPos(block, x, y, z, icon);
+            renderer.renderFaceZNeg(block, x, y, z, icon);
         }
 
         if ((meta & 1) != 0) {
             renderer.setRenderBounds(0, 0, 0.9375, 1, 1, 1);
+            renderer.renderFaceZPos(block, x, y, z, icon);
             renderer.renderFaceZNeg(block, x, y, z, icon);
         }
 
         if ((meta & 2) != 0) {
             renderer.setRenderBounds(0, 0, 0, 0.0625, 1, 1);
             renderer.renderFaceXPos(block, x, y, z, icon);
+            renderer.renderFaceXNeg(block, x, y, z, icon);
         }
 
         if ((meta & 8) != 0) {
             renderer.setRenderBounds(0.9375, 0, 0, 1, 1, 1);
+            renderer.renderFaceXPos(block, x, y, z, icon);
             renderer.renderFaceXNeg(block, x, y, z, icon);
         }
 
