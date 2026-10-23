@@ -2,6 +2,8 @@ package mctbl.tinkersreborn.common.blocks.slime;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
@@ -21,4 +23,8 @@ public class SlimeDirt extends TinkersRebornBlock {
         this.setCreativeTab(TinkersRebornRegistry.blockTab);
     }
 
+    @Override
+    public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+        return world.getBlockMetadata(x, y, z) == 3 ? 0 : super.getFlammability(world, x, y, z, face);
+    }
 }

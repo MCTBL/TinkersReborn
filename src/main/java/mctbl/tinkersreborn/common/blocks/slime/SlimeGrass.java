@@ -112,4 +112,9 @@ public class SlimeGrass extends TinkersRebornBlock {
     public Item getItemDropped(int metadata, Random random, int fortune) {
         return TinkersRebornGeneral.slimeDirt.getItemDropped(metadata, random, fortune);
     }
+
+    @Override
+    public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+        return world.getBlockMetadata(x, y, z) == 3 ? 0 : super.getFlammability(world, x, y, z, face);
+    }
 }

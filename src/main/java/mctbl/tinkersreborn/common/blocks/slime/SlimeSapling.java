@@ -11,8 +11,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -123,5 +125,10 @@ public class SlimeSapling extends BlockSapling {
         for (int i = 0; i < this.icons.length; i++) {
             list.add(new ItemStack(item, 1, i));
         }
+    }
+
+    @Override
+    public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+        return world.getBlockMetadata(x, y, z) == 3 ? 0 : super.getFlammability(world, x, y, z, face);
     }
 }

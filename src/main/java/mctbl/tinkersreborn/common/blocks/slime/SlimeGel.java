@@ -9,6 +9,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -73,5 +74,10 @@ public class SlimeGel extends TinkersRebornBlock {
     @Override
     public boolean isWood(IBlockAccess world, int x, int y, int z) {
         return true;
+    }
+
+    @Override
+    public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+        return world.getBlockMetadata(x, y, z) == 3 ? 0 : super.getFlammability(world, x, y, z, face);
     }
 }

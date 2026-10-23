@@ -16,6 +16,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IShearable;
+import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -116,5 +117,10 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
         ArrayList<ItemStack> ret = new ArrayList<>();
         ret.add(new ItemStack(this, 1, world.getBlockMetadata(x, y, z)));
         return ret;
+    }
+
+    @Override
+    public int getFlammability(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
+        return world.getBlockMetadata(x, y, z) == 3 ? 0 : super.getFlammability(world, x, y, z, face);
     }
 }
