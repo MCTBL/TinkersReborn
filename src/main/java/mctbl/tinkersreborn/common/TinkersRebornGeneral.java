@@ -91,6 +91,7 @@ import mctbl.tinkersreborn.tools.items.Pattern;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import mctbl.tinkersreborn.util.RecipeRemover;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.world.gen.MagmaSlimeIslandGen;
 import mctbl.tinkersreborn.world.gen.SlimeIslandGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornSurfaceOreGen;
 import mctbl.tinkersreborn.world.gen.TinkersRebornWorldGenerator;
@@ -272,7 +273,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
         GameRegistry.registerWorldGenerator(new TinkersRebornWorldGenerator(), 0);
         MinecraftForge.TERRAIN_GEN_BUS.register(new TinkersRebornSurfaceOreGen());
-        GameRegistry.registerWorldGenerator(new SlimeIslandGen(), 2);
+        GameRegistry.registerWorldGenerator(new SlimeIslandGen(), 25);
+        GameRegistry.registerWorldGenerator(new MagmaSlimeIslandGen(), 25);
 
     }
 

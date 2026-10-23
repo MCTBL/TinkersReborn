@@ -93,6 +93,7 @@ public class TinkersRebornConfig {
     public static int essenceBushDensity;
 
     public static int islandRarity;
+    public static int magmaIslandRarity;
 
     public static boolean addToVillages;
     public static int[] generatePatternNumber;
@@ -279,6 +280,8 @@ public class TinkersRebornConfig {
 
         // Slime pools
         islandRarity = config.get(WORLD_GEN, "Slime Island Rarity", 1450)
+            .getInt();
+        magmaIslandRarity = config.get(WORLD_GEN, "Magma Slime Island Rarity", 100)
             .getInt();
 
         addToVillages = config.get(WORLD_GEN, "Add Tinkers Reborn buildings to villages", true)
