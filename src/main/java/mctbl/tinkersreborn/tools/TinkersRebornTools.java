@@ -18,6 +18,7 @@ import static mctbl.tinkersreborn.tools.TinkersRebornTraits.duritos;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.ecological;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.enderference;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.established;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.flammable;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.fractured;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.freezing;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.heavy;
@@ -43,6 +44,7 @@ import static mctbl.tinkersreborn.tools.TinkersRebornTraits.splitting;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.squeaky;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.stiff;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.stonebound;
+import static mctbl.tinkersreborn.tools.TinkersRebornTraits.superheat;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.tasty;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.writable;
 import static mctbl.tinkersreborn.tools.TinkersRebornTraits.writable2;
@@ -318,6 +320,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornMaterial alumiteMaterial;
     public static TinkersRebornMaterial steelMaterial;
     public static TinkersRebornMaterial blueSlimeMaterial;
+    public static TinkersRebornMaterial magmaSlimeMaterial;
     public static TinkersRebornMaterial pigIronMaterial;
     public static TinkersRebornMaterial endStoneMaterial;
     public static TinkersRebornMaterial spongeMaterial;
@@ -880,6 +883,12 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         blueSlimeMaterial.setRepresentativeItem(blueSlimeCrystal);
         blueSlimeMaterial.addTrait(slimeyBlue);
 
+        magmaSlimeMaterial = new TinkersRebornMaterial("Magmaslime", 0xFF960D).setCraftable(true);
+        magmaSlimeMaterial.addItem("slimeCrystalMagma", 1, VALUE_Ingot);
+        magmaSlimeMaterial.setRepresentativeItem(magmaSlimeCrystal);
+        magmaSlimeMaterial.addTrait(superheat, MaterialStatusType.HEAD);
+        magmaSlimeMaterial.addTrait(flammable);
+
         ironMaterial = new TinkersRebornMaterial("Iron", 0xDADADA);
         ironFluid = TinkersRebornFluid
             .createMolten(ironMaterial.identifier, ironMaterial.materialTextColor, ironMaterial.identifier, 769);
@@ -1060,9 +1069,9 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             new HandleMaterialStats(1.2F, 0),
             new ExtraMaterialStats(0));
         slimeMaterial.addStats(
-            new HeadMaterialStats(500, 0, 0, 1.5F),
-            new HandleMaterialStats(1.5F, 0),
-            new ExtraMaterialStats(0));
+            new HeadMaterialStats(1000, 0, 1.8F, 4.24F),
+            new HandleMaterialStats(0.7F, 0),
+            new ExtraMaterialStats(350));
         paperMaterial.addStats(
             new HeadMaterialStats(30, 0, 0, 2.0F),
             new HandleMaterialStats(0.3F, 0),
@@ -1096,9 +1105,13 @@ public class TinkersRebornTools implements ITinkersRebornModule {
             new HandleMaterialStats(1.3F, 0),
             new ExtraMaterialStats(0));
         blueSlimeMaterial.addStats(
-            new HeadMaterialStats(1200, 0, 0, 1.5F),
-            new HandleMaterialStats(2.0F, 0),
-            new ExtraMaterialStats(0));
+            new HeadMaterialStats(780, 0, 1.80F, 4.03F),
+            new HandleMaterialStats(1.30F, -50),
+            new ExtraMaterialStats(200));
+        magmaSlimeMaterial.addStats(
+            new HeadMaterialStats(600, 0, 7.00f, 2.1F),
+            new HandleMaterialStats(0.85F, -200),
+            new ExtraMaterialStats(150));
         pigIronMaterial.addStats(
             new HeadMaterialStats(250, 3, 2, 6.0F),
             new HandleMaterialStats(1.3F, 0),
@@ -1147,6 +1160,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
         slimeMaterial.addStats(new BowMaterialStats(0.85f, 1.3f, 0));
         blueSlimeMaterial.addStats(new BowMaterialStats(1.05f, 1f, 0));
+        magmaSlimeMaterial.addStats(new BowMaterialStats(1.1f, 1.05f, 1f));
 
         cobaltMaterial.addStats(new BowMaterialStats(0.75f, 1.3f, 3f));
         arditeMaterial.addStats(new BowMaterialStats(0.45f, 0.8f, 1f));
@@ -1200,6 +1214,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         integrate(new MaterialIntegration(paperMaterial));
         integrate(new MaterialIntegration(slimeMaterial));
         integrate(new MaterialIntegration(blueSlimeMaterial));
+        integrate(new MaterialIntegration(magmaSlimeMaterial));
 
         integrate(new MaterialIntegration(stringMaterial));
         integrate(new MaterialIntegration(vineMaterial));

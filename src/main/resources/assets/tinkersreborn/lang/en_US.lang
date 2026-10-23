@@ -251,7 +251,8 @@ material.steel.name=Steel
 material.steel.flavour=The fabled metal of the Tinkers' Society.
 material.blueslime.name=Blue Slime
 material.blueslime.flavour=Waterproof and springy!
-material.blueslime.prefix=Blue Slime
+material.magmaslime.name=Magma Slime
+material.magmaslime.flavour=Flows through the veins of the Nether.
 material.pigiron.name=Pig Iron
 material.pigiron.flavour=First you jiggle your tail, then you wriggle your snout. Oink oink oink!
 material.endstone.name=End
@@ -497,6 +498,12 @@ modifier.hovering.name=Hovering
 modifier.hovering.desc=§oFree like the wind§r\nProjectiles move slower but don't mind gravity as much.
 modifier.breakable.name=Breakable
 modifier.breakable.desc=§oThis side up!§r\nProjectiles have a 50% chance to break on impact.
+modifier.superheat.name=Superheat
+modifier.superheat.desc=§oTurn up the heat!§r\nDeal bonus damage to enemies on fire.
+modifier.superheat.extra=Vs Burning: +%s
+modifier.flammable.name=Flammable
+modifier.flammable.desc=§oCan't have enough fire!§r\nBlocking blocks fire damage and getting hit sets the attacker on fire.
+
 
 // modifiers
 modifier.bane_of_arthopods.name=Bane of Arthropods

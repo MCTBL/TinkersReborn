@@ -18,6 +18,7 @@ import mctbl.tinkersreborn.tools.traits.TraitDuritos;
 import mctbl.tinkersreborn.tools.traits.TraitEcological;
 import mctbl.tinkersreborn.tools.traits.TraitEnderference;
 import mctbl.tinkersreborn.tools.traits.TraitEstablished;
+import mctbl.tinkersreborn.tools.traits.TraitFlammable;
 import mctbl.tinkersreborn.tools.traits.TraitFreezing;
 import mctbl.tinkersreborn.tools.traits.TraitHeavy;
 import mctbl.tinkersreborn.tools.traits.TraitHellish;
@@ -39,6 +40,7 @@ import mctbl.tinkersreborn.tools.traits.TraitSplitting;
 import mctbl.tinkersreborn.tools.traits.TraitSqueaky;
 import mctbl.tinkersreborn.tools.traits.TraitStiff;
 import mctbl.tinkersreborn.tools.traits.TraitStonebound;
+import mctbl.tinkersreborn.tools.traits.TraitSuperheat;
 import mctbl.tinkersreborn.tools.traits.TraitTasty;
 import mctbl.tinkersreborn.tools.traits.TraitWritable;
 
@@ -62,7 +64,7 @@ public class TinkersRebornTraits {
     public static final AbstractTrait ecological = new TraitEcological();
     public static final AbstractTrait enderference = new TraitEnderference();
     public static final AbstractTrait established = new TraitEstablished();
-    // public static final AbstractTrait flammable = new TraitFlammable();
+    public static final AbstractTrait flammable = new TraitFlammable();
     public static final AbstractTrait fractured = new TraitBonusDamage("fractured", 1.5f);
     public static final AbstractTrait heavy = new TraitHeavy();
     public static final AbstractTrait hellish = new TraitHellish();
@@ -86,7 +88,7 @@ public class TinkersRebornTraits {
     public static final AbstractTrait splintering = new TraitSplintering();
     // public static final AbstractTrait splinters = new TraitSplinters();
     public static final AbstractTrait squeaky = new TraitSqueaky();
-    // public static final AbstractTrait superheat = new TraitSuperheat();
+    public static final AbstractTrait superheat = new TraitSuperheat();
     public static final AbstractTrait stiff = new TraitStiff();
     public static final AbstractTrait stonebound = new TraitStonebound();
     public static final AbstractTrait tasty = new TraitTasty();

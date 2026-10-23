@@ -13,7 +13,7 @@ import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class TraitHellish extends AbstractTrait {
 
-    private static final float bonusDamage = 4f;
+    protected float bonusDamage = 4f;
 
     public TraitHellish() {
         super("hellish", 0xff0000);
