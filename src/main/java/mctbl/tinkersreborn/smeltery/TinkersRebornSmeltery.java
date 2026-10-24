@@ -212,6 +212,12 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
                 true,
                 false));
 
+        TinkersRebornRegistry.registerBasinCasting(
+            new ItemStack(TinkersRebornGeneral.bloodBlock),
+            null,
+            TinkersRebornGeneral.bloodFluid,
+            640);
+
         TinkersRebornRegistry
             .registerBasinCasting(new ItemStack(smelteryBlock, 1, 2), null, TinkersRebornTools.stoneFluid, 144);
         TinkersRebornRegistry.registerBasinCasting(
@@ -352,6 +358,11 @@ public class TinkersRebornSmeltery implements ITinkersRebornModule {
         // bloooooood
         TinkersRebornRegistry.registerMelting(Items.rotten_flesh, TinkersRebornGeneral.bloodFluid, 40);
         TinkersRebornRegistry.registerMelting(Items.ender_pearl, TinkersRebornGeneral.enderFluid, 250);
+        TinkersRebornRegistry.registerMelting(TinkersRebornGeneral.bloodBlock, TinkersRebornGeneral.bloodFluid, 640);
+        TinkersRebornRegistry.registerMelting(
+            new ItemStack(TinkersRebornGeneral.strangeFood, 1, 1),
+            TinkersRebornGeneral.bloodFluid,
+            160);
 
         // obsidian
         TinkersRebornRegistry.registerMelting(

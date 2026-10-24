@@ -55,7 +55,7 @@ public class SlimeGel extends TinkersRebornBlock {
             }
             entity.motionY *= -1.2F;
             if (entity instanceof EntityLivingBase entityLiving) {
-                entityLiving.addPotionEffect(new PotionEffect(Potion.jump.id, 1, 2));
+                entityLiving.addPotionEffect(new PotionEffect(Potion.jump.id, 2, 2));
             }
         }
         entity.fallDistance = 0;
@@ -63,7 +63,7 @@ public class SlimeGel extends TinkersRebornBlock {
 
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
-        return AxisAlignedBB.getBoundingBox(x, y, z, (double) x + 1.0D, (double) y + 0.625D, (double) z + 1.0D);
+        return AxisAlignedBB.getBoundingBox(x, y, z, x + 1.0D, y + 0.9D, z + 1.0D);
     }
 
     @Override

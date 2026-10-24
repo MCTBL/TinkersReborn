@@ -63,16 +63,16 @@ public class SlimeTallGrass extends BlockBush implements IShearable {
      * (inclusive).
      */
     @Override
-    public int quantityDroppedWithBonus(int par1, Random par2Random) {
-        return 1 + par2Random.nextInt(par1 * 2 + 1);
+    public int quantityDroppedWithBonus(int par1, Random random) {
+        return 1 + random.nextInt(par1 * 2 + 1);
     }
 
     /**
      * Get the block's damage value (for use with pick block).
      */
     @Override
-    public int getDamageValue(World par1World, int par2, int par3, int par4) {
-        return par1World.getBlockMetadata(par2, par3, par4);
+    public int getDamageValue(World world, int x, int y, int z) {
+        return world.getBlockMetadata(x, y, z);
     }
 
     @Override

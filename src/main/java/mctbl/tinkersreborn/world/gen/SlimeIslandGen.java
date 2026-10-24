@@ -21,12 +21,14 @@ import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
 
     /** Percentage-like jaggedness allowance used while eroding the underside. */
-    protected static final int erosionIrregularity = 1;
+    protected static final int EROSION_IRREGULARITY = 2;
     protected final Block slimeDirt = TinkersRebornGeneral.slimeDirt;
     protected final Block slimeGrass = TinkersRebornGeneral.slimeGrass;
     protected final Block[] slimeFluids = new Block[] { TinkersRebornGeneral.blueSlimeFluidBlock,
         TinkersRebornGeneral.purpleSlimeFluidBlock };
     protected final int[][] slimeGelMetaList = new int[][] { { 0, 1 }, { 2 } };
+    protected final SlimeTreeGen[] slimeTreeGen = new SlimeTreeGen[] { new SlimeTreeGen(false, 5, 4, 0),
+        new SlimeTreeGen(false, 5, 4, 1), new SlimeTreeGen(false, 5, 4, 2), new SlimeTreeGen(false, 5, 4, 3), };
 
     public SlimeIslandGen() {
         // do nothinig
@@ -45,7 +47,7 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
             if (islandTypeRoll <= 1) {
                 // purple
                 islandType = 2;
-            } else if (islandTypeRoll <= 6) {
+            } else if (islandTypeRoll <= 5) {
                 // blue
                 islandType = 1;
             } else {
@@ -88,22 +90,22 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
             }
         }
 
-        // Erode the underside. A block survives only when the four blocks above
-        // its side-neighbours are still dirt; the small random chance adds jagged edges.
+        // Erode the underside from both ends of the island.
+        // Each iteration processes a position and its centrally mirrored counterpart.
+        // The full scan intentionally revisits surviving blocks, matching TiC2.
         int bottomErosionDepth = 8;
         for (int localX = 0; localX <= islandWidth; localX++) {
             for (int localZ = 0; localZ <= islandDepth; localZ++) {
-                for (int localY = 0; localY >= -bottomErosionDepth; localY--) {
-                    int worldX = localX + islandOriginX;
-                    int worldY = localY + islandBaseY + bottomErosionDepth;
-                    int worldZ = localZ + islandOriginZ;
-                    boolean hasDirtAboveAllSides = world.getBlock(worldX - 1, worldY + 1, worldZ) == slimeDirt
-                        && world.getBlock(worldX + 1, worldY + 1, worldZ) == slimeDirt
-                        && world.getBlock(worldX, worldY + 1, worldZ - 1) == slimeDirt
-                        && world.getBlock(worldX - 1, worldY + 1, worldZ + 1) == slimeDirt;
-                    if (!hasDirtAboveAllSides || random.nextInt(100) <= erosionIrregularity) {
-                        world.setBlock(worldX, worldY, worldZ, Blocks.air, 0, 2);
-                    }
+                for (int erosionStep = 0; erosionStep <= bottomErosionDepth; erosionStep++) {
+                    int worldY = islandBaseY + bottomErosionDepth - erosionStep;
+                    erodeBottomBlock(world, random, islandOriginX + localX, worldY, islandOriginZ + localZ, islandType);
+                    erodeBottomBlock(
+                        world,
+                        random,
+                        islandOriginX + islandWidth - localX,
+                        worldY,
+                        islandOriginZ + islandDepth - localZ,
+                        islandType);
                 }
             }
         }
@@ -164,7 +166,7 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
             islandDepth,
             false);
         tallGrass.generate(world, random, islandOriginX, islandBaseY + islandHeight + 1, islandOriginZ);
-        SlimeTreeGen trees = new SlimeTreeGen(false, 5, 4, islandType);
+        SlimeTreeGen trees = slimeTreeGen[islandType];
         for (int i = 0; i < 3; i++) {
             trees.generate(
                 world,
@@ -323,5 +325,34 @@ public class SlimeIslandGen extends WorldGenerator implements IWorldGenerator {
         // This class uses IWorldGenerator.generate(...) as its real entry point.
         // WorldGenerator.generate(...) is required by the superclass but is unused.
         return true;
+    }
+
+    /**
+     * Matches the dirt block and its island variant, corresponding to TiC2's
+     * comparison against the complete dirt block state.
+     */
+    protected boolean isIslandDirt(World world, int x, int y, int z, int islandType) {
+        return world.getBlock(x, y, z) == slimeDirt && world.getBlockMetadata(x, y, z) == islandType;
+    }
+
+    /**
+     * Removes one underside block when an upper neighbour is missing,
+     * or when the random erosion check succeeds.
+     */
+    protected void erodeBottomBlock(World world, Random random, int x, int y, int z, int islandType) {
+        // Only erode dirt belonging to this island variant.
+        if (!isIslandDirt(world, x, y, z, islandType)) {
+            return;
+        }
+
+        // Preserve TiC2's original sampling offsets.
+        // The fourth sample is diagonal rather than directly south.
+        if (!isIslandDirt(world, x - 1, y + 1, z, islandType) || !isIslandDirt(world, x + 1, y + 1, z, islandType)
+            || !isIslandDirt(world, x, y + 1, z - 1, islandType)
+            || !isIslandDirt(world, x - 1, y + 1, z + 1, islandType)
+            || random.nextInt(100) <= EROSION_IRREGULARITY) {
+
+            world.setBlock(x, y, z, Blocks.air, 0, 2);
+        }
     }
 }

@@ -38,6 +38,7 @@ import cpw.mods.fml.common.registry.VillagerRegistry;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.client.StepSoundSlime;
+import mctbl.tinkersreborn.common.blocks.BloodBlock;
 import mctbl.tinkersreborn.common.blocks.ConsecratedSoil;
 import mctbl.tinkersreborn.common.blocks.DryingRackBlock;
 import mctbl.tinkersreborn.common.blocks.GravelOre;
@@ -136,6 +137,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
 
     public static TinkersRebornFluid bloodFluid;
     public static TinkersRebornFluid enderFluid;
+    public static Block bloodBlock;
 
     // Ores
     public static Block oreSlag;
@@ -221,6 +223,9 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.registerBlock(oreSlag, MetalOreItemBlock.class, oreSlag.getUnlocalizedName());
         oreGravel = new GravelOre();
         GameRegistry.registerBlock(oreGravel, GravelOreItem.class, oreGravel.getUnlocalizedName());
+
+        bloodBlock = new BloodBlock();
+        GameRegistry.registerBlock(bloodBlock, bloodBlock.getUnlocalizedName());
 
         bloodFluid = new TinkersRebornFluid("blood", 0xFF0000, "blood");
         enderFluid = new TinkersRebornFluid("ender", 0x0B4D42, "ender");
@@ -462,6 +467,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         ItemStack greenSlimeSand = new ItemStack(slimeSand, 1, 1);
         ItemStack magmaSlimeSand = new ItemStack(slimeSand, 1, 3);
 
+        ItemStack bloodBall = new ItemStack(strangeFood, 1, 1);
         ItemStack blueSlimeBall = new ItemStack(strangeFood, 1, 2);
         ItemStack greenSlimeBall = new ItemStack(Items.slime_ball);
         ItemStack purpleSlimeBall = new ItemStack(strangeFood, 1, 3);
@@ -478,6 +484,8 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         ItemStack magmaSlimeBlock = new ItemStack(slimeGel, 1, 3);
 
         ItemStack magmaCream = new ItemStack(Items.magma_cream);
+
+        ItemStack bloodBlockStack = new ItemStack(bloodBlock);
 
         // Vanilla stuff
         RecipeRemover.removeShapedRecipe(new ItemStack(Blocks.sticky_piston));
@@ -546,6 +554,7 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
         GameRegistry.addShapedRecipe(greenSlimeBlock, "AA", "AA", 'A', greenSlimeBall);
         GameRegistry.addShapedRecipe(purpleSlimeBlock, "AA", "AA", 'A', purpleSlimeBall);
         GameRegistry.addShapedRecipe(magmaSlimeBlock, "AA", "AA", 'A', magmaSlimeBall);
+        GameRegistry.addShapedRecipe(bloodBlockStack, "AA", "AA", 'A', bloodBall);
 
         GameRegistry.addShapelessRecipe(
             greenSlimeSand,
@@ -571,7 +580,6 @@ public class TinkersRebornGeneral implements ITinkersRebornModule {
             magmaCream,
             new ItemStack(Blocks.netherrack),
             new ItemStack(Blocks.soul_sand));
-
     }
 
     private void addRecipesForFurnace() {

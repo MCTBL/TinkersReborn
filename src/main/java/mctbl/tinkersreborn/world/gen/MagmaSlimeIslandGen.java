@@ -46,14 +46,13 @@ public class MagmaSlimeIslandGen extends SlimeIslandGen {
         }
     }
 
-    @Override
-    public void generateIsland(World world, Random random, int xChunk, int zChunk, int islandType) {
-        int height = 12;
-        int xRange = random.nextInt(13) + 20;
-        int yCenter = 32 - height;
-        int zRange = random.nextInt(13) + 20;
-        int initialHeight = height;
-        Ellipse2D.Double ellipse = new Ellipse2D.Double(0, 0, xRange, zRange);
+    /** Generates one floating island and all of its decorations. */
+    public void generateIsland(World world, Random random, int islandOriginX, int islandOriginZ, int islandType) {
+        int islandWidth = random.nextInt(13) + 20;
+        int islandDepth = random.nextInt(13) + 20;
+        int islandHeight = 12;
+        int islandBaseY = 32 - islandHeight;
+        Ellipse2D.Double islandFootprint = new Ellipse2D.Double(0, 0, islandWidth, islandDepth);
 
         int grassMeta = switch (islandType) {
             case 0, 1 -> 2;
@@ -61,148 +60,189 @@ public class MagmaSlimeIslandGen extends SlimeIslandGen {
             default -> 1;
         };
 
-        // Basic shape
-        for (int x = 0; x <= xRange; x++) {
-            for (int z = 0; z <= zRange; z++) {
-                for (int y = 0; y <= height; y++) {
-                    if (ellipse.contains(x, z)) {
-                        world.setBlock(x + xChunk, y + yCenter, z + zChunk, slimeDirt, islandType, 2);
+        // Fill an elliptical cylinder with slime dirt. The later passes carve its
+        // top and bottom into a rough, natural-looking floating island.
+        for (int localX = 0; localX <= islandWidth; localX++) {
+            for (int localZ = 0; localZ <= islandDepth; localZ++) {
+                for (int localY = 0; localY <= islandHeight; localY++) {
+                    if (islandFootprint.contains(localX, localZ)) {
+                        world.setBlock(
+                            localX + islandOriginX,
+                            localY + islandBaseY,
+                            localZ + islandOriginZ,
+                            slimeDirt,
+                            islandType,
+                            2);
                     }
                 }
             }
         }
 
-        // Erode bottom
-        height = 8;
-        for (int x = 0; x <= xRange; x++) {
-            for (int z = 0; z <= zRange; z++) {
-                for (int y = 0; y >= -height; y--) {
-                    int xPos = x + xChunk;
-                    int yPos = y + yCenter + height;
-                    int zPos = z + zChunk;
-                    if (world.getBlock(xPos - 1, yPos + 1, zPos) == slimeDirt
-                        && world.getBlock(xPos + 1, yPos + 1, zPos) == slimeDirt
-                        && world.getBlock(xPos, yPos + 1, zPos - 1) == slimeDirt
-                        && world.getBlock(xPos - 1, yPos + 1, zPos + 1) == slimeDirt
-                        && random.nextInt(100) > erosionIrregularity) {} else {
-                        world.setBlock(xPos, yPos, zPos, Blocks.air, 0, 2);
+        // Erode the underside from both ends of the island.
+        // Each iteration processes a position and its centrally mirrored counterpart.
+        // The full scan intentionally revisits surviving blocks, matching TiC2.
+        int bottomErosionDepth = 8;
+        for (int localX = 0; localX <= islandWidth; localX++) {
+            for (int localZ = 0; localZ <= islandDepth; localZ++) {
+                for (int erosionStep = 0; erosionStep <= bottomErosionDepth; erosionStep++) {
+                    int worldY = islandBaseY + bottomErosionDepth - erosionStep;
+                    erodeBottomBlock(world, random, islandOriginX + localX, worldY, islandOriginZ + localZ, islandType);
+                    erodeBottomBlock(
+                        world,
+                        random,
+                        islandOriginX + islandWidth - localX,
+                        worldY,
+                        islandOriginZ + islandDepth - localZ,
+                        islandType);
+                }
+            }
+        }
+
+        // Erode the top edge from the bottom upward. A top block is removed when
+        // the layer directly below it is no longer supported on all four sides.
+        int topErosionDepth = 3;
+        for (int localX = 0; localX <= islandWidth; localX++) {
+            for (int localZ = 0; localZ <= islandDepth; localZ++) {
+                for (int localY = 1; localY <= topErosionDepth; localY++) {
+                    int worldX = localX + islandOriginX;
+                    int worldY = localY + islandBaseY + islandHeight - topErosionDepth + 1;
+                    int worldZ = localZ + islandOriginZ;
+                    boolean hasDirtBelowAllSides = world.getBlock(worldX - 1, worldY - 1, worldZ) == slimeDirt
+                        && world.getBlock(worldX + 1, worldY - 1, worldZ) == slimeDirt
+                        && world.getBlock(worldX, worldY - 1, worldZ - 1) == slimeDirt
+                        && world.getBlock(worldX - 1, worldY - 1, worldZ + 1) == slimeDirt;
+                    if (!hasDirtBelowAllSides) {
+                        world.setBlock(worldX, worldY, worldZ, Blocks.air, 0, 2);
                     }
                 }
             }
         }
 
-        // Erode top
-        height = 3;
-        for (int x = 0; x <= xRange; x++) {
-            for (int z = 0; z <= zRange; z++) {
-                for (int y = 1; y <= height; y++) {
-                    int xPos = x + xChunk;
-                    int yPos = y + yCenter + initialHeight - height + 1;
-                    int zPos = z + zChunk;
-                    if (world.getBlock(xPos - 1, yPos - 1, zPos) == slimeDirt
-                        && world.getBlock(xPos + 1, yPos - 1, zPos) == slimeDirt
-                        && world.getBlock(xPos, yPos - 1, zPos - 1) == slimeDirt
-                        && world.getBlock(xPos - 1, yPos - 1, zPos + 1) == slimeDirt) {} else {
-                        world.setBlock(xPos, yPos, zPos, Blocks.air, 0, 2);
+        // Turn exposed dirt into grass. Only the upper erosion band is scanned,
+        // because deeper layers cannot be exposed to the sky by this algorithm.
+        for (int localX = 0; localX <= islandWidth; localX++) {
+            for (int localZ = 0; localZ <= islandDepth; localZ++) {
+                for (int localY = 0; localY <= topErosionDepth; localY++) {
+                    int worldX = localX + islandOriginX;
+                    int worldY = localY + islandBaseY + islandHeight - topErosionDepth;
+                    int worldZ = localZ + islandOriginZ;
+                    if (world.getBlock(worldX, worldY, worldZ) == slimeDirt) {
+                        Block blockAbove = world.getBlock(worldX, worldY + 1, worldZ);
+                        if (blockAbove == null || blockAbove == Blocks.air) {
+                            world.setBlock(worldX, worldY, worldZ, slimeGrass, islandType, 2);
+                        }
                     }
                 }
             }
         }
 
-        // Replace blocks
-        for (int x = 0; x <= xRange; x++) {
-            for (int z = 0; z <= zRange; z++) {
-                for (int y = 0; y <= height; y++) {
-                    int xPos = x + xChunk;
-                    int yPos = y + yCenter + initialHeight - height;
-                    int zPos = z + zChunk;
-                    if (world.getBlock(xPos, yPos, zPos) == slimeDirt) {
-                        Block block = world.getBlock(xPos, yPos + 1, zPos);
-                        if (block == null || block == Blocks.air)
-                            world.setBlock(xPos, yPos, zPos, slimeGrass, islandType, 2);
-                    }
-                }
-            }
-        }
-
-        // Decorate
-        generateSlimePool(world, random, xChunk + xRange / 2, yCenter + initialHeight, zChunk + zRange / 2, islandType);
+        // Add the pool first, then plants and trees on the island's upper surface.
+        generateSlimePool(
+            world,
+            random,
+            islandOriginX + islandWidth / 2,
+            islandBaseY + islandHeight,
+            islandOriginZ + islandDepth / 2,
+            islandType);
 
         PlantGen tallGrass = new PlantGen(
             TinkersRebornGeneral.slimeTallGrass,
             grassMeta,
             128,
-            xRange,
+            islandWidth,
             1,
-            zRange,
+            islandDepth,
             false);
-        tallGrass.generate(world, random, xChunk, yCenter + initialHeight + 1, zChunk);
-        SlimeTreeGen trees = new SlimeTreeGen(false, 5, 4, islandType);
+        tallGrass.generate(world, random, islandOriginX, islandBaseY + islandHeight + 1, islandOriginZ);
+        SlimeTreeGen trees = slimeTreeGen[islandType];
         for (int i = 0; i < 3; i++) {
-            trees.generate(world, random, xChunk + random.nextInt(xRange), 32, zChunk + random.nextInt(zRange));
+            trees.generate(
+                world,
+                random,
+                islandOriginX + random.nextInt(islandWidth),
+                islandBaseY + islandHeight + 3,
+                islandOriginZ + random.nextInt(islandDepth));
+        }
+
+        // Restore air gaps below the lava sea surface across the entire scanned area.
+        // Top erosion also visits positions outside the elliptical island footprint.
+        for (int localX = 0; localX <= islandWidth; localX++) {
+            for (int localZ = 0; localZ <= islandDepth; localZ++) {
+                int worldX = islandOriginX + localX;
+                int worldZ = islandOriginZ + localZ;
+
+                for (int worldY = islandBaseY; worldY <= 31; worldY++) {
+                    if (world.isAirBlock(worldX, worldY, worldZ)) {
+                        world.setBlock(worldX, worldY, worldZ, Blocks.lava, 0, 2);
+                    }
+                }
+            }
         }
     }
 
-    @Override
-    public void generateSlimePool(World world, Random rand, int x, int y, int z, int islandType) {
+    /** Carves a 16x16x8 ellipsoidal pool into the island. */
+    public void generateSlimePool(World world, Random random, int poolCenterX, int poolCenterY, int poolCenterZ,
+        int islandType) {
         Block liquidBlock = Blocks.lava;
 
-        x -= 8;
-        z -= 8;
-        y -= 4;
-        boolean[] validLocations = new boolean[2048];
-        int var7 = rand.nextInt(4) + 4;
-        int xPos;
+        int poolOriginX = poolCenterX - 8;
+        int poolOriginY = poolCenterY - 4;
+        int poolOriginZ = poolCenterZ - 8;
+        boolean[] poolCells = new boolean[16 * 16 * 8];
+        int ellipsoidCount = random.nextInt(4) + 4;
 
-        for (xPos = 0; xPos < var7; ++xPos) {
-            double noise1 = rand.nextDouble() * 6.0D + 3.0D;
-            double noise2 = rand.nextDouble() * 4.0D + 2.0D;
-            double noise3 = rand.nextDouble() * 6.0D + 3.0D;
-            double noise4 = rand.nextDouble() * (16.0D - noise1 - 2.0D) + 1.0D + noise1 / 2.0D;
-            double noise5 = rand.nextDouble() * (8.0D - noise2 - 4.0D) + 2.0D + noise2 / 2.0D;
-            double noise6 = rand.nextDouble() * (16.0D - noise3 - 2.0D) + 1.0D + noise3 / 2.0D;
+        // Union several random ellipsoids. Their union becomes the irregular pool shape.
+        for (int ellipsoidIndex = 0; ellipsoidIndex < ellipsoidCount; ellipsoidIndex++) {
+            double radiusX = random.nextDouble() * 6.0D + 3.0D;
+            double radiusY = random.nextDouble() * 4.0D + 2.0D;
+            double radiusZ = random.nextDouble() * 6.0D + 3.0D;
+            double centerX = random.nextDouble() * (16.0D - radiusX - 2.0D) + 1.0D + radiusX / 2.0D;
+            double centerY = random.nextDouble() * (8.0D - radiusY - 4.0D) + 2.0D + radiusY / 2.0D;
+            double centerZ = random.nextDouble() * (16.0D - radiusZ - 2.0D) + 1.0D + radiusZ / 2.0D;
 
-            for (int xIter = 1; xIter < 15; ++xIter) {
-                for (int zIter = 1; zIter < 15; ++zIter) {
-                    for (int yIter = 1; yIter < 7; ++yIter) {
-                        double var24 = ((double) xIter - noise4) / (noise1 / 2.0D);
-                        double var26 = ((double) yIter - noise5) / (noise2 / 2.0D);
-                        double var28 = ((double) zIter - noise6) / (noise3 / 2.0D);
-                        double validSpot = var24 * var24 + var26 * var26 + var28 * var28;
+            for (int localX = 1; localX < 15; localX++) {
+                for (int localZ = 1; localZ < 15; localZ++) {
+                    for (int localY = 1; localY < 7; localY++) {
+                        // Normalized squared distance from the ellipsoid center.
+                        double normalizedX = (localX - centerX) / (radiusX / 2.0D);
+                        double normalizedY = (localY - centerY) / (radiusY / 2.0D);
+                        double normalizedZ = (localZ - centerZ) / (radiusZ / 2.0D);
+                        double normalizedDistanceSquared = normalizedX * normalizedX + normalizedY * normalizedY
+                            + normalizedZ * normalizedZ;
 
-                        if (validSpot < 1.0D) {
-                            validLocations[(xIter * 16 + zIter) * 8 + yIter] = true;
+                        if (normalizedDistanceSquared < 1.0D) {
+                            poolCells[(localX * 16 + localZ) * 8 + localY] = true;
                         }
                     }
                 }
             }
         }
 
-        int yPos;
-        int zPos;
-        boolean var33;
+        // Reject the whole pool if its boundary would cut into another liquid or
+        // into non-solid material. This keeps the generation from creating leaks.
+        for (int localX = 0; localX < 16; localX++) {
+            for (int localZ = 0; localZ < 16; localZ++) {
+                for (int localY = 0; localY < 8; localY++) {
+                    boolean isBoundaryCell = !poolCells[(localX * 16 + localZ) * 8 + localY]
+                        && (localX < 15 && poolCells[((localX + 1) * 16 + localZ) * 8 + localY]
+                            || localX > 0 && poolCells[((localX - 1) * 16 + localZ) * 8 + localY]
+                            || localZ < 15 && poolCells[(localX * 16 + localZ + 1) * 8 + localY]
+                            || localZ > 0 && poolCells[(localX * 16 + localZ - 1) * 8 + localY]
+                            || localY < 7 && poolCells[(localX * 16 + localZ) * 8 + localY + 1]
+                            || localY > 0 && poolCells[(localX * 16 + localZ) * 8 + localY - 1]);
 
-        for (xPos = 0; xPos < 16; ++xPos) {
-            for (zPos = 0; zPos < 16; ++zPos) {
-                for (yPos = 0; yPos < 8; ++yPos) {
-                    var33 = !validLocations[(xPos * 16 + zPos) * 8 + yPos]
-                        && (xPos < 15 && validLocations[((xPos + 1) * 16 + zPos) * 8 + yPos]
-                            || xPos > 0 && validLocations[((xPos - 1) * 16 + zPos) * 8 + yPos]
-                            || zPos < 15 && validLocations[(xPos * 16 + zPos + 1) * 8 + yPos]
-                            || zPos > 0 && validLocations[(xPos * 16 + (zPos - 1)) * 8 + yPos]
-                            || yPos < 7 && validLocations[(xPos * 16 + zPos) * 8 + yPos + 1]
-                            || yPos > 0 && validLocations[(xPos * 16 + zPos) * 8 + (yPos - 1)]);
-
-                    if (var33) {
-                        Material var12 = world.getBlock(x + xPos, y + yPos, z + zPos)
+                    if (isBoundaryCell) {
+                        Material boundaryMaterial = world
+                            .getBlock(poolOriginX + localX, poolOriginY + localY, poolOriginZ + localZ)
                             .getMaterial();
 
-                        if (yPos >= 4 && var12.isLiquid()) {
+                        if (localY >= 4 && boundaryMaterial.isLiquid()) {
                             return;
                         }
 
-                        if (yPos < 4 && !var12.isSolid()
-                            && world.getBlock(x + xPos, y + yPos, z + zPos) != liquidBlock) {
+                        if (localY < 4 && !boundaryMaterial.isSolid()
+                            && world.getBlock(poolOriginX + localX, poolOriginY + localY, poolOriginZ + localZ)
+                                != liquidBlock) {
                             return;
                         }
                     }
@@ -210,57 +250,80 @@ public class MagmaSlimeIslandGen extends SlimeIslandGen {
             }
         }
 
-        for (xPos = 0; xPos < 16; ++xPos) {
-            for (zPos = 0; zPos < 16; ++zPos) {
-                for (yPos = 0; yPos < 8; ++yPos) {
-                    if (validLocations[(xPos * 16 + zPos) * 8 + yPos]) {
-                        world.setBlock(x + xPos, y + yPos, z + zPos, yPos >= 4 ? Blocks.air : liquidBlock);
+        // Carve the upper half into air and fill the lower half with the slime liquid.
+        for (int localX = 0; localX < 16; localX++) {
+            for (int localZ = 0; localZ < 16; localZ++) {
+                for (int localY = 0; localY < 8; localY++) {
+                    if (poolCells[(localX * 16 + localZ) * 8 + localY]) {
+                        world.setBlock(
+                            poolOriginX + localX,
+                            poolOriginY + localY,
+                            poolOriginZ + localZ,
+                            localY >= 4 ? Blocks.air : liquidBlock);
                     }
                 }
             }
         }
 
-        for (xPos = 0; xPos < 16; ++xPos) {
-            for (zPos = 0; zPos < 16; ++zPos) {
-                for (yPos = 4; yPos < 8; ++yPos) {
-                    if (validLocations[(xPos * 16 + zPos) * 8 + yPos]
-                        && world.getBlock(x + xPos, y + yPos - 1, z + zPos) == slimeDirt
-                        && world.getSavedLightValue(EnumSkyBlock.Sky, x + xPos, y + yPos, z + zPos) > 0) {
-                        world.setBlock(x + xPos, y + yPos - 1, z + zPos, slimeGrass, 0, 2);
+        // Grass can appear on dirt exposed through the pool's upper cavity.
+        for (int localX = 0; localX < 16; localX++) {
+            for (int localZ = 0; localZ < 16; localZ++) {
+                for (int localY = 4; localY < 8; localY++) {
+                    if (poolCells[(localX * 16 + localZ) * 8 + localY]
+                        && world.getBlock(poolOriginX + localX, poolOriginY + localY - 1, poolOriginZ + localZ)
+                            == slimeDirt
+                        && world.getSavedLightValue(
+                            EnumSkyBlock.Sky,
+                            poolOriginX + localX,
+                            poolOriginY + localY,
+                            poolOriginZ + localZ) > 0) {
+                        world.setBlock(
+                            poolOriginX + localX,
+                            poolOriginY + localY - 1,
+                            poolOriginZ + localZ,
+                            slimeGrass,
+                            0,
+                            2);
                     }
                 }
             }
         }
 
-        // Generate blocks around
+        // Place decorative slime gel around the pool's solid boundary.
         if (liquidBlock.getMaterial() == Material.lava) {
-            for (xPos = 0; xPos < 16; ++xPos) {
-                for (zPos = 0; zPos < 16; ++zPos) {
-                    for (yPos = 0; yPos < 8; ++yPos) {
-                        var33 = !validLocations[(xPos * 16 + zPos) * 8 + yPos]
-                            && (xPos < 15 && validLocations[((xPos + 1) * 16 + zPos) * 8 + yPos]
-                                || xPos > 0 && validLocations[((xPos - 1) * 16 + zPos) * 8 + yPos]
-                                || zPos < 15 && validLocations[(xPos * 16 + zPos + 1) * 8 + yPos]
-                                || zPos > 0 && validLocations[(xPos * 16 + (zPos - 1)) * 8 + yPos]
-                                || yPos < 7 && validLocations[(xPos * 16 + zPos) * 8 + yPos + 1]
-                                || yPos > 0 && validLocations[(xPos * 16 + zPos) * 8 + (yPos - 1)]);
+            for (int localX = 0; localX < 16; localX++) {
+                for (int localZ = 0; localZ < 16; localZ++) {
+                    for (int localY = 0; localY < 8; localY++) {
+                        boolean isBoundaryCell = !poolCells[(localX * 16 + localZ) * 8 + localY]
+                            && (localX < 15 && poolCells[((localX + 1) * 16 + localZ) * 8 + localY]
+                                || localX > 0 && poolCells[((localX - 1) * 16 + localZ) * 8 + localY]
+                                || localZ < 15 && poolCells[(localX * 16 + localZ + 1) * 8 + localY]
+                                || localZ > 0 && poolCells[(localX * 16 + localZ - 1) * 8 + localY]
+                                || localY < 7 && poolCells[(localX * 16 + localZ) * 8 + localY + 1]
+                                || localY > 0 && poolCells[(localX * 16 + localZ) * 8 + localY - 1]);
 
-                        if (var33 && (yPos < 4 || rand.nextInt(2) != 0)
-                            && world.getBlock(x + xPos, y + yPos, z + zPos)
+                        if (isBoundaryCell && (localY < 4 || random.nextInt(2) != 0)
+                            && world.getBlock(poolOriginX + localX, poolOriginY + localY, poolOriginZ + localZ)
                                 .getMaterial()
                                 .isSolid()
-                            && world.getBlock(x + xPos, y + yPos + 1, z + zPos)
+                            && world.getBlock(poolOriginX + localX, poolOriginY + localY + 1, poolOriginZ + localZ)
                                 .getMaterial() != Material.lava) {
-                            if (rand.nextBoolean()) {
-                                world.setBlock(x + xPos, y + yPos, z + zPos, TinkersRebornGeneral.slimeGel, 3, 2);
+                            if (random.nextBoolean()) {
+                                world.setBlock(
+                                    poolOriginX + localX,
+                                    poolOriginY + localY,
+                                    poolOriginZ + localZ,
+                                    TinkersRebornGeneral.slimeGel,
+                                    3,
+                                    2);
                             } else {
-                                // world.setBlock(
-                                // x + xPos,
-                                // y + yPos,
-                                // z + zPos,
-                                // TinkersRebornGeneral.bl,
-                                // 3,
-                                // 2);
+                                world.setBlock(
+                                    poolOriginX + localX,
+                                    poolOriginY + localY,
+                                    poolOriginZ + localZ,
+                                    TinkersRebornGeneral.bloodBlock,
+                                    0,
+                                    2);
                             }
                         }
                     }
