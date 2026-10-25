@@ -3,6 +3,7 @@ itemGroup.TinkersRebornTools=Tinkers Reborn Tools
 itemGroup.TinkersRebornWeapons=Tinkers Reborn Weapons
 itemGroup.TinkersRebornParts=Tinkers Reborn Parts
 itemGroup.TinkersRebornProjectile=Tinkers Reborn Projectile
+itemGroup.TinkersRebornShields=Tinkers Reborn Shield
 itemGroup.TinkersRebornMisc=Tinkers Reborn Others
 
 tinkersreborn.stonetorch.name=Stone Torch
@@ -322,6 +323,8 @@ tinkersreborn.tool.longbow=Longbow
 tinkersreborn.tool.longbow.desc=The Longbow is a powerful long range weapon. It provides high damage but is less mobile than its short brother.\nUses Tinkers' Arrows.
 tinkersreborn.tool.crossbow=Crossbow
 tinkersreborn.tool.crossbow.desc=The Crossbow is a slow but very powerful weapon. It has to be loaded beforehand by holding right-click, but can be fired at any moment afterwards.\nUses Tinkers' Bolts.
+tinkersreborn.tool.roundshield=Round Shield
+tinkersreborn.tool.roundshield.desc=TBD
 
 tinkersreborn.category.tool=Tool
 tinkersreborn.category.weapon=Weapon
@@ -347,7 +350,7 @@ tinkersreborn.toolpart.Crossbar=Crossbar
 tinkersreborn.toolpart.KnifeBlade=Knife Blade
 tinkersreborn.toolpart.FullGuard=Full Guard
 tinkersreborn.toolpart.FrypanHead=Pan
-tinkersreborn.toolpart.SignHead=Sign Head
+tinkersreborn.toolpart.ShieldCore=Shield Core
 tinkersreborn.toolpart.ChiselHead=Chisel Head
 tinkersreborn.toolpart.ScytheHead=Scythe Head
 tinkersreborn.toolpart.LumberAxeHead=Broad Axe Head

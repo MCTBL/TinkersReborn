@@ -164,7 +164,7 @@ public class CrossBow extends BowCore implements ICustomCrosshairUser {
     public void onUpdate(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
         // has to be done in onUpdate because onTickUsing is too early and gets
         // overwritten. bleh.
-        preventSlowDown(entityIn, 0.195f);
+        this.preventSlowDown(entityIn, 0.195f);
 
         super.onUpdate(stack, worldIn, entityIn, itemSlot, isSelected);
     }

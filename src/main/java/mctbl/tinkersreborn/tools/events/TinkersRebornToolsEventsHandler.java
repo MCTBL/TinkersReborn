@@ -139,16 +139,15 @@ public class TinkersRebornToolsEventsHandler {
         Entity attacker = event.source.getSourceOfDamage();
 
         ItemStack tool = player.isUsingItem() ? player.getCurrentEquippedItem() : null;
-        if (isTool(tool) && !ToolTagsHelper.isBroken(tool)) {
-            if (player.isBlocking() && !event.isCanceled()) {
-                ToolTagsHelper.getTraitsOrdered(tool)
-                    .forEach(trait -> trait.onBlock(tool, player, event));
-            } else if (attacker instanceof EntityLivingBase attackerLiving && !attacker.isDead && !event.isCanceled()) {
-                // else handle living hurt
-                ToolTagsHelper.getTraitsOrdered(tool)
-                    .forEach(trait -> trait.onPlayerHurt(tool, player, attackerLiving, event));
-            }
+        if (isTool(tool) && !ToolTagsHelper.isBroken(tool)
+            && attacker instanceof EntityLivingBase attackerLiving
+            && !attacker.isDead
+            && !event.isCanceled()) {
+            // only handle living hurt
+            ToolTagsHelper.getTraitsOrdered(tool)
+                .forEach(trait -> trait.onPlayerHurt(tool, player, attackerLiving, event));
         }
+
     }
 
     @SubscribeEvent

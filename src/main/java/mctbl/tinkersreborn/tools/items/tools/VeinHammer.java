@@ -27,12 +27,12 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.gui.ToolBuildGuiInfo;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
-public class Veinhammer extends AoeHarvestTool {
+public class VeinHammer extends AoeHarvestTool {
 
     public static final float DURABILITY_MODIFIER = 3f;
 
-    public Veinhammer() {
-        super("Veinhammer", 4);
+    public VeinHammer() {
+        super("VeinHammer", 4);
 
         // set the toolclass, actual harvestlevel is done by the overridden callback
         this.setHarvestLevel("pickaxe", 0);
@@ -71,7 +71,7 @@ public class Veinhammer extends AoeHarvestTool {
 
     @Override
     public float getRepairModifierForPart(int index) {
-        return DURABILITY_MODIFIER;
+        return (index == 0 || index == 1) ? DURABILITY_MODIFIER : 1.0F;
     }
 
     @Override

@@ -105,6 +105,7 @@ import mctbl.tinkersreborn.tools.entity.PartBuilderLogic;
 import mctbl.tinkersreborn.tools.entity.PartChestLogic;
 import mctbl.tinkersreborn.tools.entity.ToolForgeLogic;
 import mctbl.tinkersreborn.tools.entity.ToolStationLogic;
+import mctbl.tinkersreborn.tools.events.TinkersRebornShieldEventHandler;
 import mctbl.tinkersreborn.tools.events.TinkersRebornToolsEventsHandler;
 import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaBowNerfHandler;
 import mctbl.tinkersreborn.tools.events.TinkersRebornVanillaHoeNerfHandler;
@@ -137,10 +138,11 @@ import mctbl.tinkersreborn.tools.items.tools.LumberAxe;
 import mctbl.tinkersreborn.tools.items.tools.Mattock;
 import mctbl.tinkersreborn.tools.items.tools.Pickaxe;
 import mctbl.tinkersreborn.tools.items.tools.Rapier;
+import mctbl.tinkersreborn.tools.items.tools.RoundShield;
 import mctbl.tinkersreborn.tools.items.tools.Scythe;
 import mctbl.tinkersreborn.tools.items.tools.ShortBow;
 import mctbl.tinkersreborn.tools.items.tools.Shovel;
-import mctbl.tinkersreborn.tools.items.tools.Veinhammer;
+import mctbl.tinkersreborn.tools.items.tools.VeinHammer;
 import mctbl.tinkersreborn.tools.materials.BowMaterialStats;
 import mctbl.tinkersreborn.tools.materials.ExtraMaterialStats;
 import mctbl.tinkersreborn.tools.materials.FletchingMaterialStats;
@@ -174,7 +176,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static TinkersRebornToolPart arrowhead;
     public static TinkersRebornToolPart arrowShaft;
     public static TinkersRebornToolPart axeHead;
-    public static TinkersRebornToolPart battlesignHead;
+    public static TinkersRebornToolPart shieldCore;
     public static TinkersRebornToolPart binding;
     public static TinkersRebornToolPart bowLimb;
     public static TinkersRebornToolPart chiselHead;
@@ -230,6 +232,8 @@ public class TinkersRebornTools implements ITinkersRebornModule {
     public static ToolCore arrow;
     public static ToolCore bolt;
     public static ToolCore crossBow;
+
+    public static ToolCore roundShield;
 
     // other items
     public static Item paperStack;
@@ -351,11 +355,16 @@ public class TinkersRebornTools implements ITinkersRebornModule {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
-        TinkersRebornToolsEventsHandler tre = new TinkersRebornToolsEventsHandler();
-        MinecraftForge.EVENT_BUS.register(tre);
+        TinkersRebornToolsEventsHandler trteh = new TinkersRebornToolsEventsHandler();
+        TinkersRebornShieldEventHandler trseh = new TinkersRebornShieldEventHandler();
+        MinecraftForge.EVENT_BUS.register(trteh);
         FMLCommonHandler.instance()
             .bus()
-            .register(tre);
+            .register(trteh);
+        MinecraftForge.EVENT_BUS.register(trseh);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(trseh);
 
         toolStation = new ToolStationBlock();
         GameRegistry.registerBlock(toolStation, ToolStationItemBlock.class, toolStation.getUnlocalizedName());
@@ -386,7 +395,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         arrowhead = new TinkersRebornToolPart("arrowhead", "ArrowHead", VALUE_Ingot * 2);
         arrowShaft = new TinkersRebornToolPart("arrow_shaft", "ArrowShaft", VALUE_Ingot * 2, MaterialStatusType.SHAFT);
         axeHead = new TinkersRebornToolPart("axe_head", "AxeHead", VALUE_Ingot * 2);
-        battlesignHead = new TinkersRebornToolPart("battlesign_head", "SignHead", VALUE_Ingot * 3);
+        shieldCore = new TinkersRebornToolPart("shield_core", "ShieldCore", VALUE_Ingot * 3);
         binding = new TinkersRebornToolPart("binding", "Binding", VALUE_Ingot, MaterialStatusType.EXTRA);
         bowLimb = new TinkersRebornToolPart("bow_limb", "BowLimb", VALUE_Ingot * 3, MaterialStatusType.BOW);
         chiselHead = new TinkersRebornToolPart("chisel_head", "ChiselHead", VALUE_Ingot * 2);
@@ -425,7 +434,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         patternAndCast.addNewPatterntype(arrowhead);
         patternAndCast.addNewPatterntype(arrowShaft);
         patternAndCast.addNewPatterntype(axeHead);
-        patternAndCast.addNewPatterntype(battlesignHead);
+        patternAndCast.addNewPatterntype(shieldCore);
         patternAndCast.addNewPatterntype(binding);
         patternAndCast.addNewPatterntype(bowLimb);
         patternAndCast.addNewPatterntype(chiselHead);
@@ -459,7 +468,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(arrowhead, arrowhead.getUnlocalizedName());
         GameRegistry.registerItem(arrowShaft, arrowShaft.getUnlocalizedName());
         GameRegistry.registerItem(axeHead, axeHead.getUnlocalizedName());
-        GameRegistry.registerItem(battlesignHead, battlesignHead.getUnlocalizedName());
+        GameRegistry.registerItem(shieldCore, shieldCore.getUnlocalizedName());
         GameRegistry.registerItem(binding, binding.getUnlocalizedName());
         GameRegistry.registerItem(bowLimb, bowLimb.getUnlocalizedName());
         GameRegistry.registerItem(chiselHead, chiselHead.getUnlocalizedName());
@@ -556,7 +565,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         TinkersRebornRegistry.registerTool(cleaver);
         TinkersRebornRegistry.registerToolForgeCrafting(cleaver);
 
-        veinHammer = new Veinhammer();
+        veinHammer = new VeinHammer();
         GameRegistry.registerItem(veinHammer, veinHammer.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(veinHammer);
         TinkersRebornRegistry.registerToolForgeCrafting(veinHammer);
@@ -585,6 +594,11 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         GameRegistry.registerItem(longBow, longBow.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(longBow);
         TinkersRebornRegistry.registerToolForgeCrafting(longBow);
+
+        roundShield = new RoundShield();
+        GameRegistry.registerItem(roundShield, roundShield.getUnlocalizedName());
+        TinkersRebornRegistry.registerTool(roundShield);
+        TinkersRebornRegistry.registerToolForgeCrafting(roundShield);
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");

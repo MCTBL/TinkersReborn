@@ -73,6 +73,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
     public static TinkersRebornCreativeTab weaponsTab;
     public static TinkersRebornCreativeTab projectileTab;
     public static TinkersRebornCreativeTab partsTab;
+    public static TinkersRebornCreativeTab shieldTab;
     public static TinkersRebornCreativeTab miscTab;
 
     protected static final List<ToolCore> tools = new ArrayList<>();
@@ -132,6 +133,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         weaponsTab = new TinkersRebornCreativeTab("TinkersRebornWeapons");
         projectileTab = new TinkersRebornCreativeTab("TinkersRebornProjectile");
         partsTab = new TinkersRebornCreativeTab("TinkersRebornParts");
+        shieldTab = new TinkersRebornCreativeTab("TinkersRebornShields");
         miscTab = new TinkersRebornCreativeTab("TinkersRebornMisc");
     }
 
@@ -141,6 +143,7 @@ public class TinkersRebornRegistry implements ITinkersRebornModule {
         weaponsTab.init(TinkersRebornTools.broadSword.getToolForRender());
         projectileTab.init(TinkersRebornTools.arrow.getToolForRender());
         partsTab.init(TinkersRebornTools.pickaxeHead.getNewPartWithMaterial(TinkersRebornTools.woodMaterial));
+        shieldTab.init(TinkersRebornTools.roundShield.getToolForRender());
         miscTab.init(new ItemStack(TinkersRebornGeneral.heartCanister, 1, 2));
     }
 
