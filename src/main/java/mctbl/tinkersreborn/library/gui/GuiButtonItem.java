@@ -60,17 +60,27 @@ public class GuiButtonItem<T> extends GuiButton {
     @Override
     @SideOnly(Side.CLIENT)
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        // Reset GL state that may have been polluted by renderItemIntoGUI
-        // (it enables GL_LIGHTING, disables GL_BLEND, and enables GL_CULL_FACE)
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        mc.getTextureManager()
-            .bindTexture(locBackground);
+        if (!this.visible) {
+            return;
+        }
 
-        if (this.visible) {
+        GL11.glPushAttrib(
+            GL11.GL_ENABLE_BIT | GL11.GL_CURRENT_BIT
+                | GL11.GL_LIGHTING_BIT
+                | GL11.GL_COLOR_BUFFER_BIT
+                | GL11.GL_DEPTH_BUFFER_BIT);
+
+        try {
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            // Reset GL state that may have been polluted by renderItemIntoGUI
+            // (it enables GL_LIGHTING, disables GL_BLEND, and enables GL_CULL_FACE)
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glDisable(GL11.GL_CULL_FACE);
+            mc.getTextureManager()
+                .bindTexture(locBackground);
+
             this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition
                 && mouseX < this.xPosition + this.width
                 && mouseY < this.yPosition + this.height;
@@ -84,9 +94,12 @@ public class GuiButtonItem<T> extends GuiButton {
             }
 
             drawIcon(mc);
+
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_BLEND);
+        } finally {
+            GL11.glPopAttrib();
         }
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_BLEND);
     }
 
     protected void drawIcon(Minecraft mc) {

@@ -3,11 +3,14 @@ package mctbl.tinkersreborn.library.gui;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
 
@@ -144,8 +147,41 @@ public class GuiWidgetTabs extends GuiWidget {
 
             ItemStack icon = icons.get(i);
             if (icon != null) {
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-                this.parent.drawItemStack(icon, x + (actualTab.w - 16) / 2, y + (actualTab.h - 16) / 2, null);
+                int iconX = x + (actualTab.w - 16) / 2;
+                int iconY = y + (actualTab.h - 16) / 2;
+
+                GL11.glPushMatrix();
+                GL11.glPushAttrib(
+                    GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT
+                        | GL11.GL_CURRENT_BIT
+                        | GL11.GL_COLOR_BUFFER_BIT
+                        | GL11.GL_DEPTH_BUFFER_BIT);
+
+                float previousLightmapX = OpenGlHelper.lastBrightnessX;
+                float previousLightmapY = OpenGlHelper.lastBrightnessY;
+                float previousItemZLevel = parent.getRenderItem().zLevel;
+
+                try {
+                    // Match the state used by GuiContainer when drawing inventory slots.
+                    RenderHelper.enableGUIStandardItemLighting();
+                    GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                    GL11.glEnable(GL11.GL_DEPTH_TEST);
+                    GL11.glDepthMask(true);
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
+
+                    parent.getRenderItem().zLevel = 0.0F;
+                    parent.renderItemIntoGui(icon, iconX, iconY);
+                } finally {
+                    parent.getRenderItem().zLevel = previousItemZLevel;
+
+                    OpenGlHelper
+                        .setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, previousLightmapX, previousLightmapY);
+
+                    GL11.glPopAttrib();
+                    GL11.glPopMatrix();
+                }
             }
         }
     }

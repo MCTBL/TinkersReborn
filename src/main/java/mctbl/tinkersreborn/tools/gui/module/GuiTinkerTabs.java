@@ -94,8 +94,21 @@ public class GuiTinkerTabs extends GuiModule {
             if (this.fontRendererObj == null) {
                 this.fontRendererObj = this.parent.getFontRender();
             }
-            // the origin has been translated to the top left of this gui rather than the screen, so we have to adjust
-            func_146283_a(Lists.newArrayList(name), mouseX - this.guiLeft, mouseY - this.guiTop);
+
+            GL11.glPushMatrix();
+            GL11.glPushAttrib(GL11.GL_LIGHTING_BIT | GL11.GL_CURRENT_BIT);
+            try {
+                // the origin has been translated to the top left of this gui rather than the
+                // screen, so we have to adjust
+                drawHoveringText(
+                    Lists.newArrayList(name),
+                    mouseX - this.guiLeft,
+                    mouseY - this.guiTop,
+                    this.fontRendererObj);
+            } finally {
+                GL11.glPopAttrib();
+                GL11.glPopMatrix();
+            }
         }
     }
 }

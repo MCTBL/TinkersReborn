@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
 import mctbl.tinkersreborn.library.gui.container.ContainerMultiModule;
 import mctbl.tinkersreborn.library.inventory.slots.SlotWrapper;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
@@ -48,9 +49,7 @@ public class GuiMultiModule extends GuiContainer {
 
     public List<Rectangle> getModuleAreas() {
         List<Rectangle> areas = new ArrayList<Rectangle>(modules.size());
-        for (GuiModule module : modules) {
-            areas.add(module.getArea());
-        }
+        modules.forEach(m -> areas.add(m.getArea()));
         return areas;
     }
 
@@ -90,17 +89,27 @@ public class GuiMultiModule extends GuiContainer {
         drawContainerName();
         drawPlayerInventoryName();
 
-        for (GuiModule module : modules) {
-            // set correct state for the module
-            GL11.glPushMatrix();
-            GL11.glTranslatef(-this.guiLeft, -this.guiTop, 0.0F);
-            GL11.glTranslatef(module.guiLeft, module.guiTop, 0.0F);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-            GL11.glEnable(GL11.GL_BLEND);
-            module.handleDrawGuiContainerForegroundLayer(mouseX, mouseY);
-            GL11.glPopMatrix();
+        GL11.glPushAttrib(
+            GL11.GL_ENABLE_BIT | GL11.GL_LIGHTING_BIT
+                | GL11.GL_CURRENT_BIT
+                | GL11.GL_COLOR_BUFFER_BIT
+                | GL11.GL_DEPTH_BUFFER_BIT);
+
+        try {
+            for (GuiModule module : modules) {
+                // set correct state for the module
+                GL11.glPushMatrix();
+                GL11.glTranslatef(-this.guiLeft, -this.guiTop, 0.0F);
+                GL11.glTranslatef(module.guiLeft, module.guiTop, 0.0F);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GL11.glDisable(GL11.GL_LIGHTING);
+                GL11.glDisable(GL11.GL_DEPTH_TEST);
+                GL11.glEnable(GL11.GL_BLEND);
+                module.handleDrawGuiContainerForegroundLayer(mouseX, mouseY);
+                GL11.glPopMatrix();
+            }
+        } finally {
+            GL11.glPopAttrib();
         }
     }
 
@@ -241,8 +250,9 @@ public class GuiMultiModule extends GuiContainer {
         return null;
     }
 
-    protected ContainerMultiModule<?> getContainer() {
-        return (ContainerMultiModule<?>) inventorySlots;
+    @SuppressWarnings("unchecked")
+    protected ContainerMultiModule<TinkersRebornInventoryLogic> getContainer() {
+        return (ContainerMultiModule<TinkersRebornInventoryLogic>) inventorySlots;
     }
 
     public void renderItemIntoGui(ItemStack stack, int xPos, int yPos) {
