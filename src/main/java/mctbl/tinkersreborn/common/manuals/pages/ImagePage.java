@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.gson.JsonObject;
 
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
 import mctbl.tinkersreborn.library.manuals.ManualPageDefinition;
@@ -45,18 +46,21 @@ public class ImagePage extends TextPage {
                 this.imageWidth = image.getWidth();
             }
         } catch (Exception e) {
+            TinkersReborn.LOG.error("ImagePage has an error: ", e);
             this.imageHeight = 1;
             this.imageWidth = 1;
         }
-        this.imageScale = Math.min(contentHeight * 1.0F / this.imageHeight, contentWidth * 1.0F / this.imageWidth);
+        // image max height is 3/4 of page
+        this.imageScale = Math
+            .min(contentHeight * 3.0F / 4.0F / this.imageHeight, contentWidth * 1.0F / this.imageWidth);
     }
 
     @Override
     public void renderBackgroundLayer(int pageX, int pageY, int manualMouseX, int manualMouseY, float partialTicks,
         int manualTicks, GuiManual manual) {
         super.renderBackgroundLayer(pageX, pageY, manualMouseX, manualMouseY, partialTicks, manualTicks, manual);
-        int drawX = pageX + contentWidth / 2 - (int) (imageWidth * this.imageScale / 2);
-        int drawY = pageY + (haveTitle ? fontRender.FONT_HEIGHT + 1 : 0);
+        float drawX = pageX + contentWidth / 2.0F - (imageWidth * this.imageScale / 2);
+        float drawY = pageY + (haveTitle ? fontRender.FONT_HEIGHT + 1.0F : 0.0F);
 
         GL11.glPushMatrix();
         GL11.glTranslatef(drawX, drawY, 0.0F);
@@ -64,7 +68,7 @@ public class ImagePage extends TextPage {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         manual.mc.getTextureManager()
             .bindTexture(background);
-        Gui.func_146110_a(0, 0, 0.0F, 0.0F, imageWidth, imageHeight, imageWidth, imageHeight);
+        Gui.func_146110_a(0, 0, 0.0F, 0.0F, imageWidth, imageHeight, imageWidth * 1.0F, imageHeight * 1.0F);
         GL11.glPopMatrix();
     }
 
