@@ -5,6 +5,9 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -21,9 +24,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Same as Container but provides some extra functionality to simplify things
@@ -119,7 +119,7 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
         }
 
         // too far away from block?
-        return playerIn.getDistanceSq((double) xCoord + 0.5d, (double) yCoord + 0.5d, (double) zCoord + 0.5d)
+        return playerIn.getDistanceSq(xCoord + 0.5d, yCoord + 0.5d, zCoord + 0.5d)
             <= maxDist;
     }
 
@@ -131,7 +131,7 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
     }
 
     public String getInventoryDisplayName() {
-        return this.inventory.getInventoryName();
+        return TinkersRebornUtils.translate(this.inventory.getInventoryName());
     }
 
     protected int playerInventoryStart = -1;
@@ -182,6 +182,7 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
                      * but 1
                      * in the case of armor slots)
                      */
+                    @Override
                     public int getSlotStackLimit() {
                         return 1;
                     }
@@ -189,8 +190,11 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
                     /**
                      * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
                      */
+                    @Override
                     public boolean isItemValid(ItemStack stack) {
-                        if (stack == null) return false;
+                        if (stack == null) {
+                            return false;
+                        }
                         return stack.getItem()
                             .isValidArmor(stack, k, playerInventory.player);
                     }
@@ -198,6 +202,7 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
                     /**
                      * Returns the icon index on items.png that is used as background image of the slot.
                      */
+                    @Override
                     @SideOnly(Side.CLIENT)
                     public IIcon getBackgroundIconIndex() {
                         return ItemArmor.func_94602_b(k);

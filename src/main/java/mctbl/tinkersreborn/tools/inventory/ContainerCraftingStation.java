@@ -3,6 +3,15 @@ package mctbl.tinkersreborn.tools.inventory;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.tuple.Pair;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mctbl.tinkersreborn.library.gui.container.BaseContainer;
+import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
+import mctbl.tinkersreborn.library.inventory.InventoryCraftingPersistent;
+import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
+import mctbl.tinkersreborn.tools.inventory.slots.SlotCraftingStation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -15,20 +24,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import mctbl.tinkersreborn.library.gui.container.BaseContainer;
-import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
-import mctbl.tinkersreborn.library.inventory.InventoryCraftingPersistent;
-import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
-import mctbl.tinkersreborn.tools.inventory.slots.SlotCraftingStation;
 
 public class ContainerCraftingStation extends ContainerTinkerStation<CraftingStationLogic> {
 
@@ -58,11 +58,9 @@ public class ContainerCraftingStation extends ContainerTinkerStation<CraftingSta
 
         this.addSlotToContainer(
             new SlotCraftingStation(playerInventory.player, this.craftMatrix, this.craftResult, SLOT_RESULT, 124, 35));
-        int i;
-        int j;
 
-        for (i = 0; i < 3; ++i) {
-            for (j = 0; j < 3; ++j) {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
                 this.addSlotToContainer(new Slot(this.craftMatrix, j + i * 3, 30 + j * 18, 17 + i * 18));
             }
         }
@@ -86,17 +84,19 @@ public class ContainerCraftingStation extends ContainerTinkerStation<CraftingSta
             }
             if (!stationPart) {
                 TileEntity te = world.getTileEntity(neighbor.x, neighbor.y, neighbor.z);
-                if (te != null && !(te instanceof CraftingStationLogic)) {
-                    if (te instanceof IInventory && ((IInventory) te).isUseableByPlayer(player)) {
+                if (te != null && !(te instanceof CraftingStationLogic) && te instanceof IInventory inv && inv.isUseableByPlayer(player)) {
                         inventoryTE = te;
                         accessDir = dir;
                         break;
-                    }
                 }
             }
         }
 
         if (inventoryTE != null) {
+            if(inventoryTE instanceof TileEntityChest chest) {
+
+            }
+
             addSubContainer(new ContainerSideInventory<>(inventoryTE, accessDir, -6 - 18 * 6, 8, 6), false);
         }
 
@@ -115,7 +115,11 @@ public class ContainerCraftingStation extends ContainerTinkerStation<CraftingSta
 
     public IRecipe findMatchingRecipe(InventoryCrafting inv, World world) {
         for (IRecipe irecipe : CraftingManager.getInstance()
-            .getRecipeList()) if (irecipe.matches(inv, world)) return irecipe;
+            .getRecipeList()) {
+            if (irecipe.matches(inv, world)) {
+                return irecipe;
+            }
+        }
 
         return null;
     }

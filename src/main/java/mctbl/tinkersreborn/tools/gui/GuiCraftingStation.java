@@ -3,13 +3,6 @@ package mctbl.tinkersreborn.tools.gui;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
 import codechicken.nei.VisiblityData;
 import codechicken.nei.api.INEIGuiHandler;
 import codechicken.nei.api.TaggedInventoryArea;
@@ -23,6 +16,12 @@ import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
 import mctbl.tinkersreborn.tools.inventory.ContainerCraftingStation;
 import mctbl.tinkersreborn.tools.inventory.ContainerTinkerStation;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 @SideOnly(Side.CLIENT)
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
@@ -41,10 +40,6 @@ public class GuiCraftingStation extends GuiTinkerStation implements INEIGuiHandl
         if (inventorySlots instanceof ContainerCraftingStation container) {
             ContainerSideInventory<?> chestContainer = container.getSubContainer(ContainerSideInventory.class);
             if (chestContainer != null) {
-                // if(chestContainer.getTile() instanceof TileEntityChest) {
-                // // Fix: chests don't update their single/double chest status clientside once accessed
-                // ((TileEntityChest) chestContainer.getTile()).doubleChestHandler = null;
-                // }
                 sideInventory = new GuiSideInventory(
                     this,
                     chestContainer,

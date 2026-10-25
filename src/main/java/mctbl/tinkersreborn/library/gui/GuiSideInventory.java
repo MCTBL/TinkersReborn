@@ -1,9 +1,5 @@
 package mctbl.tinkersreborn.library.gui;
 
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
@@ -11,6 +7,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.gui.GuiGeneric;
 import mctbl.tinkersreborn.library.gui.container.BaseContainer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.util.ResourceLocation;
 
 // a side inventory to be displayed to the left or right of another GUI
 @SideOnly(Side.CLIENT)
@@ -224,24 +223,24 @@ public class GuiSideInventory extends GuiModule {
             yd += textBackground.h;
         }
 
-        for (Slot slot : inventorySlots.inventorySlots) {
-            if (shouldDrawSlot(slot)) {
+        for (Slot s : inventorySlots.inventorySlots) {
+            if (shouldDrawSlot(s)) {
                 // calc position of the slot
-                int offset = slot.getSlotIndex() - firstSlotId;
+                int offset = s.getSlotIndex() - firstSlotId;
                 int x = (offset % columns) * this.slot.w;
                 int y = (offset / columns) * this.slot.h;
 
-                slot.xDisplayPosition = xd + x + 1;
-                slot.yDisplayPosition = yd + y + 1;
+                s.xDisplayPosition = xd + x + 1;
+                s.yDisplayPosition = yd + y + 1;
 
                 if (this.right) {
-                    slot.xDisplayPosition += parent.realWidth;
+                    s.xDisplayPosition += parent.realWidth;
                 } else {
-                    slot.xDisplayPosition -= this.xSize;
+                    s.xDisplayPosition -= this.xSize;
                 }
             } else {
-                slot.xDisplayPosition = 0;
-                slot.yDisplayPosition = 0;
+                s.xDisplayPosition = 0;
+                s.yDisplayPosition = 0;
             }
         }
     }
@@ -249,7 +248,7 @@ public class GuiSideInventory extends GuiModule {
     @Override
     public void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         if (shouldDrawName()) {
-            String name = ((BaseContainer) inventorySlots).getInventoryDisplayName();
+            String name = ((BaseContainer<?>) inventorySlots).getInventoryDisplayName();
             if (this.fontRendererObj == null) {
                 this.fontRendererObj = this.parent.getFontRender();
             }
