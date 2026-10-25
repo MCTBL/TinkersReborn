@@ -3,16 +3,8 @@ package mctbl.tinkersreborn.tools.inventory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import mctbl.tinkersreborn.library.gui.container.BaseContainer;
-import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
-import mctbl.tinkersreborn.library.inventory.InventoryCraftingPersistent;
-import mctbl.tinkersreborn.library.utils.BlockPos;
-import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
-import mctbl.tinkersreborn.tools.inventory.slots.SlotCraftingStation;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -29,6 +21,16 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.player.PlayerOpenContainerEvent;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mctbl.tinkersreborn.library.gui.container.BaseContainer;
+import mctbl.tinkersreborn.library.inventory.ContainerSideInventory;
+import mctbl.tinkersreborn.library.inventory.InventoryCraftingPersistent;
+import mctbl.tinkersreborn.library.utils.BlockPos;
+import mctbl.tinkersreborn.tools.entity.CraftingStationLogic;
+import mctbl.tinkersreborn.tools.inventory.slots.SlotCraftingStation;
 
 public class ContainerCraftingStation extends ContainerTinkerStation<CraftingStationLogic> {
 
@@ -84,20 +86,25 @@ public class ContainerCraftingStation extends ContainerTinkerStation<CraftingSta
             }
             if (!stationPart) {
                 TileEntity te = world.getTileEntity(neighbor.x, neighbor.y, neighbor.z);
-                if (te != null && !(te instanceof CraftingStationLogic) && te instanceof IInventory inv && inv.isUseableByPlayer(player)) {
-                        inventoryTE = te;
-                        accessDir = dir;
-                        break;
+                if (te != null && !(te instanceof CraftingStationLogic)
+                    && te instanceof IInventory inv
+                    && inv.isUseableByPlayer(player)) {
+                    inventoryTE = te;
+                    accessDir = dir;
+                    break;
                 }
             }
         }
 
         if (inventoryTE != null) {
-            if(inventoryTE instanceof TileEntityChest chest) {
-
+            IInventory sideInventory = (IInventory) inventoryTE;
+            if (inventoryTE instanceof TileEntityChest chest && chest.getBlockType() instanceof BlockChest chestBlock) {
+                sideInventory = chestBlock.func_149951_m(world, chest.xCoord, chest.yCoord, chest.zCoord);
             }
 
-            addSubContainer(new ContainerSideInventory<>(inventoryTE, accessDir, -6 - 18 * 6, 8, 6), false);
+            addSubContainer(
+                new ContainerSideInventory<>(inventoryTE, accessDir, sideInventory, -6 - 18 * 6, 8, 6),
+                false);
         }
 
         this.addPlayerInventory(playerInventory, 8, 84);

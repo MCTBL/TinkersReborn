@@ -5,9 +5,6 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,6 +21,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 /**
  * Same as Container but provides some extra functionality to simplify things
@@ -57,14 +58,17 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
     }
 
     protected BaseContainer(T tile, ForgeDirection invDir) {
-        this.tile = tile;
-        this.inventory = (IInventory) this.tile;
-        this.xCoord = this.tile.xCoord;
-        this.yCoord = this.tile.yCoord;
-        this.zCoord = this.tile.zCoord;
-        this.world = this.tile.getWorldObj();
-        this.originalBlock = this.tile.getBlockType();
+        this(tile, invDir, (IInventory) tile);
+    }
 
+    protected BaseContainer(T tile, ForgeDirection invDir, IInventory inventory) {
+        this.tile = tile;
+        this.inventory = inventory;
+        this.xCoord = tile.xCoord;
+        this.yCoord = tile.yCoord;
+        this.zCoord = tile.zCoord;
+        this.world = tile.getWorldObj();
+        this.originalBlock = tile.getBlockType();
     }
 
     public void syncOnOpen(EntityPlayerMP playerOpened) {
@@ -119,8 +123,7 @@ public abstract class BaseContainer<T extends TileEntity> extends Container {
         }
 
         // too far away from block?
-        return playerIn.getDistanceSq(xCoord + 0.5d, yCoord + 0.5d, zCoord + 0.5d)
-            <= maxDist;
+        return playerIn.getDistanceSq(xCoord + 0.5d, yCoord + 0.5d, zCoord + 0.5d) <= maxDist;
     }
 
     @Nonnull

@@ -1,5 +1,9 @@
 package mctbl.tinkersreborn.library.gui;
 
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
@@ -7,9 +11,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.gui.GuiGeneric;
 import mctbl.tinkersreborn.library.gui.container.BaseContainer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.util.ResourceLocation;
 
 // a side inventory to be displayed to the left or right of another GUI
 @SideOnly(Side.CLIENT)

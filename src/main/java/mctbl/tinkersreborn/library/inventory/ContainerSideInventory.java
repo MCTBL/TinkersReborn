@@ -17,7 +17,11 @@ public class ContainerSideInventory<T extends TileEntity> extends BaseContainer<
     }
 
     public ContainerSideInventory(T tile, ForgeDirection dir, int x, int y, int columns) {
-        super(tile, dir);
+        this(tile, dir, (IInventory) tile, x, y, columns);
+    }
+
+    public ContainerSideInventory(T tile, ForgeDirection dir, IInventory inventory, int x, int y, int columns) {
+        super(tile, dir, inventory);
 
         this.columns = columns;
         this.slotCount = inventory.getSizeInventory();
