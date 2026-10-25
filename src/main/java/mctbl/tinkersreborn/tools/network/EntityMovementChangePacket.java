@@ -48,9 +48,7 @@ public class EntityMovementChangePacket extends AbstractPacketThreadsafe {
     public void handleClientSafe(MessageContext netHandler) {
         Entity entity = Minecraft.getMinecraft().theWorld.getEntityByID(entityID);
         if (entity != null) {
-            entity.posX = this.posX;
-            entity.posY = this.posY;
-            entity.posZ = this.posZ;
+            entity.setPosition(posX, posY, posZ);
             entity.motionX = this.motionX;
             entity.motionY = this.motionY;
             entity.motionZ = this.motionZ;
@@ -68,7 +66,7 @@ public class EntityMovementChangePacket extends AbstractPacketThreadsafe {
     @Override
     public void handleServerSafe(MessageContext ctx) {
         // only ever sent to clients
-        throw new UnsupportedOperationException("Serverside only");
+        throw new UnsupportedOperationException("Clientside only");
     }
 
     @Override

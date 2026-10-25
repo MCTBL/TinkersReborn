@@ -23,6 +23,7 @@ import mctbl.tinkersreborn.smeltery.network.SmelteryFluidUpdatePacket;
 import mctbl.tinkersreborn.smeltery.network.TinkerTankButtonClicked;
 import mctbl.tinkersreborn.smeltery.network.TinkerTankFluidClicked;
 import mctbl.tinkersreborn.smeltery.network.TinkerTankFluidUpdatePacket;
+import mctbl.tinkersreborn.tools.network.EntityMovementChangePacket;
 import mctbl.tinkersreborn.tools.network.PartBuilderSelectionPacket;
 import mctbl.tinkersreborn.tools.network.TinkerStationTabPacket;
 import mctbl.tinkersreborn.tools.network.ToolBreakAnimationPacket;
@@ -52,6 +53,7 @@ public class TinkerNetwork {
         registerPacketClient(SmelteryFluidUpdatePacket.class);
         registerPacketClient(TinkerTankFluidUpdatePacket.class);
         registerPacketClient(ToolBreakAnimationPacket.class);
+        registerPacketClient(EntityMovementChangePacket.class);
 
         registerPacketServer(TinkerStationTabPacket.class);
         registerPacketServer(SmelteryFluidClicked.class);

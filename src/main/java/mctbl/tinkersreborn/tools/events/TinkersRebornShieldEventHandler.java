@@ -1,13 +1,5 @@
 package mctbl.tinkersreborn.tools.events;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import mctbl.tinkersreborn.TinkersRebornConfig;
-import mctbl.tinkersreborn.common.network.TinkerNetwork;
-import mctbl.tinkersreborn.library.tools.ShieldCore;
-import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
-import mctbl.tinkersreborn.tools.network.EntityMovementChangePacket;
-import mctbl.tinkersreborn.tools.traits.TraitSpiky;
-import mctbl.tinkersreborn.util.ToolTagsHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -16,6 +8,15 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
+import mctbl.tinkersreborn.library.tools.ShieldCore;
+import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
+import mctbl.tinkersreborn.tools.network.EntityMovementChangePacket;
+import mctbl.tinkersreborn.tools.traits.TraitSpiky;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class TinkersRebornShieldEventHandler {
 
@@ -44,7 +45,7 @@ public class TinkersRebornShieldEventHandler {
             // is blocking
             ToolTagsHelper.getTraitsOrdered(tool)
                 .forEach(trait -> trait.onBlock(tool, player, event));
-            
+
             // use durability equal to the damage prevented
             ToolTagsHelper.damageTool(tool, (int) event.ammount, player);
         }
@@ -98,7 +99,10 @@ public class TinkersRebornShieldEventHandler {
             // special treatement for arrows
             if (projectile instanceof EntityArrow arrow) {
                 arrow.shootingEntity = player;
+            }
+            TinkerNetwork.sendToAll(new EntityMovementChangePacket(projectile));
 
+            if (projectile instanceof EntityArrow) {
                 // the inverse is done when the event is cancelled in arrows etc.
                 // we reverse it so it has no effect. yay
                 projectile.motionX /= -0.10000000149011612D;
@@ -107,7 +111,6 @@ public class TinkersRebornShieldEventHandler {
             }
 
             // notify clients from change, otherwise people will get veeeery confused
-            TinkerNetwork.sendToAll(new EntityMovementChangePacket(projectile));
 
             // use durability equal to the damage prevented
             ToolTagsHelper.damageTool(tool, (int) event.ammount, player);
