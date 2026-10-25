@@ -23,12 +23,14 @@ public abstract class AbstractButtonsManualPage extends AbstractManualPage {
     protected int buttonEachRow;
     protected ButtonSize buttonSize;
 
+    public final static int BUTTON_EACH_ROW_DEFAULT = 6;
+
     protected AbstractButtonsManualPage(JsonObject json) {
         super(json);
         String buttonSizeStr = json.has("size") ? json.get("size")
             .getAsString() : "medium";
         this.buttonEachRow = json.has("capacity") ? json.get("capacity")
-            .getAsInt() : 7;
+            .getAsInt() : BUTTON_EACH_ROW_DEFAULT;
         this.buttonSize = ButtonSize.getSize(buttonSizeStr);
         this.title = json.has("title") ? json.get("title")
             .getAsString() : "";

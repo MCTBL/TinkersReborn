@@ -51,8 +51,7 @@ public class ImagePage extends TextPage {
             this.imageWidth = 1;
         }
         // image max height is 3/4 of page
-        this.imageScale = Math
-            .min(contentHeight * 3.0F / 4.0F / this.imageHeight, contentWidth * 1.0F / this.imageWidth);
+        this.imageScale = Math.min(contentHeight * 0.75F / this.imageHeight, contentWidth * 1.0F / this.imageWidth);
     }
 
     @Override

@@ -56,7 +56,7 @@ public class BowMaterialNavigationPage extends AbstractButtonsManualPage {
             List<AbstractManualPage> list = new ArrayList<>();
             JsonObject json = definition.getData();
             int buttonEachRow = json.has("capacity") ? json.get("capacity")
-                .getAsInt() : 7;
+                .getAsInt() : AbstractButtonsManualPage.BUTTON_EACH_ROW_DEFAULT;
             Lists.partition(allBowMaterials, buttonEachRow * buttonEachRow)
                 .forEach(l -> list.add(new BowMaterialNavigationPage(json, l)));
 

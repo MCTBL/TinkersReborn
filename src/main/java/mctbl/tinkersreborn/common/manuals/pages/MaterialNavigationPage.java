@@ -54,9 +54,10 @@ public class MaterialNavigationPage extends AbstractButtonsManualPage {
             List<AbstractManualPage> list = new ArrayList<>();
             JsonObject json = definition.getData();
             int buttonEachRow = json.has("capacity") ? json.get("capacity")
-                .getAsInt() : 7;
+                .getAsInt() : AbstractButtonsManualPage.BUTTON_EACH_ROW_DEFAULT;
             Lists.partition(allMaterials, buttonEachRow * buttonEachRow)
                 .forEach(l -> list.add(new MaterialNavigationPage(json, allMaterials)));
+
             allMaterials.forEach(m -> list.add(new MaterialPage(m)));
 
             return list;
