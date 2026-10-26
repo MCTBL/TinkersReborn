@@ -55,5 +55,19 @@
       "tinkersreborn:open_flip2",
       "tinkersreborn:open_flip3"
     ]
+  },
+  "blocking": {
+    "category": "player",
+    "sounds": [
+      "tinkersreborn:block1",
+      "tinkersreborn:block2",
+      "tinkersreborn:block3",
+      "tinkersreborn:block4",
+      "tinkersreborn:block5"
+    ]
+  },
+  "blocking_faild": {
+    "category": "player",
+    "sounds": ["tinkersreborn:break"]
   }
 }

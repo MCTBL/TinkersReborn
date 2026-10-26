@@ -30,7 +30,7 @@ public class TinkersEntityProperties implements IExtendedEntityProperties {
 
     public void tick() {
         this.typeTicksMap.values()
-            .forEach(e -> e.tick());
+            .forEach(Effect::tick);
     }
 
     public boolean isActive(String identifier) {

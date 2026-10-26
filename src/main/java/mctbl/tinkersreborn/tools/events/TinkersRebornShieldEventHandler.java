@@ -10,22 +10,19 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
+import mctbl.tinkersreborn.library.event.Sounds;
 import mctbl.tinkersreborn.library.tools.ShieldCore;
-import mctbl.tinkersreborn.library.tools.leveling.ToolLevelingHelper;
 import mctbl.tinkersreborn.tools.network.EntityMovementChangePacket;
 import mctbl.tinkersreborn.tools.traits.TraitSpiky;
+import mctbl.tinkersreborn.util.ShieldHelper;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class TinkersRebornShieldEventHandler {
 
     @SubscribeEvent
     public void playerBlockOrHurtEvent(LivingHurtEvent event) {
-        if (TinkersRebornConfig.toolLevelingEnable) {
-            ToolLevelingHelper.onHurt(event);
-        }
-
         boolean isPlayerGettingDamaged = event.entityLiving instanceof EntityPlayer;
         boolean isClient = event.entityLiving.worldObj.isRemote;
         boolean isReflectedDamage = TraitSpiky.isThornsDamage(event.source);
@@ -36,18 +33,33 @@ public class TinkersRebornShieldEventHandler {
 
         final EntityPlayer player = (EntityPlayer) event.entityLiving;
         ItemStack tool = player.isUsingItem() ? player.getCurrentEquippedItem() : null;
+        if (ToolTagsHelper.isBroken(tool)) return;
 
-        if (isShield(tool) && !ToolTagsHelper.isBroken(tool)
-            && !event.isCanceled()
+        if (ShieldHelper.isShield(tool) && !event.isCanceled()
             && tool.getItem() instanceof ShieldCore shield
-            && isDamageInBlockingAngel(player, event.source, shield.blockingAngel())
+            && ShieldHelper.isWithinBlockingAngle(player, event.source, shield.blockingAngel())
             && !event.source.isProjectile()) {
-            // is blocking
+            // got hit by something: reduce damage
+            int damage = event.ammount < 2f ? 1 : Math.round(event.ammount / 2f);
+
+            // reduce damage. After this event the damage will be halved again because we're blocking so we have to
+            // factor this in
+            event.ammount = (event.ammount * (1.0F - shield.damageReduction()));
+            ShieldHelper.preventNextKnockback(player);
+
+            // reflect damage
+            if (event.source.getSourceOfDamage() != null) {
+                event.source.getSourceOfDamage()
+                    .attackEntityFrom(DamageSource.causeThornsDamage(player), event.ammount / 2f);
+                damage = damage * 3 / 2;
+            }
+
+            // blocking success
             ToolTagsHelper.getTraitsOrdered(tool)
                 .forEach(trait -> trait.onBlock(tool, player, event));
 
-            // use durability equal to the damage prevented
-            ToolTagsHelper.damageTool(tool, (int) event.ammount, player);
+            ToolTagsHelper.damageTool(tool, damage, player);
+            Sounds.playSoundForAll(player, Sounds.blocking, 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
         }
     }
 
@@ -63,10 +75,11 @@ public class TinkersRebornShieldEventHandler {
 
         final EntityPlayer player = (EntityPlayer) event.entityLiving;
         ItemStack tool = player.isUsingItem() ? player.getCurrentEquippedItem() : null;
-        if (isShield(tool) && !ToolTagsHelper.isBroken(tool)
-            && !event.isCanceled()
+        if (ToolTagsHelper.isBroken(tool)) return;
+
+        if (ShieldHelper.isShield(tool) && !event.isCanceled()
             && tool.getItem() instanceof ShieldCore shield
-            && isDamageInBlockingAngel(player, event.source, shield.blockingAngel())
+            && ShieldHelper.isWithinBlockingAngle(player, event.source, shield.blockingAngel())
             && event.source.isProjectile()) {
             Entity projectile = event.source.getSourceOfDamage();
             Vec3 motion = Vec3.createVectorHelper(projectile.motionX, projectile.motionY, projectile.motionZ);
@@ -114,57 +127,7 @@ public class TinkersRebornShieldEventHandler {
 
             // use durability equal to the damage prevented
             ToolTagsHelper.damageTool(tool, (int) event.ammount, player);
+            Sounds.playSoundForAll(player, Sounds.blocking, 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
         }
-    }
-
-    private boolean isShield(ItemStack stack) {
-        return stack != null && stack.getItem() instanceof ShieldCore;
-    }
-
-    private boolean isDamageInBlockingAngel(EntityPlayer player, DamageSource source, double fullAngleDegrees) {
-
-        Entity direct = source.getSourceOfDamage();
-
-        double towardSourceX;
-        double towardSourceZ;
-
-        if (direct instanceof EntityArrow) {
-            towardSourceX = -direct.motionX;
-            towardSourceZ = -direct.motionZ;
-
-            if (towardSourceX * towardSourceX + towardSourceZ * towardSourceZ < 1.0E-8) {
-                return false;
-            }
-        } else {
-            if (direct == null || direct == player) {
-                return false;
-            }
-
-            towardSourceX = direct.posX - player.posX;
-            towardSourceZ = direct.posZ - player.posZ;
-        }
-
-        return isWithinShieldAngle(player, towardSourceX, towardSourceZ, fullAngleDegrees);
-    }
-
-    private boolean isWithinShieldAngle(EntityPlayer player, double towardSourceX, double towardSourceZ,
-        double fullAngleDegrees) {
-
-        double yaw = Math.toRadians(player.rotationYaw);
-
-        double lookX = -Math.sin(yaw);
-        double lookZ = Math.cos(yaw);
-
-        double sourceLengthSq = towardSourceX * towardSourceX + towardSourceZ * towardSourceZ;
-
-        if (sourceLengthSq < 1.0E-8) {
-            return false;
-        }
-
-        double dot = (lookX * towardSourceX + lookZ * towardSourceZ) / Math.sqrt(sourceLengthSq);
-
-        double halfAngleRadians = Math.toRadians(fullAngleDegrees * 0.5);
-
-        return dot >= Math.cos(halfAngleRadians);
     }
 }
