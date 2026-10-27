@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -39,27 +38,7 @@ public class TinkersRebornShieldEventHandler {
             && tool.getItem() instanceof ShieldCore shield
             && ShieldHelper.isWithinBlockingAngle(player, event.source, shield.blockingAngel())
             && !event.source.isProjectile()) {
-            // got hit by something: reduce damage
-            int damage = event.ammount < 2f ? 1 : Math.round(event.ammount / 2f);
-
-            // reduce damage. After this event the damage will be halved again because we're blocking so we have to
-            // factor this in
-            event.ammount = (event.ammount * (1.0F - shield.damageReduction()));
-            ShieldHelper.preventNextKnockback(player);
-
-            // reflect damage
-            if (event.source.getSourceOfDamage() != null) {
-                event.source.getSourceOfDamage()
-                    .attackEntityFrom(DamageSource.causeThornsDamage(player), event.ammount / 2f);
-                damage = damage * 3 / 2;
-            }
-
-            // blocking success
-            ToolTagsHelper.getTraitsOrdered(tool)
-                .forEach(trait -> trait.onBlock(tool, player, event));
-
-            ToolTagsHelper.damageTool(tool, damage, player);
-            Sounds.playSoundForAll(player, Sounds.blocking, 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
+            shield.handleBlocking(tool, player, event);
         }
     }
 
@@ -113,6 +92,8 @@ public class TinkersRebornShieldEventHandler {
             if (projectile instanceof EntityArrow arrow) {
                 arrow.shootingEntity = player;
             }
+
+            // notify clients from change, otherwise people will get veeeery confused
             TinkerNetwork.sendToAll(new EntityMovementChangePacket(projectile));
 
             if (projectile instanceof EntityArrow) {
@@ -122,8 +103,6 @@ public class TinkersRebornShieldEventHandler {
                 projectile.motionY /= -0.10000000149011612D;
                 projectile.motionZ /= -0.10000000149011612D;
             }
-
-            // notify clients from change, otherwise people will get veeeery confused
 
             // use durability equal to the damage prevented
             ToolTagsHelper.damageTool(tool, (int) event.ammount, player);

@@ -598,7 +598,7 @@ public class TinkersRebornTools implements ITinkersRebornModule {
         roundShield = new RoundShield();
         GameRegistry.registerItem(roundShield, roundShield.getUnlocalizedName());
         TinkersRebornRegistry.registerTool(roundShield);
-        TinkersRebornRegistry.registerToolForgeCrafting(roundShield);
+        TinkersRebornRegistry.registerToolStationCrafting(roundShield);
 
         mossball = new MaterialItem("Mossball", "mossball");
         slimeCrystal = new MaterialItem("SlimeCrystal", "slimecrystal");

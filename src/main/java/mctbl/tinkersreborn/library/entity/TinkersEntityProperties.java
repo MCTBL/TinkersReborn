@@ -34,17 +34,17 @@ public class TinkersEntityProperties implements IExtendedEntityProperties {
     }
 
     public boolean isActive(String identifier) {
-        return this.typeTicksMap.computeIfAbsent(identifier, k -> new Effect(0, 0))
+        return this.typeTicksMap.getOrDefault(identifier, Effect.getEmptyEffect())
             .isActive();
     }
 
     public int getRemainingTicks(String identifier) {
-        return this.typeTicksMap.computeIfAbsent(identifier, k -> new Effect(0, 0))
+        return this.typeTicksMap.getOrDefault(identifier, Effect.getEmptyEffect())
             .getRemainingTicks();
     }
 
     public int getLevel(String identifier) {
-        return this.typeTicksMap.computeIfAbsent(identifier, k -> new Effect(0, 0))
+        return this.typeTicksMap.getOrDefault(identifier, Effect.getEmptyEffect())
             .getLevel();
     }
 
@@ -62,6 +62,8 @@ public class TinkersEntityProperties implements IExtendedEntityProperties {
     public void init(Entity entity, World world) {}
 
     public static class Effect {
+
+        private static final Effect clearInstance = new Effect(0, 0);
 
         private int remainingTicks;
         private int level;
@@ -103,6 +105,10 @@ public class TinkersEntityProperties implements IExtendedEntityProperties {
             }
             this.remainingTicks = Math.max(this.remainingTicks, ticks);
             this.level = level;
+        }
+
+        public static Effect getEmptyEffect() {
+            return clearInstance;
         }
     }
 }

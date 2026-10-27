@@ -53,6 +53,16 @@ public class RoundShield extends ShieldCore {
     }
 
     @Override
+    public float breakLimit() {
+        return 12.0F;
+    }
+
+    @Override
+    public int breakingRecoverTime() {
+        return 25;
+    }
+
+    @Override
     public ToolNBT buildToolTag(List<TinkersRebornMaterial> materials) {
         ToolNBT toolTag = super.buildToolTag(materials);
         toolTag.durability *= DURABILITY_MODIFIER;

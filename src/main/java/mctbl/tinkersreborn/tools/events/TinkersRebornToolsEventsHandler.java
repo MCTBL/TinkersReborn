@@ -123,7 +123,7 @@ public class TinkersRebornToolsEventsHandler {
      * And will calc tool leveling logic
      */
     @SubscribeEvent
-    public void playerBlockOrHurtEvent(LivingHurtEvent event) {
+    public void playerHurtEvent(LivingHurtEvent event) {
         if (TinkersRebornConfig.toolLevelingEnable) {
             ToolLevelingHelper.onHurt(event);
         }

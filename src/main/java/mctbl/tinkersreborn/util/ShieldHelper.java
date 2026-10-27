@@ -20,6 +20,7 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import mctbl.tinkersreborn.library.entity.TinkersEntityProperties;
 import mctbl.tinkersreborn.library.tools.ShieldCore;
 
 /** Common state and calculations shared by shield event handlers. */
@@ -28,6 +29,7 @@ public final class ShieldHelper {
     private static final Map<EntityPlayer, Boolean> KNOCKBACK_GUARDS = new IdentityHashMap<>();
     private static final UUID KNOCKBACK_MODIFIER_UUID = UUID.fromString("5c4e6e76-8f2a-4f12-9f2f-0d54e9a8a721");
     private static boolean registered;
+    private static final String BREAKING_DATA_INDENTIFIER = "shield_breaking";
 
     private ShieldHelper() {}
 
@@ -57,6 +59,21 @@ public final class ShieldHelper {
         double lookZ = Math.cos(yaw);
         double dot = (lookX * x + lookZ * z) / Math.sqrt(lengthSquared);
         return dot >= Math.cos(Math.toRadians(fullAngleDegrees * 0.5D));
+    }
+
+    public static void setPlayerBreaking(EntityPlayer player, int recoverNeedTicks) {
+        TinkersEntityProperties.getProps(player)
+            .apply(BREAKING_DATA_INDENTIFIER, recoverNeedTicks, 1);
+    }
+
+    public static int disableTicks(EntityPlayer player) {
+        return TinkersEntityProperties.getProps(player)
+            .getRemainingTicks(BREAKING_DATA_INDENTIFIER);
+    }
+
+    public static boolean isDisable(EntityPlayer player) {
+        return TinkersEntityProperties.getProps(player)
+            .isActive(BREAKING_DATA_INDENTIFIER);
     }
 
     /** Prevents the knockback generated later in attackEntityFrom for this hit. */
