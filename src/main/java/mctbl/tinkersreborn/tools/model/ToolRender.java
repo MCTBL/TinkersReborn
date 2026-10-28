@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
 
+import mctbl.tinkersreborn.library.tools.ShieldCore;
 import mctbl.tinkersreborn.library.tools.ToolCore;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -100,7 +101,31 @@ public class ToolRender implements IItemRenderer {
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
         if (type != ItemRenderType.ENTITY) {
-            specialAnimation(type, item);
+            if (item.getItem() instanceof ShieldCore && ent instanceof EntityPlayer player && player.isUsingItem()) {
+                switch (type) {
+                    case EQUIPPED_FIRST_PERSON:
+                        GL11.glTranslatef(0.6F, 0.1F, 0.05F);
+                        GL11.glRotatef(-77.0F, 1, 0, 0);
+                        GL11.glRotatef(52.0F, 0, 1, 0);
+                        GL11.glRotatef(77.0F, 0, 0, 1);
+                        break;
+                    case EQUIPPED:
+                        GL11.glTranslatef(0.65F, 0.75F, -0.3F);
+                        GL11.glRotatef(92.0F, 1, 0, 0);
+                        GL11.glRotatef(204.0F, 0, 1, 0);
+                        break;
+                    case ENTITY:
+                        break;
+                    case FIRST_PERSON_MAP:
+                        break;
+                    case INVENTORY:
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                specialAnimation(type, item);
+            }
         } else GL11.glTranslatef(-0.5f, -0.25f, 0); // why? because.. minecraft.
 
         // prepare colors
