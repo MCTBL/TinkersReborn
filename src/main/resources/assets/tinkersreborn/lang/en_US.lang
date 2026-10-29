@@ -324,7 +324,7 @@ tinkersreborn.tool.longbow.desc=The Longbow is a powerful long range weapon. It 
 tinkersreborn.tool.crossbow=Crossbow
 tinkersreborn.tool.crossbow.desc=The Crossbow is a slow but very powerful weapon. It has to be loaded beforehand by holding right-click, but can be fired at any moment afterwards.\nUses Tinkers' Bolts.
 tinkersreborn.tool.roundshield=Round Shield
-tinkersreborn.tool.roundshield.desc=TBD
+tinkersreborn.tool.roundshield.desc=The Round Shield protects its wielder from attacks from the front.\nIt reduces incoming damage and can reflect incoming projectiles while blocking.\nRight Click: Raise the shield
 
 tinkersreborn.category.tool=Tool
 tinkersreborn.category.weapon=Weapon
