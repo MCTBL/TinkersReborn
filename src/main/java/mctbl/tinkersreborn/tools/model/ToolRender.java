@@ -104,15 +104,18 @@ public class ToolRender implements IItemRenderer {
             if (item.getItem() instanceof ShieldCore && ent instanceof EntityPlayer player && player.isUsingItem()) {
                 switch (type) {
                     case EQUIPPED_FIRST_PERSON:
-                        GL11.glTranslatef(0.6F, 0.1F, 0.05F);
-                        GL11.glRotatef(-77.0F, 1, 0, 0);
-                        GL11.glRotatef(52.0F, 0, 1, 0);
-                        GL11.glRotatef(77.0F, 0, 0, 1);
+                        GL11.glTranslatef(0.9F - 0.5F, -0.1F - 0.5F, 0.95F - 0.5F);
+                        GL11.glRotatef(-80.0F, 1, 0, 0);
+                        GL11.glRotatef(48.0F, 0, 1, 0);
+                        GL11.glRotatef(80.0F, 0, 0, 1);
+                        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
                         break;
                     case EQUIPPED:
-                        GL11.glTranslatef(0.65F, 0.75F, -0.3F);
+                        GL11.glTranslatef(1.95F - 0.5F, 0.85F - 0.5F, -0.4F - 0.5F);
                         GL11.glRotatef(92.0F, 1, 0, 0);
                         GL11.glRotatef(204.0F, 0, 1, 0);
+                        GL11.glRotatef(0.0F, 0, 0, 1);
+                        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
                         break;
                     case ENTITY:
                         break;
