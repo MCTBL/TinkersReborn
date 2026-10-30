@@ -47,8 +47,6 @@ public class TinkersRebornToolsEventsHandler {
 
     @SubscribeEvent
     public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-        if (event.entityLiving.worldObj.isRemote) return;
-
         TinkersEntityProperties props = TinkersEntityProperties.getProps(event.entityLiving);
         if (props != null) {
             props.tick();
@@ -57,8 +55,9 @@ public class TinkersRebornToolsEventsHandler {
 
     @SubscribeEvent
     public void onEntityConstructing(EntityEvent.EntityConstructing event) {
-        if (event.entity instanceof EntityLivingBase) {
-            event.entity.registerExtendedProperties(TinkersEntityProperties.IDENTIFIER, new TinkersEntityProperties());
+        if (event.entity instanceof EntityLivingBase living) {
+            event.entity
+                .registerExtendedProperties(TinkersEntityProperties.IDENTIFIER, new TinkersEntityProperties(living));
         }
     }
 

@@ -54,6 +54,7 @@ public class TinkerNetwork {
         registerPacketClient(TinkerTankFluidUpdatePacket.class);
         registerPacketClient(ToolBreakAnimationPacket.class);
         registerPacketClient(EntityMovementChangePacket.class);
+        registerPacketClient(TinkerEntityPropertiesSyncPacket.class);
 
         registerPacketServer(TinkerStationTabPacket.class);
         registerPacketServer(SmelteryFluidClicked.class);
