@@ -31,6 +31,7 @@ public abstract class ModifierAspect {
     public static final ModifierAspect weaponOnly = new CategoryAspect(Category.WEAPON);
     public static final ModifierAspect aoeOnly = new CategoryAspect(Category.AOE);
     public static final ModifierAspect projectileOnly = new CategoryAspect(Category.PROJECTILE);
+    public static final ModifierAspect shieldOnly = new CategoryAspect(Category.SHIELD);
 
     protected final IModifier parent;
 

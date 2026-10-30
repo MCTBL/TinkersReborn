@@ -101,10 +101,14 @@ public class ToolRender implements IItemRenderer {
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
         if (type != ItemRenderType.ENTITY) {
-            if (item.getItem() instanceof ShieldCore && ent instanceof EntityPlayer player && player.isUsingItem()) {
+            if (item.getItem() instanceof ShieldCore core && ent instanceof EntityPlayer player
+                && player.isUsingItem()) {
                 switch (type) {
                     case EQUIPPED_FIRST_PERSON:
-                        GL11.glTranslatef(0.9F - 0.5F, -0.1F - 0.5F, 0.95F - 0.5F);
+                        float prepareTime = core.blockPrepareTime() * 1.0F;
+                        float percentage = 1.0F
+                            - Math.max(0.0F, prepareTime - player.getItemInUseDuration()) / prepareTime;
+                        GL11.glTranslatef(0.4F, -1.2F + 0.6F * percentage, 0.45F);
                         GL11.glRotatef(-80.0F, 1, 0, 0);
                         GL11.glRotatef(48.0F, 0, 1, 0);
                         GL11.glRotatef(80.0F, 0, 0, 1);

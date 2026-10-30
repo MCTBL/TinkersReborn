@@ -29,7 +29,11 @@ public class ModHaste extends ToolModifier {
 
         this.max = max;
 
-        addAspects(new ModifierAspect.MultiAspect(this, 5, max, 1));
+        addAspects(
+            new ModifierAspect.MultiAspect(this, 5, max, 1),
+            ModifierAspect.toolOnly,
+            ModifierAspect.harvestOnly,
+            ModifierAspect.weaponOnly);
     }
 
     @Override

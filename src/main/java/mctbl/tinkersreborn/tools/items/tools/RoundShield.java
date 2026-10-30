@@ -14,19 +14,22 @@ public class RoundShield extends ShieldCore {
     public static final float DURABILITY_MODIFIER = 1.25f;
 
     public RoundShield() {
-        super("RoundShield", 2);
+        super("RoundShield", 3);
 
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.shieldCore, MaterialStatusType.HEAD, "_roundshield_head"));
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.rod, MaterialStatusType.HANDLE, "_roundshield_handle"));
+        this.componentsParts
+            .add(new ToolPartRecord(TinkersRebornTools.binding, MaterialStatusType.EXTRA, "_roundshield_bind"));
     }
 
     @Override
     public ToolBuildGuiInfo getToolBuildGuiInfo() {
         if (this.toolBuildGuiInfo == null) {
-            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(29, 60 - 30) // core
-                .addSlotPosition(29, 60); // rod
+            this.toolBuildGuiInfo = new ToolBuildGuiInfo(this).addSlotPosition(29, 30) // core
+                .addSlotPosition(20, 25) // rod
+                .addSlotPosition(9, 35); // binding
 
         }
         return this.toolBuildGuiInfo;
@@ -60,6 +63,12 @@ public class RoundShield extends ShieldCore {
     @Override
     public int breakingRecoverTime() {
         return 25;
+    }
+
+    @Override
+    public int blockPrepareTime() {
+        // 0.2s
+        return 4;
     }
 
     @Override

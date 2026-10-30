@@ -65,9 +65,5 @@
       "tinkersreborn:block4",
       "tinkersreborn:block5"
     ]
-  },
-  "blocking_faild": {
-    "category": "player",
-    "sounds": ["tinkersreborn:break"]
   }
 }

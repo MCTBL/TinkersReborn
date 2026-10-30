@@ -2,16 +2,22 @@ package mctbl.tinkersreborn.library.tools;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.event.Sounds;
+import mctbl.tinkersreborn.tools.Category;
+import mctbl.tinkersreborn.tools.network.EntityMovementChangePacket;
 import mctbl.tinkersreborn.util.ShieldHelper;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
@@ -20,6 +26,7 @@ public abstract class ShieldCore extends ToolCore {
     protected ShieldCore(String toolTypeName, int partAmount) {
         super(toolTypeName, partAmount);
         this.setCreativeTab(TinkersRebornRegistry.shieldTab);
+        addCategory(Category.SHIELD);
     }
 
     @Override
@@ -92,10 +99,60 @@ public abstract class ShieldCore extends ToolCore {
             Sounds.playSoundForAll(player, Sounds.blocking, 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
         } else {
             ShieldHelper.setPlayerBreaking(player, this.breakingRecoverTime());
-            Sounds.playSoundForAll(player, Sounds.blocking_break, 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
+            Sounds.playSoundForAll(player, "random.break", 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
         }
 
         ToolTagsHelper.damageTool(shieldStack, damage, player);
+    }
+
+    public void handleArrowReflection(ItemStack shieldStack, EntityPlayer player, LivingAttackEvent event) {
+        Entity projectile = event.source.getSourceOfDamage();
+        Vec3 motion = Vec3.createVectorHelper(projectile.motionX, projectile.motionY, projectile.motionZ);
+        Vec3 look = player.getLookVec();
+        // this gives a factor of how much we're looking at the incoming arrow
+        double strength = -look.dotProduct(motion.normalize());
+        // we're looking away. oh no.
+        if (strength < 0.1) {
+            return;
+        }
+
+        // caught that bastard! block it!
+        event.setCanceled(true);
+
+        // and return it to the sender
+        // calc speed of the projectile
+        double speed = projectile.motionX * projectile.motionX + projectile.motionY * projectile.motionY
+            + projectile.motionZ * projectile.motionZ;
+        speed = Math.sqrt(speed);
+        speed += 0.2f; // we add a bit speed
+
+        // and redirect it to where the player is looking
+        projectile.motionX = look.xCoord * speed;
+        projectile.motionY = look.yCoord * speed;
+        projectile.motionZ = look.zCoord * speed;
+
+        projectile.rotationYaw = (float) (Math.atan2(projectile.motionX, projectile.motionZ) * 180.0D / Math.PI);
+        projectile.rotationPitch = (float) (Math.atan2(projectile.motionY, speed) * 180.0D / Math.PI);
+
+        // special treatement for arrows
+        if (projectile instanceof EntityArrow arrow) {
+            arrow.shootingEntity = player;
+        }
+
+        // notify clients from change, otherwise people will get veeeery confused
+        TinkerNetwork.sendToAll(new EntityMovementChangePacket(projectile));
+
+        if (projectile instanceof EntityArrow) {
+            // the inverse is done when the event is cancelled in arrows etc.
+            // we reverse it so it has no effect. yay
+            projectile.motionX /= -0.10000000149011612D;
+            projectile.motionY /= -0.10000000149011612D;
+            projectile.motionZ /= -0.10000000149011612D;
+        }
+
+        // use durability equal to the damage prevented
+        ToolTagsHelper.damageTool(shieldStack, (int) event.ammount, player);
+        Sounds.playSoundForAll(player, Sounds.blocking, 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
     }
 
     @Override
@@ -116,4 +173,6 @@ public abstract class ShieldCore extends ToolCore {
     public abstract float breakLimit();
 
     public abstract int breakingRecoverTime();
+
+    public abstract int blockPrepareTime();
 }

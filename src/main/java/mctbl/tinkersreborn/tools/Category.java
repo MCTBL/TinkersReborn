@@ -28,6 +28,8 @@ public class Category {
     public static final Category NO_MELEE = new Category("no_melee");
     /** Everything that shoots other projectiles */
     public static final Category LAUNCHER = new Category("launcher");
+    /** Everything that is a shield */
+    public static final Category SHIELD = new Category("shield");
 
     public final String name;
 

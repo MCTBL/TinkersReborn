@@ -45,7 +45,7 @@ public class ClientProxy extends CommonProxy {
             // entities
             case BLUE_SLIME:
                 return new EntityBreakingFX(world, x, y, z, TinkersRebornGeneral.strangeFood, 2);
-            // // attack
+            // attack
             case CLEAVER_ATTACK:
                 return new ParticleAttackCleaver(world, x, y, z, xSpeed, ySpeed, zSpeed);
             case LONGSWORD_ATTACK:
