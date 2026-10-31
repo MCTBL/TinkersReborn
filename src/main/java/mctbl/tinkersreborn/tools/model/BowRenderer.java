@@ -1,18 +1,16 @@
 package mctbl.tinkersreborn.tools.model;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-
 import org.lwjgl.opengl.GL11;
 
 import mctbl.tinkersreborn.library.tools.AmmoCore;
 import mctbl.tinkersreborn.library.tools.BowCore;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.entity.EntityArrow;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 
 public class BowRenderer extends ToolRender {
 
@@ -21,9 +19,7 @@ public class BowRenderer extends ToolRender {
     private static final ItemStack vanillaArrow = new ItemStack(Items.arrow);
 
     @Override
-    protected void specialAnimation(ItemRenderType type, ItemStack item) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-
+    protected void specialAnimation(ItemRenderType type, ItemStack item, EntityPlayer player) {
         GL11.glTranslatef(0.5f, 0.5f, 0);
         GL11.glScalef(0.5f, 0.5f, 0.5f);
 

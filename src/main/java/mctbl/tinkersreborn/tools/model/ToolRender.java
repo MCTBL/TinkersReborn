@@ -3,6 +3,13 @@ package mctbl.tinkersreborn.tools.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
+
+import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
@@ -10,14 +17,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL14;
-
-import mctbl.tinkersreborn.library.tools.ShieldCore;
-import mctbl.tinkersreborn.library.tools.ToolCore;
-import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ToolRender implements IItemRenderer {
 
@@ -44,7 +43,7 @@ public class ToolRender implements IItemRenderer {
         return handleRenderType(item, type) & helper.ordinal() < ItemRendererHelper.EQUIPPED_BLOCK.ordinal();
     }
 
-    protected void specialAnimation(ItemRenderType type, ItemStack item) {
+    protected void specialAnimation(ItemRenderType type, ItemStack item, EntityPlayer player) {
         // for bow etc
     }
 
@@ -101,38 +100,7 @@ public class ToolRender implements IItemRenderer {
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
         if (type != ItemRenderType.ENTITY) {
-            if (item.getItem() instanceof ShieldCore core && ent instanceof EntityPlayer player
-                && player.isUsingItem()) {
-                switch (type) {
-                    case EQUIPPED_FIRST_PERSON:
-                        float prepareTime = core.blockPrepareTime() * 1.0F;
-                        float percentage = 1.0F
-                            - Math.max(0.0F, prepareTime - player.getItemInUseDuration()) / prepareTime;
-                        GL11.glTranslatef(0.4F, -1.2F + 0.6F * percentage, 0.45F);
-                        GL11.glRotatef(-80.0F, 1, 0, 0);
-                        GL11.glRotatef(48.0F, 0, 1, 0);
-                        GL11.glRotatef(80.0F, 0, 0, 1);
-                        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-                        break;
-                    case EQUIPPED:
-                        GL11.glTranslatef(1.95F - 0.5F, 0.85F - 0.5F, -0.4F - 0.5F);
-                        GL11.glRotatef(92.0F, 1, 0, 0);
-                        GL11.glRotatef(204.0F, 0, 1, 0);
-                        GL11.glRotatef(0.0F, 0, 0, 1);
-                        GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-                        break;
-                    case ENTITY:
-                        break;
-                    case FIRST_PERSON_MAP:
-                        break;
-                    case INVENTORY:
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                specialAnimation(type, item);
-            }
+            specialAnimation(type, item, Minecraft.getMinecraft().thePlayer);
         } else GL11.glTranslatef(-0.5f, -0.25f, 0); // why? because.. minecraft.
 
         // prepare colors
