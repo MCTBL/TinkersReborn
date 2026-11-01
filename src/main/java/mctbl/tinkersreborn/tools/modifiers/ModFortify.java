@@ -23,7 +23,6 @@ public class ModFortify extends ToolModifier {
 
     public ModFortify(TinkersRebornMaterial material) {
         super("fortify" + material.identifier, material.materialTextColor);
-
         if (!material.hasStats(MaterialStatusType.HEAD)) {
             throw new TinkerAPIException(
                 String.format(

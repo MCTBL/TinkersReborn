@@ -72,13 +72,13 @@ public abstract class ShieldCore extends ToolCore {
     public void handleBlocking(ItemStack shieldStack, EntityPlayer player, LivingHurtEvent event) {
         boolean isBreak = event.ammount >= this.breakLimit();
 
-        // got hit by something: reduce damage
         int damage = event.ammount < 2f ? 1 : Math.round(event.ammount / 2f);
 
         // reduce damage. After this event the damage will be halved again because we're blocking so we have to
         // factor this in
         float reduction = this.damageReduction() / (isBreak ? 2.0F : 1.0F);
 
+        // got hit by something: reduce damage
         event.ammount = (event.ammount * (1.0F - reduction));
 
         // reflect damage
@@ -95,7 +95,7 @@ public abstract class ShieldCore extends ToolCore {
             .forEach(trait -> trait.onBlock(shieldStack, player, event));
 
         if (!isBreak) {
-            ShieldHelper.preventNextKnockback(player);
+            ShieldHelper.preventNextKnockback(player, 0.7D);
             Sounds.playSoundForAll(player, Sounds.blocking, 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
         } else {
             ShieldHelper.setPlayerBreaking(player, this.breakingRecoverTime());

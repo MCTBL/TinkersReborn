@@ -1,14 +1,15 @@
 package mctbl.tinkersreborn.tools.model;
 
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+
 import org.lwjgl.opengl.GL11;
 
 import mctbl.tinkersreborn.tools.entity.EntityBolt;
 import mctbl.tinkersreborn.tools.items.tools.Bolt;
 import mctbl.tinkersreborn.tools.items.tools.CrossBow;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 
 public class CrossBowRender extends ToolRender {
 

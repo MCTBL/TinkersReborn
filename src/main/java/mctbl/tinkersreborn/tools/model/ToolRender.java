@@ -3,12 +3,6 @@ package mctbl.tinkersreborn.tools.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL14;
-
-import mctbl.tinkersreborn.library.tools.ToolCore;
-import mctbl.tinkersreborn.util.ToolTagsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -17,6 +11,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL14;
+
+import mctbl.tinkersreborn.library.tools.ToolCore;
+import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ToolRender implements IItemRenderer {
 

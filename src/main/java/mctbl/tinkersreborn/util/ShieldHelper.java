@@ -77,7 +77,7 @@ public final class ShieldHelper {
     }
 
     /** Prevents the knockback generated later in attackEntityFrom for this hit. */
-    public static void preventNextKnockback(EntityPlayer player) {
+    public static void preventNextKnockback(EntityPlayer player, double percentage) {
         if (player == null || player.worldObj.isRemote) return;
         ensureRegistered();
         IAttributeInstance attribute = player.getEntityAttribute(SharedMonsterAttributes.knockbackResistance);
@@ -85,13 +85,17 @@ public final class ShieldHelper {
             AttributeModifier modifier = new AttributeModifier(
                 KNOCKBACK_MODIFIER_UUID,
                 "TinkersReborn shield knockback guard",
-                1.0D,
+                percentage,
                 0).setSaved(false);
             if (attribute.getModifier(KNOCKBACK_MODIFIER_UUID) == null) {
                 attribute.applyModifier(modifier);
             }
             KNOCKBACK_GUARDS.put(player, Boolean.TRUE);
         }
+    }
+
+    public static void preventNextKnockback(EntityPlayer player) {
+        preventNextKnockback(player, 1.0D);
     }
 
     private static void ensureRegistered() {

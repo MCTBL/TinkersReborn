@@ -29,7 +29,7 @@ public class TinkersRebornShieldEventHandler {
 
         if (ShieldHelper.isShield(tool) && !event.isCanceled()
             && tool.getItem() instanceof ShieldCore shield
-            && player.getItemInUseDuration() >= shield.blockPrepareTime()
+            && player.getItemInUseDuration() > shield.blockPrepareTime()
             && ShieldHelper.isWithinBlockingAngle(player, event.source, shield.blockingAngel())
             && !event.source.isProjectile()) {
             shield.handleBlocking(tool, player, event);
@@ -52,7 +52,7 @@ public class TinkersRebornShieldEventHandler {
 
         if (ShieldHelper.isShield(tool) && !event.isCanceled()
             && tool.getItem() instanceof ShieldCore shield
-            && player.getItemInUseDuration() >= shield.blockPrepareTime()
+            && player.getItemInUseDuration() > shield.blockPrepareTime()
             && ShieldHelper.isWithinBlockingAngle(player, event.source, shield.blockingAngel())
             && event.source.isProjectile()) {
             shield.handleArrowReflection(tool, player, event);
