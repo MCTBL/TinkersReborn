@@ -125,6 +125,11 @@ public class RoundShield extends ShieldCore {
     }
 
     @Override
+    public double knockbackResistance() {
+        return 0.7D;
+    }
+
+    @Override
     public ToolNBT buildToolTag(List<TinkersRebornMaterial> materials) {
         ToolNBT toolTag = super.buildToolTag(materials);
         toolTag.durability *= DURABILITY_MODIFIER;

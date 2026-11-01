@@ -95,7 +95,7 @@ public abstract class ShieldCore extends ToolCore {
             .forEach(trait -> trait.onBlock(shieldStack, player, event));
 
         if (!isBreak) {
-            ShieldHelper.preventNextKnockback(player, 0.7D);
+            ShieldHelper.preventNextKnockback(player, this.knockbackResistance());
             Sounds.playSoundForAll(player, Sounds.blocking, 1.0f, 0.8f + 0.4f * TinkersReborn.random.nextFloat());
         } else {
             ShieldHelper.setPlayerBreaking(player, this.breakingRecoverTime());
@@ -175,4 +175,6 @@ public abstract class ShieldCore extends ToolCore {
     public abstract int breakingRecoverTime();
 
     public abstract int blockPrepareTime();
+
+    public abstract double knockbackResistance();
 }
