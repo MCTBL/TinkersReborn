@@ -27,6 +27,7 @@ import mctbl.tinkersreborn.library.ITinkersRebornModule;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.tools.leveling.CommandLevelUpTool;
 import mctbl.tinkersreborn.library.tools.leveling.CommandModifierChange;
+import mctbl.tinkersreborn.plugins.TConstruct.TConstructHandler;
 import mctbl.tinkersreborn.plugins.nei.TinkersRebornNEIEventHandler;
 import mctbl.tinkersreborn.plugins.waila.TinkersRebornWaila;
 import mctbl.tinkersreborn.smeltery.TinkersRebornSmeltery;
@@ -37,7 +38,9 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
     version = Tags.VERSION,
     name = "TinkersReborn",
     acceptedMinecraftVersions = "[1.7.10]",
-    dependencies = "required-after:Forge@[10.13.3.1384,11.14);" + "after:NotEnoughItems;" + "after:Waila;")
+    dependencies = "required-after:Forge@[10.13.3.1384,11.14);" + "after:NotEnoughItems;"
+        + "after:Waila;"
+        + "after:TConstruct;")
 public class TinkersReborn {
 
     public static final String MODID = "tinkersreborn";
@@ -61,7 +64,13 @@ public class TinkersReborn {
         l.add(new TinkersRebornTools());
         l.add(new TinkersRebornSmeltery());
 
-        l.add(new TinkersRebornWaila());
+        if (Loader.isModLoaded("Waila")) {
+            l.add(new TinkersRebornWaila());
+        }
+
+        if (Loader.isModLoaded("TConstruct")) {
+            l.add(new TConstructHandler());
+        }
     }
 
     @EventHandler

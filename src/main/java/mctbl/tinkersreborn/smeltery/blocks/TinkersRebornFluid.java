@@ -17,7 +17,7 @@ public class TinkersRebornFluid extends Fluid {
      * @param identifier texture name like molten_iron / liquid_blood
      */
     public TinkersRebornFluid(String fluidName, int color, String identifier) {
-        super(fluidName);
+        super("tinkersreborn." + fluidName);
         this.color = color;
         this.identifier = identifier;
     }
