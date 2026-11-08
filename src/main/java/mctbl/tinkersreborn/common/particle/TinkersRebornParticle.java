@@ -11,13 +11,12 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 
 @SideOnly(Side.CLIENT)
 public class TinkersRebornParticle extends EntityFX {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(
-        TinkersReborn.MODID,
+        "tinkersreborn",
         "textures/particle/particles.png");
     public static final ResourceLocation VANILLA_PARTICLE_TEXTURES = new ResourceLocation(
         "textures/particle/particles.png");

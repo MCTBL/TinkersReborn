@@ -2,15 +2,12 @@ package mctbl.tinkersreborn.common.gui;
 
 import net.minecraft.util.ResourceLocation;
 
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.gui.GuiElement;
 import mctbl.tinkersreborn.library.gui.GuiElementScalable;
 
 public final class GuiGeneric {
 
-    public static final ResourceLocation LOCATION = new ResourceLocation(
-        TinkersReborn.MODID,
-        "textures/gui/generic.png");
+    public static final ResourceLocation LOCATION = new ResourceLocation("tinkersreborn", "textures/gui/generic.png");
 
     // first one sets default texture w/h
     public static final GuiElement cornerTopLeft = new GuiElement(0, 0, 7, 7, 64, 64);

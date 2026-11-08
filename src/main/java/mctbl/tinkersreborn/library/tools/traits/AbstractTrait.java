@@ -13,7 +13,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import mctbl.tinkersreborn.TinkersReborn;
@@ -30,7 +29,7 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 // Trait and modifier in one! Useful because modifiers are saved as traits
 public abstract class AbstractTrait extends AbstractModifier implements ITrait {
 
-    public static final Logger LOG = LogManager.getLogger(TinkersReborn.MODID + "Trait");
+    public static final Logger LOG = TinkersReborn.LOG;
     protected final int color;
 
     protected AbstractTrait(String identifier, EnumChatFormatting color) {

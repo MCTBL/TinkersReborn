@@ -7,7 +7,6 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.common.model.SlimeVineRender;
@@ -34,7 +33,7 @@ public class SlimeVine extends BlockVine {
 
     @Override
     public String getUnlocalizedName() {
-        return TinkersReborn.MODID + ".slime.vine." + this.type;
+        return "tinkersreborn.slime.vine." + this.type;
     }
 
     @Override

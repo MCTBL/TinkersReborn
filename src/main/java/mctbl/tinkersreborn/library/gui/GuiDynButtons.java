@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.gui.GuiGeneric;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
@@ -26,7 +25,7 @@ public class GuiDynButtons extends GuiModule {
     protected static final GuiElementScalable sliderBackground = GuiGeneric.sliderBackground;
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(
-        TinkersReborn.MODID,
+        "tinkersreborn",
         "textures/gui/partbuilder.png");
 
     private static final GuiElement ButtonBackGroundNormal = new GuiElement(177, 16, 18, 18, 256, 256);

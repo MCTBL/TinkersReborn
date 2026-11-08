@@ -15,7 +15,6 @@ import codechicken.nei.api.TaggedInventoryArea;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.gui.GuiElementScalable;
 import mctbl.tinkersreborn.library.gui.GuiHeatingStructureFuelTank;
 import mctbl.tinkersreborn.library.gui.GuiMultiBlockSideInventory;
@@ -27,9 +26,7 @@ import mctbl.tinkersreborn.smeltery.inventory.ContainerFurnace;
 @Optional.Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class GuiFurnace extends GuiHeatingStructureFuelTank implements INEIGuiHandler {
 
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(
-        TinkersReborn.MODID,
-        "textures/gui/furnace.png");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation("tinkersreborn", "textures/gui/furnace.png");
     protected GuiElementScalable flame = new GuiElementScalable(176, 173, 28, 28, 256, 256);
     protected final int fuelStartX = 116;
     protected final int fuelStartY = 32;

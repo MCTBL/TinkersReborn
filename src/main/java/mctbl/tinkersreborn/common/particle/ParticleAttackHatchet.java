@@ -5,13 +5,12 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 
 @SideOnly(Side.CLIENT)
 public class ParticleAttackHatchet extends ParticleAttack {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(
-        TinkersReborn.MODID,
+        "tinkersreborn",
         "textures/particle/slash_axe.png");
 
     public ParticleAttackHatchet(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn,

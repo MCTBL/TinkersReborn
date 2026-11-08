@@ -8,8 +8,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.S29PacketSoundEffect;
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.TinkersReborn;
-
 public class Sounds {
 
     private Sounds() {}
@@ -34,7 +32,7 @@ public class Sounds {
     public static final String blocking_break = sound("blocking_faild");
 
     private static String sound(String name) {
-        String soundName = TinkersReborn.MODID + ":" + name;
+        String soundName = "tinkersreborn:" + name;
         sounds.add(soundName);
         return soundName;
     }

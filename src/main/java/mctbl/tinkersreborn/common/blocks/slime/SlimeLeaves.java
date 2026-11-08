@@ -16,7 +16,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
 import mctbl.tinkersreborn.common.TinkersRebornGeneral;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
@@ -33,7 +32,7 @@ public class SlimeLeaves extends BlockLeaves {
 
     @Override
     public String getUnlocalizedName() {
-        return TinkersReborn.MODID + ".slime.leaves";
+        return "tinkersreborn.slime.leaves";
     }
 
     @Override

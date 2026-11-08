@@ -32,6 +32,11 @@ public class CastingChannelBlock extends TinkersRebornInventoryBlock {
     }
 
     @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.SearedBlock.CastingChannel";
+    }
+
+    @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
         float hitY, float hitZ) {
         ItemStack stack = player.getCurrentEquippedItem();

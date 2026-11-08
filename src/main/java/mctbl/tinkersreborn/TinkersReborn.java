@@ -43,7 +43,7 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
         + "after:TConstruct;")
 public class TinkersReborn {
 
-    public static final String MODID = "tinkersreborn";
+    public static final String MODID = "TinkersReborn";
     public static final String VERSION = "1.0";
     public static final Logger LOG = LogManager.getLogger(MODID);
     public static final Random random = new Random();
@@ -54,22 +54,22 @@ public class TinkersReborn {
     @SidedProxy(clientSide = "mctbl.tinkersreborn.ClientProxy", serverSide = "mctbl.tinkersreborn.CommonProxy")
     public static CommonProxy proxy;
 
-    public static final List<ITinkersRebornModule> l = new ArrayList<>();
+    private static final List<ITinkersRebornModule> moudleList = new ArrayList<>();
 
     public static File cfgDirectory;
 
     public TinkersReborn() {
-        l.add(TinkersRebornRegistry.instance);
-        l.add(new TinkersRebornGeneral());
-        l.add(new TinkersRebornTools());
-        l.add(new TinkersRebornSmeltery());
+        moudleList.add(TinkersRebornRegistry.instance);
+        moudleList.add(new TinkersRebornGeneral());
+        moudleList.add(new TinkersRebornTools());
+        moudleList.add(new TinkersRebornSmeltery());
 
         if (Loader.isModLoaded("Waila")) {
-            l.add(new TinkersRebornWaila());
+            moudleList.add(new TinkersRebornWaila());
         }
 
         if (Loader.isModLoaded("TConstruct")) {
-            l.add(new TConstructHandler());
+            moudleList.add(new TConstructHandler());
         }
     }
 
@@ -81,7 +81,7 @@ public class TinkersReborn {
         AbstractPacketThreadsafe.init();
         NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 
-        l.forEach(m -> m.preInit(event));
+        moudleList.forEach(m -> m.preInit(event));
 
         if (Loader.isModLoaded("NotEnoughItems")) {
             MinecraftForge.EVENT_BUS.register(new TinkersRebornNEIEventHandler());
@@ -90,12 +90,12 @@ public class TinkersReborn {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-        l.forEach(m -> m.init(event));
+        moudleList.forEach(m -> m.init(event));
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        l.forEach(m -> m.postInit(event));
+        moudleList.forEach(m -> m.postInit(event));
     }
 
     @EventHandler

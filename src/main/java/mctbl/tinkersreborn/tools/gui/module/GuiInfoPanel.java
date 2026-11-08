@@ -15,7 +15,6 @@ import com.google.common.collect.Lists;
 
 import gnu.trove.list.TIntList;
 import gnu.trove.list.linked.TIntLinkedList;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.TinkersRebornGeneralProxyClient;
 import mctbl.tinkersreborn.library.gui.GuiElement;
 import mctbl.tinkersreborn.library.gui.GuiElementScalable;
@@ -31,7 +30,7 @@ public class GuiInfoPanel extends GuiModule {
     private static int resW = 118;
     private static int resH = 75;
 
-    private static ResourceLocation BACKGROUND = new ResourceLocation(TinkersReborn.MODID, "textures/gui/panel.png");
+    private static ResourceLocation BACKGROUND = new ResourceLocation("tinkersreborn", "textures/gui/panel.png");
 
     private static GuiElement topLeft = new GuiElement(0, 0, 4, 4, 256, 256);
     private static GuiElement topRight = new GuiElement(resW + 4, 0, 4, 4);

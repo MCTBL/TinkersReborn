@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.blocks.TinkersRebornBlock;
 import mctbl.tinkersreborn.library.entity.IServantLogic;
@@ -59,7 +58,7 @@ public class GlassConnected extends TinkersRebornBlock {
 
     @Override
     public String getUnlocalizedName() {
-        return TinkersReborn.MODID + "." + this.unlocalizedName;
+        return "tinkersreborn." + this.unlocalizedName;
     }
 
     @Override

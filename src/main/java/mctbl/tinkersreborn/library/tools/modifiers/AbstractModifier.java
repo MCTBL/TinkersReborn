@@ -24,7 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableList;
@@ -43,7 +42,7 @@ import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public abstract class AbstractModifier extends RecipeMatchRegistry implements IModifier {
 
-    public static final Logger LOG = LogManager.getLogger(TinkersReborn.MODID + "Modifier");
+    public static final Logger LOG = TinkersReborn.LOG;
 
     public static final String LOC_Name = "modifier.%s.name";
     public static final String LOC_Desc = "modifier.%s.desc";

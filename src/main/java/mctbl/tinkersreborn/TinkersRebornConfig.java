@@ -20,6 +20,7 @@ public class TinkersRebornConfig {
     public static String ALLOWEDTOOLS = "Allowedtools";
     public static String SMELTERY = "Smeltery";
     public static String TOOLLEVELING = "ToolLeveling";
+    public static String PLUGIN = "Plugin";
 
     public static boolean debug;
 
@@ -144,6 +145,8 @@ public class TinkersRebornConfig {
 
     public static boolean disgustingXPBerries;
     public static String[] disgustingXPBerryEffects;
+
+    public static boolean exportTConstructHandlerDefaultConfig;
 
     public static void setupConfig(File location) {
         metalTypes = new String[] { "Cobalt", "Ardite", "Manyullyn", "Copper", "Bronze", "Tin", "Aluminum", "AluBrass",
@@ -579,6 +582,9 @@ public class TinkersRebornConfig {
         if (Loader.isModLoaded("angelica")) {
             isAngelicaLoaded = true;
         }
+
+        exportTConstructHandlerDefaultConfig = config.get(PLUGIN, "exportTConstructHandlerDefaultConfig", true)
+            .getBoolean();
 
         config.save();
     }

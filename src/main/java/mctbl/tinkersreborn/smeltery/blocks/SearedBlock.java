@@ -39,6 +39,11 @@ public class SearedBlock extends TinkersRebornInventoryBlock {
     }
 
     @Override
+    public String getUnlocalizedName() {
+        return "tinkersreborn.SearedBlock";
+    }
+
+    @Override
     public TileEntity createTileEntity(World world, int metadata) {
         return switch (metadata) {
             case 0 -> new CastingTableLogic();

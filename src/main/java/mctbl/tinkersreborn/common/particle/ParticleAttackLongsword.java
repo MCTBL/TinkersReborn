@@ -3,12 +3,10 @@ package mctbl.tinkersreborn.common.particle;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import mctbl.tinkersreborn.TinkersReborn;
-
 public class ParticleAttackLongsword extends ParticleAttack {
 
     private static final ResourceLocation SWEEP_TEXTURE = new ResourceLocation(
-        TinkersReborn.MODID,
+        "tinkersreborn",
         "textures/particle/sweep.png");
 
     public ParticleAttackLongsword(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double xSpeedIn,

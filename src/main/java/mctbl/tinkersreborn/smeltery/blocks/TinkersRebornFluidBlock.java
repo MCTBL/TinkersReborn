@@ -9,7 +9,6 @@ import net.minecraftforge.fluids.Fluid;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.util.TextureHelper;
 
 public class TinkersRebornFluidBlock extends BlockFluidClassic {
@@ -46,7 +45,7 @@ public class TinkersRebornFluidBlock extends BlockFluidClassic {
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        String preFix = TinkersReborn.MODID + ":";
+        String preFix = "tinkersreborn:";
 
         if (TextureHelper.itemTextureExists(preFix + this.fluid.identifier)) {
             stillIcon = iconRegister.registerIcon(preFix + this.fluid.identifier);

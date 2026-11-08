@@ -17,7 +17,6 @@ import codechicken.nei.api.TaggedInventoryArea;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.gui.GuiDynButtons;
 import mctbl.tinkersreborn.library.gui.GuiElement;
@@ -41,7 +40,7 @@ import mctbl.tinkersreborn.util.TinkersStr;
 public class GuiPartBuilder extends GuiTinkerStation implements INEIGuiHandler {
 
     private static final ResourceLocation BACKGROUND = new ResourceLocation(
-        TinkersReborn.MODID,
+        "tinkersreborn",
         "textures/gui/partbuilder.png");
 
     public static final DecimalFormat df = TinkersRebornUtils.df;

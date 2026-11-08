@@ -2,11 +2,9 @@ package mctbl.tinkersreborn.library.gui;
 
 import net.minecraft.util.ResourceLocation;
 
-import mctbl.tinkersreborn.TinkersReborn;
-
 public interface Icons {
 
-    ResourceLocation ICON = new ResourceLocation(TinkersReborn.MODID, "textures/gui/icons.png");
+    ResourceLocation ICON = new ResourceLocation("tinkersreborn", "textures/gui/icons.png");
 
     GuiElement ICON_Anvil = new GuiElement(18 * 3, 0, 18, 18, 256, 256);
     GuiElement ICON_Pattern = new GuiElement(18 * 0, 18 * 12, 18, 18);

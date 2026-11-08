@@ -18,7 +18,6 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornTurnPageButton;
 import mctbl.tinkersreborn.common.manuals.TinkersRebornTurnPageButton.ButtonType;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
@@ -90,7 +89,7 @@ public class GuiManual extends GuiScreen {
         if (this.previousRenderPage != this.currentPage) {
             this.previousRenderPage = this.currentPage;
             this.mc.getSoundHandler()
-                .playSound(PositionedSoundRecord.func_147673_a(new ResourceLocation(TinkersReborn.MODID, "turn_page")));
+                .playSound(PositionedSoundRecord.func_147673_a(new ResourceLocation("tinkersreborn", "turn_page")));
         }
 
         this.drawDefaultBackground();

@@ -11,8 +11,7 @@ public class TConstructHandler implements ITinkersRebornModule {
 
     @Override
     public void preInit(FMLPreInitializationEvent e) {
-        // TODO Auto-generated method stub
-
+        TConstructHandlerConfig.preInit();
     }
 
     @Override

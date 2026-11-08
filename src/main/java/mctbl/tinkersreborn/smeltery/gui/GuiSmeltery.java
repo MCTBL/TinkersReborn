@@ -25,7 +25,6 @@ import codechicken.nei.api.TaggedInventoryArea;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.gui.GuiButtonItem;
 import mctbl.tinkersreborn.library.gui.GuiElement;
@@ -46,7 +45,7 @@ import mctbl.tinkersreborn.util.TinkersStr;
 public class GuiSmeltery extends GuiHeatingStructureFuelTank implements INEIGuiHandler, IGuiLiquidTank {
 
     public static final ResourceLocation BACKGROUND = new ResourceLocation(
-        TinkersReborn.MODID,
+        "tinkersreborn",
         "textures/gui/smeltery.png");
 
     protected GuiElement scala = new GuiElement(176, 107, 80, 80, 256, 256);

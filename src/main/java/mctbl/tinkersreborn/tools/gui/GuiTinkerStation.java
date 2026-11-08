@@ -12,7 +12,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.blocks.ITinkersToolStationBlock;
 import mctbl.tinkersreborn.library.entity.TinkersRebornInventoryLogic;
@@ -29,9 +28,7 @@ import mctbl.tinkersreborn.tools.network.TinkerStationTabPacket;
 // Takes care of the tinker station pseudo-multiblock
 public class GuiTinkerStation extends GuiMultiModule {
 
-    public static final ResourceLocation BLANK_BACK = new ResourceLocation(
-        TinkersReborn.MODID,
-        "textures/gui/blank.png");
+    public static final ResourceLocation BLANK_BACK = new ResourceLocation("tinkersreborn", "textures/gui/blank.png");
 
     protected final ContainerMultiModule<?> container;
 

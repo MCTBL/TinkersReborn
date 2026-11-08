@@ -8,7 +8,6 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.gui.GuiGeneric;
 import mctbl.tinkersreborn.library.gui.container.BaseContainer;
 
@@ -37,7 +36,7 @@ public class GuiSideInventory extends GuiModule {
 
     // we use the chest gui as a preset for our parts
     protected static final ResourceLocation GUI_INVENTORY = new ResourceLocation(
-        TinkersReborn.MODID,
+        "tinkersreborn",
         "textures/gui/generic.png");
 
     protected GuiWidgetBorder border = new GuiWidgetBorder();

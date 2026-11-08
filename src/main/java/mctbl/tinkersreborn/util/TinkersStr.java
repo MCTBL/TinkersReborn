@@ -2,8 +2,6 @@ package mctbl.tinkersreborn.util;
 
 import static mctbl.tinkersreborn.util.TinkersRebornUtils.translate;
 
-import mctbl.tinkersreborn.TinkersReborn;
-
 public enum TinkersStr {
 
     // tooltips
@@ -141,7 +139,7 @@ public enum TinkersStr {
     wailaDrying("waila.drying"),
     wailaDryingProgress("waila.dryingProgress"),;
 
-    static String modPrefix = TinkersReborn.MODID;
+    static String modPrefix = "tinkersreborn";
     String localization;
 
     TinkersStr(String localization) {

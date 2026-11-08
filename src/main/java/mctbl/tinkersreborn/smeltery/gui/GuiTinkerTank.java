@@ -25,7 +25,6 @@ import codechicken.nei.api.TaggedInventoryArea;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.common.network.TinkerNetwork;
 import mctbl.tinkersreborn.library.gui.GuiButtonItem;
 import mctbl.tinkersreborn.library.gui.GuiElement;
@@ -43,9 +42,7 @@ import mctbl.tinkersreborn.util.TinkersStr;
 @Interface(iface = "codechicken.nei.api.INEIGuiHandler", modid = "NotEnoughItems")
 public class GuiTinkerTank extends GuiMultiModule implements INEIGuiHandler, IGuiLiquidTank {
 
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(
-        TinkersReborn.MODID,
-        "textures/gui/tank.png");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation("tinkersreborn", "textures/gui/tank.png");
     protected GuiElement scala = new GuiElement(176, 107, 80, 80, 256, 256);
 
     protected final int fluidStartX = 8;
