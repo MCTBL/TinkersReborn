@@ -21,12 +21,12 @@ public class TConstructHandlerConfig {
 
     public static void preInit() {
         if (TinkersRebornConfig.exportTConstructHandlerDefaultConfig) {
-            saveDeafult();
+            saveDefault();
         }
         setupConfig();
     }
 
-    private static void saveDeafult() {
+    private static void saveDefault() {
         Configuration cfg = new Configuration(
             new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TConstructHandler.cfg"));
         cfg.addCustomCategoryComment("TConstruct", "");

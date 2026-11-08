@@ -21,13 +21,13 @@ public class TinkersRebornMaterialConfig {
     public static void postInit() {
 
         if (TinkersRebornConfig.exportMaterialDefaultConfig) {
-            saveDeafult();
+            saveDefault();
         }
 
         readOverride();
     }
 
-    private static void saveDeafult() {
+    private static void saveDefault() {
         Configuration cfg = new Configuration(
             new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TinkersRebornMaterialDefault.cfg"));
 
