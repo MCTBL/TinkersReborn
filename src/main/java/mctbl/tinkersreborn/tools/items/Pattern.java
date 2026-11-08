@@ -65,7 +65,7 @@ public class Pattern extends Item implements IPattern {
         switch (identifier) {
             case PATTERN_BLANK:
                 return TinkersRebornUtils.translate("tinkersreborn.Pattern");
-            case CAST_BLANK:
+            case CAST_BLANK, "":
                 return TinkersRebornUtils.translate("tinkersreborn.Cast");
             case CAST_INGOT:
                 return TinkersRebornUtils.translate("tinkersreborn.CastIngot");

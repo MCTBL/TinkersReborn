@@ -3,6 +3,9 @@ package mctbl.tinkersreborn.plugins.TConstruct;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -11,6 +14,7 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import mctbl.tinkersreborn.TinkersReborn;
@@ -48,6 +52,16 @@ public class TConstructEventHandler {
         chunk.setChunkModified();
     }
 
+    /**
+     * replace block in world
+     * 
+     * @param block
+     * @param metadata
+     * @param storage
+     * @param localX
+     * @param localY
+     * @param localZ
+     */
     private void tryReplaceTConstructBlock(Block block, int metadata, ExtendedBlockStorage storage, int localX,
         int localY, int localZ) {
         if (block == null) {
@@ -56,7 +70,8 @@ public class TConstructEventHandler {
         final UniqueIdentifier identifier = GameRegistry.findUniqueIdentifierFor(block);
         if (identifier != null && "TConstruct".equalsIgnoreCase(identifier.modId)) {
             final String blockName = identifier.toString() + (metadata != 0 ? ":" + metadata : "");
-            String targetBlockName = TConstructHandlerConfig.tinkerConstructReplace.getOrDefault(blockName, null);
+            String targetBlockName = TConstructHandlerConfig.tinkerConstructBlockReplaceMap
+                .getOrDefault(blockName, null);
             TinkersReborn.LOG.debug("find {}", blockName);
             if (targetBlockName != null) {
                 TinkersReborn.LOG.debug("{}  ->  {}", blockName, targetBlockName);
@@ -75,6 +90,54 @@ public class TConstructEventHandler {
         }
     }
 
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerLoggedInEvent event) {
+        TinkersReborn.LOG.info("{} is login", event.player.getCommandSenderName());
+        tryReplaceInventoryContents(event.player.inventory);
+    }
+
+    private void tryReplaceInventoryContents(IInventory inv) {
+        if (inv == null) return;
+        for (int idx = 0; idx < inv.getSizeInventory(); idx++) {
+            final ItemStack stackInSlot = inv.getStackInSlot(idx);
+            if (TinkersRebornUtils.isStackEmpty(stackInSlot)) return;
+            final UniqueIdentifier identifier = GameRegistry.findUniqueIdentifierFor(stackInSlot.getItem());
+
+            if (identifier != null && "TConstruct".equalsIgnoreCase(identifier.modId)) {
+                final String itemName = identifier.toString()
+                    + (stackInSlot.getItemDamage() != 0 ? ":" + stackInSlot.getItemDamage() : "");
+                String targetItemName = TConstructHandlerConfig.tinkerConstructItemReplaceMap
+                    .getOrDefault(itemName, null);
+                if (targetItemName != null) {
+                    TinkersReborn.LOG.debug("{}  ->  {}", itemName, targetItemName);
+                    replaceStackInSlot(inv, idx, targetItemName, stackInSlot.stackSize);
+                }
+            }
+        }
+    }
+
+    /**
+     * replace item stack in inventory
+     * 
+     * @param inv
+     * @param idx
+     * @param targetItemName
+     * @param stackSize
+     */
+    private void replaceStackInSlot(IInventory inv, int idx, String targetItemName, int stackSize) {
+        final String[] targetList = targetItemName.split(":");
+        int meta = 0;
+        if (targetList.length == 3) {
+            targetItemName = targetList[0] + ":" + targetList[1];
+            meta = Integer.parseInt(targetList[2]);
+        }
+        final Item targetItem = getItemByIdentifier(targetItemName);
+        if (targetItem != null) {
+            inv.setInventorySlotContents(idx, new ItemStack(targetItem, stackSize, meta));
+            inv.markDirty();
+        }
+    }
+
     @Nullable
     private Block getBlockByIdentifier(String identifier) {
         if (identifier == null || identifier.isEmpty()) return null;
@@ -83,6 +146,16 @@ public class TConstructEventHandler {
             block = (Block) Block.blockRegistry.getObject("minecraft:" + identifier);
         }
         return block;
+    }
+
+    @Nullable
+    private Item getItemByIdentifier(String identifier) {
+        if (identifier == null || identifier.isEmpty()) return null;
+        Item item = (Item) Item.itemRegistry.getObject(identifier);
+        if (item == null && !identifier.contains(":")) {
+            item = (Item) Item.itemRegistry.getObject("minecraft:" + identifier);
+        }
+        return item;
     }
 
     @SubscribeEvent

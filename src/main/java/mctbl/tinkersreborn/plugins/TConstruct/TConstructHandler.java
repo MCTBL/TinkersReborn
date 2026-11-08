@@ -2,6 +2,7 @@ package mctbl.tinkersreborn.plugins.TConstruct;
 
 import net.minecraftforge.common.MinecraftForge;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -22,7 +23,11 @@ public class TConstructHandler implements ITinkersRebornModule {
 
     @Override
     public void postInit(FMLPostInitializationEvent e) {
-        MinecraftForge.EVENT_BUS.register(new TConstructEventHandler());
+        final TConstructEventHandler target = new TConstructEventHandler();
+        MinecraftForge.EVENT_BUS.register(target);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(target);
     }
 
 }

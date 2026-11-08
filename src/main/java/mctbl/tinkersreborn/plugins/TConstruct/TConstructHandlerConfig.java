@@ -16,7 +16,8 @@ public class TConstructHandlerConfig {
 
     public static String TConstruct = "TConstruct";
 
-    public static Map<String, String> tinkerConstructReplace = new HashMap<>();
+    public static Map<String, String> tinkerConstructBlockReplaceMap = new HashMap<>();
+    public static Map<String, String> tinkerConstructItemReplaceMap = new HashMap<>();
 
     public static void preInit() {
         if (TinkersRebornConfig.exportTConstructHandlerDefaultConfig) {
@@ -181,6 +182,69 @@ public class TConstructHandlerConfig {
         replaceList.add("TConstruct:oreBerries:3;;TinkersReborn:item.tinkersreborn.oreberry:3");
         replaceList.add("TConstruct:oreBerries:4;TinkersReborn:item.tinkersreborn.oreberry:4");
         replaceList.add("TConstruct:oreBerries:5;TinkersReborn:item.tinkersreborn.oreberry:5");
+
+        cfg.get(
+            TConstruct,
+            "tinkerConstructBlockReplaceMap",
+            replaceList.toArray(new String[] {}),
+            "such like this TConstruct:Smeltery:1 ; tinkersreborn:smeltery_drain")
+            .getStringList();
+
+        replaceList.add("TConstruct:ToolStationBlock;TinkersReborn:tinkersreborn.ToolStation");
+        replaceList.add("TConstruct:ToolStationBlock:1;TinkersReborn:tinkersreborn.PartBuilder");
+        replaceList.add("TConstruct:ToolStationBlock:2;TinkersReborn:tinkersreborn.PartBuilder:1");
+        replaceList.add("TConstruct:ToolStationBlock:3;TinkersReborn:tinkersreborn.PartBuilder:2");
+        replaceList.add("TConstruct:ToolStationBlock:4;TinkersReborn:tinkersreborn.PartBuilder:3");
+        replaceList.add("TConstruct:ToolForgeBlock;TinkersReborn:tinkersreborn.ToolFroge");
+        replaceList.add("TConstruct:ToolForgeBlock:1;TinkersReborn:tinkersreborn.ToolFroge:1");
+        replaceList.add("TConstruct:ToolForgeBlock:2;TinkersReborn:tinkersreborn.ToolFroge:2");
+        replaceList.add("TConstruct:ToolForgeBlock:3;TinkersReborn:tinkersreborn.ToolFroge:3");
+        replaceList.add("TConstruct:ToolForgeBlock:4;TinkersReborn:tinkersreborn.ToolFroge:4");
+        replaceList.add("TConstruct:ToolForgeBlock:5;TinkersReborn:tinkersreborn.ToolFroge:5");
+        replaceList.add("TConstruct:ToolForgeBlock:6;TinkersReborn:tinkersreborn.ToolFroge:6");
+        replaceList.add("TConstruct:ToolForgeBlock:7;TinkersReborn:tinkersreborn.ToolFroge:7");
+        replaceList.add("TConstruct:ToolForgeBlock:8;TinkersReborn:tinkersreborn.ToolFroge:8");
+        replaceList.add("TConstruct:ToolForgeBlock:9;TinkersReborn:tinkersreborn.ToolFroge:9");
+        replaceList.add("TConstruct:ToolForgeBlock:10;TinkersReborn:tinkersreborn.ToolFroge:10");
+        replaceList.add("TConstruct:ToolForgeBlock:11;TinkersReborn:tinkersreborn.ToolFroge:11");
+        replaceList.add("TConstruct:ToolForgeBlock:12;TinkersReborn:tinkersreborn.ToolFroge:12");
+        replaceList.add("TConstruct:ToolForgeBlock:13;TinkersReborn:tinkersreborn.ToolFroge:13");
+        replaceList.add("TConstruct:CraftingStation;TinkersReborn:tinkersreborn.CraftingStation");
+        replaceList.add("TConstruct:CraftingSlab;TinkersReborn:tinkersreborn.CraftingStation");
+        replaceList.add("TConstruct:CraftingSlab:1;TinkersReborn:tinkersreborn.ToolStation");
+        replaceList.add("TConstruct:CraftingSlab:2;TinkersReborn:tinkersreborn.PartBuilder");
+        replaceList.add("TConstruct:CraftingSlab:5;TinkersReborn:tinkersreborn.ToolFroge");
+        replaceList.add("TConstruct:FurnaceSlab;minecraft:furnace");
+        replaceList.add("TConstruct:Smeltery;TinkersReborn:tinkersreborn.SmelteryController");
+        replaceList.add("TConstruct:Smeltery:1;TinkersReborn:tinkersreborn.Drain");
+        replaceList.add("TConstruct:Smeltery:2;TinkersReborn:tinkersreborn.SmelteryBlock");
+        replaceList.add("TConstruct:Smeltery:4;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:Smeltery:5;TinkersReborn:tinkersreborn.SmelteryBlock:1");
+        replaceList.add("TConstruct:Smeltery:6;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:Smeltery:7;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:Smeltery:8;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:Smeltery:9;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:Smeltery:10;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:Smeltery:11;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:1;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:2;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:4;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:5;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:6;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:7;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:8;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:9;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:10;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SmelteryNether:11;TinkersReborn:tinkersreborn.SmelteryBlock:2");
+        replaceList.add("TConstruct:SearedBlock;TinkersReborn:tinkersreborn.SearedBlock");
+        replaceList.add("TConstruct:SearedBlock:1;TinkersReborn:tinkersreborn.SearedBlock:1");
+        replaceList.add("TConstruct:SearedBlock:2;TinkersReborn:tinkersreborn.SearedBlock:2");
+        replaceList.add("TConstruct:SearedBlockNether;TinkersReborn:tinkersreborn.SearedBlock");
+        replaceList.add("TConstruct:SearedBlockNether:1;TinkersReborn:tinkersreborn.SearedBlock:1");
+        replaceList.add("TConstruct:SearedBlockNether:2;TinkersReborn:tinkersreborn.SearedBlock:2");
+        replaceList.add("TConstruct:CastingChannel;TinkersReborn:tinkersreborn.SearedBlock.CastingChannel");
+        replaceList.add("TConstruct:Armor.DryingRack;TinkersReborn:tinkersreborn.DryingRack");
         replaceList.add("TConstruct:blankPattern;TinkersReborn:tinkersreborn.Pattern");
         replaceList.add("TConstruct:blankPattern:1;TinkersReborn:tinkersreborn.Pattern");
         replaceList.add("TConstruct:blankPattern:2;TinkersReborn:tinkersreborn.Pattern");
@@ -274,9 +338,10 @@ public class TConstructHandlerConfig {
         replaceList.add("TConstruct:heartCanister:4;TinkersReborn:item.tinkersreborn.canister:4");
         replaceList.add("TConstruct:heartCanister:5;TinkersReborn:item.tinkersreborn.canister:5");
         replaceList.add("TConstruct:heartCanister:6;TinkersReborn:item.tinkersreborn.canister:6");
+
         cfg.get(
             TConstruct,
-            "Tinker Construct Stuff Replace Map",
+            "tinkerConstructItemReplaceMap",
             replaceList.toArray(new String[] {}),
             "such like this TConstruct:Smeltery:1 ; tinkersreborn:smeltery_drain")
             .getStringList();
@@ -289,21 +354,35 @@ public class TConstructHandlerConfig {
             new File(TinkersReborn.cfgDirectory + "/Tinkersreborn/TConstructHandler.cfg"));
         cfg.load();
 
-        String[] replaceList = cfg
+        String[] blockReplaceList = cfg
             .get(
                 TConstruct,
-                "Tinker Construct Stuff Replace Map",
+                "tinkerConstructBlockReplaceMap",
                 new String[] {},
                 "such like this TConstruct:Smeltery:1 ; tinkersreborn:smeltery_drain")
             .getStringList();
-        for (String line : replaceList) {
+        for (String line : blockReplaceList) {
             final String[] split = line.split(";");
             if (split.length == 2) {
-                tinkerConstructReplace.put(split[0].trim(), split[1].trim());
+                tinkerConstructBlockReplaceMap.put(split[0].trim(), split[1].trim());
             }
         }
+        tinkerConstructBlockReplaceMap = Collections.unmodifiableMap(tinkerConstructBlockReplaceMap);
 
-        tinkerConstructReplace = Collections.unmodifiableMap(tinkerConstructReplace);
+        String[] itemReplaceList = cfg
+            .get(
+                TConstruct,
+                "tinkerConstructItemReplaceMap",
+                new String[] {},
+                "such like this TConstruct:Smeltery:1 ; tinkersreborn:smeltery_drain")
+            .getStringList();
+        for (String line : itemReplaceList) {
+            final String[] split = line.split(";");
+            if (split.length == 2) {
+                tinkerConstructItemReplaceMap.put(split[0].trim(), split[1].trim());
+            }
+        }
+        tinkerConstructItemReplaceMap = Collections.unmodifiableMap(tinkerConstructItemReplaceMap);
 
         cfg.save();
     }
