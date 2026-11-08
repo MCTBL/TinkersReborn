@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.item.ItemStack;
 
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
 import mctbl.tinkersreborn.library.gui.GuiManual;
 import mctbl.tinkersreborn.library.manuals.AbstractManualPage;
@@ -51,11 +52,11 @@ public class MaterialPage extends AbstractManualPage {
 
         if (material.isCraftable()) {
             this.staticStacks
-                .add(TinkersRebornRegistry.getOrRegisterManualIcon("tinkersreborn:tinkersreborn.PartBuilder"));
+                .add(TinkersRebornRegistry.getOrRegisterManualIcon(TinkersReborn.MODID + ":tinkersreborn.PartBuilder"));
         }
         if (material.isCastable()) {
-            this.staticStacks
-                .add(TinkersRebornRegistry.getOrRegisterManualIcon("tinkersreborn:tile.tinkersreborn.SearedBlock:2"));
+            this.staticStacks.add(
+                TinkersRebornRegistry.getOrRegisterManualIcon(TinkersReborn.MODID + ":tinkersreborn.SearedBlock:2"));
         }
         this.loopToolStacks = new ArrayList<>();
         for (ToolCore core : TinkersRebornRegistry.getAllTools()) {

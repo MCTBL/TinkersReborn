@@ -147,6 +147,9 @@ public abstract class AbstractManualPage {
                 && s.getY() <= manualY
                 && manualY <= s.getY() + 16 * s.getScale()) {
                 ItemStack stack = s.getStack();
+                if (stack == null || stack.getItem() == null) {
+                    continue;
+                }
                 FontRenderer render = stack.getItem()
                     .getFontRenderer(stack);
                 manual.drawHoveringText(
@@ -210,6 +213,10 @@ public abstract class AbstractManualPage {
     }
 
     protected void renderItemStackIntoPage(ItemStack stack, int x, int y, GuiManual manual) {
+        if (stack == null || stack.getItem() == null) {
+            return;
+        }
+
         FontRenderer fontRenderer = fontRender;
         TextureManager renderEngine = manual.mc.getTextureManager();
 

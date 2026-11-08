@@ -390,7 +390,7 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
     }
 
     public String getLocalizedToolName() {
-        return translate(this.getUnlocalizedToolName());
+        return translate(this.getUnlocalizedToolName()).trim();
     }
 
     /** Returns info about the Tool. Displayed in the tool stations etc. */
