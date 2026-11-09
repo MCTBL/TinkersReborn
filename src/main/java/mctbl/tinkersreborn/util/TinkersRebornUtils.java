@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
@@ -397,5 +398,25 @@ public class TinkersRebornUtils {
 
         // standard display stuff: bucket amounts
         amountToString(amount, text);
+    }
+
+    @Nullable
+    public static Block getBlockByIdentifier(String identifier) {
+        if (identifier == null || identifier.isEmpty()) return null;
+        Block block = (Block) Block.blockRegistry.getObject(identifier);
+        if (block == null && !identifier.contains(":")) {
+            block = (Block) Block.blockRegistry.getObject("minecraft:" + identifier);
+        }
+        return block;
+    }
+
+    @Nullable
+    public static Item getItemByIdentifier(String identifier) {
+        if (identifier == null || identifier.isEmpty()) return null;
+        Item item = (Item) Item.itemRegistry.getObject(identifier);
+        if (item == null && !identifier.contains(":")) {
+            item = (Item) Item.itemRegistry.getObject("minecraft:" + identifier);
+        }
+        return item;
     }
 }

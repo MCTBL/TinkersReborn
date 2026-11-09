@@ -14,6 +14,10 @@ import mctbl.tinkersreborn.TinkersRebornConfig;
 
 public class TConstructHandlerConfig {
 
+    private TConstructHandlerConfig() {
+        /* This utility class should not be instantiated */
+    }
+
     public static String TConstruct = "TConstruct";
 
     public static Map<String, String> tinkerConstructBlockReplaceMap = new HashMap<>();

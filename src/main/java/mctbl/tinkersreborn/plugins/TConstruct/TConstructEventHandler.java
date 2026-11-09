@@ -1,7 +1,5 @@
 package mctbl.tinkersreborn.plugins.TConstruct;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -68,7 +66,7 @@ public class TConstructEventHandler {
             return;
         }
         final UniqueIdentifier identifier = GameRegistry.findUniqueIdentifierFor(block);
-        if (identifier != null && "TConstruct".equalsIgnoreCase(identifier.modId)) {
+        if (isTConstruct(identifier)) {
             final String blockName = identifier.toString() + (metadata != 0 ? ":" + metadata : "");
             String targetBlockName = TConstructHandlerConfig.tinkerConstructBlockReplaceMap
                 .getOrDefault(blockName, null);
@@ -81,7 +79,8 @@ public class TConstructEventHandler {
                     targetBlockName = targetList[0] + ":" + targetList[1];
                     meta = Integer.parseInt(targetList[2]);
                 }
-                final Block targetBlock = getBlockByIdentifier(targetBlockName);
+
+                final Block targetBlock = TinkersRebornUtils.getBlockByIdentifier(targetBlockName);
                 if (targetBlock != null) {
                     storage.func_150818_a(localX, localY, localZ, targetBlock);
                     storage.setExtBlockMetadata(localX, localY, localZ, meta);
@@ -96,6 +95,11 @@ public class TConstructEventHandler {
         tryReplaceInventoryContents(event.player.inventory);
     }
 
+    /**
+     * replace item stack in inventory
+     * 
+     * @param inv
+     */
     private void tryReplaceInventoryContents(IInventory inv) {
         if (inv == null) return;
         for (int idx = 0; idx < inv.getSizeInventory(); idx++) {
@@ -103,7 +107,7 @@ public class TConstructEventHandler {
             if (TinkersRebornUtils.isStackEmpty(stackInSlot)) return;
             final UniqueIdentifier identifier = GameRegistry.findUniqueIdentifierFor(stackInSlot.getItem());
 
-            if (identifier != null && "TConstruct".equalsIgnoreCase(identifier.modId)) {
+            if (isTConstruct(identifier)) {
                 final String itemName = identifier.toString()
                     + (stackInSlot.getItemDamage() != 0 ? ":" + stackInSlot.getItemDamage() : "");
                 String targetItemName = TConstructHandlerConfig.tinkerConstructItemReplaceMap
@@ -114,6 +118,10 @@ public class TConstructEventHandler {
                 }
             }
         }
+    }
+
+    private boolean isTConstruct(final UniqueIdentifier identifier) {
+        return identifier != null && "TConstruct".equalsIgnoreCase(identifier.modId);
     }
 
     /**
@@ -131,31 +139,11 @@ public class TConstructEventHandler {
             targetItemName = targetList[0] + ":" + targetList[1];
             meta = Integer.parseInt(targetList[2]);
         }
-        final Item targetItem = getItemByIdentifier(targetItemName);
+        final Item targetItem = TinkersRebornUtils.getItemByIdentifier(targetItemName);
         if (targetItem != null) {
             inv.setInventorySlotContents(idx, new ItemStack(targetItem, stackSize, meta));
             inv.markDirty();
         }
-    }
-
-    @Nullable
-    private Block getBlockByIdentifier(String identifier) {
-        if (identifier == null || identifier.isEmpty()) return null;
-        Block block = (Block) Block.blockRegistry.getObject(identifier);
-        if (block == null && !identifier.contains(":")) {
-            block = (Block) Block.blockRegistry.getObject("minecraft:" + identifier);
-        }
-        return block;
-    }
-
-    @Nullable
-    private Item getItemByIdentifier(String identifier) {
-        if (identifier == null || identifier.isEmpty()) return null;
-        Item item = (Item) Item.itemRegistry.getObject(identifier);
-        if (item == null && !identifier.contains(":")) {
-            item = (Item) Item.itemRegistry.getObject("minecraft:" + identifier);
-        }
-        return item;
     }
 
     @SubscribeEvent
