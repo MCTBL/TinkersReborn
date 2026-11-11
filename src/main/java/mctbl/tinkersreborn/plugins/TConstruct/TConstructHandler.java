@@ -12,6 +12,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
+import mctbl.tinkersreborn.plugins.TConstruct.recipe.TConstructToolPartConvertRecipe;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import tconstruct.util.config.PHConstruct;
 
@@ -21,6 +22,27 @@ public class TConstructHandler implements ITinkersRebornModule {
     public void preInit(FMLPreInitializationEvent e) {
         TConstructHandlerConfig.preInit();
 
+        this.setTConstructConfig();
+    }
+
+    @Override
+    public void init(FMLInitializationEvent e) {
+        GameRegistry.addRecipe(new TConstructToolPartConvertRecipe());
+
+    }
+
+    @Override
+    public void postInit(FMLPostInitializationEvent e) {
+        final TConstructEventHandler target = new TConstructEventHandler();
+        MinecraftForge.EVENT_BUS.register(target);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(target);
+
+        addTConstructRecipeConverter();
+    }
+
+    private void setTConstructConfig() {
         PHConstruct.naturalSlimeSpawn = 0;
 
         PHConstruct.generateCopper = false;
@@ -49,23 +71,6 @@ public class TConstructHandler implements ITinkersRebornModule {
         PHConstruct.cfgDimWhiteList = new int[] {};
         PHConstruct.cfgOreBushWhiteList = new int[] {};
         PHConstruct.disableAllRecipes = true;
-    }
-
-    @Override
-    public void init(FMLInitializationEvent e) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void postInit(FMLPostInitializationEvent e) {
-        final TConstructEventHandler target = new TConstructEventHandler();
-        MinecraftForge.EVENT_BUS.register(target);
-        FMLCommonHandler.instance()
-            .bus()
-            .register(target);
-
-        addTConstructRecipeConverter();
     }
 
     public void addTConstructRecipeConverter() {

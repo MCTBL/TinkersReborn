@@ -69,25 +69,43 @@ public class ToolBuilderHelper {
             .filter(i -> i != null)
             .collect(Collectors.toList());
         ToolCore core = findMatchingToolCore(inputToolPartList, possibleTools);
-        if (core == null)
+        if (core == null) {
             // build fail because can't find match recipce
             return null;
+        }
         List<TinkersRebornMaterial> materials = new ArrayList<>();
         for (ItemStack stack : inputToolPartList) {
             if (stack.getItem() instanceof TinkersRebornToolPart trtp) {
                 TinkersRebornMaterial materialByIdentifier = trtp.getMaterial(stack);
-                if (materialByIdentifier != TinkersRebornMaterial.UNKNOWN) materials.add(materialByIdentifier);
-                if (trtp instanceof BoltCore bolt) materials.add(bolt.getHeadMaterial(stack));
+                materials.add(materialByIdentifier);
+                // if (materialByIdentifier != TinkersRebornMaterial.UNKNOWN) {
+                // materials.add(materialByIdentifier);
+                // }
+                if (trtp instanceof BoltCore bolt) {
+                    materials.add(bolt.getHeadMaterial(stack));
+                }
             }
         }
 
-        ItemStack newTool = new ItemStack(core);
-        newTool.setTagCompound(core.buildItemNBT(materials));
+        return buildTool(toolName, core, materials);
+    }
+
+    @Nullable
+    public static ItemStack buildTool(String toolName, ToolCore toolCore, List<TinkersRebornMaterial> materials) {
+        ItemStack newTool = new ItemStack(toolCore);
+        newTool.setTagCompound(toolCore.buildItemNBT(materials));
+        if (toolName != null && !toolName.isEmpty()) {
+            newTool.setStackDisplayName(toolName);
+        }
         return newTool;
     }
 
     private static ToolCore findMatchingToolCore(List<ItemStack> parts, Collection<ToolCore> possibleTools) {
-        for (ToolCore core : possibleTools) if (core.checkRecipeMatch(parts)) return core;
+        for (ToolCore core : possibleTools) {
+            if (core.checkRecipeMatch(parts)) {
+                return core;
+            }
+        }
         return null;
     }
 
