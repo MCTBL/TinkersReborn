@@ -70,7 +70,7 @@ public class TConstructHandler implements ITinkersRebornModule {
         PHConstruct.slimeIslUseWhiteList = true;
         PHConstruct.cfgDimWhiteList = new int[] {};
         PHConstruct.cfgOreBushWhiteList = new int[] {};
-        PHConstruct.disableAllRecipes = true;
+        PHConstruct.disableAllRecipes = false;
     }
 
     public void addTConstructRecipeConverter() {
