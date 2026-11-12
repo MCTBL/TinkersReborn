@@ -12,6 +12,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
+import mctbl.tinkersreborn.plugins.TConstruct.recipe.TConstructPatternConvertRecipe;
 import mctbl.tinkersreborn.plugins.TConstruct.recipe.TConstructToolPartConvertRecipe;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import tconstruct.util.config.PHConstruct;
@@ -28,6 +29,7 @@ public class TConstructHandler implements ITinkersRebornModule {
     @Override
     public void init(FMLInitializationEvent e) {
         GameRegistry.addRecipe(new TConstructToolPartConvertRecipe());
+        GameRegistry.addRecipe(new TConstructPatternConvertRecipe());
 
     }
 
@@ -70,7 +72,7 @@ public class TConstructHandler implements ITinkersRebornModule {
         PHConstruct.slimeIslUseWhiteList = true;
         PHConstruct.cfgDimWhiteList = new int[] {};
         PHConstruct.cfgOreBushWhiteList = new int[] {};
-        PHConstruct.disableAllRecipes = false;
+        PHConstruct.disableAllRecipes = true;
     }
 
     public void addTConstructRecipeConverter() {

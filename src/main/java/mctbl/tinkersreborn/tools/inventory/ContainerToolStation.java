@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -143,11 +142,8 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
     public void setToolName(String name) {
         this.toolName = name;
 
-        if (world.isRemote) {
-            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
-            if (screen instanceof GuiToolStation) {
-                ((GuiToolStation) screen).textField.setText(name);
-            }
+        if (world.isRemote && Minecraft.getMinecraft().currentScreen instanceof GuiToolStation station) {
+            station.textField.setText(name);
         }
 
         onCraftMatrixChanged(tile);

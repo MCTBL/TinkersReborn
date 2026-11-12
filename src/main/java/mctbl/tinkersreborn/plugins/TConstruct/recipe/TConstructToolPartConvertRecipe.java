@@ -3,6 +3,8 @@ package mctbl.tinkersreborn.plugins.TConstruct.recipe;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,10 +12,13 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.TinkersRebornRegistry;
+import mctbl.tinkersreborn.library.materials.MaterialStatusType;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.tools.TinkersRebornTools;
+import mctbl.tinkersreborn.tools.items.BoltCore;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import tconstruct.library.TConstructRegistry;
+import tconstruct.library.tools.DualMaterialToolPart;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.tools.TinkerTools;
 import tconstruct.weaponry.TinkerWeaponry;
@@ -94,7 +99,11 @@ public class TConstructToolPartConvertRecipe implements IRecipe {
         if (count != 1) {
             return null;
         }
+        return getConvertTinkersRebornItemStack(inputStack);
+    }
 
+    @Nullable
+    private ItemStack getConvertTinkersRebornItemStack(ItemStack inputStack) {
         if (convertMap.containsKey(inputStack.getItem())
             && inputStack.getItem() instanceof tconstruct.library.tools.DynamicToolPart ticPart) {
             ToolMaterial ticMaterial = TConstructRegistry.toolMaterials.get(ticPart.getMaterialID(inputStack));
@@ -102,13 +111,23 @@ public class TConstructToolPartConvertRecipe implements IRecipe {
                 TinkersRebornMaterial tinkersRebornMaterial = TinkersRebornRegistry
                     .getMaterialByIdentifier(ticMaterial.materialName.toLowerCase());
                 TinkersRebornToolPart toolPartByPartName = convertMap.get(inputStack.getItem());
-                // TODO special process for bolt core
                 if (toolPartByPartName != null) {
-                    return toolPartByPartName.getNewPartWithMaterial(tinkersRebornMaterial);
+                    if (ticPart instanceof DualMaterialToolPart tcBoltCore
+                        && toolPartByPartName instanceof BoltCore boltCore) {
+                        // 2 is head
+                        TinkersRebornMaterial tinkersRebornMaterial2 = TinkersRebornRegistry.getMaterialByIdentifier(
+                            TConstructRegistry.toolMaterials.get(tcBoltCore.getMaterialID2(inputStack)).materialName
+                                .toLowerCase());
+                        tinkersRebornMaterial = tinkersRebornMaterial.hasStats(MaterialStatusType.SHAFT)
+                            ? tinkersRebornMaterial
+                            : TinkersRebornTools.woodMaterial;
+                        return boltCore.getNewPartWithMaterial(tinkersRebornMaterial2, tinkersRebornMaterial);
+                    } else {
+                        return toolPartByPartName.getNewPartWithMaterial(tinkersRebornMaterial);
+                    }
                 }
             }
         }
-
         return null;
     }
 
