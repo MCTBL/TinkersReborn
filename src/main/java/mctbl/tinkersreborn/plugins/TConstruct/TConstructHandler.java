@@ -12,7 +12,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.library.ITinkersRebornModule;
-import mctbl.tinkersreborn.plugins.TConstruct.recipe.TConstructPatternConvertRecipe;
 import mctbl.tinkersreborn.plugins.TConstruct.recipe.TConstructToolPartConvertRecipe;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 import tconstruct.util.config.PHConstruct;
@@ -29,7 +28,6 @@ public class TConstructHandler implements ITinkersRebornModule {
     @Override
     public void init(FMLInitializationEvent e) {
         GameRegistry.addRecipe(new TConstructToolPartConvertRecipe());
-        GameRegistry.addRecipe(new TConstructPatternConvertRecipe());
 
     }
 
@@ -79,32 +77,18 @@ public class TConstructHandler implements ITinkersRebornModule {
         for (Entry<String, String> entry : TConstructHandlerConfig.tinkerConstructItemReplaceMap.entrySet()) {
             try {
                 String inputName = entry.getKey();
-                final String[] inputList = inputName.split(":");
-                int inputMeta = 0;
-                if (inputList.length == 3) {
-                    inputName = inputList[0] + ":" + inputList[1];
-                    inputMeta = Integer.parseInt(inputList[2]);
-                }
-
-                final ItemStack inputStack = new ItemStack(
-                    TinkersRebornUtils.getItemByIdentifier(inputName),
-                    1,
-                    inputMeta);
-
                 String outputName = entry.getValue();
-                final String[] outputList = outputName.split(":");
-                int outputMeta = 0;
-                if (outputList.length == 3) {
-                    outputName = outputList[0] + ":" + outputList[1];
-                    outputMeta = Integer.parseInt(outputList[2]);
+
+                final ItemStack inputStack = TinkersRebornUtils.getItemStackByIdentifier(inputName);
+                final ItemStack outputStack = TinkersRebornUtils.getItemStackByIdentifier(outputName);
+
+                if (inputStack != null || outputStack != null) {
+                    if (inputStack.getItem() != null && inputStack.getItem()
+                        .getContainerItem() != null) {
+                        continue;
+                    }
+                    GameRegistry.addShapelessRecipe(outputStack, inputStack);
                 }
-
-                final ItemStack outputStack = new ItemStack(
-                    TinkersRebornUtils.getItemByIdentifier(outputName),
-                    1,
-                    outputMeta);
-
-                GameRegistry.addShapelessRecipe(outputStack, inputStack);
             } catch (Exception e) {
                 TinkersReborn.LOG.error("Found error when add recipe for {}", entry, e);
             }

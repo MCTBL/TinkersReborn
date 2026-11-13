@@ -2,7 +2,6 @@ package mctbl.tinkersreborn.plugins.TConstruct;
 
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -52,7 +51,7 @@ public class TConstructEventHandler {
 
     /**
      * replace block in world
-     * 
+     *
      * @param block
      * @param metadata
      * @param storage
@@ -97,14 +96,18 @@ public class TConstructEventHandler {
 
     /**
      * replace item stack in inventory
-     * 
+     *
      * @param inv
      */
     private void tryReplaceInventoryContents(IInventory inv) {
-        if (inv == null) return;
+        if (inv == null) {
+            return;
+        }
         for (int idx = 0; idx < inv.getSizeInventory(); idx++) {
             final ItemStack stackInSlot = inv.getStackInSlot(idx);
-            if (TinkersRebornUtils.isStackEmpty(stackInSlot)) return;
+            if (TinkersRebornUtils.isStackEmpty(stackInSlot)) {
+                return;
+            }
             final UniqueIdentifier identifier = GameRegistry.findUniqueIdentifierFor(stackInSlot.getItem());
 
             if (isTConstruct(identifier)) {
@@ -126,22 +129,17 @@ public class TConstructEventHandler {
 
     /**
      * replace item stack in inventory
-     * 
+     *
      * @param inv
      * @param idx
      * @param targetItemName
      * @param stackSize
      */
     private void replaceStackInSlot(IInventory inv, int idx, String targetItemName, int stackSize) {
-        final String[] targetList = targetItemName.split(":");
-        int meta = 0;
-        if (targetList.length == 3) {
-            targetItemName = targetList[0] + ":" + targetList[1];
-            meta = Integer.parseInt(targetList[2]);
-        }
-        final Item targetItem = TinkersRebornUtils.getItemByIdentifier(targetItemName);
-        if (targetItem != null) {
-            inv.setInventorySlotContents(idx, new ItemStack(targetItem, stackSize, meta));
+        ItemStack targetStack = TinkersRebornUtils.getItemStackByIdentifier(targetItemName);
+        if (targetStack != null) {
+            targetStack.stackSize = stackSize;
+            inv.setInventorySlotContents(idx, targetStack);
             inv.markDirty();
         }
     }

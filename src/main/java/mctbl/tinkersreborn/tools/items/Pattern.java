@@ -31,15 +31,15 @@ public class Pattern extends Item implements IPattern {
 
     private final Map<String, IIcon> iconsMap;
 
-    public final static String CAST_BLANK = "cast_blank";
+    public static final String CAST_BLANK = "cast_blank";
     private IIcon CAST_BLANK_ICON = null;
-    public final static String PATTERN_BLANK = "pattern_blank";
+    public static final String PATTERN_BLANK = "pattern_blank";
     private IIcon PATTERN_BLANK_ICON = null;
-    public final static String CAST_INGOT = "cast_ingot";
+    public static final String CAST_INGOT = "cast_ingot";
     private IIcon CAST_INGOT_ICON = null;
-    public final static String CAST_GEM = "cast_gem";
+    public static final String CAST_GEM = "cast_gem";
     private IIcon CAST_GEM_ICON = null;
-    public final static String CAST_NUGGET = "cast_nugget";
+    public static final String CAST_NUGGET = "cast_nugget";
     private IIcon CAST_NUGGET_ICON = null;
 
     public Pattern() {

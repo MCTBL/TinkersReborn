@@ -27,7 +27,9 @@ import org.lwjgl.input.Keyboard;
 
 import com.google.gson.JsonParser;
 
+import mctbl.tinkersreborn.TinkersReborn;
 import mctbl.tinkersreborn.TinkersRebornConfig;
+import mctbl.tinkersreborn.common.items.ManualItem;
 import mctbl.tinkersreborn.library.materials.TinkersRebornMaterial;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 
@@ -65,7 +67,9 @@ public class TinkersRebornUtils {
     }
 
     public static void ensureOreIsRegistered(String oreDict, ItemStack stack) {
-        if (OreDictionary.getOreIDs(stack).length == 0) OreDictionary.registerOre(oreDict, stack);
+        if (OreDictionary.getOreIDs(stack).length == 0) {
+            OreDictionary.registerOre(oreDict, stack);
+        }
     }
 
     public static boolean isShiftKeyDown() {
@@ -160,7 +164,9 @@ public class TinkersRebornUtils {
     }
 
     public static String convertNewlines(String line) {
-        if (line == null) return null;
+        if (line == null) {
+            return null;
+        }
         int j;
         while ((j = line.indexOf("\\n")) >= 0) {
             line = line.substring(0, j) + '\n' + line.substring(j + 2);
@@ -198,7 +204,7 @@ public class TinkersRebornUtils {
 
     /**
      * Formats the given temperature as a string using the config preference
-     * 
+     *
      * @param temperature Temperature in kelvin
      * @return Formatted string
      */
@@ -208,7 +214,7 @@ public class TinkersRebornUtils {
 
     /**
      * Formats the given temperature as a string
-     * 
+     *
      * @param temperature Temperature in kelvin
      * @param celsius     If true, displays a celsius, false kelvin
      * @return Formatted string
@@ -225,7 +231,9 @@ public class TinkersRebornUtils {
     }
 
     public static boolean isOreBlock(World world, BlockPos pos) {
-        if (world == null) return false;
+        if (world == null) {
+            return false;
+        }
 
         Block block = world.getBlock(pos.x, pos.y, pos.z);
         int meta = world.getBlockMetadata(pos.x, pos.y, pos.z);
@@ -235,7 +243,9 @@ public class TinkersRebornUtils {
 
     // TODO is worth to cache this?
     public static boolean isOreBlock(Block block, int meta) {
-        if (block == null) return false;
+        if (block == null) {
+            return false;
+        }
 
         ItemStack stack = new ItemStack(block, 1, meta);
         if (stack.getItem() != null) {
@@ -247,7 +257,9 @@ public class TinkersRebornUtils {
             }
         }
 
-        if (block instanceof BlockOre) return true;
+        if (block instanceof BlockOre) {
+            return true;
+        }
 
         String tool = block.getHarvestTool(meta);
         int level = block.getHarvestLevel(meta);
@@ -402,7 +414,9 @@ public class TinkersRebornUtils {
 
     @Nullable
     public static Block getBlockByIdentifier(String identifier) {
-        if (identifier == null || identifier.isEmpty()) return null;
+        if (identifier == null || identifier.isEmpty()) {
+            return null;
+        }
         Block block = (Block) Block.blockRegistry.getObject(identifier);
         if (block == null && !identifier.contains(":")) {
             block = (Block) Block.blockRegistry.getObject("minecraft:" + identifier);
@@ -412,11 +426,49 @@ public class TinkersRebornUtils {
 
     @Nullable
     public static Item getItemByIdentifier(String identifier) {
-        if (identifier == null || identifier.isEmpty()) return null;
+        if (identifier == null || identifier.isEmpty()) {
+            return null;
+        }
         Item item = (Item) Item.itemRegistry.getObject(identifier);
         if (item == null && !identifier.contains(":")) {
             item = (Item) Item.itemRegistry.getObject("minecraft:" + identifier);
         }
         return item;
+    }
+
+    @Nullable
+    public static ItemStack getItemStackByIdentifier(String identifier) {
+        try {
+            if (identifier == null || identifier.isEmpty()) {
+                return null;
+            }
+
+            String itemName = identifier;
+            final String[] targetList = identifier.split(":");
+            int meta = 0;
+            String specialStr = null;
+            if (targetList.length >= 3) {
+                itemName = targetList[0] + ":" + targetList[1];
+                meta = Integer.parseInt(targetList[2]);
+            }
+
+            if (targetList.length == 4) {
+                specialStr = targetList[3];
+            }
+
+            final Item item = getItemByIdentifier(itemName);
+
+            // TODO special process for pattern or other stuff
+            if (item instanceof mctbl.tinkersreborn.tools.items.Pattern) {
+                return mctbl.tinkersreborn.tools.items.Pattern.newStackWithIdentifier(specialStr);
+            } else if (item instanceof ManualItem manual) {
+                return manual.getNewManual(specialStr);
+            }
+
+            return new ItemStack(item, 1, meta);
+        } catch (Exception e) {
+            TinkersReborn.LOG.error("Get exception when processing {}", identifier, e);
+            return null;
+        }
     }
 }
