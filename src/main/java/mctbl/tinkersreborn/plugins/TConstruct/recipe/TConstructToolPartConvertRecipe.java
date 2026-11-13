@@ -18,6 +18,7 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.items.BoltCore;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import tconstruct.library.TConstructRegistry;
+import tconstruct.library.tools.CustomMaterial;
 import tconstruct.library.tools.DualMaterialToolPart;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.tools.TinkerTools;
@@ -25,10 +26,9 @@ import tconstruct.weaponry.TinkerWeaponry;
 
 public class TConstructToolPartConvertRecipe implements IRecipe {
 
-    private final Map<Item, TinkersRebornToolPart> convertMap;
+    private static final Map<Item, TinkersRebornToolPart> convertMap = new HashMap<>();
 
     public TConstructToolPartConvertRecipe() {
-        convertMap = new HashMap<>();
         convertMap.put(TinkerTools.toolRod, TinkersRebornTools.rod);
         convertMap.put(TinkerTools.toolShard, TinkersRebornTools.shard);
         convertMap.put(TinkerTools.pickaxeHead, TinkersRebornTools.pickaxeHead);
@@ -99,19 +99,25 @@ public class TConstructToolPartConvertRecipe implements IRecipe {
         if (count != 1) {
             return null;
         }
+
         return getConvertTinkersRebornItemStack(inputStack);
     }
 
     @Nullable
-    private ItemStack getConvertTinkersRebornItemStack(ItemStack inputStack) {
-        if (convertMap.containsKey(inputStack.getItem())
-            && inputStack.getItem() instanceof tconstruct.library.tools.DynamicToolPart ticPart) {
-            ToolMaterial ticMaterial = TConstructRegistry.toolMaterials.get(ticPart.getMaterialID(inputStack));
-            if (ticMaterial != null) {
-                TinkersRebornMaterial tinkersRebornMaterial = TinkersRebornRegistry
-                    .getMaterialByIdentifier(ticMaterial.materialName.toLowerCase());
-                TinkersRebornToolPart toolPartByPartName = convertMap.get(inputStack.getItem());
-                if (toolPartByPartName != null) {
+    public static ItemStack getConvertTinkersRebornItemStack(ItemStack inputStack) {
+        TinkersRebornToolPart toolPartByPartName = convertMap.get(inputStack.getItem());
+        if (convertMap.containsKey(inputStack.getItem()) && toolPartByPartName != null
+            && inputStack.getItem() instanceof tconstruct.library.util.IToolPart ticPart) {
+            TinkersRebornMaterial tinkersRebornMaterial = TinkersRebornMaterial.UNKNOWN;
+
+            if (ticPart == TinkerWeaponry.bowstring || ticPart == TinkerWeaponry.fletching) {
+                CustomMaterial ticMaterial = TConstructRegistry.customMaterials.get(ticPart.getMaterialID(inputStack));
+                // TODO need special process for fletching and bow string
+            } else {
+                ToolMaterial ticMaterial = TConstructRegistry.toolMaterials.get(ticPart.getMaterialID(inputStack));
+                if (ticMaterial != null) {
+                    tinkersRebornMaterial = TinkersRebornRegistry
+                        .getMaterialByIdentifier(ticMaterial.materialName.toLowerCase());
                     if (ticPart instanceof DualMaterialToolPart tcBoltCore
                         && toolPartByPartName instanceof BoltCore boltCore) {
                         // 2 is head
@@ -122,11 +128,11 @@ public class TConstructToolPartConvertRecipe implements IRecipe {
                             ? tinkersRebornMaterial
                             : TinkersRebornTools.woodMaterial;
                         return boltCore.getNewPartWithMaterial(tinkersRebornMaterial2, tinkersRebornMaterial);
-                    } else {
-                        return toolPartByPartName.getNewPartWithMaterial(tinkersRebornMaterial);
                     }
                 }
             }
+
+            return toolPartByPartName.getNewPartWithMaterial(tinkersRebornMaterial);
         }
         return null;
     }

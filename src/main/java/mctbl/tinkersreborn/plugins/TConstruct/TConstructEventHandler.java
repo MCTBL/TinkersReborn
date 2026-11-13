@@ -15,6 +15,7 @@ import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
 import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.plugins.TConstruct.recipe.TConstructToolPartConvertRecipe;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
@@ -90,7 +91,6 @@ public class TConstructEventHandler {
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerLoggedInEvent event) {
-        TinkersReborn.LOG.info("{} is login", event.player.getCommandSenderName());
         tryReplaceInventoryContents(event.player.inventory);
     }
 
@@ -106,7 +106,7 @@ public class TConstructEventHandler {
         for (int idx = 0; idx < inv.getSizeInventory(); idx++) {
             final ItemStack stackInSlot = inv.getStackInSlot(idx);
             if (TinkersRebornUtils.isStackEmpty(stackInSlot)) {
-                return;
+                continue;
             }
             final UniqueIdentifier identifier = GameRegistry.findUniqueIdentifierFor(stackInSlot.getItem());
 
@@ -117,7 +117,12 @@ public class TConstructEventHandler {
                     .getOrDefault(itemName, null);
                 if (targetItemName != null) {
                     TinkersReborn.LOG.debug("{}  ->  {}", itemName, targetItemName);
-                    replaceStackInSlot(inv, idx, targetItemName, stackInSlot.stackSize);
+                    replaceStackInSlot(inv, idx, targetItemName);
+                } else {
+                    // not in replace map, try tool part auto convert
+                    ItemStack convertTinkersRebornItemStack = TConstructToolPartConvertRecipe
+                        .getConvertTinkersRebornItemStack(stackInSlot);
+                    replaceStackInSlot(inv, idx, convertTinkersRebornItemStack);
                 }
             }
         }
@@ -133,12 +138,14 @@ public class TConstructEventHandler {
      * @param inv
      * @param idx
      * @param targetItemName
-     * @param stackSize
      */
-    private void replaceStackInSlot(IInventory inv, int idx, String targetItemName, int stackSize) {
-        ItemStack targetStack = TinkersRebornUtils.getItemStackByIdentifier(targetItemName);
+    private void replaceStackInSlot(IInventory inv, int idx, String targetItemName) {
+        replaceStackInSlot(inv, idx, TinkersRebornUtils.getItemStackByIdentifier(targetItemName));
+    }
+
+    private void replaceStackInSlot(IInventory inv, int idx, ItemStack targetStack) {
         if (targetStack != null) {
-            targetStack.stackSize = stackSize;
+            targetStack.stackSize = inv.getStackInSlot(idx).stackSize;
             inv.setInventorySlotContents(idx, targetStack);
             inv.markDirty();
         }

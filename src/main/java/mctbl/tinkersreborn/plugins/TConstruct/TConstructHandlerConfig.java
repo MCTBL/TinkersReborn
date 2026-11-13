@@ -250,8 +250,8 @@ public class TConstructHandlerConfig {
         replaceList.add("TConstruct:CastingChannel;TinkersReborn:tinkersreborn.SearedBlock.CastingChannel");
         replaceList.add("TConstruct:Armor.DryingRack;TinkersReborn:tinkersreborn.DryingRack");
         replaceList.add("TConstruct:blankPattern;TinkersReborn:tinkersreborn.Pattern:0:pattern_blank");
-        replaceList.add("TConstruct:blankPattern:1;TinkersReborn:tinkersreborn.Pattern:cast_blank");
-        replaceList.add("TConstruct:blankPattern:2;TinkersReborn:tinkersreborn.Pattern:cast_blank");
+        replaceList.add("TConstruct:blankPattern:1;TinkersReborn:tinkersreborn.Pattern:0:cast_blank");
+        replaceList.add("TConstruct:blankPattern:2;TinkersReborn:tinkersreborn.Pattern:0:cast_blank");
         replaceList.add("TConstruct:blankPattern:3;TinkersReborn:tinkersreborn.Pattern:0:pattern_blank");
         replaceList.add("TConstruct:materials;TinkersReborn:tinkersreborn.material.PaperStack");
         replaceList.add("TConstruct:materials:1;TinkersReborn:tinkersreborn.material.SlimeCrystal");
@@ -346,6 +346,37 @@ public class TConstructHandlerConfig {
         replaceList.add("TConstruct:heartCanister:4;TinkersReborn:item.tinkersreborn.canister:4");
         replaceList.add("TConstruct:heartCanister:5;TinkersReborn:item.tinkersreborn.canister:5");
         replaceList.add("TConstruct:heartCanister:6;TinkersReborn:item.tinkersreborn.canister:6");
+
+        replaceList.add("TConstruct:metalPattern;TinkersReborn:tinkersreborn.Pattern:0:cast_ingot");
+        replaceList.add("TConstruct:metalPattern:1;TinkersReborn:tinkersreborn.Pattern:0:rod");
+        replaceList.add("TConstruct:metalPattern:2;TinkersReborn:tinkersreborn.Pattern:0:pickaxe_head");
+        replaceList.add("TConstruct:metalPattern:3;TinkersReborn:tinkersreborn.Pattern:0:shovel_head");
+        replaceList.add("TConstruct:metalPattern:4;TinkersReborn:tinkersreborn.Pattern:0:axe_head");
+        replaceList.add("TConstruct:metalPattern:5;TinkersReborn:tinkersreborn.Pattern:0:sword_blade");
+        replaceList.add("TConstruct:metalPattern:6;TinkersReborn:tinkersreborn.Pattern:0:large_guard");
+        replaceList.add("TConstruct:metalPattern:7;TinkersReborn:tinkersreborn.Pattern:0:medium_guard");
+        replaceList.add("TConstruct:metalPattern:8;TinkersReborn:tinkersreborn.Pattern:0:crossbar");
+        replaceList.add("TConstruct:metalPattern:9;TinkersReborn:tinkersreborn.Pattern:0:binding");
+        replaceList.add("TConstruct:metalPattern:10;TinkersReborn:tinkersreborn.Pattern:0:shield_core");
+        replaceList.add("TConstruct:metalPattern:11;TinkersReborn:tinkersreborn.Pattern:0:cast_blank");
+        replaceList.add("TConstruct:metalPattern:12;TinkersReborn:tinkersreborn.Pattern:0:knife_blade");
+        replaceList.add("TConstruct:metalPattern:13;TinkersReborn:tinkersreborn.Pattern:0:chisel_head");
+        replaceList.add("TConstruct:metalPattern:14;TinkersReborn:tinkersreborn.Pattern:0:toughrod");
+        replaceList.add("TConstruct:metalPattern:15;TinkersReborn:tinkersreborn.Pattern:0:toughbind");
+        replaceList.add("TConstruct:metalPattern:16;TinkersReborn:tinkersreborn.Pattern:0:largeplate");
+        replaceList.add("TConstruct:metalPattern:17;TinkersReborn:tinkersreborn.Pattern:0:lumberaxe_head");
+        replaceList.add("TConstruct:metalPattern:18;TinkersReborn:tinkersreborn.Pattern:0:scythe_head");
+        replaceList.add("TConstruct:metalPattern:19;TinkersReborn:tinkersreborn.Pattern:0:excavator_head");
+        replaceList.add("TConstruct:metalPattern:20;TinkersReborn:tinkersreborn.Pattern:0:large_sword_blade");
+        replaceList.add("TConstruct:metalPattern:21;TinkersReborn:tinkersreborn.Pattern:0:hammer_head");
+        replaceList.add("TConstruct:metalPattern:22;TinkersReborn:tinkersreborn.Pattern:0:cast_blank");
+        replaceList.add("TConstruct:metalPattern:25;TinkersReborn:tinkersreborn.Pattern:0:arrowhead");
+        replaceList.add("TConstruct:metalPattern:26;TinkersReborn:tinkersreborn.Pattern:0:cast_gem");
+        replaceList.add("TConstruct:metalPattern:27;TinkersReborn:tinkersreborn.Pattern:0:cast_nugget");
+        replaceList.add("TConstruct:Cast;TinkersReborn:tinkersreborn.Pattern:0:shuriken");
+        replaceList.add("TConstruct:Cast:1;TinkersReborn:tinkersreborn.Pattern:0:crossbow_limb");
+        replaceList.add("TConstruct:Cast:2;TinkersReborn:tinkersreborn.Pattern:0:crossbow_body");
+        replaceList.add("TConstruct:Cast:3;TinkersReborn:tinkersreborn.Pattern:0:bow_limb");
 
         cfg.get(
             TConstruct,

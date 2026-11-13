@@ -82,7 +82,7 @@ public class TConstructHandler implements ITinkersRebornModule {
                 final ItemStack inputStack = TinkersRebornUtils.getItemStackByIdentifier(inputName);
                 final ItemStack outputStack = TinkersRebornUtils.getItemStackByIdentifier(outputName);
 
-                if (inputStack != null || outputStack != null) {
+                if (inputStack != null && outputStack != null) {
                     if (inputStack.getItem() != null && inputStack.getItem()
                         .getContainerItem() != null) {
                         continue;
