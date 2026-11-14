@@ -30,6 +30,7 @@ public class TConstructToolConvertRecipe implements IRecipe {
     private final String[] NBTNameList = new String[] { "Head", "Handle", "Accessory", "Extra" };
 
     private Map<Item, ToolCore> convertMap;
+    private Map<Item, int[]> reorderMap;
 
     public TConstructToolConvertRecipe() {
         convertMap = new HashMap<>();
@@ -48,11 +49,24 @@ public class TConstructToolConvertRecipe implements IRecipe {
         convertMap.put(TinkerTools.battlesign, TinkersRebornTools.roundShield);
         convertMap.put(TinkerTools.cleaver, TinkersRebornTools.cleaver);
 
-        convertMap.put(TinkerWeaponry.shortbow, TinkersRebornTools.shortBow);
-        convertMap.put(TinkerWeaponry.longbow, TinkersRebornTools.longBow);
-        convertMap.put(TinkerWeaponry.arrowAmmo, TinkersRebornTools.arrow);
-        convertMap.put(TinkerWeaponry.boltAmmo, TinkersRebornTools.bolt);
-        convertMap.put(TinkerWeaponry.crossbow, TinkersRebornTools.crossBow);
+        convertMap.put(TinkerWeaponry.shortbow, TinkersRebornTools.shortBow); // 1
+        convertMap.put(TinkerWeaponry.longbow, TinkersRebornTools.longBow); // 1
+        convertMap.put(TinkerWeaponry.arrowAmmo, TinkersRebornTools.arrow); // 2
+        convertMap.put(TinkerWeaponry.boltAmmo, TinkersRebornTools.bolt); // 2
+        convertMap.put(TinkerWeaponry.crossbow, TinkersRebornTools.crossBow); // 2
+
+        reorderMap = new HashMap<>();
+        reorderMap.put(TinkerTools.mattock, new int[] { 0, 2, 1 });
+        reorderMap.put(TinkerTools.hammer, new int[] { 0, 2, 3, 1 });
+        reorderMap.put(TinkerTools.lumberaxe, new int[] { 0, 2, 1, 3 });
+        reorderMap.put(TinkerTools.excavator, new int[] { 0, 2, 1, 3 });
+        reorderMap.put(TinkerTools.scythe, new int[] { 0, 1, 3, 2 });
+        reorderMap.put(TinkerWeaponry.shortbow, new int[] { 1, 0, 2 });
+        reorderMap.put(TinkerWeaponry.longbow, new int[] { 1, 0, 2, 3 });
+        reorderMap.put(TinkerWeaponry.crossbow, new int[] { 1, 2, 0, 3 });
+        reorderMap.put(TinkerWeaponry.arrowAmmo, new int[] { 1, 0, 2 });
+        reorderMap.put(TinkerWeaponry.boltAmmo, new int[] { 1, 0, 2 });
+
     }
 
     @Override
@@ -99,22 +113,34 @@ public class TConstructToolConvertRecipe implements IRecipe {
         if (ticStack == null) {
             return null;
         }
+        final Item tcToolCore = ticStack.getItem();
+        final ToolCore targetTool = convertMap.get(tcToolCore);
 
         List<TinkersRebornMaterial> materialList = new ArrayList<>();
         final NBTTagCompound tcDataCompound = ticStack.getTagCompound()
             .getCompoundTag("InfiTool");
-        for (String name : NBTNameList) {
+        for (int idx = 0; idx < NBTNameList.length; idx++) {
+            String name = NBTNameList[idx];
             if (tcDataCompound.hasKey(name)) {
-                ToolMaterial ticMaterial = TConstructRegistry.toolMaterials.get(tcDataCompound.getInteger(name));
-                materialList.add(TinkersRebornRegistry.getMaterialByIdentifier(ticMaterial.materialName.toLowerCase()));
+                if ((tcToolCore == TinkerWeaponry.shortbow && idx == 1)
+                    || (tcToolCore == TinkerWeaponry.longbow && idx == 1)
+                    || (tcToolCore == TinkerWeaponry.arrowAmmo && idx == 2)
+                    || (tcToolCore == TinkerWeaponry.boltAmmo && idx == 2)
+                    || (tcToolCore == TinkerWeaponry.crossbow && idx == 2)) {
+                    materialList.add(processTConstructCustomMaterial(tcToolCore, tcDataCompound.getInteger(name)));
+                } else {
+                    ToolMaterial ticMaterial = TConstructRegistry.toolMaterials.get(tcDataCompound.getInteger(name));
+                    materialList
+                        .add(TinkersRebornRegistry.getMaterialByIdentifier(ticMaterial.materialName.toLowerCase()));
+                }
             } else {
                 materialList.add(TinkersRebornMaterial.UNKNOWN);
             }
         }
 
-        // TODO materialList needs some reorder
-
-        final ToolCore targetTool = convertMap.get(ticStack.getItem());
+        if (reorderMap.containsKey(tcToolCore)) {
+            materialList = reorderMaterialList(materialList, reorderMap.get(tcToolCore));
+        }
 
         final ItemStack newTool = ToolBuilderHelper.buildTool(null, targetTool, materialList);
 
@@ -127,6 +153,32 @@ public class TConstructToolConvertRecipe implements IRecipe {
         }
 
         return newTool;
+    }
+
+    private static TinkersRebornMaterial processTConstructCustomMaterial(Item tcToolCore, int material) {
+        String tinkersRebornMaterialName = "";
+        if (tcToolCore == TinkerWeaponry.shortbow || tcToolCore == TinkerWeaponry.longbow
+            || tcToolCore == TinkerWeaponry.crossbow) {
+            tinkersRebornMaterialName = "string";
+        } else if (tcToolCore == TinkerWeaponry.boltAmmo || tcToolCore == TinkerWeaponry.arrowAmmo) {
+            tinkersRebornMaterialName = switch (material) {
+                case 1 -> "leaf";
+                case 4 -> "slimeleaf";
+                default -> "feather";
+            };
+        }
+        return TinkersRebornRegistry.getMaterialByIdentifier(tinkersRebornMaterialName);
+    }
+
+    private List<TinkersRebornMaterial> reorderMaterialList(List<TinkersRebornMaterial> oldList, int[] order) {
+        if (oldList.size() < order.length) {
+            return oldList;
+        }
+        List<TinkersRebornMaterial> result = new ArrayList<>(oldList.size());
+        for (int idx : order) {
+            result.add(oldList.get(idx));
+        }
+        return result;
     }
 
     @Override

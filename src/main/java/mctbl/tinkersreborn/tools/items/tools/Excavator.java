@@ -29,11 +29,11 @@ public class Excavator extends AoeHarvestTool {
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.excavatorHead, MaterialStatusType.HEAD, "_excavator_head"));
         this.componentsParts
-            .add(new ToolPartRecord(TinkersRebornTools.largeplate, MaterialStatusType.HEAD, "_excavator_grip"));
+            .add(new ToolPartRecord(TinkersRebornTools.largeplate, MaterialStatusType.HEAD, "_excavator_binding"));
         this.componentsParts
             .add(new ToolPartRecord(TinkersRebornTools.toughrod, MaterialStatusType.HANDLE, "_excavator_handle"));
         this.componentsParts
-            .add(new ToolPartRecord(TinkersRebornTools.toughbind, MaterialStatusType.EXTRA, "_excavator_binding"));
+            .add(new ToolPartRecord(TinkersRebornTools.toughbind, MaterialStatusType.EXTRA, "_excavator_grip"));
     }
 
     @Override
