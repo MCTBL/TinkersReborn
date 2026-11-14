@@ -1,8 +1,12 @@
 package mctbl.tinkersreborn.plugins.TConstruct;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -14,12 +18,17 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.GameRegistry.UniqueIdentifier;
-import mctbl.tinkersreborn.TinkersReborn;
+import mctbl.tinkersreborn.library.utils.BlockReplacement;
 import mctbl.tinkersreborn.plugins.TConstruct.recipe.TConstructToolPartConvertRecipe;
 import mctbl.tinkersreborn.util.ColorUtil;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
 
 public class TConstructEventHandler {
+
+    private final Map<Block, Map<Integer, BlockReplacement>> replacements = new HashMap<>();
+
+    public static final int MIGRATION_VERSION = 1;
+    public static final String TAG_MIGRATION_VERSION = "TConstruct_convert_to_TinkersReborn";
 
     @SubscribeEvent
     public void checkAndReplaceBlockInWorld(ChunkDataEvent.Load event) {
@@ -29,9 +38,15 @@ public class TConstructEventHandler {
         }
 
         final Chunk chunk = event.getChunk();
+        final NBTTagCompound data = event.getData();
+
+        if (data.getInteger(TAG_MIGRATION_VERSION) >= MIGRATION_VERSION) {
+            return;
+        }
 
         ExtendedBlockStorage[] storages = chunk.getBlockStorageArray();
 
+        boolean needSave = false;
         for (ExtendedBlockStorage storage : storages) {
             if (storage == null) {
                 continue;
@@ -42,12 +57,17 @@ public class TConstructEventHandler {
                     for (int localZ = 0; localZ < 16; localZ++) {
                         Block block = storage.getBlockByExtId(localX, localY, localZ);
                         int metadata = storage.getExtBlockMetadata(localX, localY, localZ);
-                        tryReplaceTConstructBlock(block, metadata, storage, localX, localY, localZ);
+                        needSave |= tryReplaceTConstructBlock(block, metadata, storage, localX, localY, localZ);
                     }
                 }
             }
         }
-        chunk.setChunkModified();
+
+        data.setInteger(TAG_MIGRATION_VERSION, MIGRATION_VERSION);
+
+        if (needSave) {
+            chunk.setChunkModified();
+        }
     }
 
     /**
@@ -60,19 +80,26 @@ public class TConstructEventHandler {
      * @param localY
      * @param localZ
      */
-    private void tryReplaceTConstructBlock(Block block, int metadata, ExtendedBlockStorage storage, int localX,
+    private boolean tryReplaceTConstructBlock(Block block, int metadata, ExtendedBlockStorage storage, int localX,
         int localY, int localZ) {
         if (block == null) {
-            return;
+            return false;
         }
+        if (replacements.containsKey(block) && replacements.get(block)
+            .containsKey(metadata)) {
+            final BlockReplacement blockReplacement = replacements.get(block)
+                .get(metadata);
+            storage.func_150818_a(localX, localY, localZ, blockReplacement.target);
+            storage.setExtBlockMetadata(localX, localY, localZ, blockReplacement.metadata);
+            return true;
+        }
+
         final UniqueIdentifier identifier = GameRegistry.findUniqueIdentifierFor(block);
         if (isTConstruct(identifier)) {
             final String blockName = identifier.toString() + (metadata != 0 ? ":" + metadata : "");
             String targetBlockName = TConstructHandlerConfig.tinkerConstructBlockReplaceMap
                 .getOrDefault(blockName, null);
-            TinkersReborn.LOG.debug("find {}", blockName);
             if (targetBlockName != null) {
-                TinkersReborn.LOG.debug("{}  ->  {}", blockName, targetBlockName);
                 final String[] targetList = targetBlockName.split(":");
                 int meta = 0;
                 if (targetList.length == 3) {
@@ -82,11 +109,15 @@ public class TConstructEventHandler {
 
                 final Block targetBlock = TinkersRebornUtils.getBlockByIdentifier(targetBlockName);
                 if (targetBlock != null) {
+                    replacements.computeIfAbsent(block, t -> new HashMap<>())
+                        .put(metadata, new BlockReplacement(targetBlock, meta));
                     storage.func_150818_a(localX, localY, localZ, targetBlock);
                     storage.setExtBlockMetadata(localX, localY, localZ, meta);
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     @SubscribeEvent
@@ -116,7 +147,6 @@ public class TConstructEventHandler {
                 String targetItemName = TConstructHandlerConfig.tinkerConstructItemReplaceMap
                     .getOrDefault(itemName, null);
                 if (targetItemName != null) {
-                    TinkersReborn.LOG.debug("{}  ->  {}", itemName, targetItemName);
                     replaceStackInSlot(inv, idx, targetItemName);
                 } else {
                     // not in replace map, try tool part auto convert
@@ -145,7 +175,6 @@ public class TConstructEventHandler {
                 String targetItemName = TConstructHandlerConfig.tinkerConstructItemReplaceMap
                     .getOrDefault(itemName, null);
                 if (targetItemName != null) {
-                    TinkersReborn.LOG.debug("{}  ->  {}", itemName, targetItemName);
                     replaceStackInSlot(array, idx, targetItemName);
                 } else {
                     // not in replace map, try tool part auto convert
