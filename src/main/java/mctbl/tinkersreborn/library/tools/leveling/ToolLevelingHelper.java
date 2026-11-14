@@ -46,6 +46,14 @@ public class ToolLevelingHelper {
         return tags.getLong(ToolTags.TAG_EXP);
     }
 
+    public static void setLevel(NBTTagCompound tags, int level) {
+        tags.setInteger(ToolTags.TAG_LEVEL, level);
+    }
+
+    public static void setXp(NBTTagCompound tags, long xp) {
+        tags.setLong(ToolTags.TAG_EXP, xp);
+    }
+
     public static long getBoostXp(NBTTagCompound tags) {
         return tags.getLong(ToolTags.TAG_BOOST_EXP);
     }

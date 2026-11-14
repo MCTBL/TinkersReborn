@@ -87,7 +87,10 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        TinkersRebornMaterial material = this.getMaterial(stack);
+        return getItemNameUseMaterial(this.getMaterial(stack));
+    }
+
+    public String getItemNameUseMaterial(TinkersRebornMaterial material) {
         if (material == TinkersRebornMaterial.UNKNOWN) {
             return this.getLocalizedPartName()
                 .trim();
@@ -100,7 +103,7 @@ public class TinkersRebornToolPart extends CraftingItem implements IToolPart {
     @Override
     public String getUnlocalizedName(ItemStack stack) {
         TinkersRebornMaterial material = this.getMaterial(stack);
-        return material == TinkersRebornMaterial.UNKNOWN ? super.getUnlocalizedName()
+        return material == TinkersRebornMaterial.UNKNOWN ? this.getUnlocalizedName()
             : String.format(TOOLNAMEFORMATTER, material.localizedPrefix(), this.getLocalizedPartName());
     }
 

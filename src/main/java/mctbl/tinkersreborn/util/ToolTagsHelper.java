@@ -276,6 +276,10 @@ public class ToolTagsHelper {
         return getTagSafe(getToolBaseNBTSafe(compound), ToolTags.TAG_LEVEL_BASE);
     }
 
+    public static void setToolLevelingNBTSafe(ItemStack tool, NBTTagCompound levelingCompound) {
+        setToolLevelingNBTSafe(getTagSafe(tool), levelingCompound);
+    }
+
     public static void setToolLevelingNBTSafe(NBTTagCompound baseCompound, NBTTagCompound levelingCompound) {
         if (getToolLevelingNBTSafe(baseCompound) != levelingCompound) {
             getToolBaseNBTSafe(baseCompound).setTag(ToolTags.TAG_LEVEL_BASE, levelingCompound);

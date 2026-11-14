@@ -958,7 +958,9 @@ public abstract class ToolCore extends Item implements IModifyable, IToolEvent, 
             TinkersRebornMaterial tinkersRebornMaterial = materialList.get(i);
             IMaterialStats stats = tinkersRebornMaterial.getStats(toolPartRecord.statusType());
             if (stats != null) {
-                tootips.add(ColorUtil.addUnderLine(stats.getLocalizedName()));
+                tootips
+                    .add(ColorUtil.addUnderLine(toolPartRecord.toolPart.getItemNameUseMaterial(tinkersRebornMaterial)));
+                tootips.add(stats.getLocalizedName());
                 tootips.addAll(stats.getLocalizedInfo());
             }
         }
