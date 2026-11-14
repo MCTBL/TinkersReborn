@@ -18,8 +18,7 @@ public class TinkersRebornNEIEventHandler {
             TinkersReborn.MODID,
             builder -> builder.setDisplayStack(new ItemStack(TinkersRebornGeneral.dryingRack))
                 .setHeight(65)
-                .setWidth(160)
-                .setMultipleWidgetsAllowed(true));
+                .setWidth(160));
 
         event.registerHandlerInfo(
             RecipeHandlerMelting.RECIPEID,
@@ -27,8 +26,7 @@ public class TinkersRebornNEIEventHandler {
             TinkersReborn.MODID,
             builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.smelteryController))
                 .setHeight(55)
-                .setWidth(160)
-                .setMultipleWidgetsAllowed(true));
+                .setWidth(160));
 
         event.registerHandlerInfo(
             RecipeHandlerAlloying.RECIPEID,
@@ -36,8 +34,7 @@ public class TinkersRebornNEIEventHandler {
             TinkersReborn.MODID,
             builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.smelteryController))
                 .setHeight(65)
-                .setWidth(160)
-                .setMultipleWidgetsAllowed(true));
+                .setWidth(160));
 
         event.registerHandlerInfo(
             RecipeHandlerEntitySmeltery.RECIPEID,
@@ -45,8 +42,7 @@ public class TinkersRebornNEIEventHandler {
             TinkersReborn.MODID,
             builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.smelteryController))
                 .setHeight(70)
-                .setWidth(160)
-                .setMultipleWidgetsAllowed(true));
+                .setWidth(160));
 
         event.registerHandlerInfo(
             RecipeHandlerCastingTable.RECIPEID,
@@ -54,8 +50,7 @@ public class TinkersRebornNEIEventHandler {
             TinkersReborn.MODID,
             builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.searedBlock, 1, 0))
                 .setHeight(61)
-                .setWidth(144)
-                .setMultipleWidgetsAllowed(true));
+                .setWidth(144));
 
         event.registerHandlerInfo(
             RecipeHandlerCastingBasin.RECIPEID,
@@ -63,8 +58,7 @@ public class TinkersRebornNEIEventHandler {
             TinkersReborn.MODID,
             builder -> builder.setDisplayStack(new ItemStack(TinkersRebornSmeltery.searedBlock, 1, 2))
                 .setHeight(61)
-                .setWidth(144)
-                .setMultipleWidgetsAllowed(true));
+                .setWidth(144));
     }
 
 }

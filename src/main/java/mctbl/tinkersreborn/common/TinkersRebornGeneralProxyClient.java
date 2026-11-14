@@ -89,14 +89,6 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
                 mc.gameSettings,
                 new ResourceLocation("textures/font/ascii.png"),
                 mc.renderEngine);
-            // if (mc.gameSettings.language != null) {
-            // fontRender.setUnicodeFlag(
-            // mc.getLanguageManager()
-            // .isCurrentLocaleUnicode() || mc.gameSettings.forceUnicodeFont);
-            // fontRender.setBidiFlag(
-            // mc.getLanguageManager()
-            // .isCurrentLanguageBidirectional());
-            // }
             resourceManager.registerReloadListener(fontRender);
         }
 
@@ -104,7 +96,6 @@ public class TinkersRebornGeneralProxyClient extends TinkersRebornGeneralProxyCo
             mc.gameSettings,
             new ResourceLocation("textures/font/ascii.png"),
             mc.renderEngine);
-        resourceManager.registerReloadListener(fontRender);
 
         SlimeRender slimeRender = new SlimeRender(new ModelSlime(16), new ModelSlime(0), 0.25F);
 
