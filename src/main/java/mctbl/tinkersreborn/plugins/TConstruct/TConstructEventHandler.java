@@ -99,7 +99,7 @@ public class TConstructEventHandler {
      *
      * @param inv
      */
-    private void tryReplaceInventoryContents(IInventory inv) {
+    public static void tryReplaceInventoryContents(IInventory inv) {
         if (inv == null) {
             return;
         }
@@ -128,7 +128,36 @@ public class TConstructEventHandler {
         }
     }
 
-    private boolean isTConstruct(final UniqueIdentifier identifier) {
+    public static void tryReplaceItemStackArray(ItemStack[] array) {
+        if (array == null) {
+            return;
+        }
+        for (int idx = 0; idx < array.length; idx++) {
+            final ItemStack stackInSlot = array[idx];
+            if (TinkersRebornUtils.isStackEmpty(stackInSlot)) {
+                continue;
+            }
+            final UniqueIdentifier identifier = GameRegistry.findUniqueIdentifierFor(stackInSlot.getItem());
+
+            if (isTConstruct(identifier)) {
+                final String itemName = identifier.toString()
+                    + (stackInSlot.getItemDamage() != 0 ? ":" + stackInSlot.getItemDamage() : "");
+                String targetItemName = TConstructHandlerConfig.tinkerConstructItemReplaceMap
+                    .getOrDefault(itemName, null);
+                if (targetItemName != null) {
+                    TinkersReborn.LOG.debug("{}  ->  {}", itemName, targetItemName);
+                    replaceStackInSlot(array, idx, targetItemName);
+                } else {
+                    // not in replace map, try tool part auto convert
+                    ItemStack convertTinkersRebornItemStack = TConstructToolPartConvertRecipe
+                        .getConvertTinkersRebornItemStack(stackInSlot);
+                    replaceStackInSlot(array, idx, convertTinkersRebornItemStack);
+                }
+            }
+        }
+    }
+
+    private static boolean isTConstruct(final UniqueIdentifier identifier) {
         return identifier != null && "TConstruct".equalsIgnoreCase(identifier.modId);
     }
 
@@ -139,15 +168,26 @@ public class TConstructEventHandler {
      * @param idx
      * @param targetItemName
      */
-    private void replaceStackInSlot(IInventory inv, int idx, String targetItemName) {
+    private static void replaceStackInSlot(IInventory inv, int idx, String targetItemName) {
         replaceStackInSlot(inv, idx, TinkersRebornUtils.getItemStackByIdentifier(targetItemName));
     }
 
-    private void replaceStackInSlot(IInventory inv, int idx, ItemStack targetStack) {
+    private static void replaceStackInSlot(IInventory inv, int idx, ItemStack targetStack) {
         if (targetStack != null) {
             targetStack.stackSize = inv.getStackInSlot(idx).stackSize;
             inv.setInventorySlotContents(idx, targetStack);
             inv.markDirty();
+        }
+    }
+
+    private static void replaceStackInSlot(ItemStack[] array, int idx, String targetItemName) {
+        replaceStackInSlot(array, idx, TinkersRebornUtils.getItemStackByIdentifier(targetItemName));
+    }
+
+    private static void replaceStackInSlot(ItemStack[] array, int idx, ItemStack targetStack) {
+        if (targetStack != null) {
+            targetStack.stackSize = array[idx].stackSize;
+            array[idx] = targetStack;
         }
     }
 
