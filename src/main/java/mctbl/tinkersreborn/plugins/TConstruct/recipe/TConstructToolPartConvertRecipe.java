@@ -18,7 +18,6 @@ import mctbl.tinkersreborn.tools.TinkersRebornTools;
 import mctbl.tinkersreborn.tools.items.BoltCore;
 import mctbl.tinkersreborn.tools.items.TinkersRebornToolPart;
 import tconstruct.library.TConstructRegistry;
-import tconstruct.library.tools.CustomMaterial;
 import tconstruct.library.tools.DualMaterialToolPart;
 import tconstruct.library.tools.ToolMaterial;
 import tconstruct.tools.TinkerTools;
@@ -111,8 +110,7 @@ public class TConstructToolPartConvertRecipe implements IRecipe {
             TinkersRebornMaterial tinkersRebornMaterial = TinkersRebornMaterial.UNKNOWN;
 
             if (ticPart == TinkerWeaponry.bowstring || ticPart == TinkerWeaponry.fletching) {
-                CustomMaterial ticMaterial = TConstructRegistry.customMaterials.get(ticPart.getMaterialID(inputStack));
-                // TODO need special process for fletching and bow string
+                tinkersRebornMaterial = processTConstructCustomMaterial(inputStack);
             } else {
                 ToolMaterial ticMaterial = TConstructRegistry.toolMaterials.get(ticPart.getMaterialID(inputStack));
                 if (ticMaterial != null) {
@@ -135,6 +133,27 @@ public class TConstructToolPartConvertRecipe implements IRecipe {
             return toolPartByPartName.getNewPartWithMaterial(tinkersRebornMaterial);
         }
         return null;
+    }
+
+    /**
+     * special process for fletching and bow string
+     * 
+     * @param inputStack
+     * @return
+     */
+    private static TinkersRebornMaterial processTConstructCustomMaterial(ItemStack inputStack) {
+        String tinkersRebornMaterialName = "";
+        final Item toolItem = inputStack.getItem();
+        if (toolItem instanceof tconstruct.tools.items.Bowstring) {
+            tinkersRebornMaterialName = "string";
+        } else if (toolItem instanceof tconstruct.tools.items.Fletching) {
+            tinkersRebornMaterialName = switch (inputStack.getItemDamage()) {
+                case 1 -> "leaf";
+                case 4 -> "slimeleaf";
+                default -> "feather";
+            };
+        }
+        return TinkersRebornRegistry.getMaterialByIdentifier(tinkersRebornMaterialName);
     }
 
     @Override
