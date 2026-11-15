@@ -30,7 +30,6 @@ public interface IModifier extends IToolMod {
      *                            wrong.
      */
     boolean canApply(ItemStack stack, ItemStack original) throws TinkerGuiException;
-    // throws TinkerGuiException;
 
     /** Apply the modifier to that itemstack. The complete procedure */
     void apply(ItemStack stack);
@@ -82,4 +81,12 @@ public interface IModifier extends IToolMod {
         return true;
     }
 
+    /**
+     * for convert TiC tool to TinkersReborn tool
+     * @param tool
+     * @param tcToolNBTCompound
+     */
+    default void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        // default do nothing
+    }
 }

@@ -112,9 +112,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
         for (int i = 0; i < tile.getSizeInventory(); i++) {
             Slot slot = inventorySlots.get(i);
             // set part info for the slot
-            if (slot instanceof SlotToolStationIn) {
-                SlotToolStationIn slotToolPart = (SlotToolStationIn) slot;
-
+            if (slot instanceof SlotToolStationIn slotToolPart) {
                 slotToolPart.setRestriction(null);
 
                 // deactivate not needed slots
@@ -201,10 +199,10 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
         // sync output with other open containers on the server
         if (!this.world.isRemote) {
             WorldServer server = (WorldServer) this.world;
-            for (EntityPlayer player : server.playerEntities) {
-                if (player.openContainer != this && player.openContainer instanceof ContainerToolStation
-                    && this.sameGui((ContainerToolStation) player.openContainer)) {
-                    ((ContainerToolStation) player.openContainer).out.inventory
+            for (EntityPlayer p : server.playerEntities) {
+                if (p.openContainer != this && p.openContainer instanceof ContainerToolStation container
+                    && this.sameGui(container)) {
+                    container.out.inventory
                         .setInventorySlotContents(0, out.getStack());
                 }
             }
@@ -221,7 +219,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
                 || !isStackEmpty(renameTool());
         } catch (TinkerGuiException e) {
             // no error updating needed
-            e.printStackTrace();
+            TinkersReborn.LOG.debug("onResultTaken", e);
         }
 
         if (resultTaken) {
@@ -245,7 +243,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
                 }
             } catch (TinkerGuiException e) {
                 // no error updating needed
-                e.printStackTrace();
+                TinkersReborn.LOG.debug("onResultTaken", e);
             }
         }
         onCraftMatrixChanged(null);

@@ -159,10 +159,11 @@ public class ModifierNBT {
 
         @Override
         public void write(NBTTagCompound tag) {
-            // calcInfo();
             super.write(tag);
             tag.setInteger(ToolTags.CURRENT, current);
             tag.setInteger(ToolTags.MAX, max);
+            
+            extraInfo = calcInfo();
         }
 
         @Override
