@@ -30,14 +30,14 @@ public class ModifierNBT {
         this.identifier = modifier.getIdentifier();
         this.level = 0;
         this.color = ColorUtil.enumChatFormattingToColor(EnumChatFormatting.GRAY);
-        this.type = "modifier";
+        this.type = ToolTags.TYPEMODIFIERS;
     }
 
     public ModifierNBT(ITrait trait) {
         this.identifier = trait.getIdentifier();
         this.level = 0;
         this.color = ColorUtil.enumChatFormattingToColor(EnumChatFormatting.GRAY);
-        this.type = "trait";
+        this.type = ToolTags.TYPETRAITS;
     }
 
     public ModifierNBT(NBTTagCompound tag) {
@@ -82,7 +82,8 @@ public class ModifierNBT {
 
     public static <T extends ModifierNBT> T readTag(NBTTagCompound tag, Class<T> clazz) {
         try {
-            T data = clazz.newInstance();
+            T data = clazz.getDeclaredConstructor()
+                .newInstance();
             data.read(tag);
             return data;
         } catch (ReflectiveOperationException e) {
@@ -162,7 +163,7 @@ public class ModifierNBT {
             super.write(tag);
             tag.setInteger(ToolTags.CURRENT, current);
             tag.setInteger(ToolTags.MAX, max);
-            
+
             extraInfo = calcInfo();
         }
 

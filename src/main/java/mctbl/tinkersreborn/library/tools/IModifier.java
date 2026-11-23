@@ -83,6 +83,7 @@ public interface IModifier extends IToolMod {
 
     /**
      * for convert TiC tool to TinkersReborn tool
+     * 
      * @param tool
      * @param tcToolNBTCompound
      */

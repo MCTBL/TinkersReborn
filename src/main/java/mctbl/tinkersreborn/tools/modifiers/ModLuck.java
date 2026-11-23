@@ -5,6 +5,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.TinkerGuiException;
@@ -16,6 +17,7 @@ import mctbl.tinkersreborn.library.tools.modifiers.ModifierTrait;
 import mctbl.tinkersreborn.library.utils.BlockPos;
 import mctbl.tinkersreborn.tools.Category;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ModLuck extends ModifierTrait {
@@ -136,12 +138,44 @@ public class ModLuck extends ModifierTrait {
         return tooltip;
     }
 
+    @Override
+    public void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        final int[] intArray = tcToolNBTCompound.getIntArray("Lapis");
+        if (intArray.length == 2) {
+            setLuckProgress(tool, intArray[0]);
+        }
+    }
+
+    public void setLuckProgress(ItemStack tool, int progress) {
+        apply(tool);
+
+        progress = MathHelper.clamp_int(progress, 0, aspect.getMaxForLevel(maxLevel));
+        int level = aspect.getLevel(progress);
+        if (progress > aspect.getMaxForLevel(level)) {
+            level++;
+        }
+        int max = aspect.getMaxForLevel(level);
+
+        NBTTagCompound root = ToolTagsHelper.getTagSafe(tool);
+        NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(root, this.identifier);
+
+        ModifierNBT.IntegerNBT data = ModifierNBT.readInteger(modifierTag);
+        data.identifier = this.identifier;
+        data.type = ToolTags.TYPEMODIFIERS;
+        data.color = this.color;
+        data.max = max;
+        data.level = level;
+        data.current = progress;
+        data.write(modifierTag);
+
+        applyEffect(root, modifierTag);
+    }
+
     public static class LuckAspect extends ModifierAspect.MultiAspect {
 
         public LuckAspect(IModifier parent) {
-            super(parent, 0x5a82e2, maxLevel, baseCount, 1);
-
-            freeModifierAspect = new FreeFirstModifierAspect(parent, 1);
+            super(parent, 0x5A82E2, maxLevel, baseCount, 1);
+            this.freeModifierAspect = new FreeFirstModifierAspect(parent, 1);
         }
 
         @Override
@@ -157,4 +191,5 @@ public class ModLuck extends ModifierTrait {
             return i;
         }
     }
+
 }

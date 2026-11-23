@@ -202,8 +202,7 @@ public class ContainerToolStation extends ContainerTinkerStation<ToolStationLogi
             for (EntityPlayer p : server.playerEntities) {
                 if (p.openContainer != this && p.openContainer instanceof ContainerToolStation container
                     && this.sameGui(container)) {
-                    container.out.inventory
-                        .setInventorySlotContents(0, out.getStack());
+                    container.out.inventory.setInventorySlotContents(0, out.getStack());
                 }
             }
         }

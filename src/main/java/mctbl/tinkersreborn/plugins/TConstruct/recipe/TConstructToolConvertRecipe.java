@@ -151,8 +151,9 @@ public class TConstructToolConvertRecipe implements IRecipe {
             ToolLevelingHelper.setXp(levelTag, tcDataCompound.getLong("ToolEXP"));
             ToolTagsHelper.setToolLevelingNBTSafe(newTool, levelTag);
         }
-        
-        TinkersRebornRegistry.getAllModifier().forEach(m -> m.convertTConstractNBT(newTool, tcDataCompound));
+
+        TinkersRebornRegistry.getAllModifier()
+            .forEach(m -> m.convertTConstractNBT(newTool, tcDataCompound));
 
         return newTool;
     }
