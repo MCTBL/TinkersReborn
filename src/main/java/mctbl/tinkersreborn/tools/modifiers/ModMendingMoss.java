@@ -128,6 +128,13 @@ public class ModMendingMoss extends ModifierTrait {
         return ImmutableList.of(String.format(loc, data.storedXp));
     }
 
+    @Override
+    public void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        if (tcToolNBTCompound.hasKey("Moss")) {
+            apply(tool);
+        }
+    }
+
     public static class Data extends ModifierNBT {
 
         public int storedXp;

@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.tools.modifiers;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import mctbl.tinkersreborn.TinkersRebornConfig;
@@ -27,6 +28,13 @@ public class ModEmerald extends ToolModifier {
         ToolTagsHelper.setDurabilityStat(rootCompound, durability + baseDurability / 2);
         if (TinkersRebornConfig.diamondAndEmeraldCanIncreaseHarvestLevel) {
             ToolTagsHelper.setHarvestLevelStat(rootCompound, Math.max(harvestLevel, 4)); // cobalt?
+        }
+    }
+
+    @Override
+    public void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        if (tcToolNBTCompound.hasKey("Emerald")) {
+            apply(tool);
         }
     }
 }

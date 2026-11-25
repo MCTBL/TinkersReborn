@@ -1,6 +1,7 @@
 package mctbl.tinkersreborn.tools.modifiers;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import mctbl.tinkersreborn.library.crafting.ToolBuilderHelper;
@@ -34,9 +35,12 @@ public class ModSilktouch extends ToolModifier {
     @Override
     public void applyEffect(NBTTagCompound rootCompound, NBTTagCompound modifierTag) {
         ToolBuilderHelper.addEnchantment(rootCompound, Enchantment.silkTouch);
+    }
 
-        // ToolNBT toolData = ToolTagsHelper.getToolStats(rootCompound);
-        //
-        // ToolTagsHelper.setToolTag(rootCompound, toolData.get());
+    @Override
+    public void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        if (tcToolNBTCompound.hasKey("Silk Touch")) {
+            apply(tool);
+        }
     }
 }

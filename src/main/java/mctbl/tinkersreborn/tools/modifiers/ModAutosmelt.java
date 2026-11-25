@@ -8,6 +8,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 
@@ -94,6 +95,13 @@ public class ModAutosmelt extends ModifierTrait {
                     0.0D,
                     0.0D);
             }
+        }
+    }
+
+    @Override
+    public void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        if (tcToolNBTCompound.hasKey("Lava")) {
+            apply(tool);
         }
     }
 }

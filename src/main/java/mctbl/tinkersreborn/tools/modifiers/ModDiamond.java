@@ -1,5 +1,6 @@
 package mctbl.tinkersreborn.tools.modifiers;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import mctbl.tinkersreborn.TinkersRebornConfig;
@@ -31,5 +32,12 @@ public class ModDiamond extends ToolModifier {
         }
         ToolTagsHelper.setAttackStat(rootCompound, attack + 1.0F);
         ToolTagsHelper.setMiningSpeed(rootCompound, miningSpeed + 0.5F);
+    }
+
+    @Override
+    public void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        if (tcToolNBTCompound.hasKey("Diamond")) {
+            apply(tool);
+        }
     }
 }
