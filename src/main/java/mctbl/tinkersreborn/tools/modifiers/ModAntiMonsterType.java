@@ -11,7 +11,9 @@ import com.google.common.collect.ImmutableList;
 
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierTrait;
+import mctbl.tinkersreborn.tools.TinkersRebornModifiers;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ModAntiMonsterType extends ModifierTrait {
@@ -19,19 +21,21 @@ public class ModAntiMonsterType extends ModifierTrait {
     protected final EnumCreatureAttribute creatureType;
 
     private final float dmgPerItem;
+    private final int countPerLevel;
 
     public ModAntiMonsterType(String identifier, int color, int maxLevel, int countPerLevel,
         EnumCreatureAttribute type) {
         super(identifier, color, maxLevel, countPerLevel);
         this.creatureType = type;
+        this.countPerLevel = countPerLevel;
 
-        dmgPerItem = 7f / (float) countPerLevel;
+        dmgPerItem = 7f / countPerLevel;
     }
 
     protected float calcIncreasedDamage(NBTTagCompound modifierTag, float baseDamage) {
         ModifierNBT.IntegerNBT data = ModifierNBT.readInteger(modifierTag);
 
-        return baseDamage + (float) data.current * dmgPerItem;
+        return baseDamage + data.current * dmgPerItem;
     }
 
     @Override
@@ -42,6 +46,54 @@ public class ModAntiMonsterType extends ModifierTrait {
             return calcIncreasedDamage(tag, newDamage);
         }
         return super.damage(tool, player, target, damage, newDamage, isCritical);
+    }
+
+    @Override
+    public void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        int[] intArray = null;
+
+        if (this.equals(TinkersRebornModifiers.modBaneOfArthopods) && tcToolNBTCompound.hasKey("ModAntiSpider")) {
+            intArray = tcToolNBTCompound.getIntArray("ModAntiSpider");
+        } else if (this.equals(TinkersRebornModifiers.modSmite) && tcToolNBTCompound.hasKey("ModSmite")) {
+            intArray = tcToolNBTCompound.getIntArray("ModSmite");
+        }
+
+        if (intArray != null && intArray.length == 3) {
+            setAntiProgress(tool, intArray[0]);
+        }
+    }
+
+    public void setAntiProgress(ItemStack tool, int progress) {
+        // convert by ratio
+        progress = (int) ((progress * 1.0F / 240) * maxLevel * countPerLevel);
+
+        NBTTagCompound root = ToolTagsHelper.getTagSafe(tool);
+        NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(root, identifier);
+
+        boolean existed = !modifierTag.hasNoTags();
+        int oldLevel = existed ? ModifierNBT.readInteger(modifierTag).level : 0;
+
+        int level = (progress - 1) / countPerLevel + 1;
+        int max = level * countPerLevel;
+
+        ModifierNBT.IntegerNBT data = ModifierNBT.readInteger(modifierTag);
+        data.identifier = identifier;
+        data.type = ToolTags.TYPEMODIFIERS;
+        data.color = color;
+        data.current = progress;
+        data.level = level;
+        data.max = max;
+        data.extraInfo = data.calcInfo();
+        data.write(modifierTag);
+
+        if (!existed) {
+            ToolTagsHelper.getModifiersTagList(root)
+                .appendTag(modifierTag);
+        }
+
+        ToolTagsHelper.setUsedModifiers(tool, ToolTagsHelper.getUsedModifiers(tool) + level - oldLevel);
+
+        applyEffect(root, modifierTag);
     }
 
     @Override

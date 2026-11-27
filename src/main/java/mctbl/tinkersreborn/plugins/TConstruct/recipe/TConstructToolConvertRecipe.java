@@ -155,6 +155,11 @@ public class TConstructToolConvertRecipe implements IRecipe {
         TinkersRebornRegistry.getAllModifier()
             .forEach(m -> m.convertTConstractNBT(newTool, tcDataCompound));
 
+        final int usedModifier = ToolTagsHelper.getUsedModifiers(newTool);
+        final int modifierSlots = ToolTagsHelper.getModifierSlots(newTool);
+        final int ticToolReleaseModifier = tcDataCompound.getInteger("Modifiers");
+        ToolTagsHelper.setModifierSlots(newTool, Math.max(usedModifier, modifierSlots) + ticToolReleaseModifier);
+
         return newTool;
     }
 

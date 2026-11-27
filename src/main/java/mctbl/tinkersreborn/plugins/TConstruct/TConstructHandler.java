@@ -73,7 +73,7 @@ public class TConstructHandler implements ITinkersRebornModule {
         overrides.put("slimeIslUseWhiteList", true);
         overrides.put("cfgDimWhiteList", new int[] {});
         overrides.put("cfgOreBushWhiteList", new int[] {});
-        overrides.put("disableAllRecipes", true);
+        overrides.put("disableAllRecipes", false);
 
         setStaticFieldsSafely("tconstruct.util.config.PHConstruct", overrides);
     }
