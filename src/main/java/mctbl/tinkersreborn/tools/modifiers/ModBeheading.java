@@ -20,7 +20,9 @@ import mctbl.tinkersreborn.library.entity.EntityProjectileBase;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierAspect;
 import mctbl.tinkersreborn.library.tools.modifiers.ModifierNBT;
 import mctbl.tinkersreborn.library.tools.modifiers.ToolModifier;
+import mctbl.tinkersreborn.tools.TinkersRebornModifiers;
 import mctbl.tinkersreborn.util.TinkersRebornUtils;
+import mctbl.tinkersreborn.util.ToolTags;
 import mctbl.tinkersreborn.util.ToolTagsHelper;
 
 public class ModBeheading extends ToolModifier {
@@ -60,7 +62,6 @@ public class ModBeheading extends ToolModifier {
 
             // remove other tag
             ToolTagsHelper.removeModifiersTag(rootCompound, CLEAVER_MODIFIER_ID);
-            // ToolTagsHelper.setModifiersTagList(rootCompound, tagList);
         }
     }
 
@@ -148,13 +149,36 @@ public class ModBeheading extends ToolModifier {
     }
 
     private boolean alreadyContainsDrop(LivingDropsEvent event, ItemStack head) {
-        // special case players: we want to add a new head drop even if they have their own head in their inventory
+        // special case players: we want to add a new head drop even if they have their
+        // own head in their inventory
         if (event.entityLiving instanceof EntityPlayerMP) {
             return false;
         }
         return event.drops.stream()
             .map(EntityItem::getEntityItem)
             .anyMatch(drop -> ItemStack.areItemStacksEqual(drop, head));
+    }
+
+    @Override
+    public void convertTConstractNBT(ItemStack tool, NBTTagCompound tcToolNBTCompound) {
+        if (this.equals(TinkersRebornModifiers.modBeheading) && tcToolNBTCompound.hasKey("Beheading")) {
+            final NBTTagCompound root = ToolTagsHelper.getTagSafe(tool);
+            final NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(root, identifier);
+            final ModifierNBT data = ModifierNBT.readTag(modifierTag);
+            final int ticBeheadingLevel = tcToolNBTCompound.getInteger("Beheading");
+
+            data.identifier = identifier;
+            data.type = ToolTags.TYPEMODIFIERS;
+            data.color = color;
+            data.level = ticBeheadingLevel;
+            data.write(modifierTag);
+
+            ToolTagsHelper.getModifiersTagList(root)
+                .appendTag(modifierTag);
+            ToolTagsHelper.setUsedModifiers(tool, ToolTagsHelper.getUsedModifiers(tool) + ticBeheadingLevel);
+
+            applyEffect(root, modifierTag);
+        }
     }
 
     @Override

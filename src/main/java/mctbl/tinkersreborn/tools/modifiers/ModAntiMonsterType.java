@@ -67,16 +67,13 @@ public class ModAntiMonsterType extends ModifierTrait {
         // convert by ratio
         progress = (int) ((progress * 1.0F / 240) * maxLevel * countPerLevel);
 
-        NBTTagCompound root = ToolTagsHelper.getTagSafe(tool);
-        NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(root, identifier);
+        final NBTTagCompound root = ToolTagsHelper.getTagSafe(tool);
+        final NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(root, identifier);
+        final ModifierNBT.IntegerNBT data = ModifierNBT.readInteger(modifierTag);
 
-        boolean existed = !modifierTag.hasNoTags();
-        int oldLevel = existed ? ModifierNBT.readInteger(modifierTag).level : 0;
+        final int level = (progress - 1) / countPerLevel + 1;
+        final int max = level * countPerLevel;
 
-        int level = (progress - 1) / countPerLevel + 1;
-        int max = level * countPerLevel;
-
-        ModifierNBT.IntegerNBT data = ModifierNBT.readInteger(modifierTag);
         data.identifier = identifier;
         data.type = ToolTags.TYPEMODIFIERS;
         data.color = color;
@@ -86,12 +83,10 @@ public class ModAntiMonsterType extends ModifierTrait {
         data.extraInfo = data.calcInfo();
         data.write(modifierTag);
 
-        if (!existed) {
-            ToolTagsHelper.getModifiersTagList(root)
-                .appendTag(modifierTag);
-        }
+        ToolTagsHelper.getModifiersTagList(root)
+            .appendTag(modifierTag);
 
-        ToolTagsHelper.setUsedModifiers(tool, ToolTagsHelper.getUsedModifiers(tool) + level - oldLevel);
+        ToolTagsHelper.setUsedModifiers(tool, ToolTagsHelper.getUsedModifiers(tool) + level);
 
         applyEffect(root, modifierTag);
     }

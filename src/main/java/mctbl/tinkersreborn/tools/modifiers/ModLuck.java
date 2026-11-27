@@ -5,7 +5,6 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import mctbl.tinkersreborn.library.TinkerGuiException;
@@ -147,26 +146,31 @@ public class ModLuck extends ModifierTrait {
     }
 
     public void setLuckProgress(ItemStack tool, int progress) {
-        apply(tool);
+        // convert by ratio
+        progress = (int) ((progress * 1.0F / 450) * aspect.getMaxForLevel(maxLevel));
 
-        progress = MathHelper.clamp_int(progress, 0, aspect.getMaxForLevel(maxLevel));
         int level = aspect.getLevel(progress);
         if (progress > aspect.getMaxForLevel(level)) {
             level++;
         }
-        int max = aspect.getMaxForLevel(level);
+        final int max = aspect.getMaxForLevel(level);
 
-        NBTTagCompound root = ToolTagsHelper.getTagSafe(tool);
-        NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(root, this.identifier);
+        final NBTTagCompound root = ToolTagsHelper.getTagSafe(tool);
+        final NBTTagCompound modifierTag = ToolTagsHelper.getModifierTag(root, this.identifier);
+        final ModifierNBT.IntegerNBT data = ModifierNBT.readInteger(modifierTag);
 
-        ModifierNBT.IntegerNBT data = ModifierNBT.readInteger(modifierTag);
-        data.identifier = this.identifier;
+        data.identifier = identifier;
         data.type = ToolTags.TYPEMODIFIERS;
-        data.color = this.color;
+        data.color = color;
         data.max = max;
         data.level = level;
         data.current = progress;
+        data.extraInfo = data.calcInfo();
         data.write(modifierTag);
+
+        ToolTagsHelper.getModifiersTagList(root)
+            .appendTag(modifierTag);
+        ToolTagsHelper.setUsedModifiers(tool, ToolTagsHelper.getUsedModifiers(tool) + 1);
 
         applyEffect(root, modifierTag);
     }
